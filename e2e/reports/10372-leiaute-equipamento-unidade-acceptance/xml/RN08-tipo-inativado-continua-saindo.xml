@@ -1,0 +1,14 @@
+<!-- RN08 — o tipo "Aparelho de Televisao" (cod 11) foi inativado no Painel Global depois de vinculado. Esperado: a linha continua saindo — o vinculo registrado na unidade e a fonte -->
+<!-- Gerado pela remessa 07/2026 do tenant de teste. Conteudo do EquipamentoUnidade.xml do pacote, sem edicao. -->
+<?xml version="1.0"?>
+<SIAP>
+    <Codigo>004821</Codigo>
+    <Exercicio>2026</Exercicio>
+    <Mes>07</Mes>
+    <EquipamentoUnidade>
+        <NumeroMDS>1309583383276</NumeroMDS>
+        <Equipamento>11</Equipamento>
+        <Quantidade>2</Quantidade>
+        <QuantidadeUso>1</QuantidadeUso>
+    </EquipamentoUnidade>
+</SIAP>

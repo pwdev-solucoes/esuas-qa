@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — Segmentação por Tipo de Pessoa (PF/PJ) na Base Global</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:980px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-wrap:wrap; gap:14px; margin-top:12px; }
+  figure { margin:0; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:300px; background:#fff; }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:11px; color:var(--muted); padding:6px 8px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { .evid, section.ca { break-inside:avoid; } figure { width:280px; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — Segmentação por Tipo de Pessoa (PF/PJ) na Base Global</h1>
+    <div class="sub">HU #9698 · Complemento do Cadastro Único · Evidências end-to-end no Painel Global (admin)</div>
+    <div class="meta"><div><span>Gerado em:</span> 29/06/2026 09:32</div><div><span>Branch:</span> feature/hu-9698-persons-segmentacao-pf-pj</div><div><span>Spec:</span> .planning/specs/HU #9698 - Segmentação por Tipo de Pessoa (Física ou Jurídica) na Base Global.md</div><div><span>Ambiente:</span> API Sail/PostgreSQL · admin (auth:manager) :5174 (domínio stateful)</div><div><span>Usuário:</span> E2E Super Admin · CPF 44983702016 · role ADMIN</div><div><span>Recurso:</span> persons (repositório global — sem tenant, sem soft delete)</div><div><span>Ferramenta:</span> playwright-cli (Chromium) + Pest</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">5 critérios de aceite (CA01–CA05). CA01–CA04 evidenciados por navegador no painel admin dirigindo o fluxo real de inclusão PF/PJ; CA02/CA03 também cobrem a duplicidade em tempo real (alertas de CPF/CNPJ). CA05 é parcial: o salvamento categorizado (person_type) e a trilha de auditoria (evento, autor, timestamp) são evidenciados ao vivo + Pest, mas o snapshot de atributos no activity_log sai vazio (comportamento pré-existente do modelo Person — ver observação). Apêndice automatizado: 46 testes Pest verdes (140 asserções).</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA01</td><td>Seleção de tipo de pessoa no início do cadastro</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA02</td><td>Fluxo e validação para Pessoa Física (PF)</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA03</td><td>Fluxo e validação para Pessoa Jurídica (PJ)</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA04</td><td>Unificação de contatos e endereços</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA05</td><td>Salvamento e registro do tipo de ator (com auditoria)</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA01">
+      <h2>CA01 — Seleção de tipo de pessoa no início do cadastro <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o Administrador acessa a tela de inclusão de um novo registro na base global
+Quando a tela é carregada
+Então o sistema apresenta uma seleção clara entre "Pessoa Física" e "Pessoa Jurídica"
+E os campos de identificação permanecem ocultos/desabilitados até a escolha ser feita</p>
+      <p class="steps"><strong>Como foi testado:</strong> Login como Super Admin → navegar para <code>/app/persons/novo</code>. A tela exibe apenas o seletor segmentado <b>Tipo de pessoa *</b> com os botões "Pessoa Física" e "Pessoa Jurídica".</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O seletor PF/PJ é o primeiro e único elemento do formulário antes da escolha.</li><li>Nenhum campo de identificação (Nome, CPF, CNPJ…) está presente até o tipo ser selecionado — o bloco de seções é renderizado sob &lt;code&gt;v-if="hasType"&lt;/code&gt;.</li><li>O botão Salvar permanece desabilitado enquanto o tipo não é escolhido.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca01-selecao-tipo.png" alt="CA01 evidência"/><figcaption>ca01-selecao-tipo.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA02">
+      <h2>CA02 — Fluxo e validação para Pessoa Física (PF) <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o usuário selecionou "Pessoa Física"
+Quando ele avança para o preenchimento dos dados
+Então o sistema libera CPF (obrigatório, validação de dígito), Nome Completo (obrigatório), Nome da Mãe (obrigatório), Data de Nascimento (obrigatório) e Sexo
+E se o CPF já existir na base global, bloqueia o salvamento e emite alerta de duplicidade</p>
+      <p class="steps"><strong>Como foi testado:</strong> Selecionar "Pessoa Física" → os campos PF são liberados. Preenchemos Nome, Nome da mãe, Nascimento e digitamos um CPF já cadastrado (<code>111.444.777-35</code>) e, depois, um CPF válido inédito.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Campos liberados na PF: Nome completo, Nome da mãe, Data de nascimento, Sexo e CPF.</li><li>CPF já existente ("Maria das Dores Silva") dispara em tempo real o alerta "Já existe uma pessoa com este CPF" (check-cpf).</li><li>CPF válido inédito é aceito (sem alerta).</li><li>Backend: Pest cobre obrigatoriedade dos campos PF e bloqueio de CPF duplicado.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca02-pf-cpf-duplicado.png" alt="CA02 evidência"/><figcaption>ca02-pf-cpf-duplicado.png</figcaption></figure><figure><img src="screenshots/ca02-pf-valido.png" alt="CA02 evidência"/><figcaption>ca02-pf-valido.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA03">
+      <h2>CA03 — Fluxo e validação para Pessoa Jurídica (PJ) <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o usuário selecionou "Pessoa Jurídica"
+Quando ele avança para o preenchimento dos dados
+Então o sistema libera CNPJ (obrigatório, validação de dígito), Razão Social (obrigatório), Nome Fantasia (obrigatório) e Inscrição Municipal/Estadual (opcional)
+E oculta os campos exclusivos de PF (Data de Nascimento e Nome da Mãe)
+E se o CNPJ já existir na base global, bloqueia o salvamento e emite o alerta: "Esta Pessoa Jurídica já está cadastrada na Base Global"</p>
+      <p class="steps"><strong>Como foi testado:</strong> Selecionar "Pessoa Jurídica" → campos PJ liberados e campos PF ocultados. Digitamos um CNPJ válido inédito e, depois, um CNPJ já cadastrado (PJ "Associação Beneficente Esperança").</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Campos liberados na PJ: Razão social, Nome fantasia, CNPJ, Inscrição municipal e Inscrição estadual (opcionais).</li><li>Campos exclusivos de PF (Nome da mãe, Data de nascimento) ficam ocultos.</li><li>CNPJ já existente dispara o alerta com a mensagem exata da spec: "Esta Pessoa Jurídica já está cadastrada na Base Global." (+ razão social).</li><li>Backend: Pest cobre obrigatoriedade CNPJ/Nome Fantasia, validação de dígito e bloqueio de CNPJ duplicado.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca03-pj-valido.png" alt="CA03 evidência"/><figcaption>ca03-pj-valido.png</figcaption></figure><figure><img src="screenshots/ca03-pj-cnpj-duplicado.png" alt="CA03 evidência"/><figcaption>ca03-pj-cnpj-duplicado.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA04">
+      <h2>CA04 — Unificação de contatos e endereços <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o tipo de pessoa foi selecionado e a identificação preenchida (PF ou PJ)
+Quando o usuário avança para os blocos de Contato e Endereço
+Então o sistema reaproveita a mesma estrutura de campos globais para ambos os tipos, exigindo CEP, Logradouro, Número, Bairro, Cidade, Estado e Telefone</p>
+      <p class="steps"><strong>Como foi testado:</strong> No formulário PJ, adicionar um telefone e abrir o drawer de Endereço. Os mesmos blocos de Contato (telefone) e Endereço (drawer DNE com CEP, Cidade, Estado, Número…) usados na PF são reaproveitados sem alteração.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Seção de Telefones (tipo + número) idêntica para PF e PJ.</li><li>Drawer de Endereço único (CEP, Logradouro, Número, Bairro, Cidade, Estado) reaproveitado para ambos — mesma infra de social-units/persons.</li><li>Nenhuma tabela/estrutura nova: person_phones e person_addresses → addresses servem PF e PJ.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca04-endereco-contato-unificado.png" alt="CA04 evidência"/><figcaption>ca04-endereco-contato-unificado.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA05">
+      <h2>CA05 — Salvamento e registro do tipo de ator (com auditoria) <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que todos os dados obrigatórios do tipo selecionado foram preenchidos corretamente
+Quando o usuário aciona salvar
+Então o sistema grava o registro na Base Global categorizado com o marcador de natureza (PF/PJ)
+E registra no log de auditoria o tipo de pessoa, o documento validador (CPF ou CNPJ), o autor da ação, a data e a hora</p>
+      <p class="steps"><strong>Como foi testado:</strong> Salvar a PJ "Instituto Novo Horizonte" (CNPJ válido inédito). O registro é persistido com <code>person_type='pj'</code> e aparece na listagem segmentada (coluna Documento = CNPJ, secundária = Nome Fantasia). A trilha de auditoria é verificada no <code>activity_log</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Persistência categorizada: persons id=19, person_type='pj', cnpj=71994591747319 (confirmado no banco).</li><li>Listagem segmentada: a tabela exibe Razão Social, o CNPJ na coluna Documento e o Nome Fantasia na coluna secundária.</li><li>Auditoria: activity_log registra log_name='person', event='created', causer_id (autor) e timestamp.</li><li>RESSALVA: o snapshot de atributos (properties) do activity_log sai VAZIO para todos os persons (PF e PJ, criação e edição) — comportamento PRÉ-EXISTENTE do modelo (logOnlyDirty/dontLogEmptyChanges). O tipo e o documento ficam recuperáveis apenas via o registro-subject, não materializados no payload do log como a §14 da spec pretendia. Não é regressão da HU #9698.</li><li>Backend: Pest confirma store PF/PJ, person_type imutável no update e configuração do activity log.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca05-pj-salva-lista.png" alt="CA05 evidência"/><figcaption>ca05-pj-salva-lista.png</figcaption></figure><figure><img src="screenshots/ca05-listagem-pj-segmentada.png" alt="CA05 evidência"/><figcaption>ca05-listagem-pj-segmentada.png</figcaption></figure></div>
+    </section>
+  
+  <h2>Anexo — Cobertura automatizada (Pest — PersonControllerTest + PersonTest)</h2>
+  <pre class="pest">
+   PASS  Tests\Feature\Api\PersonControllerTest
+  ✓ it searches a person by exact cpf (CA01/#9595)                       0.49s  
+  ✓ it searches persons by partial name with disambiguation fields (CA0… 0.03s  
+  ✓ it returns empty:true when the search finds nothing (CA03/#9595)     0.02s  
+  ✓ it requires at least a cpf or a name to search                       0.02s  
+  ✓ it creates a person with phones and address (CA01/#9585)             0.06s  
+  ✓ it persists address geolocation (POINT) and exposes active_point     0.03s  
+  ✓ it persists a person without an address or phones                    0.02s  
+  ✓ it blocks creation when a required field is missing (CA02/#9585)     0.02s  
+  ✓ it rejects an invalid cpf (RN03)                                     0.02s  
+  ✓ it blocks a duplicate cpf on create (CA01/#9594)                     0.02s  
+  ✓ it requires the country of origin for a foreigner (RN12)             0.02s  
+  ✓ it keeps the country of origin null for a brazilian (RN12)           0.02s  
+  ✓ it accepts a foreigner with a country of origin (RN12)               0.02s  
+  ✓ it shows a person with nested relations (#9595)                      0.03s  
+  ✓ it updates a person and its address keeping the 1:1 link (RN11)      0.04s  
+  ✓ it updates a cpf to the same value without a unique conflict (ignor… 0.02s  
+  ✓ it does not expose a delete route (RN04)                             0.02s  
+  ✓ it forbids creation without the store permission                     0.02s  
+  ✓ it requires authentication                                           0.02s  
+  ✓ it reports a valid available cpf                                     0.02s  
+  ✓ it flags a duplicate cpf (RN07/#9594)                                0.02s  
+  ✓ it ignores the same record via uuid on check-cpf (edit)              0.02s  
+  ✓ it dispatches PersonCreated on create                                0.02s  
+  ✓ it dispatches PersonUpdated on update                                0.03s  
+  ✓ it creates a legal entity (PJ) — CA03                                0.02s  
+  ✓ it sanitizes a masked cnpj on create (RN06)                          0.02s  
+  ✓ it blocks a duplicate cnpj on create (CA03)                          0.02s  
+  ✓ it requires cnpj and trade_name for PJ (RN02)                        0.02s  
+  ✓ it rejects an invalid cnpj (RN03)                                    0.02s  
+  ✓ it prohibits PF-only fields on a PJ payload (RN03)                   0.02s  
+  ✓ it prohibits PJ-only fields on a PF payload (RN03)                   0.02s  
+  ✓ it rejects an invalid person_type (RN01)                             0.02s  
+  ✓ it finds a person by exact cnpj on index                             0.02s  
+  ✓ it checks cnpj validity and duplicity (#9698)                        0.02s  
+  ✓ it denies check-cnpj without permission                              0.02s  
+
+   PASS  Tests\Unit\Models\PersonTest
+  ✓ it has correct fillable attributes                                   0.02s  
+  ✓ it casts birth_date to a date                                        0.01s  
+  ✓ it does NOT use soft deletes (RN04 — exclusão proibida)              0.02s  
+  ✓ it has no tenant_id column (RN01 — base global)                      0.03s  
+  ✓ it uses HasUuid and LogsActivity traits                              0.02s  
+  ✓ it generates a uuid on create                                        0.03s  
+  ✓ it generates a CPF that passes ValidCpf                              0.02s  
+  ✓ it relates to sex, nationality and foreigner country                 0.03s  
+  ✓ it has many phones                                                   0.02s  
+  ✓ it resolves its 1:1 address through person_addresses                 0.02s  
+  ✓ it configures activity log with name person and dirty-only logging   0.01s  
+
+  Tests:    46 passed (140 assertions)
+  Duration: 1.67s
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — Painel 4: Qualidade Cadastral</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — Painel 4: Qualidade Cadastral</h1>
+    <div class="sub">HU #10187 · Dashboard do tenant · Evidências end-to-end no client</div>
+    <div class="meta"><div><span>Gerado em:</span> 30/07/2026</div><div><span>HU:</span> #10187 — Painel 4: Qualidade Cadastral</div><div><span>Branch:</span> feature/10187-painel-4-qualidade-cadastral (api + client)</div><div><span>Spec:</span> .planning/specs/10187-painel-4-qualidade-cadastral.md</div><div><span>Ambiente:</span> API Sail/PostgreSQL+PostGIS · client :5174 (não-mock)</div><div><span>Organização (tenant):</span> E2E CadÚnico · 34 integrantes ativos · 33 cidadãos</div><div><span>Ferramenta:</span> playwright-cli (Chromium) + Pest</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">8 critérios evidenciados: 4 por navegador dirigindo o client real (CA06 volume de cidadãos com pendência de documentação, RN06 os 3 indicadores de qualidade, e o RG01 nas modalidades padrão/dinâmico/limpar) e 4 por suíte automatizada (consistência dos Unipessoais com o KPI 4, duplicidade por registro, isolamento multi-tenant e gate de permissão). Todos atendidos. Suíte Pest do backend: 12 testes verdes (37 asserções).</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA06</td><td>Detecção de pendências civis (volume de cidadãos sem documentação)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">RN06</td><td>Indicadores do Painel 4 (Unipessoais, Duplicidade, Pendência)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">RG01-a</td><td>Filtro global por Bairro — comportamento padrão ("Todos os Bairros")</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">RG01-bc</td><td>Filtro global por Bairro — recálculo dinâmico e "Limpar Filtro"</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">UNI</td><td>Cadastros Unipessoais consistentes com o KPI 4 da barra fixa</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">DUP</td><td>Registros com Duplicidade — contagem por registro (CPF/NIS repetido)</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">ISO</td><td>Isolamento multi-tenant</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">PERM</td><td>Gate de permissão (sem dashboard.view-indicators → 403 / painel oculto)</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA06">
+      <h2>CA06 — Detecção de pendências civis (volume de cidadãos sem documentação) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que existem pessoas sem CPF cadastrado na base importada
+Quando acesso o Painel 4 (aba "Qualidade Cadastral")
+Então o sistema contabiliza e exibe o volume total de cidadãos com pendência de documentação básica (sem CPF ou sem NIS) no recorte territorial selecionado.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Login como Master, aba <b>Qualidade Cadastral</b>. Leitura do cartão <b>Pendência de Documentação</b> (em destaque de alerta).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O cartão &lt;b&gt;Pendência de Documentação&lt;/b&gt; exibe &lt;b&gt;19 cidadãos&lt;/b&gt; (57,6% dos cidadãos) sem CPF ou sem NIS, em cor de alerta (vermelho).</li><li>Contagem de cidadãos DISTINTOS (dedupe por pessoa) — CA06 atendido.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca06-rn06-indicadores.png" alt="CA06 evidência"/><figcaption>ca06-rn06-indicadores.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="RN06">
+      <h2>RN06 — Indicadores do Painel 4 (Unipessoais, Duplicidade, Pendência) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um recorte com famílias e integrantes
+Quando o painel é calculado
+Então "Cadastros Unipessoais" = famílias com exatamente 1 integrante ativo
+E "Registros com Duplicidade" = integrantes ativos com CPF ou NIS repetido
+E "Pendência de Documentação" = cidadãos distintos sem CPF ou sem NIS.</p>
+      <p class="steps"><strong>Como foi testado:</strong> 3 cartões + gráfico de barras comparando os indicadores (Apache ECharts).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Cadastros Unipessoais 22 (22,9% das famílias), Registros com Duplicidade 5 (14,7% dos integrantes), Pendência de Documentação 19 (57,6%).</li><li>O gráfico "Comparativo de Qualidade" ilustra as três contagens (22 / 5 / 19).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca06-rn06-indicadores.png" alt="RN06 evidência"/><figcaption>ca06-rn06-indicadores.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="RG01-a">
+      <h2>RG01-a — Filtro global por Bairro — comportamento padrão ("Todos os Bairros") <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que acabei de carregar a aba "Qualidade Cadastral"
+Quando nenhum bairro está selecionado
+Então o filtro inicia em "Todos os Bairros"
+E os 3 indicadores refletem a consolidação municipal.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Ao abrir o dashboard, o filtro global (topo, à direita) inicia em <code>Todos os Bairros</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Filtro em "Todos os Bairros"; os 3 indicadores exibem a consolidação municipal.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca06-rn06-indicadores.png" alt="RG01-a evidência"/><figcaption>ca06-rn06-indicadores.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="RG01-bc">
+      <h2>RG01-bc — Filtro global por Bairro — recálculo dinâmico e "Limpar Filtro" <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o filtro global está em "Todos os Bairros"
+Quando eu seleciono o bairro "Itapoã"
+Então os 3 indicadores recalculam para as famílias do bairro (RN08)
+E ao acionar "Limpar Filtro" o painel volta à consolidação municipal.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Seleção do bairro <b>Itapoã</b> no filtro global; um único evento recalcula a barra fixa E o painel (RG01/RN09).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Recálculo instantâneo: Unipessoais 22 → 1, Duplicidade 5 → 0, Pendência 19 → 2; barra fixa e painel exibem "Recalculado por bairro: Itapoã".</li><li>O KPI "Cadastros Unipessoais" da barra fixa mostra o mesmo valor do painel (consistência RN09).</li><li>O botão "Limpar Filtro" retorna imediatamente à visão municipal (Pendência volta a 19, filtro a "Todos os Bairros").</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/rg01-bairro-itapoa.png" alt="RG01-bc evidência"/><figcaption>rg01-bairro-itapoa.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="UNI">
+      <h2>UNI — Cadastros Unipessoais consistentes com o KPI 4 da barra fixa <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Então "Cadastros Unipessoais" (Painel 4) é igual ao numerador do KPI 4 (Cadastros Unipessoais) da barra fixa (#10184) para o mesmo recorte.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Verificado na UI (barra fixa e painel mostram 22 / 1) e por teste automatizado (Pest).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Na tela: KPI 4 da barra fixa e o cartão do painel exibem o mesmo número (22 no municipal, 1 em Itapoã).</li><li>RegistrationQualityTest: teste cruzado single_person == numerador do KPI 4 (RN09).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/rg01-bairro-itapoa.png" alt="UNI evidência"/><figcaption>rg01-bairro-itapoa.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="DUP">
+      <h2>DUP — Registros com Duplicidade — contagem por registro (CPF/NIS repetido) <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado 3 integrantes ativos com o mesmo NIS e uma pessoa (CPF) em 2 famílias
+Quando os indicadores são calculados
+Então "Registros com Duplicidade" conta por registro (3 do NIS + 2 do CPF = 5).</p>
+      <p class="steps"><strong>Como foi testado:</strong> Coberto por testes automatizados (Pest) — ver apêndice.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>RegistrationQualityTest: duplicidade por NIS repetido (3 registros) e por CPF (2 registros, mesma pessoa em 2 famílias); vazios não contam como duplicidade.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="ISO">
+      <h2>ISO — Isolamento multi-tenant <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um usuário vinculado ao Tenant A
+Quando ele solicita o Painel 4
+Então apenas famílias/integrantes do Tenant A entram nos cálculos
+E um neighborhood_uuid fora do município do Tenant A retorna 422.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Coberto por teste automatizado (Pest) — ver apêndice.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>DashboardRegistrationQualityIsolationTest: famílias/integrantes do Tenant B nunca são contados para o Tenant A.</li><li>RegistrationQualityTest: 422 para bairro fora do município do tenant.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="PERM">
+      <h2>PERM — Gate de permissão (sem dashboard.view-indicators → 403 / painel oculto) <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um usuário sem dashboard.view-indicators
+Quando ele chama o endpoint do Painel 4
+Então recebe 403 (e o painel não é exibido).</p>
+      <p class="steps"><strong>Como foi testado:</strong> Coberto por teste automatizado (Pest) — o endpoint reusa o gate da barra fixa (#10184).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>RegistrationQualityTest: operador sem o papel dedicado recebe 403; Master acessa sem add-on.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+  
+  <h2>Anexo — Cobertura automatizada (Pest — RegistrationQuality + Isolamento)</h2>
+  <pre class="pest">
+   PASS  Tests\Feature\Dashboard\RegistrationQualityTest
+  ✓ it counts single-person families equal to the strategic indicators…  0.39s  
+  ✓ it counts duplicate records by repeated NIS per record, not per gro… 0.06s  
+  ✓ it counts duplicate records by repeated CPF (same person in more th… 0.06s  
+  ✓ it does not treat empty CPF/NIS as duplicates (RN03.1)               0.05s  
+  ✓ it counts distinct citizens with missing CPF or NIS (CA06)           0.05s  
+  ✓ it deduplicates a pending citizen linked to more than one family     0.05s  
+  ✓ it recalculates for a neighborhood, covering only geocoded families… 0.06s  
+  ✓ it returns zeroed indicators without error when the scope has no me… 0.04s  
+  ✓ it returns 422 for a neighborhood_uuid outside the tenant municipal… 0.04s  
+  ✓ it denies the panel to the base operator without the dedicated role  0.04s  
+  ✓ it grants the panel to the Master without any add-on role            0.04s  
+
+   PASS  Tests\Feature\TenantIsolation\DashboardRegistrationQualityIsolationTest
+  ✓ it never counts families/members from another tenant in the registr… 0.04s  
+
+  Tests:    12 passed (37 assertions)
+  Duration: 1.01s
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

@@ -1,0 +1,21 @@
+app/Models/Referral.php:56: * unidade de destino é ESCOLHIDA e gravada em `destination_social_unit_id`;
+app/Models/Referral.php:68: * ⚠️ NENHUM código desta HU consulta `destination_social_unit_id` para
+app/Models/Referral.php:91:        'destination_social_unit_id',
+app/Models/Referral.php:117:            'destination_social_unit_id'  => 'integer',
+app/Models/Referral.php:151:                'destination_social_unit_id',
+app/Models/Referral.php:215:        return $this->belongsTo(SocialUnit::class, 'destination_social_unit_id')->withTrashed();
+app/Services/Referral/RegisterReferralAction.php:31: * `destination_social_unit_id` E o SNAPSHOT do nome em
+app/Services/Referral/RegisterReferralAction.php:112:                'destination_social_unit_id'  => $destination?->id,
+app/Services/Referral/UpdateReferralAction.php:50: * conceder acesso. Quando `destination_social_unit_id` está preenchida e o
+app/Services/Referral/UpdateReferralAction.php:139:        if ($referral->destination_social_unit_id !== null
+app/Services/Referral/UpdateReferralAction.php:145:                (int) $referral->destination_social_unit_id,
+app/Services/Referral/AssignReferralDestinationUnitAction.php:36: * (R2): é o `save()` que põe `old/attributes` de `destination_social_unit_id`
+app/Services/Referral/AssignReferralDestinationUnitAction.php:41: * ⚠️ Esta Action NÃO decide acesso ao prontuário por `destination_social_unit_id`
+app/Services/Referral/AssignReferralDestinationUnitAction.php:115:                'destination_social_unit_id' => $destination->id,
+app/Services/Family/FamilyAccessService.php:59: * ENCAMINHAMENTO RECEBIDO (`referrals.destination_social_unit_id`, criado
+app/Services/Family/FamilyAccessService.php:143:     * So concede com a FK `destination_social_unit_id` preenchida (RN02/D06:
+app/Services/Family/FamilyAccessService.php:618:            ->pluck('referrals.destination_social_unit_id')
+app/Services/Family/FamilyAccessService.php:629:     * sistema consulta `referrals.destination_social_unit_id` para decidir
+app/Services/Family/FamilyAccessService.php:632:     * Le SO a FK `destination_social_unit_id` (D06): nunca
+app/Services/Family/FamilyAccessService.php:640:     * Tenant B com `destination_social_unit_id` numericamente igual ao de uma
+app/Services/Family/FamilyAccessService.php:662:            ->whereIn('referrals.destination_social_unit_id', $units)

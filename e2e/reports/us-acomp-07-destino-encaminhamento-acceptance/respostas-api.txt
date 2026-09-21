@@ -1,0 +1,7 @@
+== CA08 — PATCH destination-unit em encaminhamento COM desfecho ('nao atendido')
+PATCH /api/client/families/{f0001}/referrals/{1db2a6bd…}/destination-unit
+HTTP 409 {"message":"Este encaminhamento já tem desfecho: a unidade de destino não pode mais ser alterada.","error_code":"referral_destination_locked_by_outcome"}
+
+== CA-extra-C — PUT trocando codigo interno (13) por externo (05)
+PUT /api/client/families/{f0013}/referrals/{…0e7001}
+HTTP 422 {"message":"A correção não pode trocar um código de trânsito interno por um externo, nem o contrário. Cancele e registre outro encaminhamento.","error_code":"referral_code_transit_class_change"}

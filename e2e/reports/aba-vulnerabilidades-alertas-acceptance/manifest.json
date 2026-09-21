@@ -1,0 +1,55 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — Aba Vulnerabilidades e Alertas Ativos",
+    "subtitle": "HU #9911 · CA05 + CA06 · Prontuário familiar (client) · Evidências end-to-end",
+    "rows": [
+      ["Gerado em", "14/07/2026"],
+      ["História", "HU #9911 — Aba Vulnerabilidades e Alertas Ativos"],
+      ["Rota verificada", "/app/cadastros/familias/9fb588c6-...-78561d32ed3e?tab=vulnerabilidades"],
+      ["Submódulo", "client (esuas-frontend-client) · commit 1bf93ce"],
+      ["Ambiente", "API Sail/PostgreSQL 18 · client :5174 (não-mock) · API :8000"],
+      ["Organização (tenant)", "PMM — Prefeitura Municipal de Maceió (Ativo)"],
+      ["Perfil", "coordenador (Master/CLIENT_ADMIN, family_viewer) · CPF 15543849079"],
+      ["Ferramenta", "playwright-cli (Chromium) + Vitest + Pest"]
+    ]
+  },
+  "summary": "2 Critérios de Aceite (CA05, CA06) verificados como PARCIAL (◑): evidência de UI ao vivo (navegador) somada à cobertura automatizada de backend. A aba Vulnerabilidades e Alertas exibe APENAS os marcadores ATIVOS da família, agrupados em Riscos Econômicos, Identidade e Programas — omitindo por inteiro os grupos sem marcação (CA05) — e destaca o alerta de gestão cadastral \"Cadastro Vencido\" quando a família está com 24+ meses de defasagem (CA06). Os códigos ativos e a janela do alerta são calculados no backend (FamilyVulnerabilityService — MESMA fonte do Painel Geo). Suítes automatizadas: Vitest 10/10 (VulnerabilidadesTab) e Pest 28/28 (FamilyVulnerabilityService + FamilyDetailsTest, inclui as janelas de 24/19 meses). Resultado geral: ATENDIDO.",
+  "cas": [
+    {
+      "id": "CA05",
+      "title": "Exibição do painel de riscos e tags (apenas as vulnerabilidades ativas, omitindo as não marcadas)",
+      "status": "parc",
+      "gherkin": "Dado que acesso a aba \"Vulnerabilidades e Alertas\", Quando a tela renderiza os dados da família, Então o sistema apresenta em blocos de destaque apenas as vulnerabilidades que aquela família possui (Ex: exibe as tags [Extrema Pobreza] e [Trabalho Infantil], mas omite as demais caso não possuam marcação na base).",
+      "steps_html": "1) Login como <code>coordenador</code> (Master) → organização <b>PMM</b>. 2) Abrir a rota da HU: <code>/app/cadastros/familias/9fb588c6-…?tab=vulnerabilidades</code> — família com um único marcador. 3) Abrir uma família com múltiplos marcadores (<code>05443abe-…</code>) para evidenciar o exemplo do critério (Extrema Pobreza + Trabalho Infantil) e a omissão das não marcadas.",
+      "results": [
+        "Família da rota: exibe SOMENTE o grupo \"Programas de Apoio\" com a tag \"Bolsa Família\" — todos os demais grupos (Riscos Econômicos, Identidade) são omitidos por inteiro, pois não há marcação.",
+        "Família com múltiplos marcadores: grupo \"Riscos Econômicos e de Proteção\" exibe exatamente [Extrema pobreza] e [Trabalho infantil] (o exemplo do CA05); \"Identidade e Inclusão\" exibe Povos Indígenas e GPTE — Família Cigana; \"Programas de Apoio\" exibe Bolsa Família.",
+        "Marcadores NÃO presentes na base (ex.: Pessoa só, Situação de rua, Comunidades Quilombolas, Deficiência) são OMITIDOS — nunca exibidos apagados/desabilitados.",
+        "Tons de cor resolvidos numa única fonte (familyVulnerabilityTags): risco econômico laranja, identidade neutro, programa teal — idênticos ao preview do Resumo (anti-drift)."
+      ],
+      "images": [
+        "screenshots/ca05-rota-solicitada.png",
+        "screenshots/ca05-multiplas-tags.png"
+      ]
+    },
+    {
+      "id": "CA06",
+      "title": "Alerta cronológico de defasagem (Cadastro Vencido em 24+ meses de atraso)",
+      "status": "parc",
+      "gherkin": "Dado que a data da última atualização da família no arquivo importado aponta um intervalo de 24 meses de atraso, Quando abro a aba de vulnerabilidades, Então o sistema exibe de forma destacada o alerta de gestão: [Cadastro Vencido].",
+      "steps_html": "Abrir uma família com defasagem cadastral ≥ 24 meses (<code>b23a5497-…</code>) na aba <b>Vulnerabilidades e Alertas</b>. O código <code>expired</code> é calculado no backend (FamilyVulnerabilityService: >24 meses → expired · 19–24 → expiring).",
+      "results": [
+        "A aba exibe a seção \"Alertas de Gestão Cadastral\" com o alerta \"Cadastro Vencido\" em destaque (tom destrutivo/vermelho + ícone de atenção).",
+        "O mesmo alerta \"Cadastro Vencido\" aparece SEMPRE visível no cabeçalho da tela (banner fora das abas), pois é a informação acionável do prontuário — mesma constante/fonte da aba.",
+        "A janela cronológica (24 meses = expired, 19–24 = expiring) é derivada no backend e coberta por teste de fronteira (Pest)."
+      ],
+      "images": [
+        "screenshots/ca06-cadastro-vencido.png"
+      ]
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada de backend (Pest — FamilyVulnerabilityService + FamilyDetailsTest): 28 testes, 168 asserções",
+    "file": "pest-vulnerabilidades.txt"
+  }
+}

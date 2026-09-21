@@ -1,0 +1,64 @@
+
+   PASS  Tests\Unit\Models\FamilyShelteringTest
+  ✓ it uses BelongsToTenant, HasUuid, SoftDeletes and LogsActivity (RN1… 0.33s  
+  ✓ it keeps reason, cancel_reason and the institution OUT of logOnly()… 0.01s  
+  ✓ it declares the two modalities and the two statuses (RN06/RN09)      0.01s  
+  ✓ it casts dates, modality and status, and reports an ongoing shelter… 0.06s  
+  ✓ it has NO unique index besides the uuid (RN08)                       0.01s  
+  ✓ it enforces the state invariant (registered x cancelled) before eve… 0.03s  
+
+   PASS  Tests\Feature\Api\Client\FamilyShelteringTest
+  ✓ it registers an ongoing sheltering without end date, signed and dat… 0.08s  
+  ✓ it registers a past sheltering with both dates and keeps it as hist… 0.04s  
+  ✓ it saves normally without any institution (CA03)                     0.04s  
+  ✓ it refuses to save without a reason and says so (CA04) with dataset… 0.04s  
+  ✓ it refuses to save without a reason and says so (CA04) with dataset… 0.04s  
+  ✓ it refuses to save without a reason and says so (CA04) with dataset… 0.04s  
+  ✓ it requires the modality, validated against the enum (RN06)          0.04s  
+  ✓ it offers the two modalities and the start-date ceiling through opt… 0.05s  
+  ✓ it records THAT the reason changed, with author and date, never the… 0.05s  
+  ✓ it keeps reason and cancel_reason out of the trail on create and ca… 0.04s  
+  ✓ it refuses a member of ANOTHER family (CA06)                         0.04s  
+  ✓ it refuses an UNLINKED member — not part of the CURRENT composition… 0.04s  
+  ✓ it lets a correction keep the ORIGINAL member even after they were…  0.04s  
+  ✓ it refuses an end date BEFORE the start date (CA07)                  0.04s  
+  ✓ it refuses a start date in the FUTURE (RN07)                         0.04s  
+  ✓ it accepts a same-day period — end equal to start (RN07)             0.04s  
+  ✓ it accepts very old periods — no retroactivity limit beyond RN07 (R… 0.04s  
+  ✓ it keeps BOTH an ended and an ongoing sheltering of the same member… 0.05s  
+  ✓ it has NO unique index on the shelterings table (RN08)               0.04s  
+  ✓ it saves a retroactive sheltering in a remitted month WITH the rege… 0.04s  
+  ✓ it warns about the END month too and deduplicates months (CA09)      0.05s  
+  ✓ it does NOT warn when the month has no COMPLETED remittance (CA09)   0.04s  
+  ✓ it emits the same warning when CANCELLING in a remitted month (CA09… 0.04s  
+  ✓ it cancels instead of deleting: status cancelled, reason recorded,…  0.05s  
+  ✓ it never calls delete() nor forceDelete() when cancelling (CA10)     0.04s  
+  ✓ it requires cancel_reason on the DELETE (CA10)                       0.04s  
+  ✓ it answers 409 when cancelling an ALREADY cancelled sheltering       0.04s  
+  ✓ it answers 409 when EDITING a cancelled sheltering                   0.04s  
+  ✓ it corrects a sheltering registered on the WRONG member, keeping th… 0.05s  
+  ✓ it refuses server-owned fields on the write (RN09/RN12) with datase… 0.04s  
+  ✓ it refuses server-owned fields on the write (RN09/RN12) with datase… 0.05s  
+  ✓ it refuses server-owned fields on the write (RN09/RN12) with datase… 0.04s  
+  ✓ it refuses server-owned fields on the write (RN09/RN12) with datase… 0.04s  
+  ✓ it refuses server-owned fields on the write (RN09/RN12) with datase… 0.04s  
+  ✓ it refuses server-owned fields on the write (RN09/RN12) with datase… 0.04s  
+  ✓ it refuses server-owned fields on the write (RN09/RN12) with datase… 0.04s  
+  ✓ it answers an EMPTY list and asserts NOTHING about the absence (RN1… 0.04s  
+  ✓ it answers 403 with a stable error_code, without naming the units (… 0.06s  
+  ✓ it applies the same denial to the READ side and to options (CA11)    0.04s  
+  ✓ it refuses an operator WITHOUT the LGPD add-on (RN11)                0.04s  
+  ✓ it declares NO sheltering ability anywhere (RN11)                    0.07s  
+  ✓ it carries NO can: middleware on the sheltering routes and is not a… 0.04s  
+
+   PASS  Tests\Feature\TenantIsolation\FamilyShelteringIsolationTest
+  ✓ it answers 404 — never 403 — for a family of ANOTHER tenant, on ALL… 0.06s  
+  ✓ it never reaches a sheltering of ANOTHER tenant through MY family u… 0.05s  
+  ✓ it answers 404 when the sheltering belongs to ANOTHER family of the… 0.05s  
+  ✓ it scopes the listing by tenant_id — never shows the other municipa… 0.05s  
+  ✓ it blocks the request when the X-Tenant-UUID points at a tenant the… 0.04s  
+  ✓ it refuses a member uuid from ANOTHER tenant with 422 and creates n… 0.05s  
+
+  Tests:    54 passed (255 assertions)
+  Duration: 3.14s
+

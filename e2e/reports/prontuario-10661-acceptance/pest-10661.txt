@@ -1,0 +1,25 @@
+
+   PASS  Tests\Feature\Family\CreateManualFamilyTest
+  ✓ it registers a manual family with a generated record number and the… 0.49s  
+  ✓ it registers a family for a person who did not exist yet, through t… 0.07s  
+  ✓ it refuses to create a family without an identified responsible (CA… 0.04s  
+  ✓ it refuses a responsible that does not exist in the person reposito… 0.03s  
+  ✓ it keeps the manual family without a CadUnico family code, and that… 0.04s  
+  ✓ it registers the family without a complete address and warns, witho… 0.04s  
+  ✓ it refuses a second family for the same responsible and offers the…  0.05s  
+  ✓ it rejects CadUnico snapshot fields sent in the manual payload (CA0… 0.03s  
+  ✓ it does not let the Operacional register in a unit outside the assi… 0.04s  
+  ✓ it rolls back the family and the address when the composition fails… 0.04s  
+  ✓ it regenerates the record number on collision instead of opening a…  0.04s  
+  ✓ it does not expose a deletion verb for families (P4)                 0.04s  
+  ✓ it requires the LGPD add-on and an active assignment to register (R… 0.03s  
+  ✓ it enforces the one-family-per-responsible rule at the database lev… 0.03s  
+  ✓ it translates the responsible race condition into the same 409, nev… 0.04s  
+
+   PASS  Tests\Feature\Family\ManualFamilyConsolidationTest
+  ✓ it consolidates the manually registered family when the CadUnico re… 0.07s  
+  ✓ it keeps the manual family out of the remittance when the responsib… 0.06s  
+
+  Tests:    17 passed (152 assertions)
+  Duration: 1.57s
+

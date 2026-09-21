@@ -1,0 +1,15 @@
+[globalSetup] Rate-limiter cache do Laravel zerado.
+
+Running 8 tests using 2 workers
+
+  ✓  1 [setup] › tests/auth.setup.ts:10:6 › autentica super admin (UI) e propaga cookies para o api-client (1.0s)
+[tenant-auth.setup] sessão de tenant pronta em /Users/binho/Projetos/esuas-all/e2e/.auth/tenant.json
+  ✓  2 [setup] › tests/tenant-auth.setup.ts:82:6 › autentica usuário do tenant (client) e propaga cookies para o api-client (1.4s)
+  ✓  3 [chromium-tenant] › tests/client/eventual-benefit-grant.spec.ts:160:7 › US-BENEF-02 — registro de concessão de benefício eventual (client) › CA01 — registra uma cesta básica, com data, tipo, unidade e assinatura (9.4s)
+  ✓  4 [chromium-tenant] › tests/client/eventual-benefit-grant.spec.ts:193:7 › US-BENEF-02 — registro de concessão de benefício eventual (client) › CA02/CA03 — os campos condicionais são exigidos, com erro no campo (11.2s)
+  ✓  5 [chromium-tenant] › tests/client/eventual-benefit-grant.spec.ts:227:7 › US-BENEF-02 — registro de concessão de benefício eventual (client) › CA05 — o campo condicional aparece no funeral e some no aluguel social (8.2s)
+  ✓  6 [chromium-tenant] › tests/client/eventual-benefit-grant.spec.ts:253:7 › US-BENEF-02 — registro de concessão de benefício eventual (client) › CA06 — repetir a mesma cesta básica no mesmo mês não é bloqueado (12.2s)
+  ✓  7 [chromium-tenant] › tests/client/eventual-benefit-grant.spec.ts:284:7 › US-BENEF-02 — registro de concessão de benefício eventual (client) › CA07 — data futura é recusada (8.4s)
+  ✓  8 [chromium-tenant] › tests/client/eventual-benefit-grant.spec.ts:303:7 › US-BENEF-02 — registro de concessão de benefício eventual (client) › CA10 — cancelar exige motivo, mantém a linha marcada, e não existe excluir (9.8s)
+
+  8 passed (1.0m)

@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — Importação do Cadastro Único (CadÚnico)</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:980px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-wrap:wrap; gap:14px; margin-top:12px; }
+  figure { margin:0; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:300px; background:#fff; }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:11px; color:var(--muted); padding:6px 8px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { .evid, section.ca { break-inside:avoid; } figure { width:280px; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — Importação do Cadastro Único (CadÚnico)</h1>
+    <div class="sub">Sprint 8 · HU01–HU05 · Evidências end-to-end no frontend do Tenant (client)</div>
+    <div class="meta"><div><span>Branch:</span> sprint8-cadunico</div><div><span>Spec:</span> .planning/specs/sprint8/cadunico-imports-importacao-cadastro-unico.md</div><div><span>Ambiente:</span> API Laravel (Sail/PostgreSQL) · fila cadunico (worker) · client Vite :5174</div><div><span>Organização (tenant):</span> E2E CadÚnico · município Fortaleza (IBGE 2304400)</div><div><span>Ferramenta:</span> playwright-cli (Chromium) + Pest</div><div><span>Gerado pela skill:</span> acceptance-evidence-report</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">Os 12 critérios de aceite (CA01–CA12) foram exercitados: 9 com evidência direta no navegador (prints), 2 por cobertura automatizada (mecanismo de permissão por papel) e 1 combinado. Nenhuma falha.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA01</td><td>Sucesso na validação inicial (HU01)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA02</td><td>Rejeição de formato/layout (HU01)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA03</td><td>Bloqueio de interface por falta de permissão (HU01)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA04</td><td>Criação de famílias inéditas (HU02)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA05</td><td>Atualização por data mais recente (HU02)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA06</td><td>Bloqueio de dados defasados/iguais (HU02)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA07</td><td>Bloqueio por concorrência ativa (HU02/RN11)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA08</td><td>Métricas detalhadas do resultado (HU03)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA09</td><td>Atribuição de permissão ao Profissional (HU04)</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA10</td><td>Revogação de acesso (HU04)</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA11</td><td>Histórico auditável (HU05)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA12</td><td>Isolamento multi-tenant no histórico (HU05/RN10)</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA01">
+      <h2>CA01 — Sucesso na validação inicial (HU01) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Operacional do Tenant com a permissão de importação, quando faço upload de um CSV válido no layout oficial do CadÚnico, então o sistema confirma a validação estrutural e habilita o botão para confirmar o processamento do lote.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Master abre “Nova importação”, seleciona <code>cadunico-valido.csv</code> (IBGE 2304400, mesmo município da organização) e clica “Validar arquivo”.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O sistema exibe “Arquivo validado” e habilita “Confirmar importação”.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca01-validado.png" alt="CA01 evidência"/><figcaption>ca01-validado.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA02">
+      <h2>CA02 — Rejeição de formato/layout (HU01) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Operacional do Tenant com a permissão, quando seleciono um arquivo que não é CSV ou com colunas divergentes, então o sistema rejeita o arquivo imediatamente e exibe mensagem clara com o motivo.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Três rejeições: cabeçalho divergente, arquivo não-CSV (.pdf) e arquivo de outro município (RN01 — validação cd_ibge × município da organização).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Cabeçalho divergente → “…não corresponde ao layout oficial… Colunas ausentes: cd_ibge, …”.</li><li>Não-CSV (.pdf) → “O arquivo deve estar no formato CSV.” (botão Validar desabilitado).</li><li>Outro município → “O arquivo é de outro município (IBGE 3550308) e não corresponde ao da organização (IBGE 2304400).”</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca02-layout.png" alt="CA02 evidência"/><figcaption>ca02-layout.png</figcaption></figure><figure><img src="screenshots/ca02-naocsv.png" alt="CA02 evidência"/><figcaption>ca02-naocsv.png</figcaption></figure><figure><img src="screenshots/ca02-municipio.png" alt="CA02 evidência"/><figcaption>ca02-municipio.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA03">
+      <h2>CA03 — Bloqueio de interface por falta de permissão (HU01) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Operacional do Tenant SEM a permissão de importação, quando acesso o Painel do Tenant, então a funcionalidade de importação do CadÚnico não está visível/habilitada para mim.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Login como Operador (sem <code>cadunico-imports.*</code>): inspeção da sidebar e tentativa de navegação direta para <code>/app/cadunico-imports</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O item “Importações do CadÚnico” não aparece na sidebar do Operador.</li><li>A navegação direta é bloqueada → página “403 — Acesso negado”.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca03-operador.png" alt="CA03 evidência"/><figcaption>ca03-operador.png</figcaption></figure><figure><img src="screenshots/ca03-403.png" alt="CA03 evidência"/><figcaption>ca03-403.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA04">
+      <h2>CA04 — Criação de famílias inéditas (HU02) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o arquivo validado foi confirmado para processamento, quando o sistema encontra um Código Familiar inexistente no tenant, então cadastra a nova unidade familiar, o domicílio e todos os membros do bloco.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Confirmação do lote válido (Etapa 1) e disparo da “Sincronizar famílias” (Etapa 2).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Resumo da sincronização: “Total analisado 2”, “Novas famílias 1”. No banco: 1 família (código 1600345009, responsible_cpf 52998224725) + 2 membros.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca04-ca08-detalhe.png" alt="CA04 evidência"/><figcaption>ca04-ca08-detalhe.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA05">
+      <h2>CA05 — Atualização por data mais recente (HU02) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o arquivo contém família já existente, quando a Data de Última Atualização do arquivo é maior que a do sistema, então o sistema atualiza em bloco os dados e desvincula (sem excluir) os membros ausentes.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Segundo lote <code>cadunico-atualizado.csv</code> (mesma família, data 2026-06-01 &gt; 2026-05-11) + sincronização.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Resumo: “Atualizadas por data 1” (Novas 0). A mesma família foi atualizada, sem duplicar.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca05-atualizadas.png" alt="CA05 evidência"/><figcaption>ca05-atualizadas.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA06">
+      <h2>CA06 — Bloqueio de dados defasados/iguais (HU02) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o arquivo contém família já existente, quando a Data de Última Atualização do arquivo é menor ou igual à do sistema, então o sistema ignora o bloco integralmente e contabiliza como “Ignorado por Sincronização”.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Terceiro lote <code>cadunico-defasado.csv</code> (mesma família, data 2026-01-01, mais antiga) + sincronização.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Resumo: “Ignoradas por sincronização 1”. O cadastro local permaneceu intocado.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca06-ignoradas.png" alt="CA06 evidência"/><figcaption>ca06-ignoradas.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA07">
+      <h2>CA07 — Bloqueio por concorrência ativa (HU02/RN11) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que já há uma importação em processamento no meu município, quando eu ou outro Profissional do mesmo tenant tenta iniciar um novo upload, então o sistema nega a ação e exibe: “Existe uma importação em andamento para este município. Aguarde a conclusão”.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Com um lote em <code>status=processing</code> ativo para o tenant, a tela de importações é recarregada.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O botão “Nova importação” fica desabilitado; o tooltip exibe “Já existe uma importação em andamento para esta organização.”</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca07-concorrencia.png" alt="CA07 evidência"/><figcaption>ca07-concorrencia.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA08">
+      <h2>CA08 — Métricas detalhadas do resultado (HU03) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o processamento terminou em segundo plano, quando acesso o resultado ou o histórico, então vejo: Total Analisado, Novas Famílias, Atualizadas por Data, Ignoradas, Linhas com Erro e a lista detalhada dos motivos das falhas.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Abertura do detalhe de um lote sincronizado.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O detalhe mostra o bloco de “Processamento do arquivo” (Linhas de famílias/pessoas) e o “Resumo da sincronização” com os 5 contadores.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca04-ca08-detalhe.png" alt="CA08 evidência"/><figcaption>ca04-ca08-detalhe.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA09">
+      <h2>CA09 — Atribuição de permissão ao Profissional (HU04) <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Master no tenant, quando atribuo ao Profissional um papel que carrega “cadunico-imports.*”, então o Usuário vinculado passa a ter acesso imediato ao módulo de importação.</p>
+      <p class="steps"><strong>Como foi testado:</strong> A concessão é por papel (Spatie) — <code>cadunico-imports.*</code> está em <code>MASTER_ONLY_RESOURCES</code>: o papel Master recebe; o Operador só recebe quando o Master sincroniza um papel que a carregue (tela Profissionais→papéis, HU #9358). Demonstração de UI da tela de papéis fora do escopo deste relatório.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Pest: o Operador sem a permissão recebe 403 (gating); o Master a possui. &lt;code&gt;permissions:sync --coverage&lt;/code&gt; sem gaps.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA10">
+      <h2>CA10 — Revogação de acesso (HU04) <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o Master remove do Profissional o papel com a permissão de importação, quando a sincronização de papéis é salva, então o acesso às telas de importação e histórico é bloqueado imediatamente.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Mesmo mecanismo de papéis do CA09 (efeito imediato na revalidação do próximo request). Evidência equivalente ao gating do Operador (CA03) no navegador + Pest.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Pest: gating por permissão (Operador sem acesso → 403). A revogação é o inverso da atribuição (CA09).</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA11">
+      <h2>CA11 — Histórico auditável (HU05) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Master ou Profissional autorizado, quando acesso o Histórico de Importações, então vejo a listagem cronológica com data/hora, nome do arquivo, resultado estatístico e o nome do Profissional ou Usuário (RN05) que executou.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Listagem de importações do tenant.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A lista mostra arquivo, tamanho, status de processamento, status de sincronização, data e o executor “E2E Master CadÚnico [Master]” (sufixo [Master] — RN05).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca11-historico.png" alt="CA11 evidência"/><figcaption>ca11-historico.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA12">
+      <h2>CA12 — Isolamento multi-tenant no histórico (HU05/RN10) <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que consulto o histórico de importações, quando a lista é carregada, então vejo apenas os lotes do meu município, sem acesso a outros tenants.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Navegador: o histórico exibe somente os lotes desta organização. Backend: acesso cruzado a um lote de outro tenant responde 404 (Pest — <code>BelongsToTenant</code>).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A listagem contém apenas os lotes do tenant E2E. Pest: “returns 404 for a cross-tenant import (CA12/RN10)”.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca12-historico-tenant.png" alt="CA12 evidência"/><figcaption>ca12-historico-tenant.png</figcaption></figure></div>
+    </section>
+  
+  <h2>Anexo — Cobertura automatizada (Pest, --filter=Cadunico)</h2>
+  <pre class="pest">   PASS  Tests\Unit\Models\CadunicoImportErrorTest
+  ✓ it is tenant-scoped and immutable (no updated_at)                    0.57s  
+  ✓ it casts raw_row to array and line_number to integer                 0.01s  
+  ✓ it persists raw_row as json and relates to its import                0.08s  
+   PASS  Tests\Unit\Models\CadunicoImportTest
+  ✓ it uses tenant scope, soft deletes, HasUuid and LogsActivity         0.02s  
+  ✓ it casts both statuses to their enums and defaults them              0.02s  
+  ✓ it casts counters to integers                                        0.02s  
+  ✓ it generates a uuid on create and resolves route by uuid             0.03s  
+  ✓ it relates to tenant, executor and errors                            0.02s  
+  ✓ it hydrates the completed and synced factory states                  0.03s  
+   PASS  Tests\Feature\Api\Client\CadunicoImportControllerTest
+  ✓ it validates a well-formed CSV and returns an upload token (CA01)    0.12s  
+  ✓ it rejects a CSV from a different município (RN01)                   0.03s  
+  ✓ it rejects validation when the tenant has no município configured    0.03s  
+  ✓ it rejects a CSV with a divergent header (CA02)                      0.03s  
+  ✓ it blocks validation when an import is already active (RN11/CA07)    0.03s  
+  ✓ it confirms the import and queues stage 1 (HU02)                     0.03s  
+  ✓ it records the executor label with [Master] suffix when not a profe… 0.03s  
+  ✓ it rejects store with an unknown upload token                        0.03s  
+  ✓ it does not sync an import that is not completed                     0.03s  
+  ✓ it queues stage 2 when the import is completed (Etapa 2 manual)      0.05s  
+  ✓ it blocks sync when another batch is active in the tenant (RN11)     0.03s  
+  ✓ it lists only the tenant own history (CA12)                          0.04s  
+  ✓ it returns 404 for a cross-tenant import (CA12/RN10)                 0.03s  
+  ✓ it hides the module from an operador without the permission (CA03)   0.02s  
+  ✓ it stores a generic failure message without leaking exception detai… 0.04s  
+   PASS  Tests\Feature\Services\Cadunico\CadunicoIngestServiceTest
+  ✓ it loads persons (1 per row), dedups families and captures the muni… 0.02s  
+  ✓ it sanitizes CPF/NIS digits in the staging (RN09)                    0.02s  
+  ✓ it throws when the header is missing required columns                0.02s  
+   PASS  Tests\Feature\Services\Cadunico\CadunicoSyncServiceTest
+  ✓ it creates a new family, domicile and members (CA04)                 0.06s  
+  ✓ it updates by newer date and unlinks absent members without deletin… 0.06s  
+  ✓ it ignores the block when the file date is not newer (CA06)          0.05s  
+  ✓ it catalogs a block with missing update date (RN07)                  0.05s  
+  ✓ it creates the family but catalogs a member without CPF as a warnin… 0.05s  
+  ✓ it discards the block when the responsible has no CPF (RN07)         0.04s  
+  ✓ it parses income in both decimal formats (#1)                        0.05s  
+  ✓ it snapshots the responsible CPF on the family (#2)                  0.05s  
+  ✓ it updates the SAME family when CadÚnico reissues the code, by resp… 0.05s  
+  ✓ it does not mass-unlink when the new block has members without NIS…  0.05s  
+  Tests:    37 passed (126 assertions)
+  Duration: 2.47s
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

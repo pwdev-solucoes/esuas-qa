@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — US-DIAG-01 · Domínios de diagnóstico no Painel Global</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  section.note { border:1px solid var(--line); border-left:4px solid #b06a00; border-radius:6px; padding:10px 14px; margin:10px 0; background:#fffdf7; font-size:13px; }
+  section.note h3 { margin:0 0 6px; font-size:13.5px; color:#8a5200; }
+  section.note p { margin:6px 0; }
+  section.note ul { margin:6px 0 6px 18px; padding:0; }
+  section.note pre { background:var(--bg); border:1px solid var(--line); border-radius:4px; padding:8px; overflow-x:auto; font-size:11px; white-space:pre-wrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — US-DIAG-01 · Domínios de diagnóstico no Painel Global</h1>
+    <div class="sub">Fase F6 (diagnóstico mínimo SIAP) · épico HU-PRONT-DIAG · evidências end-to-end no Painel de Administração Global</div>
+    <div class="meta"><div><span>Gerado em:</span> 17/09/2026 18:10</div><div><span>História:</span> US-DIAG-01 — Manter os domínios de diagnóstico no Painel Global</div><div><span>Spec:</span> .planning/specs/US-DIAG-01-dominios-de-diagnostico-painel-global.md</div><div><span>Branch:</span> feature/diag-prontuario-blocos-4-6-8-10 (api @ be790f7 · admin @ 41b76d8)</div><div><span>Aplicação exercitada:</span> Painel de Administração Global (admin/), guard manager</div><div><span>Ambiente:</span> API Laravel/Sail em http://localhost · PostgreSQL · admin (build de preview) em http://localhost:4173</div><div><span>Perfis usados:</span> Administrador (ADMIN) · Operacional Global (ADMIN_OPERADOR)</div><div><span>Massa de dados:</span> migrate:fresh --seed + LocalDevSeeder + E2ESeeder — 9 / 9 / 5 / 10 itens semeados, de-para sem lacuna</div><div><span>Ferramenta:</span> playwright-cli (Chromium headless) + Pest 4 + sonda HTTP (curl)</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">Nove critérios de aceite verificados: 4 comprovados integralmente no navegador (CA02, CA03, CA04 e a parte visual do CA01), 1 exclusivamente pela suíte automatizada (CA08, que é regra de rota do guard client e não tem UI no Painel Global) e 4 de forma combinada (CA01, CA05, CA06, CA07 e CA09 apoiam-se em tela mais backend). Nenhum critério ficou em aberto. Os quatro domínios apresentam exatamente as listas do Manual do SIAP — 9 tipos de residência, 9 níveis de escolaridade, 5 situações escolares e 10 tipos de deficiência — com os códigos literais 1..9 / 1..9 / 1..5 / 1..10. As 16 combinações de verbo de escrita (POST, PUT, PATCH, DELETE nos quatro recursos) responderam 405 na API em execução, e a suíte Pest (97 testes, 371 asserções) confirma o mesmo nos dois guards. Registra-se um achado de permissionamento: o Operacional Global não recebeu as oito abilities de leitura dos novos domínios e recebe /403 ao acessá-los, divergindo da §3 da spec — detalhado em Observações e ressalvas.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA01</td><td>Quatro domínios disponíveis (happy path)</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA02</td><td>Tipo de residência com as nove opções</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA03</td><td>Tipo de deficiência com as dez opções</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA04</td><td>De-para de escolaridade visível</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA05</td><td>Grau sem correspondência gera pendência</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA06</td><td>Item fora do domínio não é criado</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA07</td><td>Item não é excluído nem inativado</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA08</td><td>Município não edita as listas</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA09</td><td>Alteração do de-para auditada</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA01">
+      <h2>CA01 — Quatro domínios disponíveis (happy path) <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Administrador no Painel de Administração Global
+Quando eu consultar os cadastros de tipo de residência, escolaridade, situação escolar e tipo de deficiência
+Então cada um apresenta exatamente as opções do Manual do SIAP, com seus códigos
+E nenhum deles tem item além do domínio</p>
+      <p class="steps"><strong>Como foi testado:</strong> Autenticado como <b>Administrador</b> (CPF 620.174.905-55) no guard <code>manager</code>, percorri o grupo <b>Cadastros SUAS &rsaquo; Diagnóstico (Manual SIAP)</b> do menu lateral, que reúne as quatro telas novas, e abri uma a uma: <code>/app/residence-types</code>, <code>/app/schooling-levels</code>, <code>/app/school-situations</code> e <code>/app/disability-types</code>. Em cada tela conferi o rodapé de paginação (&ldquo;Exibindo 1&ndash;N de N&rdquo;) para garantir que a contagem vista é a contagem total, e não uma primeira página. As duas telas cujas listas já aparecem nos critérios seguintes (residência e deficiência) estão evidenciadas no CA02 e no CA03. A conferência código a código nos dois guards está coberta pela suíte automatizada (anexo).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Tipos de Residência: 9 itens, códigos 1 a 9 — &amp;ldquo;Exibindo 1–9 de 9&amp;rdquo;.</li><li>Níveis de Escolaridade: 9 itens, códigos 1 a 9 — Analfabeto, Alfabetizado, Fundamental, Ensino médio, Ensino superior, Pós-graduado, Mestrado, Doutorado, Pós-doutorado.</li><li>Situações Escolares: 5 itens, códigos 1 a 5 — Sim, rede pública / Sim, rede particular / Não, já frequentou / Nunca frequentou / Não sei.</li><li>Tipos de Deficiência: 10 itens, códigos 1 a 10.</li><li>Nenhuma das quatro telas exibe item fora do domínio, nem coluna de status, nem ação de linha.</li><li>A suíte Pest confirma as listas exatas e a abertura por uuid nos dois guards (manager e client).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca01-schooling-levels.png" alt="CA01 evidência"/><figcaption>ca01-schooling-levels.png</figcaption></figure><figure><img src="screenshots/ca01-school-situations.png" alt="CA01 evidência"/><figcaption>ca01-school-situations.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA02">
+      <h2>CA02 — Tipo de residência com as nove opções <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que estou consultando o cadastro de tipo de residência
+Quando eu abrir a lista
+Então vejo as nove opções do leiaute, incluindo aluguel social, arrendada, financiada e invadida
+E as quatro do instrumento do MDS (própria, alugada, cedida, ocupada) estão entre elas</p>
+      <p class="steps"><strong>Como foi testado:</strong> Abri <code>/app/residence-types</code> como Administrador e li a tabela inteira na tela, sem filtro e sem paginar, confrontando cada linha com a tabela §4.1 da spec (leiaute 15.11 do Manual do SIAP).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>As nove opções aparecem na ordem dos códigos: 1 Própria · 2 Alugada · 3 Aluguel social · 4 Arrendada · 5 Cedida · 6 Financiada · 7 Invadida · 8 Ocupada · 9 Outros.</li><li>As quatro exclusivas do leiaute estão presentes: &lt;b&gt;Aluguel social (3)&lt;/b&gt;, &lt;b&gt;Arrendada (4)&lt;/b&gt;, &lt;b&gt;Financiada (6)&lt;/b&gt; e &lt;b&gt;Invadida (7)&lt;/b&gt;.</li><li>As quatro que também existem no instrumento do MDS estão entre elas: Própria (1), Alugada (2), Cedida (5) e Ocupada (8).</li><li>O rodapé confirma &amp;ldquo;Exibindo 1–9 de 9&amp;rdquo;: não há décimo item escondido em outra página.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca02-residence-types-lista.png" alt="CA02 evidência"/><figcaption>ca02-residence-types-lista.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA03">
+      <h2>CA03 — Tipo de deficiência com as dez opções <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que estou consultando o cadastro de tipo de deficiência
+Quando eu abrir a lista
+Então vejo as dez opções do leiaute, incluindo deficiência múltipla e transtorno do espectro autista
+E "transtorno ou doença mental" NÃO está na lista</p>
+      <p class="steps"><strong>Como foi testado:</strong> Abri <code>/app/disability-types</code> como Administrador e li as dez linhas, verificando tanto o que <b>deve estar</b> quanto o que <b>não pode estar</b> — esta segunda metade é o ponto do critério (decisão D09 da spec): &ldquo;transtorno ou doença mental&rdquo; existe no bloco 10 do instrumento do MDS e <b>não</b> existe no leiaute 15.10; incluí-lo faria o SIAP recusar a remessa inteira do município.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>As dez opções aparecem com os códigos 1 a 10: Cegueira · Baixa visão · Surdez severa ou profunda · Surdez leve ou moderada · Deficiência física · Deficiência mental ou intelectual · Síndrome de Down · Deficiência múltipla · Transtorno do espectro autista · Outros.</li><li>As duas exclusivas do leiaute estão presentes: &lt;b&gt;Deficiência múltipla (8)&lt;/b&gt; e &lt;b&gt;Transtorno do espectro autista (9)&lt;/b&gt;.</li><li>&lt;b&gt;&amp;ldquo;Transtorno ou doença mental&amp;rdquo; NÃO consta da lista&lt;/b&gt; — confirmado linha a linha nas dez linhas exibidas e pelo rodapé &amp;ldquo;Exibindo 1–10 de 10&amp;rdquo;.</li><li>A própria tela declara a ausência ao leitor, no subtítulo: &amp;ldquo;o instrumento do MDS traz ‘transtorno ou doença mental’, que o leiaute não prevê e que, por isso, não aparece aqui&amp;rdquo; — a omissão é explicada, não silenciosa.</li><li>A suíte Pest reforça o ponto com asserção negativa dedicada (&amp;ldquo;sem ‘transtorno ou doença mental’&amp;rdquo;).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca03-disability-types-lista.png" alt="CA03 evidência"/><figcaption>ca03-disability-types-lista.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA04">
+      <h2>CA04 — De-para de escolaridade visível <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que estou consultando o cadastro de graus de instrução do CadÚnico
+Quando eu abrir um item
+Então ele indica para qual dos nove níveis de escolaridade do leiaute corresponde</p>
+      <p class="steps"><strong>Como foi testado:</strong> Abri <code>/app/education-levels</code> (Graus de Instrução do CadÚnico) e, além da coluna nova <b>Escolaridade (SIAP)</b> visível na listagem, abri o item &ldquo;Sem instrução&rdquo; pelo menu de ações &rsaquo; <b>Editar</b> e expandi o seletor <b>Escolaridade correspondente (SIAP)</b> para conferir que ele oferece exatamente os nove níveis do leiaute 15.10.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A listagem exibe o de-para item a item, exatamente como a §4.3 da spec: 1 Sem instrução → 1 Analfabeto · 2 Fundamental incompleto → 2 Alfabetizado · 3 Fundamental completo → 3 Fundamental · 4 Médio incompleto → 3 Fundamental · 5 Médio completo → 4 Ensino médio · 6 Superior incompleto ou mais → 5 Ensino superior.</li><li>No item aberto, o campo &amp;ldquo;Escolaridade correspondente (SIAP)&amp;rdquo; indica o nível vigente (1 — Analfabeto).</li><li>O seletor oferece os &lt;b&gt;nove&lt;/b&gt; níveis (1 Analfabeto a 9 Pós-doutorado) mais a opção explícita &lt;b&gt;&amp;ldquo;Sem correspondência&amp;rdquo;&lt;/b&gt;.</li><li>O texto de apoio do campo explica a consequência de deixá-lo vazio: &amp;ldquo;o grau é apontado na conferência prévia em vez de sair com um nível escolhido por suposição&amp;rdquo; — a regra RN03 está dita ao operador na própria tela.</li><li>Os seis graus estão mapeados: a consulta de sanidade §8.1 retorna zero linhas neste ambiente.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca04-depara-lista.png" alt="CA04 evidência"/><figcaption>ca04-depara-lista.png</figcaption></figure><figure><img src="screenshots/ca04-depara-item.png" alt="CA04 evidência"/><figcaption>ca04-depara-item.png</figcaption></figure><figure><img src="screenshots/ca04-depara-nove-niveis.png" alt="CA04 evidência"/><figcaption>ca04-depara-nove-niveis.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA05">
+      <h2>CA05 — Grau sem correspondência gera pendência <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que existe um grau de instrução com schooling_level_id NULL
+E que integrantes importados estão classificados nele
+Quando a conferência prévia da remessa for solicitada
+Então é apontada pendência domain_unmapped indicando o grau a corrigir no Painel Global
+E nenhum nível é atribuído por suposição</p>
+      <p class="steps"><strong>Como foi testado:</strong> <b>Onde este critério pôde e onde não pôde ser exercitado na tela.</b> A conferência prévia da remessa é função do <b>Painel do Tenant</b> (guard <code>client</code>), e esta HU é inteiramente do Painel Global — por isso a pendência em si <b>não foi reproduzida no navegador deste dossiê</b>, e dizê-lo é mais honesto do que forjar uma tela que não pertence a esta história. A verificação foi feita em duas frentes: (a) na tela, evidenciando que o estado &ldquo;sem correspondência&rdquo; é oferecido e explicado ao Administrador; (b) na suíte automatizada, executando os testes que exercitam a apuração da pendência sobre <code>DiagnosisCompletenessService</code>. Como a suíte <code>--filter=DiagDomains</code> não alcança esses dois testes, eles foram rodados à parte e sua saída consta do anexo.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Na tela: o seletor do de-para oferece &amp;ldquo;Sem correspondência&amp;rdquo; como valor legítimo e o texto de apoio declara a consequência — o grau vai para a conferência prévia, e nenhum nível é atribuído por suposição.</li><li>Na suíte: &amp;ldquo;aponta o Painel Global quando o grau de instrução não tem de-para&amp;rdquo; — PASSOU.</li><li>Na suíte: &amp;ldquo;não inventa pendência de configuração quando todo grau tem de-para&amp;rdquo; — PASSOU (a contraprova, que impede falso positivo).</li><li>A pendência nasce com &lt;code&gt;kind = domain_unmapped&lt;/code&gt;, &lt;code&gt;field = Escolaridade&lt;/code&gt;, &lt;code&gt;target = global_panel&lt;/code&gt; e &lt;code&gt;resource = education-levels&lt;/code&gt;: ela aponta o Painel Global como lugar da correção, não a família nem o técnico do município.</li><li>Ressalva: a visualização da pendência pelo profissional do tenant deve ser evidenciada no dossiê da HU que entrega a conferência prévia, não nesta.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca04-depara-nove-niveis.png" alt="CA05 evidência"/><figcaption>ca04-depara-nove-niveis.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA06">
+      <h2>CA06 — Item fora do domínio não é criado <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Administrador
+Quando eu tentar criar um item novo em qualquer um dos quatro domínios
+Então a rota POST não existe (405)
+E a tela não oferece a ação, e informa que o domínio é fechado pelo Manual do SIAP</p>
+      <p class="steps"><strong>Como foi testado:</strong> <b>Este critério se prova pela ausência de uma ação, e ausência não se fotografa sozinha.</b> Por isso a verificação foi feita nos dois lados. <u>Na tela</u>, autenticado como Administrador — o perfil de maior privilégio do painel, level 0 —, procurei nas quatro telas o botão de criação que <b>todo outro cadastro do Painel Global tem no canto superior direito</b> (&ldquo;Novo …&rdquo;, como o &ldquo;Novo Grau de Instrução&rdquo; que aparece no print do CA04, na mesma sessão e no mesmo perfil). <u>No backend</u>, disparei POST contra os quatro recursos na API em execução e conferi o código de resposta, além da suíte Pest que assere o mesmo nos dois guards.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O botão &amp;ldquo;Novo&amp;rdquo; &lt;b&gt;não existe&lt;/b&gt; em nenhuma das quatro telas — o cabeçalho tem apenas título e subtítulo. A comparação é direta: na tela de Graus de Instrução, aberta no mesmo perfil, o botão &amp;ldquo;Novo Grau de Instrução&amp;rdquo; está lá.</li><li>A tela &lt;b&gt;diz por que&lt;/b&gt;, em aviso destacado: &amp;ldquo;Esta lista vem do Manual do SIAP e não é editada aqui. Não há como cadastrar um tipo novo: o SIAP só aceita os códigos desta lista dentro do arquivo da remessa, e um código fora dela faz o Tribunal recusar a remessa inteira do município.&amp;rdquo;</li><li>Sonda HTTP na API em execução: &lt;code&gt;POST /api/residence-types&lt;/code&gt;, &lt;code&gt;/api/schooling-levels&lt;/code&gt;, &lt;code&gt;/api/school-situations&lt;/code&gt; e &lt;code&gt;/api/disability-types&lt;/code&gt; responderam &lt;b&gt;405&lt;/b&gt; nos quatro casos.</li><li>Suíte Pest: &amp;ldquo;responde 405 a POST, PUT, PATCH e DELETE em cada domínio, nos dois guards&amp;rdquo; — 8 execuções, todas PASSOU.</li><li>Suíte Pest: &amp;ldquo;registra SOMENTE verbos de leitura na tabela de rotas de cada domínio&amp;rdquo; e &amp;ldquo;mantém manager.php sem nenhuma rota para os quatro domínios&amp;rdquo; — a ausência da rota é asserida, não presumida.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca06-ca07-aviso-dominio-fechado.png" alt="CA06 evidência"/><figcaption>ca06-ca07-aviso-dominio-fechado.png</figcaption></figure><figure><img src="screenshots/ca02-residence-types-lista.png" alt="CA06 evidência"/><figcaption>ca02-residence-types-lista.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA07">
+      <h2>CA07 — Item não é excluído nem inativado <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que estou consultando qualquer um dos quatro domínios
+Quando eu procurar a ação de excluir ou inativar um item
+Então ela não existe — nem rota (405), nem coluna is_active, nem deleted_at
+E a tela informa que inativar impediria o município de declarar uma situação prevista pelo Manual</p>
+      <p class="steps"><strong>Como foi testado:</strong> Mesma disciplina do CA06: procurei, como Administrador, o que <b>deveria estar lá se o cadastro fosse comum</b> — a coluna <b>Status</b> e a coluna <b>Ações</b> com o menu de três pontos (Editar / Inativar / Excluir), presentes na tela de Graus de Instrução da mesma sessão. Complementei com DELETE/PUT/PATCH na API em execução e com a asserção estrutural da suíte sobre o próprio schema.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>As quatro telas têm &lt;b&gt;apenas duas colunas&lt;/b&gt;, Código e Nome. Não há coluna Status, não há coluna Ações, não há menu de linha — logo não há onde clicar em excluir ou inativar.</li><li>A tela &lt;b&gt;explica a decisão&lt;/b&gt;: &amp;ldquo;Também não há como excluir nem inativar um tipo. Se um tipo saísse de circulação, o município ficaria impedido de declarar uma situação que o Manual prevê — por isso esta tela não tem status nem ações de linha.&amp;rdquo;</li><li>Sonda HTTP na API em execução: &lt;code&gt;PUT&lt;/code&gt;, &lt;code&gt;PATCH&lt;/code&gt; e &lt;code&gt;DELETE&lt;/code&gt; responderam &lt;b&gt;405&lt;/b&gt; nos quatro recursos (12 combinações).</li><li>Suíte Pest: as quatro tabelas &lt;b&gt;não possuem as colunas &lt;code&gt;is_active&lt;/code&gt; nem &lt;code&gt;deleted_at&lt;/code&gt;&lt;/b&gt; — a impossibilidade é estrutura de banco, não condicional de controller (decisão D02).</li><li>Suíte Pest: &lt;code&gt;education_levels&lt;/code&gt; preserva &lt;code&gt;is_active&lt;/code&gt; e &lt;code&gt;deleted_at&lt;/code&gt;, confirmando que a proibição vale só para os quatro domínios novos e não regrediu o cadastro do CadÚnico.</li><li>O &lt;code&gt;GET&lt;/code&gt; continua respondendo nos quatro recursos (401 sem token, ou seja, rota presente e protegida) — a leitura não foi amputada junto com a escrita.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca06-ca07-aviso-dominio-fechado.png" alt="CA07 evidência"/><figcaption>ca06-ca07-aviso-dominio-fechado.png</figcaption></figure><figure><img src="screenshots/ca01-school-situations.png" alt="CA07 evidência"/><figcaption>ca01-school-situations.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA08">
+      <h2>CA08 — Município não edita as listas <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Master autenticado no guard client
+Quando eu chamar POST/PUT/DELETE em qualquer um dos quatro recursos
+Então recebo 405 — a rota não existe para nenhum guard
+E o GET continua respondendo, porque o select precisa da lista</p>
+      <p class="steps"><strong>Como foi testado:</strong> Critério <b>sem UI no Painel Global</b>: ele descreve o que acontece quando o <i>município</i> tenta escrever, e a prova é de rota, não de tela. Verificado pela suíte automatizada, que autentica um Master real no guard <code>client</code> e dispara os quatro verbos de escrita contra os quatro recursos, e pela sonda HTTP na API em execução. Nenhum print é oferecido aqui de propósito — não há tela deste critério no painel exercitado.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Suíte Pest: &amp;ldquo;responde 405 a POST, PUT, PATCH e DELETE em cada domínio, &lt;b&gt;nos dois guards&lt;/b&gt;&amp;rdquo; — PASSOU para manager e para client.</li><li>Suíte Pest: &amp;ldquo;lista cada domínio com exatamente as opções do Manual, &lt;b&gt;nos dois guards&lt;/b&gt;&amp;rdquo; e &amp;ldquo;abre um item de cada domínio pelo uuid, nos dois guards&amp;rdquo; — PASSOU: o GET compartilhado continua servindo os selects do prontuário.</li><li>Sonda HTTP: 16 combinações de verbo de escrita × recurso responderam 405; os 4 GET responderam 401 (rota existente, exigindo autenticação).</li><li>A causa é estrutural: os quatro recursos são registrados apenas como &lt;code&gt;index&lt;/code&gt;/&lt;code&gt;show&lt;/code&gt; em &lt;code&gt;routes/api/shared.php&lt;/code&gt;, e &lt;code&gt;manager.php&lt;/code&gt; não ganhou nenhuma linha para eles.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA09">
+      <h2>CA09 — Alteração do de-para auditada <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que alterei a correspondência de um grau de instrução
+Quando eu consultar a trilha de auditoria do item
+Então a alteração consta, com autor, data e os valores antes e depois de schooling_level_id</p>
+      <p class="steps"><strong>Como foi testado:</strong> Alterei de fato o de-para <b>pela tela</b>, como Administrador: abri o grau &ldquo;Sem instrução&rdquo; em <code>/app/education-levels</code>, troquei &ldquo;Escolaridade correspondente (SIAP)&rdquo; de <b>1 — Analfabeto</b> para <b>2 — Alfabetizado</b> e salvei. Em seguida fui buscar a trilha resultante. <b>Ressalva metodológica:</b> o cadastro de Graus de Instrução <b>não tem tela de trilha de auditoria</b> no Painel Global (não há rota <code>activity</code> nem visualização de histórico para este recurso), de modo que a segunda metade do critério — &ldquo;consultar a trilha&rdquo; — não pôde ser cumprida por navegação. A trilha foi lida diretamente no registro de auditoria gravado pela ação de tela, e é ele que está transcrito abaixo. Ao final, restaurei a correspondência original pela mesma tela.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A alteração feita na tela foi persistida: a listagem passou a exibir &amp;ldquo;1 · Sem instrução → 2 Alfabetizado&amp;rdquo;.</li><li>A trilha registrou a alteração: &lt;code&gt;#3149 | 2026-09-17 21:01:59 | log education_level / evento updated | autor: Dev Admin Global (CPF 620.174.905-55, perfil Administrador)&lt;/code&gt;.</li><li>Os valores antes e depois constam: &lt;code&gt;{"old": {"schooling_level_id": 1}, "attributes": {"schooling_level_id": 2}}&lt;/code&gt; — exatamente o campo exigido pela RN09.</li><li>Só o de-para foi registrado: &lt;code&gt;code&lt;/code&gt;, &lt;code&gt;name&lt;/code&gt; e &lt;code&gt;is_active&lt;/code&gt; não entraram no registro porque não mudaram (&lt;code&gt;logOnlyDirty&lt;/code&gt;), o que mantém a trilha legível.</li><li>Suíte Pest: &amp;ldquo;grava o de-para pelo PUT do grau de instrução e o audita com antes e depois&amp;rdquo; e &amp;ldquo;aceita null para desfazer a correspondência, e audita&amp;rdquo; — ambos PASSOU.</li><li>Suíte Pest: &amp;ldquo;mantém a manutenção do de-para exclusiva do guard manager&amp;rdquo; — PASSOU (RN10).</li><li>Estado restaurado ao final: o grau &amp;ldquo;Sem instrução&amp;rdquo; voltou a apontar para &amp;ldquo;1 — Analfabeto&amp;rdquo;, e os seis graus estão como o seeder os deixou.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca09-alteracao-antes-de-salvar.png" alt="CA09 evidência"/><figcaption>ca09-alteracao-antes-de-salvar.png</figcaption></figure><figure><img src="screenshots/ca09-lista-apos-alteracao.png" alt="CA09 evidência"/><figcaption>ca09-lista-apos-alteracao.png</figcaption></figure></div>
+    </section>
+  
+  <h2>Observações e ressalvas</h2>
+  <section class="note"><h3>Achado — o Operacional Global não consegue consultar os quatro domínios novos (diverge da §3 da spec)</h3><p>A §3 da spec atribui ao <b>Operacional Global</b> (<code>ADMIN_OPERADOR</code>) a capacidade de <i>&ldquo;Consultar os quatro domínios e o de-para&rdquo;</i>. Na prática, ele não consegue: as oito abilities de leitura (<code>residence-types.index/.show</code>, <code>schooling-levels.index/.show</code>, <code>school-situations.index/.show</code>, <code>disability-types.index/.show</code>) <b>existem</b> no banco — foram colhidas corretamente pelo <code>permissions:sync</code> — mas <b>não foram concedidas ao papel</b>.</p><p>Verificado ao vivo: autenticado como Operacional Global (CPF 731.285.016-29), o grupo <b>Diagnóstico (Manual SIAP)</b> <b>não aparece</b> no menu lateral, e a navegação direta para <code>/app/residence-types</code> cai em <b>/403 &mdash; Acesso negado</b>. O contraste no mesmo print é o que torna o achado inequívoco: no mesmo menu, no mesmo perfil, os lookups das fases anteriores <b>estão lá</b> (Tipos de Atendimento, Códigos de Encaminhamento, Serviços de Acompanhamento, Razões de Desligamento, Serviços de Participação, Locais de Realização, Tipos de Benefício Eventual, Ações de Capacitação). Ou seja, não é uma restrição deliberada do papel — é uma concessão que faltou.</p><p><b>Causa provável:</b> <code>database/seeders/RoleSeeder.php</code> concede leitura ao <code>admin_operador</code> por método explícito a cada HU de lookup — existem oito deles, entre os quais <code>syncAdminOperadorEventualBenefitTypePermissions()</code> (US-BENEF-01), <code>syncAdminOperadorFollowUpDomainPermissions()</code> (US-ACOMP-01) e <code>syncAdminOperadorParticipationDomainPermissions()</code> (US-SCFV-01). <b>Não há o equivalente para os quatro domínios da US-DIAG-01.</b></p><p><b>Impacto:</b> nenhum critério de aceite desta HU falha por causa disso — todos os nove são escritos do ponto de vista do Administrador, do Master ou da rota. O que diverge é a tabela de perfis da §3. Fica para decisão do PO: (a) conceder as oito abilities ao papel, seguindo o padrão das quatro HUs anteriores, ou (b) corrigir a §3 da spec, se a consulta pelo Operacional Global não for mesmo desejada.</p><figure><img src="screenshots/achado-operacional-global-menu.png" alt="Menu do Operacional Global"><figcaption>Operacional Global autenticado: o grupo <b>Diagnóstico (Manual SIAP)</b> não existe no menu, embora os lookups das fases F2 a F5 (Tipos de Atendimento, Códigos de Encaminhamento, Serviços de Acompanhamento, Razões de Desligamento, Serviços de Participação, Locais de Realização, Tipos de Benefício Eventual, Ações de Capacitação) estejam todos visíveis logo acima e abaixo.</figcaption></figure><figure><img src="screenshots/achado-operacional-global-403.png" alt="403 ao acessar tipos de residência"><figcaption>Navegação direta para <code>/app/residence-types</code> com o mesmo perfil: <b>403 — Acesso negado</b>.</figcaption></figure></section><section class="note"><h3>Ambiente — onde o Painel Global foi realmente exercitado, e por quê</h3><p>O dossiê foi capturado contra o admin servido em <b>http://localhost:4173</b>. Vale registrar o porquê, porque o ambiente tinha uma armadilha: havia também um servidor de desenvolvimento do admin em <code>:5174</code>, e <b>ele não serve para evidência</b> — está apontado para uma API em <code>localhost:8000</code>, porta onde a API do eSUAS não responde (ela está em <code>:80</code>), e, mesmo com o endereço corrigido, o login devolve 200 e a chamada seguinte devolve 401, porque o Sanctum deste ambiente só considera <i>stateful</i> as origens <code>localhost:4173</code> e <code>localhost:4174</code>. O sintoma engana (parece credencial inválida); a causa é a porta. Em <code>:4173</code> a sessão se sustenta e todo o fluxo — aceite legal, navegação, escrita do de-para — funciona normalmente.</p><p>Nenhum arquivo de configuração foi alterado para isso, e nenhuma migration ou seed foi executada: o banco já estava semeado e é compartilhado com outra captura em andamento.</p></section><section class="note"><h3>Alteração feita no banco durante a captura, e sua reversão</h3><p>O CA09 exige uma escrita real. O único dado alterado foi o de-para do grau <b>&ldquo;Sem instrução&rdquo;</b>, levado de <code>1 — Analfabeto</code> para <code>2 — Alfabetizado</code> e <b>restaurado ao valor original pela própria tela</b> ao fim do critério. A conferência final registrou os seis graus exatamente como a §4.3 da spec os define, e a consulta de sanidade §8.1 (graus sem correspondência) retorna zero linhas. As linhas de auditoria dessa ida e volta permanecem na trilha — como devem.</p></section><section class="note"><h3>Sobre a suíte automatizada anexada</h3><p>O anexo reúne três execuções. A principal é <code>pest --filter=DiagDomains</code>: <b>97 testes, 371 asserções, todos verdes</b>, cobrindo os três arquivos da HU (unitário dos seeders, feature das rotas do Painel Global e feature do <code>DatabaseSeeder</code>). A segunda cobre o CA05, cujos testes vivem em <code>AttendanceReportDiagnosisTest</code> e <b>não são alcançados pelo filtro <code>DiagDomains</code></b> — por isso foram rodados à parte, e não presumidos cobertos. A terceira é a sonda HTTP contra a API em execução, que verifica os 405 fora do ambiente de teste, no mesmo banco e na mesma aplicação onde os prints foram tirados.</p></section>
+  
+  <h2>Anexo — Cobertura automatizada — Pest (--filter=DiagDomains), testes do CA05 e sonda HTTP de rotas</h2>
+  <pre class="pest">
+   PASS  Tests\Unit\DiagDomainsSeedTest
+  ✓ it semeia exatamente os nove tipos de residencia do 15.11, sem renu… 0.44s  
+  ✓ it semeia cada tipo de residencia com o codigo e o nome exatos da §… 0.02s  
+  ✓ it semeia cada tipo de residencia com o codigo e o nome exatos da §… 0.02s  
+  ✓ it semeia cada tipo de residencia com o codigo e o nome exatos da §… 0.02s  
+  ✓ it semeia cada tipo de residencia com o codigo e o nome exatos da §… 0.02s  
+  ✓ it semeia cada tipo de residencia com o codigo e o nome exatos da §… 0.02s  
+  ✓ it semeia cada tipo de residencia com o codigo e o nome exatos da §… 0.02s  
+  ✓ it semeia cada tipo de residencia com o codigo e o nome exatos da §… 0.02s  
+  ✓ it semeia cada tipo de residencia com o codigo e o nome exatos da §… 0.02s  
+  ✓ it semeia cada tipo de residencia com o codigo e o nome exatos da §… 0.02s  
+  ✓ it semeia exatamente os nove niveis de escolaridade do 15.10, sem r… 0.02s  
+  ✓ it semeia cada nivel de escolaridade com o codigo e o nome exatos d… 0.02s  
+  ✓ it semeia cada nivel de escolaridade com o codigo e o nome exatos d… 0.03s  
+  ✓ it semeia cada nivel de escolaridade com o codigo e o nome exatos d… 0.03s  
+  ✓ it semeia cada nivel de escolaridade com o codigo e o nome exatos d… 0.06s  
+  ✓ it semeia cada nivel de escolaridade com o codigo e o nome exatos d… 0.02s  
+  ✓ it semeia cada nivel de escolaridade com o codigo e o nome exatos d… 0.02s  
+  ✓ it semeia cada nivel de escolaridade com o codigo e o nome exatos d… 0.02s  
+  ✓ it semeia cada nivel de escolaridade com o codigo e o nome exatos d… 0.02s  
+  ✓ it semeia cada nivel de escolaridade com o codigo e o nome exatos d… 0.02s  
+  ✓ it semeia exatamente as cinco situacoes escolares do 15.10, sem ren… 0.02s  
+  ✓ it semeia cada situacao escolar com o codigo e o nome exatos da §4.… 0.02s  
+  ✓ it semeia cada situacao escolar com o codigo e o nome exatos da §4.… 0.02s  
+  ✓ it semeia cada situacao escolar com o codigo e o nome exatos da §4.… 0.04s  
+  ✓ it semeia cada situacao escolar com o codigo e o nome exatos da §4.… 0.02s  
+  ✓ it semeia cada situacao escolar com o codigo e o nome exatos da §4.… 0.02s  
+  ✓ it semeia exatamente os dez tipos de deficiencia do 15.10, sem renu… 0.02s  
+  ✓ it semeia cada tipo de deficiencia com o codigo e o nome exatos da…  0.02s  
+  ✓ it semeia cada tipo de deficiencia com o codigo e o nome exatos da…  0.02s  
+  ✓ it semeia cada tipo de deficiencia com o codigo e o nome exatos da…  0.02s  
+  ✓ it semeia cada tipo de deficiencia com o codigo e o nome exatos da…  0.02s  
+  ✓ it semeia cada tipo de deficiencia com o codigo e o nome exatos da…  0.02s  
+  ✓ it semeia cada tipo de deficiencia com o codigo e o nome exatos da…  0.02s  
+  ✓ it semeia cada tipo de deficiencia com o codigo e o nome exatos da…  0.02s  
+  ✓ it semeia cada tipo de deficiencia com o codigo e o nome exatos da…  0.02s  
+  ✓ it semeia cada tipo de deficiencia com o codigo e o nome exatos da…  0.02s  
+  ✓ it semeia cada tipo de deficiencia com o codigo e o nome exatos da…  0.02s  
+  ✓ it NAO semeia "transtorno ou doenca mental" entre os tipos de defic… 0.02s  
+  ✓ it nao cria coluna is_active nem deleted_at em nenhum dos quatro do… 0.02s  
+  ✓ it nao cria coluna is_active nem deleted_at em nenhum dos quatro do… 0.02s  
+  ✓ it nao cria coluna is_active nem deleted_at em nenhum dos quatro do… 0.01s  
+  ✓ it nao cria coluna is_active nem deleted_at em nenhum dos quatro do… 0.02s  
+  ✓ it nao cria tenant_id em nenhum dos quatro dominios — sao lookups G… 0.02s  
+  ✓ it nao cria tenant_id em nenhum dos quatro dominios — sao lookups G… 0.01s  
+  ✓ it nao cria tenant_id em nenhum dos quatro dominios — sao lookups G… 0.01s  
+  ✓ it nao cria tenant_id em nenhum dos quatro dominios — sao lookups G… 0.03s  
+  ✓ it preserva is_active e deleted_at em education_levels (D02 vale so… 0.02s  
+  ✓ it mapeia cada um dos seis graus do CadUnico para o nivel exato da…  0.04s  
+  ✓ it mapeia cada um dos seis graus do CadUnico para o nivel exato da…  0.02s  
+  ✓ it mapeia cada um dos seis graus do CadUnico para o nivel exato da…  0.02s  
+  ✓ it mapeia cada um dos seis graus do CadUnico para o nivel exato da…  0.02s  
+  ✓ it mapeia cada um dos seis graus do CadUnico para o nivel exato da…  0.02s  
+  ✓ it mapeia cada um dos seis graus do CadUnico para o nivel exato da…  0.02s  
+  ✓ it cobre as SEIS linhas de education_levels, sem nenhuma NULL apos…  0.02s  
+  ✓ it é idempotente: rodar os seeders duas vezes nao duplica item nem…  0.03s  
+  ✓ it deixa os niveis 6..9 do leiaute INALCANCAVEIS pelo de-para — Ach… 0.02s  
+  ✓ it nao inventa correspondencia quando os niveis do leiaute ainda na… 0.02s  
+
+   PASS  Tests\Feature\Api\Manager\DiagDomainsTest
+  ✓ it lista cada dominio com exatamente as opcoes do Manual, nos dois…  0.12s  
+  ✓ it lista cada dominio com exatamente as opcoes do Manual, nos dois…  0.04s  
+  ✓ it lista cada dominio com exatamente as opcoes do Manual, nos dois…  0.04s  
+  ✓ it lista cada dominio com exatamente as opcoes do Manual, nos dois…  0.04s  
+  ✓ it lista cada dominio com exatamente as opcoes do Manual, nos dois…  0.04s  
+  ✓ it lista cada dominio com exatamente as opcoes do Manual, nos dois…  0.04s  
+  ✓ it lista cada dominio com exatamente as opcoes do Manual, nos dois…  0.04s  
+  ✓ it lista cada dominio com exatamente as opcoes do Manual, nos dois…  0.04s  
+  ✓ it abre um item de cada dominio pelo uuid, nos dois guards (CA01/CA… 0.05s  
+  ✓ it abre um item de cada dominio pelo uuid, nos dois guards (CA01/CA… 0.04s  
+  ✓ it abre um item de cada dominio pelo uuid, nos dois guards (CA01/CA… 0.04s  
+  ✓ it abre um item de cada dominio pelo uuid, nos dois guards (CA01/CA… 0.04s  
+  ✓ it abre um item de cada dominio pelo uuid, nos dois guards (CA01/CA… 0.04s  
+  ✓ it abre um item de cada dominio pelo uuid, nos dois guards (CA01/CA… 0.04s  
+  ✓ it abre um item de cada dominio pelo uuid, nos dois guards (CA01/CA… 0.05s  
+  ✓ it abre um item de cada dominio pelo uuid, nos dois guards (CA01/CA… 0.04s  
+  ✓ it apresenta as nove opcoes de tipo de residencia do leiaute 15.11…  0.04s  
+  ✓ it apresenta as dez opcoes de tipo de deficiencia, sem "transtorno…  0.04s  
+  ✓ it responde 405 a POST, PUT, PATCH e DELETE em cada dominio, nos do… 0.06s  
+  ✓ it responde 405 a POST, PUT, PATCH e DELETE em cada dominio, nos do… 0.05s  
+  ✓ it responde 405 a POST, PUT, PATCH e DELETE em cada dominio, nos do… 0.05s  
+  ✓ it responde 405 a POST, PUT, PATCH e DELETE em cada dominio, nos do… 0.05s  
+  ✓ it responde 405 a POST, PUT, PATCH e DELETE em cada dominio, nos do… 0.05s  
+  ✓ it responde 405 a POST, PUT, PATCH e DELETE em cada dominio, nos do… 0.05s  
+  ✓ it responde 405 a POST, PUT, PATCH e DELETE em cada dominio, nos do… 0.05s  
+  ✓ it responde 405 a POST, PUT, PATCH e DELETE em cada dominio, nos do… 0.05s  
+  ✓ it registra SOMENTE verbos de leitura na tabela de rotas de cada do… 0.04s  
+  ✓ it registra SOMENTE verbos de leitura na tabela de rotas de cada do… 0.04s  
+  ✓ it registra SOMENTE verbos de leitura na tabela de rotas de cada do… 0.04s  
+  ✓ it registra SOMENTE verbos de leitura na tabela de rotas de cada do… 0.03s  
+  ✓ it mantem manager.php sem nenhuma rota para os quatro dominios (D03… 0.04s  
+  ✓ it traz o de-para para a escolaridade do leiaute no payload do grau… 0.04s  
+  ✓ it traz o de-para para a escolaridade do leiaute no payload do grau… 0.04s  
+  ✓ it indica no show para qual nivel do leiaute o grau corresponde (CA… 0.04s  
+  ✓ it apresenta null explicito quando o grau nao tem correspondencia (… 0.04s  
+  ✓ it grava o de-para pelo PUT do grau de instrucao e o audita com ant… 0.05s  
+  ✓ it aceita null para desfazer a correspondencia, e audita (CA09/D05)  0.04s  
+  ✓ it recusa 422 um nivel de escolaridade inexistente no de-para (§10)  0.04s  
+  ✓ it mantem a manutencao do de-para exclusiva do guard manager (RN10/… 0.05s  
+
+   PASS  Tests\Feature\Seeders\DiagDomainsDatabaseSeederTest
+  ✓ it semeia os quatro dominios e o de-para completo pelo DatabaseSeed… 7.79s  
+
+  Tests:    97 passed (371 assertions)
+  Duration: 11.82s
+
+
+===================================================================
+ANEXO COMPLEMENTAR - CA05 (pendencia domain_unmapped)
+Comando: pest tests/Feature/Client/AttendanceReportDiagnosisTest.php --filter="de-para|escolaridade|global|pendenc"
+===================================================================
+
+   PASS  Tests\Feature\Client\AttendanceReportDiagnosisTest
+  ✓ it aponta o Painel Global quando o grau de instrucao nao tem de-par… 0.58s  
+  ✓ it nao inventa pendencia de configuracao quando todo grau tem de-pa… 0.08s  
+
+  Tests:    2 passed (5 assertions)
+  Duration: 0.71s
+
+
+===================================================================
+ANEXO COMPLEMENTAR - CA06/CA07/CA08 (sonda HTTP ao vivo na API em execucao)
+===================================================================
+Sonda HTTP ao vivo — API Sail em http://localhost (guard manager e client)
+Data: 17/09/2026 18:02
+
+RECURSO                METODO   HTTP   OBSERVACAO
+------------------------------------------------------------------
+residence-types        POST     405    rota inexistente (CA06/CA07/CA08)
+residence-types        PUT      405    rota inexistente (CA06/CA07/CA08)
+residence-types        PATCH    405    rota inexistente (CA06/CA07/CA08)
+residence-types        DELETE   405    rota inexistente (CA06/CA07/CA08)
+residence-types        GET      401    leitura existe (401 = exige autenticacao, rota presente)
+schooling-levels       POST     405    rota inexistente (CA06/CA07/CA08)
+schooling-levels       PUT      405    rota inexistente (CA06/CA07/CA08)
+schooling-levels       PATCH    405    rota inexistente (CA06/CA07/CA08)
+schooling-levels       DELETE   405    rota inexistente (CA06/CA07/CA08)
+schooling-levels       GET      401    leitura existe (401 = exige autenticacao, rota presente)
+school-situations      POST     405    rota inexistente (CA06/CA07/CA08)
+school-situations      PUT      405    rota inexistente (CA06/CA07/CA08)
+school-situations      PATCH    405    rota inexistente (CA06/CA07/CA08)
+school-situations      DELETE   405    rota inexistente (CA06/CA07/CA08)
+school-situations      GET      401    leitura existe (401 = exige autenticacao, rota presente)
+disability-types       POST     405    rota inexistente (CA06/CA07/CA08)
+disability-types       PUT      405    rota inexistente (CA06/CA07/CA08)
+disability-types       PATCH    405    rota inexistente (CA06/CA07/CA08)
+disability-types       DELETE   405    rota inexistente (CA06/CA07/CA08)
+disability-types       GET      401    leitura existe (401 = exige autenticacao, rota presente)
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

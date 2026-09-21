@@ -1,0 +1,16 @@
+<!-- HU #10373 — CA03/RN05 — "Sala de Atendimento em Grupo" (018) foi INATIVADA no cadastro de apoio global (is_active = false) e continua vinculada ao CRAS: a linha <Estrutura>18</Estrutura> permanece no arquivo -->
+<!-- Remessa GERADA de verdade via POST /api/client/siap-remittances; XML extraído do zip. -->
+<?xml version="1.0"?>
+<SIAP>
+    <Codigo>004821</Codigo>
+    <Exercicio>2026</Exercicio>
+    <Mes>07</Mes>
+    <EstruturaUnidadeSocial>
+        <NumeroMDS>2745110725096</NumeroMDS>
+        <Estrutura>18</Estrutura>
+    </EstruturaUnidadeSocial>
+    <EstruturaUnidadeSocial>
+        <NumeroMDS>2745110725096</NumeroMDS>
+        <Estrutura>1</Estrutura>
+    </EstruturaUnidadeSocial>
+</SIAP>

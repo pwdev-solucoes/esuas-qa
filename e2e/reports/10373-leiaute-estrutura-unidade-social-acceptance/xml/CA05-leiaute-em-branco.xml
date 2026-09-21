@@ -1,0 +1,8 @@
+<!-- HU #10373 — CA05 — nenhuma unidade do município tem estrutura registrada: o arquivo sai com Codigo, Exercicio e Mes e nenhum registro. "Enviar em branco" não é o mesmo que "não enviar": o arquivo continua no pacote -->
+<!-- Remessa GERADA de verdade via POST /api/client/siap-remittances; XML extraído do zip. -->
+<?xml version="1.0"?>
+<SIAP>
+    <Codigo>004821</Codigo>
+    <Exercicio>2026</Exercicio>
+    <Mes>07</Mes>
+</SIAP>

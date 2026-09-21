@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — HU #9750 (Visualizar resultado consolidado da importação)",
+    "subtitle": "Sprint 8 · HU #9750 (fatia HU03) · Evidências end-to-end no client",
+    "rows": [
+      ["Gerado em", "30/06/2026"],
+      ["Branch", "sprint8-cadunico"],
+      ["Spec", ".planning/specs/sprint8/9750-conformidade-resultado-consolidado.md"],
+      ["Ambiente", "API Sail/PostgreSQL (api-laravel.test-1) · fila cadunico · client Vite :5175 (não-mock)"],
+      ["Organização (tenant)", "Organização E2E CadÚnico · IBGE 2304400 (Fortaleza/CE)"],
+      ["Massa de dados", "e2e/fixtures/cadunico/massa-dados/ (remessa1 + remessa2)"],
+      ["Ferramenta", "playwright-cli (Chromium) + Pest"]
+    ]
+  },
+  "summary": "HU #9750 cobre a visualização do resultado consolidado da importação (CA08). Foram evidenciados ao vivo no client os 6 itens exigidos: na sheet de detalhe de cada lote — Total de Registros Analisados, Novas Famílias Criadas, Famílias Atualizadas por Data, Registros Ignorados, Total de Linhas com Erros — e a lista detalhada dos motivos das falhas. O histórico do tenant lista os lotes com status (processamento × sincronização), data e o executor com o sufixo [Master] (RN05/RN08), restrito ao próprio tenant (RN10). A suíte Pest (37 testes, 126 asserções, 100% verde) acompanha como apêndice.",
+  "cas": [
+    {
+      "id": "CA08",
+      "title": "Exibição de métricas detalhadas (resultado consolidado)",
+      "status": "nav",
+      "gherkin": "Dado que o processamento do lote foi finalizado em segundo plano\nQuando o usuário acessa a tela de resultado ou consulta o histórico\nEntão devem ser exibidos os contadores de negócio (Total de Registros Analisados, Novas Famílias Criadas, Famílias Atualizadas por Data, Registros Ignorados, Total de Linhas com Erros) e a lista detalhada dos motivos das falhas",
+      "steps_html": "Logado como <b>Master</b>, na tela <code>Importações do CadÚnico</code>: (1) o <b>histórico</b> lista os lotes com status, data e executor; (2) <code>Ver detalhes</code> abre a sheet com o <b>Resumo da sincronização</b> (5 contadores) e a seção <b>Erros de linha</b> com os motivos. Massa: remessa1 (11 criadas + 2 erros) e remessa2 (1 criada, 2 atualizadas, 1 ignorada).",
+      "results": [
+        "Histórico: 2 lotes do tenant, com status \"Processamento do arquivo\"/\"Sincronização das famílias\", data e \"Enviado por E2E Master CadÚnico [Master]\" (RN05/RN08); só do próprio tenant (RN10).",
+        "Detalhe remessa2 — Resumo da sincronização: Total analisado 5, Novas famílias 1, Atualizadas por data 2, Ignoradas por sincronização 1, Linhas com erro 0.",
+        "Detalhe remessa1 — Total analisado 17, Novas famílias 11, Linhas com erro 2, com a seção \"Erros de linha (2)\" listando os motivos: missing_family_code (\"Código Familiar ausente no bloco.\") e invalid_date (\"Data de última atualização (dat_atual_fam) inválida.\") — sem PII (RN07/RN09)."
+      ],
+      "images": [
+        "screenshots/ca08-historico.png",
+        "screenshots/ca08-detalhe-remessa2.png",
+        "screenshots/ca08-detalhe-remessa1-erros.png"
+      ]
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Pest — suíte CadÚnico completa, 37 testes / 126 asserções)",
+    "file": "pest-9750.txt"
+  }
+}

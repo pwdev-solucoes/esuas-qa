@@ -1,0 +1,11 @@
+Trilha de auditoria — log_name = family_housing_condition (US-DIAG-02, CA07/D07/RN08)
+====================================================================================================
+activity #3137  evento=created  familia=9900000007  autor=E2E Operador Prontuário  em 2026-09-17 20:59:27
+   valores: {"attributes":{"residence_type_id":null,"in_risk_area":true,"domicile_vulnerability":null}}
+
+activity #3144  evento=created  familia=9900000009  autor=E2E Operador Prontuário  em 2026-09-17 21:00:41
+   valores: {"attributes":{"residence_type_id":5,"in_risk_area":false,"domicile_vulnerability":false}}
+
+activity #3145  evento=updated  familia=9900000009  autor=E2E Operador Prontuário  em 2026-09-17 21:01:01
+   valores: {"attributes":{"residence_type_id":2},"old":{"residence_type_id":5}}
+

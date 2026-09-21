@@ -1,0 +1,39 @@
+### §8.1 — Diagnóstico: quantas unidades bloqueariam a remessa hoje, por motivo (por tenant)
+ tenant_id |              tenant               | sem_mds | sem_tipo_loc | sem_endereco | cep_invalido | status_inativa | extinta_sem_data | total_unidades 
+-----------+-----------------------------------+---------+--------------+--------------+--------------+----------------+------------------+----------------
+         1 | Prefeitura Municipal de Arapiraca |       0 |            0 |            0 |            0 |              0 |                0 |              0
+         2 | Prefeitura Municipal de Maceió    |       0 |            0 |            0 |            0 |              0 |                0 |              0
+         3 | Organização E2E CadÚnico          |       0 |            0 |            0 |            0 |              0 |                0 |              0
+(3 rows)
+
+
+### §8.2 — Unidades que bloqueiam, nominalmente (todas as organizações da base local)
+ uuid | name | mds_number | status_code | type_code 
+------+------+------------+-------------+-----------
+(0 rows)
+
+
+### §8.3 — Tipos de unidade sem correspondência no SIAP (ação no Painel Global — CA08)
+ id | code | name | unidades_afetadas 
+----+------+------+-------------------
+(0 rows)
+
+
+### Contexto da base local
+ tenants | unidades_ativas | unidades_incl_excluidas | tipos_de_unidade | status_de_unidade | entidades 
+---------+-----------------+-------------------------+------------------+-------------------+-----------
+       3 |               0 |                       0 |                6 |                 5 |         4
+(1 row)
+
+
+### Códigos dos tipos de unidade cadastrados
+ code |                                 name                                 
+------+----------------------------------------------------------------------
+ 001  | Centro de Referência de Assistência Social
+ 002  | Centro de Referência Especializado de Assistência Social
+ 003  | Centro de Referência Especializado para População em Situação de Rua
+ 004  | Centro-Dia de Referência para Pessoa com Deficiência e suas Famílias
+ 005  | Unidades de Acolhimento
+ 099  | Outros
+(6 rows)
+

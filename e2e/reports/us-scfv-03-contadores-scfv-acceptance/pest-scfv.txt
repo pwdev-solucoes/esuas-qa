@@ -1,0 +1,112 @@
+
+   PASS  Tests\Unit\ParticipationDomainsSeedTest
+  ✓ it marca counts_as_scfv_elderly em exatamente um servico — o codigo… 0.44s  
+  ✓ it respeita a invariante elderly ⟹ scfv ⟹ group em todas as linhas   0.02s  
+
+   PASS  Tests\Unit\ParticipationServiceInvariantTest
+  ✓ it nao tem nenhuma linha violando elderly ⟹ scfv ⟹ group             0.03s  
+
+   PASS  Tests\Feature\Api\Client\AttendanceReportReferralCrossTest
+  ✓ it never feeds the CadUnico counters from attendance type 4 — 9 att… 0.13s  
+
+   PASS  Tests\Feature\Api\Client\AttendanceReportTest
+  ✓ it derives the four counters per unit and the total includes types…  0.06s  
+  ✓ it declares exactly the one remaining unavailable counter — the F2…  0.05s  
+  ✓ it excludes cancelled attendances from the report while they remain… 0.07s  
+  ✓ it counts a retroactive attendance in the month it happened, not th… 0.06s  
+  ✓ it reflects a type correction on the next query and stores nothing…  0.06s  
+  ✓ it reports attendances without an identified person separately, via… 0.06s  
+  ✓ it scopes the Operacional to units with an assignment in force TODA… 0.07s  
+  ✓ it shows the master every unit of the tenant, and a unit without mo… 0.06s  
+  ✓ it never leaks citizen data in the serialized payload — no name, no… 0.06s  
+  ✓ it keeps counting past attendances of a type inactivated in the Glo… 0.06s  
+  ✓ it narrows the report to a single unit when social_unit_uuid is giv… 0.07s  
+  ✓ it keeps unit_count at the Operacional full scope when filtering on… 0.19s  
+  ✓ it rejects with a named 422 a unit outside the user scope — never a… 0.11s  
+  ✓ it rejects an out-of-range reference month with the SIAP named mess… 0.07s  
+  ✓ it denies the Operacional without the manual grant — the restricted… 0.06s  
+  ✓ it denies a granted user without an ACTIVE professional bond in the… 0.06s  
+  ✓ it lights the three referral counters with distinct families and pe… 0.07s  
+  ✓ it counts the same family ONCE with two inclusion referrals in the…  0.06s  
+  ✓ it counts two distinct people of the SAME family in the BPC counter… 0.06s  
+  ✓ it counts the family once in EACH counter — distinct per counter, n… 0.06s  
+  ✓ it drops a cancelled referral from the counters while it stays visi… 0.07s  
+  ✓ it keeps counting a referral whose outcome became not_attended — th… 0.06s  
+  ✓ it counts a retroactive referral in the month it was made, not the…  0.06s  
+  ✓ it keeps counting past referrals of a code inactivated in the Globa… 0.05s  
+  ✓ it keeps counting past referrals of a code SOFT-DELETED in the Glob… 0.06s  
+  ✓ it declares zero on the three referral counters for a unit without…  0.06s  
+  ✓ it never feeds the BPC counter from a referral row without a person… 0.06s  
+
+   PASS  Tests\Feature\Client\AttendanceReportFollowUpTest
+  ✓ it reproduces the canonical scenario of §9 in the HTTP payload — 3…  0.07s  
+  ✓ it lights up families_in_follow_up inside counters and removes it f… 0.06s  
+  ✓ it declares the four profiles that depend on F6/F7 — never omitted,… 0.05s  
+  ✓ it keeps the four unavailable profiles declared even for a unit wit… 0.06s  
+  ✓ it exposes stale_follow_ups as a quantity and the configured thresh… 0.06s  
+  ✓ it carries the threshold from config so the cut can move without a…  0.06s  
+  ✓ it shows the operator only the units of the current assignment, wit… 0.06s  
+  ✓ it never counts follow-ups of another organization in any of the ne… 0.06s  
+  ✓ it persists absolutely nothing — identical row counts before and af… 0.05s  
+  ✓ it never leaks any citizen data through the new follow-up fields (D… 0.06s  
+  ✓ it never counts a cancelled follow-up in the HTTP payload (CA11/RN1… 0.05s  
+  ✓ it keeps the new blocks consistent when the report is narrowed to a… 0.06s  
+
+   PASS  Tests\Feature\Client\AttendanceReportScfvTest
+  ✓ it acende os sete contadores do 15.8 no payload da unidade, com os…  0.08s  
+  ✓ it nao altera o oitavo contador do 15.8, que vem dos ATENDIMENTOS c… 0.08s  
+  ✓ it mantem o oitavo contador em zero quando a unidade so tem partici… 0.06s  
+  ✓ it devolve a nota da RN05 e o ponto de atencao da RN11 POR UNIDADE,… 0.06s  
+  ✓ it declara ZERO para a unidade sem nenhuma participacao, nunca ause… 0.05s  
+  ✓ it mostra ao Operacional apenas a unidade em que esta lotado, com o… 0.07s  
+  ✓ it nega o acesso ao Operacional sem a concessao do Master, antes de… 0.05s  
+  ✓ it nunca conta participacao de outra organizacao no payload (CA16/R… 0.08s  
+  ✓ it nao persiste absolutamente nada ao apurar o payload (RN10)        0.08s  
+  ✓ it nunca devolve identificador de pessoa ou familia nos campos do 1… 0.06s  
+
+   PASS  Tests\Feature\Client\FamilyMemberParticipationTest
+  ✓ it registers the member participation in the elderly SCFV, signed a… 0.07s  
+  ✓ it KEEPS listing a participation whose service or location was late… 0.07s  
+
+   PASS  Tests\Feature\Client\ScfvReportServiceTest
+  ✓ it conta a familia com TRES integrantes em grupos UMA unica vez (CA… 0.03s  
+  ✓ it conta o ingresso no dia 20 e o encerramento no dia 5 do mes apur… 0.03s  
+  ✓ it nao conta a participacao encerrada no mes anterior, mas conta na… 0.02s  
+  ✓ it nao conta a participacao CANCELADA em contador nenhum (CA11/RN09… 0.02s  
+  ✓ it nao conta participacao em servico que nao alimenta o 15.8 (D04)   0.03s  
+  ✓ it conta 1 em cada unidade quando a familia participa em duas (RN08… 0.02s  
+  ✓ it acende as quatro faixas etarias com pessoas distintas do SCFV (C… 0.12s  
+  ✓ it conta o integrante so do grupo do PAIF como familia em grupo e e… 0.02s  
+  ✓ it apura a idade no ULTIMO DIA do mes: quem faz 7 anos em 15/08 est… 0.03s  
+  ✓ it conta UMA vez a pessoa que participa de dois grupos (CA08/RN06)   0.02s  
+  ✓ it nao coloca em faixa alguma o participante sem data de nascimento… 0.02s  
+  ✓ it conta idosos pelo SERVICO e nao inclui quem tem mais de 60 anos…  0.07s  
+  ✓ it nao conta em faixa alguma o idoso matriculado no SCFV de adultos… 0.07s  
+  ✓ it nao acende a nota do CA05 quando todo idoso do recorte esta decl… 0.07s  
+  ✓ it conta em idosos quem esta no SCFV de idosos mesmo com menos de 6… 0.02s  
+  ✓ it conta pessoas com deficiencia somando os grupos do PAIF e do PAE… 0.04s  
+  ✓ it conta UMA vez a pessoa com deficiencia que participa de dois gru… 0.03s  
+  ✓ it nao conta o participante sem informacao de deficiencia, e nao af… 0.03s  
+  ✓ it apura as tres naturezas com numeros DIFERENTES entre si, sem der… 0.04s  
+  ✓ it sinaliza as participacoes em andamento ha mais de 12 meses (CA13… 0.05s  
+  ✓ it conta PARTICIPACOES, e nao pessoas, no ponto de atencao (RN11)    0.03s  
+  ✓ it respeita o corte configurado sem deploy (D10)                     0.02s  
+  ✓ it devolve zero DECLARADO para a unidade sem nenhuma participacao (… 0.02s  
+  ✓ it curto-circuita sem tocar o banco quando o recorte de unidades e…  0.02s  
+  ✓ it nao conta participacao de outro municipio (CA16/RN13)             0.03s  
+  ✓ it nao persiste absolutamente nada — a apuracao e derivada (RN10/D0… 0.03s  
+  ✓ it nao devolve nenhum identificador de pessoa ou familia no resulta… 0.02s  
+
+   PASS  Tests\Feature\Manager\ParticipationDomainsTest
+  ✓ it identifica o SCFV para adultos como extensao do produto, e so el… 0.03s  
+  ✓ it recusa a combinacao que viola elderly ⟹ scfv ⟹ group na criacao   0.02s  
+  ✓ it recusa desligar o grupo de um servico que continua contando como… 0.02s  
+
+   PASS  Tests\Feature\TenantIsolation\AttendanceReportIsolationTest
+  ✓ it shows the tenant A master only tenant A units and numbers (CA12/… 0.05s  
+  ✓ it rejects a tenant B unit used as filter with the same named 422 —… 0.05s  
+  ✓ it never counts tenant B referrals in the tenant A referral counter… 0.06s  
+
+  Tests:    88 passed (438 assertions)
+  Duration: 5.66s
+

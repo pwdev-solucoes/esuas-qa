@@ -1,0 +1,38 @@
+$ cd api && DB_CONNECTION=sqlite DB_DATABASE=:memory: php -d memory_limit=1G vendor/bin/pest --colors=never --filter='CapacitationTally'
+
+
+   PASS  Tests\Unit\Services\Capacitation\CapacitationTallyServiceTest
+  ✓ it apura participacoes, eventos e cursos de uma unidade no mes (CA01)                                                  0.33s
+  ✓ it devolve sempre os cinco contadores, na ordem do leiaute e com a forma de contagem (CA02/RN11)                       0.02s
+  ✓ it conta reuniao interna por EVENTO, ignorando quantos participaram (CA03)                                             0.02s
+  ✓ it conta o curso em TODOS os meses em que esteve em andamento (CA04)                                                   0.02s
+  ✓ it conta o curso sem data de fim do inicio em diante (CA05)                                                            0.02s
+  ✓ it conta uma vez a profissional que esta em dois cursos simultaneos (CA06)                                             0.02s
+  ✓ it nao conta acao cancelada, e a unidade fica sem registro no periodo (CA07/RN06)                                      0.02s
+  ✓ it conta a acao retroativa no mes em que ela OCORREU, nao no do lancamento (CA08)                                      0.02s
+  ✓ it devolve contador de tipo INATIVADO, porque o campo e do leiaute e nao do cadastro (D03)                             0.02s
+  ✓ it sinaliza has_no_records apenas quando NAO existe registro algum no periodo (RN08)                                   0.02s
+  ✓ it ordena as unidades por nome e ignora id inexistente (RN11)                                                          0.03s
+  ✓ it nao mistura as acoes de outra unidade nem de outro municipio                                                        0.03s
+  ✓ it recusa mes fora de 1–12 (D08)                                                                                       0.01s
+
+   PASS  Tests\Feature\Client\CapacitationTallyTest
+  ✓ it devolve os cinco contadores com a forma de contagem e o rotulo do tipo (CA02)                                       0.05s
+  ✓ it sinaliza a unidade sem nenhum registro com os cinco contadores zerados (CA09)                                       0.03s
+  ✓ it distingue "nao registrou nada" de "registrou algo que conta zero" (CA09/RN08)                                       0.03s
+  ✓ it devolve ao Operacional apenas as unidades de lotacao vigente (CA10)                                                 0.03s
+  ✓ it devolve 404 ao Operacional que filtra unidade fora da sua lotacao (CA10)                                            0.02s
+  ✓ it devolve 200 com lista vazia ao Operacional sem lotacao nenhuma (CA10/RN09)                                          0.02s
+  ✓ it devolve ao Master todas as unidades do municipio, ordenadas por nome (CA11/RN11)                                    0.03s
+  ✓ it nao expoe nenhuma rota de escrita para o recurso (RN03/D09)                                                         0.03s
+  ✓ it recusa mes fora de 1-12 e exercicio fora de faixa (D08/§10)                                                         0.03s
+  ✓ it exige a permissao capacitation-tallies.index                                                                        0.03s
+
+   PASS  Tests\Feature\TenantIsolation\CapacitationTallyIsolationTest
+  ✓ it devolve 404 quando o Master de A filtra a apuracao por unidade de B (CA12/RN10)                                     0.03s
+  ✓ it apura apenas unidades do proprio municipio, sem somar acoes de B (CA12)                                             0.03s
+  ✓ it nao vaza a unidade de B nem quando o Master de A e Master tambem em B                                               0.03s
+
+  Tests:    26 passed (114 assertions)
+  Duration: 1.27s
+

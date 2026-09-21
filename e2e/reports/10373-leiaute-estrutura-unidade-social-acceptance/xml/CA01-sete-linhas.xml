@@ -1,0 +1,36 @@
+<!-- HU #10373 — CA01 — CRAS com 4 estruturas (001,004,017,018) + CREAS com 3 (002,006,017) = 7 linhas. MDS do CRAS 9507697178507, MDS do CREAS 1926120640243 -->
+<!-- Remessa GERADA de verdade via POST /api/client/siap-remittances; XML extraído do zip. -->
+<?xml version="1.0"?>
+<SIAP>
+    <Codigo>004821</Codigo>
+    <Exercicio>2026</Exercicio>
+    <Mes>07</Mes>
+    <EstruturaUnidadeSocial>
+        <NumeroMDS>9507697178507</NumeroMDS>
+        <Estrutura>1</Estrutura>
+    </EstruturaUnidadeSocial>
+    <EstruturaUnidadeSocial>
+        <NumeroMDS>9507697178507</NumeroMDS>
+        <Estrutura>4</Estrutura>
+    </EstruturaUnidadeSocial>
+    <EstruturaUnidadeSocial>
+        <NumeroMDS>9507697178507</NumeroMDS>
+        <Estrutura>17</Estrutura>
+    </EstruturaUnidadeSocial>
+    <EstruturaUnidadeSocial>
+        <NumeroMDS>9507697178507</NumeroMDS>
+        <Estrutura>18</Estrutura>
+    </EstruturaUnidadeSocial>
+    <EstruturaUnidadeSocial>
+        <NumeroMDS>1926120640243</NumeroMDS>
+        <Estrutura>17</Estrutura>
+    </EstruturaUnidadeSocial>
+    <EstruturaUnidadeSocial>
+        <NumeroMDS>1926120640243</NumeroMDS>
+        <Estrutura>2</Estrutura>
+    </EstruturaUnidadeSocial>
+    <EstruturaUnidadeSocial>
+        <NumeroMDS>1926120640243</NumeroMDS>
+        <Estrutura>6</Estrutura>
+    </EstruturaUnidadeSocial>
+</SIAP>

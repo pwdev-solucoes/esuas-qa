@@ -1,0 +1,67 @@
+Consultas de apoio §8.1–§8.3 da spec .planning/specs/10529-leiaute-profissional-social.md
+HU #10529 (US-SIAP-07) — leiaute ProfissionalSocial
+Executado em: 2026-08-14 12:26 (America/Maceio)
+Base: PostgreSQL LOCAL de desenvolvimento (esuas @ 127.0.0.1:4000), somente leitura.
+Execucao: artisan tinker com DB_HOST=127.0.0.1 DB_PORT=4000, SQL identico ao da spec (§8.1, §8.2, §8.3).
+
+!! RESSALVA OBRIGATORIA — A BASE LOCAL NAO E REPRESENTATIVA !!
+A spec manda rodar EM STAGING (§8, nota: "as bases locais estiveram vazias nas seis HUs
+anteriores"). Nao ha acesso a staging nesta execucao — setima HU seguida na mesma condicao.
+Inventario da base local, ANTES de qualquer consulta:
+
+  tenants                                    3
+  tenant_professionals                       0
+  social_tenant_professional_assignments     0
+  social_professionals                       0
+  social_professional_assignments            0
+  social_units                               1
+  users                                      6
+
+Com 0 profissionais municipais, 0 lotacoes e 0 profissionais no cadastro paralelo, as tres
+consultas devolvem ZERO por AUSENCIA DE DADO, nao por ausencia de problema. NENHUM numero
+abaixo pode ser lido como dimensionamento do impacto em producao — nem como ausencia dele.
+As duas perguntas que estas consultas existem para responder — (1) QUANTAS matriculas estao
+fora do formato Numerico 16* (o risco 1 da spec: municipios que ficarao TRAVADOS pela D04) e
+(2) QUANTOS profissionais vivem SO no cadastro paralelo INV-050 (a duvida do artefato do PO,
+que a D06 passa a avisar) — SEGUEM SEM RESPOSTA EM NUMERO REAL.
+
+Os numeros que aparecem nos XMLs e payloads deste dossie (5 lotacoes, contagem 3 do paralelo
+etc.) sao DADOS FABRICADOS pelos cenarios de teste, construidos exatamente para demonstrar os
+criterios — nao descrevem nenhuma base real.
+
+===============================================================================
+§8.1 — Lotacoes vigentes que bloqueariam a remessa, por motivo (ref. 08/2026)
+       E *a* consulta desta HU: `matricula_fora_do_formato` dimensiona a D04 —
+       quantos municipios ficarao travados por matricula alfanumerica ou longa
+       demais. `sem_cpf`/`cpf_invalido` dimensionam o CA08c.
+===============================================================================
+(0 rows)
+
+===============================================================================
+§8.2 — Perfil das matriculas fora do formato (para instruir a normalizacao)
+===============================================================================
+(0 rows)
+
+===============================================================================
+§8.3 — Profissionais SO no cadastro paralelo (dimensiona a D06/RN13 e responde
+       a duvida do artefato: "verificar com a equipe se isso deixa alguem de
+       fora em producao")
+===============================================================================
+(0 rows)
+
+===============================================================================
+LEITURA DO RESULTADO — o que estas consultas provam e o que NAO provam
+===============================================================================
+PROVAM: que a base local de desenvolvimento nao tem nenhum dado nas quatro tabelas desta HU
+        (INV-048, lotacoes, INV-050 e suas lotacoes). So isso.
+NAO PROVAM: que producao/staging estejam iguais. O cadastro de Profissionais Municipais aceita
+        60 caracteres LIVRES em registration_number ha dois meses (string(60) NOT NULL, criada
+        em 22/06/2026) — matricula fora do formato e plausivel, nao hipotetica (risco 1 da
+        spec, §17.1). E o cadastro paralelo INV-050 existe desde 08/06/2026, ANTES do oficial:
+        profissionais registrados so nele desapareceriam da remessa sem a informativa da D06.
+PENDENCIA PARA O PO (DoD da spec, §16): rodar §8.1–§8.3 em STAGING antes do deploy.
+        - Se §8.1 mostrar `matricula_fora_do_formato` > 0: cada linha e um municipio que ficara
+          IMPEDIDO de prestar contas ate normalizar as matriculas (a mensagem da recusa aponta
+          o cadastro de Profissionais Municipais — o municipio resolve sozinho).
+        - Se §8.3 mostrar numeros altos: o debito dos dois cadastros (INV-050 → INV-048) vira
+          urgente e e HU propria (risco 5 da spec, §17.5).

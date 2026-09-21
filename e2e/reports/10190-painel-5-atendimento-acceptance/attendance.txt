@@ -1,0 +1,18 @@
+
+   PASS  Tests\Feature\Dashboard\AttendanceTest
+  ✓ it returns two contiguous 12-point series from source_registered_at… 0.53s  
+  ✓ it counts a family in different months across the two independent s… 0.20s  
+  ✓ it excludes families with a null date from the respective series (C… 0.08s  
+  ✓ it matches the Painel 2 monthly evolution point by point (RN07)      0.11s  
+  ✓ it recalculates for a neighborhood, covering only geocoded families… 0.09s  
+  ✓ it returns two 12-point zero series when the scope has no families…  0.06s  
+  ✓ it returns 422 for a neighborhood_uuid outside the tenant municipal… 0.06s  
+  ✓ it denies the panel to the base operator without the dedicated role  0.05s  
+  ✓ it grants the panel to the Master without any add-on role            0.05s  
+
+   PASS  Tests\Feature\TenantIsolation\DashboardAttendanceIsolationTest
+  ✓ it never counts families from another tenant in the attendance pane… 0.09s  
+
+  Tests:    10 passed (43 assertions)
+  Duration: 1.42s
+

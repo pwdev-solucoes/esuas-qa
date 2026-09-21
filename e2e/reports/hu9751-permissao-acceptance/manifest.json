@@ -1,0 +1,59 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — HU #9751",
+    "subtitle": "Gerenciar permissão de importação do CadÚnico de Profissionais · Sprint 8 · Evidências end-to-end no client",
+    "rows": [
+      ["Gerado em", "30/06/2026"],
+      ["HU", "#9751 — Gerenciar permissão de importação do CadÚnico (Fluxo E / HU04 da spec)"],
+      ["Branch", "sprint8-cadunico"],
+      ["Spec", ".planning/specs/sprint8/cadunico-imports-importacao-cadastro-unico.md (§5 CA09/CA10, §7 Fluxo E, RN04)"],
+      ["Ambiente", "API Sail/PostgreSQL (:80) · fila cadunico · client Vite (:5175)"],
+      ["Organização (tenant)", "E2E CadÚnico · IBGE 2304400 · uuid …c1"],
+      ["Mecanismo", "Sincronização de papéis: PUT client/professionals/{uuid}/roles (MASTER-only)"],
+      ["Ferramenta", "playwright-cli (Chromium) + Pest"]
+    ]
+  },
+  "summary": "História focada na governança de acesso: o Master concede e revoga a permissão de importação do CadÚnico a um Profissional, exclusivamente via papéis (RN04). Foram verificados os 2 critérios de aceite (CA09 atribuição, CA10 revogação), ambos dirigidos ao vivo no frontend do tenant (client) e reforçados pela suíte Pest. Para a demonstração foi provisionado um Perfil de Acesso atribuível \"Operador CadÚnico\" (papel client carregando cadunico-imports.*), espelhando a diretiva da spec de \"perfis que o Master escolher para operadores\". Resultado: CA09 e CA10 ATENDIDOS — o efeito da sincronização de papéis é imediato, sem novo login/seed, refletindo na visibilidade do módulo e no gate 403.",
+  "cas": [
+    {
+      "id": "CA09",
+      "title": "Atribuição de permissão ao Profissional",
+      "status": "nav",
+      "gherkin": "Dado que sou Master no tenant, Quando acesso a tela de Detalhes de um profissional específico e vinculo ao seu cadastro o Perfil de Acesso que possui os direitos de \"Importação do CadÚnico\", Então ao salvar a alteração, o Usuário associado a esse profissional passa a ter acesso imediato ao módulo de importação do CADUNICO.",
+      "steps_html": "Logado como <b>Master</b> (CPF 52998224725), abrir <code>Cadastros › Profissionais › E2E Operador CadÚnico</code> → seção <b>Perfis de acesso</b> → botão <b>Gerenciar</b>. No drawer, marcar o perfil <code>Operador CadÚnico</code> (Perfil de Acesso que carrega <code>cadunico-imports.*</code>, ao lado do perfil base <code>Operador</code> já vinculado) e clicar <b>Salvar perfis</b>. Em seguida, sair e entrar como <b>Operador</b> (CPF 11144477735) para conferir o acesso ao módulo.",
+      "results": [
+        "Drawer \"Gerenciar perfis de acesso\" oferece o Perfil de Acesso \"Operador CadÚnico\" como atribuível; ao marcá-lo e salvar, exibe o toast \"Perfis de acesso atualizados com sucesso\" e o profissional passa a contar \"2 perfis\".",
+        "Efeito imediato no backend (sem novo seed): o Usuário do profissional passou a ter <code>cadunico-imports.index</code> e <code>cadunico-imports.store</code>; o vínculo em user_tenant_role passou de [operador] para [operador, operador_cadunico].",
+        "Ao entrar como Operador, o item \"Importações do CadÚnico\" aparece no menu e a tela do módulo carrega normalmente (cabeçalho, \"Nova importação\" e tabela de histórico) — acesso imediato confirmado.",
+        "Pest (apêndice): \"it syncs roles granting and revoking in diff\" cobre a concessão por sincronização de papéis."
+      ],
+      "images": [
+        "screenshots/ca09-atribuir-perfil.png",
+        "screenshots/ca09-salvo-sucesso.png",
+        "screenshots/ca09-operador-acesso.png"
+      ]
+    },
+    {
+      "id": "CA10",
+      "title": "Revogação de acesso",
+      "status": "nav",
+      "gherkin": "Dado que sou Master no tenant, Quando acesso a área de Detalhes/Gerenciamento do profissional e removo/desvinculo o perfil correspondente às rotinas do CadÚnico, Então assim que as alterações são salvas, o acesso às telas de importação e ao histórico de lotes é bloqueado e ocultado imediatamente para o Usuário correspondente.",
+      "steps_html": "Logado como <b>Master</b>, reabrir o detalhe do profissional <code>E2E Operador CadÚnico</code> → <b>Gerenciar</b> → <b>desmarcar</b> o perfil <code>Operador CadÚnico</code> (mantendo o perfil base <code>Operador</code>) → <b>Salvar perfis</b>. Depois, sair e entrar como <b>Operador</b> para conferir o bloqueio: ausência do módulo no menu e acesso direto à rota <code>/app/cadunico-imports</code>.",
+      "results": [
+        "Ao desmarcar \"Operador CadÚnico\" e salvar, exibe o toast \"Perfis de acesso atualizados com sucesso\" e o profissional volta a contar \"1 perfil\".",
+        "Efeito imediato no backend: o Usuário perdeu <code>cadunico-imports.*</code>; o vínculo em user_tenant_role voltou a [operador].",
+        "Ao entrar como Operador, o item \"Importações do CadÚnico\" some do menu (ocultado) e o acesso direto a <code>/app/cadunico-imports</code> retorna a tela \"403 — Acesso negado\" — bloqueio imediato confirmado.",
+        "Pest (apêndice): \"it syncs roles granting and revoking in diff\" e \"it hides the module from an operador without the permission (CA03)\" cobrem a revogação e o gate por permissão."
+      ],
+      "images": [
+        "screenshots/ca10-revogar-perfil.png",
+        "screenshots/ca10-operador-sem-modulo.png",
+        "screenshots/ca10-403.png"
+      ]
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Pest — ProfessionalRoleControllerTest + CadunicoImportControllerTest)",
+    "file": "pest-hu9751.txt"
+  }
+}

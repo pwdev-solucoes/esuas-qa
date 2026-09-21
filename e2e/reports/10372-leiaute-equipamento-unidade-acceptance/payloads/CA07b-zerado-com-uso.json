@@ -1,0 +1,44 @@
+{
+    "cenario": "CA07b — quantidade total 0 com quantidade em uso 2",
+    "leiaute": {
+        "name": "EquipamentoUnidade",
+        "sort_order": 3,
+        "file_name": "EquipamentoUnidade.xml",
+        "outcome": "header_only",
+        "record_count": 0,
+        "skipped_count": 0,
+        "pendencies": [
+            {
+                "scope": "informative",
+                "kind": "inconsistent_data",
+                "field_name": "QuantidadeUso",
+                "subject_type": "social_unit",
+                "subject_uuid": "b04165bf-0b07-4f85-8192-89043639abdd",
+                "affected_count": 1,
+                "message_key": "siap_remittance.pendency.equipment_quantity_inconsistent",
+                "message": "This unit has more equipment in use (QuantidadeUso) than the total reported for equipment 4 of the SIAP table. The record is still included in the remittance with the registered values; review the unit inventory.",
+                "blocks_entire_remittance": false
+            }
+        ]
+    },
+    "pendencias": [
+        {
+            "scope": "informative",
+            "kind": "inconsistent_data",
+            "field_name": "QuantidadeUso",
+            "subject_type": "social_unit",
+            "subject_uuid": "b04165bf-0b07-4f85-8192-89043639abdd",
+            "affected_count": 1,
+            "message_key": "siap_remittance.pendency.equipment_quantity_inconsistent",
+            "message": "This unit has more equipment in use (QuantidadeUso) than the total reported for equipment 4 of the SIAP table. The record is still included in the remittance with the registered values; review the unit inventory.",
+            "blocks_entire_remittance": false
+        }
+    ],
+    "summary": {
+        "layout_count": 11,
+        "record_count": 1,
+        "blocking_pendency_count": 0,
+        "informative_pendency_count": 1,
+        "layout_pendency_count": 17
+    }
+}

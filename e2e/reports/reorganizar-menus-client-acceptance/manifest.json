@@ -1,0 +1,91 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — Reorganização dos Menus do Client",
+    "subtitle": "US-05 · HU-10008 · Evidências end-to-end no client (:5174)",
+    "rows": [
+      ["Gerado em", "22/07/2026"],
+      ["História", "US-05 — Reorganizar os menus do Client conforme a proposta aprovada"],
+      ["Branch", "feature/reorganizar-menus-client (submódulo client/)"],
+      ["Commit", "5274854"],
+      ["Spec", ".planning/product/stories/US-05-reorganizar-menus-do-client.md"],
+      ["Ambiente", "API Sail/PostgreSQL (:8000) · client Vite :5174 (não-mock)"],
+      ["Organização (tenant)", "E2E · Master (52998224725)"],
+      ["Ferramenta", "playwright-cli (Chromium) + Vitest"]
+    ]
+  },
+  "summary": "5 critérios de aceite verificados. CA01 evidenciado ao vivo no navegador (menu lateral renderizado com a nova estrutura de 6 grupos, batendo item-a-item com a proposta aprovada). CA02, CA03, CA04 e CA05 cobertos pela suíte Vitest de sidebar-menu (10 testes, todos verdes) — apêndice. Resultado geral: todos os critérios atendidos.",
+  "cas": [
+    {
+      "id": "CA01",
+      "title": "Estrutura bate com a proposta",
+      "status": "nav",
+      "gherkin": "Dado a proposta aprovada como referência, quando comparo o menu renderizado no Client, então a ordem dos grupos, a ordem dos itens dentro de cada grupo e os rótulos correspondem exatamente ao documento, item a item.",
+      "steps_html": "Login como Master (<code>52998224725</code>) → aceite dos documentos legais → chegada ao <code>/app</code>. Menu lateral capturado isolado e na página completa. Estrutura observada: <b>PRINCIPAL</b> (Início, Georreferenciamento) · <b>Busca</b> (Pessoas, Qualificação Territorial) · <b>Cadastros</b> (Profissionais, Unidades Socioassistenciais, Entidades Socioassistenciais) · <b>Importações</b> (Cadastro Único (MDS)) · <b>Configurações</b> (Organização, Documentos Legais) · <b>Sobre</b> (Histórico de versões).",
+      "results": [
+        "A ordem dos 6 grupos corresponde à proposta: PRINCIPAL → Busca → Cadastros → Importações → Configurações → Sobre.",
+        "Os renames aprovados aparecem renderizados: 'Pesquisa de Pessoas' → 'Pessoas' e 'Configurações' → 'Organização'.",
+        "O item 'SiGSUAS' (sem rota) foi omitido conforme decisão de escopo; 'Sobre' exibe apenas 'Histórico de versões'.",
+        "Rótulos em grafia correta pt-BR (a imagem-proposta continha typos que não foram reproduzidos)."
+      ],
+      "images": [
+        "screenshots/ca01-sidebar-menu.png",
+        "screenshots/ca01-app-dashboard.png"
+      ]
+    },
+    {
+      "id": "CA02",
+      "title": "Menu extraído do componente",
+      "status": "auto",
+      "gherkin": "Dado o código do Client, quando procuro a definição do menu, então ela vive em client/src/components/app/sidebar-menu.ts, no mesmo formato do Admin (MenuGroup → MenuSubgroup → MenuItem) e client/src/types/menu.ts reflete essa estrutura ou é removido.",
+      "steps_html": "Definição extraída para <code>client/src/components/app/sidebar-menu.ts</code> (formato do Admin: <code>MenuGroup → MenuSubgroup → MenuItem</code> + helpers <code>groupItems()</code>/<code>collapsibleGroupIds</code>). <code>types/menu.ts</code> (tipo achatado obsoleto, sem imports) removido. Suíte de estrutura valida os grupos, o flag collapsible e os renames.",
+      "results": [
+        "sidebar-menu.ts criado no formato do Admin; nenhum menu inline restante em AppSidebar.vue.",
+        "types/menu.ts removido (confirmado sem imports no projeto).",
+        "Testes 'estrutura — CA01/CA02' verdes."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA03",
+      "title": "Nenhuma rota fica órfã",
+      "status": "auto",
+      "gherkin": "Dado a reorganização aplicada, quando cruzo os itens do menu com as rotas registradas no router do Client, então toda rota navegável tem entrada no menu ou está declarada como intencionalmente fora dele.",
+      "steps_html": "Teste cruza os <code>routeName</code> do menu com os nomes de rota do router. Rotas de detalhe/CRUD/auth/erro declaradas na allowlist de 'intencionalmente fora' (inclui <code>usuarios</code>). Falha se surgir rota órfã fora da allowlist.",
+      "results": [
+        "Toda rota do menu existe no router.",
+        "Nenhuma rota nomeada fica órfã: está no menu ou na allowlist.",
+        "A allowlist não contém rota morta (todas existem no router)."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA04",
+      "title": "Permissões preservadas",
+      "status": "auto",
+      "gherkin": "Dado um profissional sem a permissão de um item movido, quando ele abre o menu, então o item continua oculto após a reorganização — mover item não pode vazar acesso.",
+      "steps_html": "Testes de gating montam o AppSidebar com um me-store mockado e variam <code>hasPermission</code>: (1) com todas as permissões, todos os grupos/itens; (2) sem permissões, itens gated ocultos e grupos vazios omitidos; (3) permissão pontual reexibe item e grupo. No print do CA01 (Master com as 6 permissões) todos os itens gated aparecem — comportamento esperado.",
+      "results": [
+        "Sem permissão, o item gated permanece oculto e o grupo vazio some.",
+        "Conceder uma permissão reexibe exatamente o item correspondente.",
+        "Nenhum item teve a permissão removida ou afrouxada na reorganização."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA05",
+      "title": "Código morto resolvido",
+      "status": "auto",
+      "gherkin": "Dado o bloco 'Gestão de Usuário' hoje comentado, quando a reorganização é entregue, então ele foi promovido a item real ou removido do arquivo — não permanece comentado.",
+      "steps_html": "O bloco comentado 'Gestão de Usuário' foi <b>removido</b> do AppSidebar.vue (decisão de escopo: a proposta não lista gestão de usuários; a rota <code>usuarios</code> segue navegável fora do menu, registrada na allowlist do CA03).",
+      "results": [
+        "Nenhum bloco de menu comentado remanescente em AppSidebar.vue.",
+        "Rota 'usuarios' documentada como intencionalmente fora do menu (allowlist CA03)."
+      ],
+      "images": []
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Vitest — src/components/app/sidebar-menu.test.ts)",
+    "file": "vitest-sidebar-menu.txt"
+  }
+}

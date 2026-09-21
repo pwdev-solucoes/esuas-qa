@@ -1,0 +1,212 @@
+
+   PASS  Tests\Unit\Family\FamilyIntakeActionsTest
+  ✓ it deduplicates a repeated (program, member) pair in the payload     0.40s  
+
+   PASS  Tests\Unit\Http\Resources\PersonSearchResultResourceTest
+  ✓ it computes the age from birth_date without persisting it            0.01s  
+  ✓ it prefers the social name over the civil name (RN03)                0.01s  
+  ✓ it falls back to the civil name when social name is empty or null (… 0.01s  
+  ✓ it uses the member NIS when present (RN03)                           0.01s  
+  ✓ it falls back to the responsible NIS only for the RF (RN03)          0.01s  
+  ✓ it exposes null filiation and city when absent (premissa 5 — UI exi… 0.01s  
+  ✓ it defaults can_view_details to false without an authenticated user… 0.01s  
+
+   PASS  Tests\Unit\Person\ConfirmPersonIdentityActionTest
+  ✓ it confirms by birth date in STRICT ISO — ambiguity is refusal with… 0.01s  
+  ✓ it confirms by birth date in STRICT ISO — ambiguity is refusal with… 0.01s  
+  ✓ it confirms by birth date in STRICT ISO — ambiguity is refusal with… 0.01s  
+  ✓ it confirms by birth date in STRICT ISO — ambiguity is refusal with… 0.01s  
+  ✓ it confirms by birth date in STRICT ISO — ambiguity is refusal with… 0.01s  
+  ✓ it confirms by mother name ignoring case, accents and extra spaces…  0.02s  
+  ✓ it confirms by mother name ignoring case, accents and extra spaces…  0.01s  
+  ✓ it confirms by mother name ignoring case, accents and extra spaces…  0.01s  
+  ✓ it confirms by mother name ignoring case, accents and extra spaces…  0.02s  
+  ✓ it confirms by mother name ignoring case, accents and extra spaces…  0.01s  
+  ✓ it never confirms against an empty field — blank is not a master ke… 0.01s  
+  ✓ it refuses a field outside the two allowed by RN03                   0.01s  
+
+   PASS  Tests\Unit\Services\Geo\GeoLayerSyncServiceTest
+  ✓ it deduplicates repeated ibge codes within the same load keeping th… 0.02s  
+
+   PASS  Tests\Unit\Services\TenantPermissionResolverTest
+  ✓ it unions permissions of stacked roles in the same tenant without d… 0.03s  
+  ✓ it groups bindings by tenant with roles and deduplicated permission… 0.02s  
+
+   PASS  Tests\Feature\Api\CboControllerTest
+  ✓ it returns 422 on duplicate code                                     0.03s  
+  ✓ it rejects updating a cbo to a duplicate code                        0.01s  
+
+   PASS  Tests\Feature\Api\CityControllerTest
+  ✓ it rejects duplicate ibge_code with 422                              0.01s  
+
+   PASS  Tests\Feature\Api\CivilDocumentTypeControllerTest
+  ✓ it rejects a duplicate code                                          0.01s  
+
+   WARN  Tests\Feature\Api\Client\PersonSearchTest
+  ✓ it returns an empty collection when no criteria is given (CA01/RN01… 0.03s  
+  ✓ it denies access without the person-search.index permission          0.03s  
+  ✓ it finds a person by exact CPF, sanitizing the mask (CA02/RN02/RN08… 0.03s  
+  ✓ it rejects a partial CPF (RN02 requires the full document)           0.01s  
+  ✓ it lists every active member of the family block by family code (CA… 0.03s  
+  ✓ it finds people by partial name on full_name OR social_name (CA04/R… 0.02s  
+  - it matches a partial name case-insensitively (RN02 ILIKE) → ILIKE c… 0.02s  
+  ✓ it rejects a name shorter than 2 characters                          0.01s  
+  ✓ it combines criteria with AND (RN02)                                 0.02s  
+  ✓ it returns the RN03 triage columns with computed age and NIS fallba… 0.02s  
+  ✓ it never returns people from another tenant (CA10/RN07)              0.03s  
+  ✓ it exposes can_view_details=false for the base operator and true wh… 0.03s  
+  ✓ it keeps families.view-details out of every role on automatic assig… 0.60s  
+  ✓ it memoizes the Master bypass check: 1 query for N rows, not N (reg… 0.03s  
+
+   PASS  Tests\Feature\Api\Client\ProfessionalControllerTest
+  ✓ it blocks duplicate professional in the same tenant (E4)             0.03s  
+  ✓ it blocks duplicate registration number in the same tenant           0.02s  
+
+   PASS  Tests\Feature\Api\ContractModalityControllerTest
+  ✓ it returns 422 on duplicate code_tceal                               0.01s  
+
+   PASS  Tests\Feature\Api\CountryControllerTest
+  ✓ it rejects duplicate iso_code with 422                               0.01s  
+
+   PASS  Tests\Feature\Api\DneImportControllerTest
+  ✓ it logs a single force_destroyed activity without a duplicate delet… 0.03s  
+
+   PASS  Tests\Feature\Api\FamilyIntakeFormControllerTest
+  ✓ it rejects a duplicate code                                          0.01s  
+
+   PASS  Tests\Feature\Api\GeoLayerImportControllerTest
+  ✓ it logs a single force_destroyed activity without a duplicate delet… 0.01s  
+
+   PASS  Tests\Feature\Api\Manager\GeoLayerControllerTest
+  ✓ it blocks a duplicated name case-insensitively, but frees it after…  0.02s  
+
+   PASS  Tests\Feature\Api\Manager\UserPermissionsTest
+  ✓ it returns tenant_permissions grouped by tenant with deduplicated r… 0.03s  
+
+   PASS  Tests\Feature\Api\MemberUnlinkReasonControllerTest
+  ✓ it rejects a duplicate code                                          0.01s  
+
+   PASS  Tests\Feature\Api\MinimumWageControllerTest
+  ✓ it returns 422 on duplicate year                                     0.02s  
+
+   PASS  Tests\Feature\Api\PersonControllerTest
+  ✓ it blocks a duplicate cpf on create (CA01/#9594)                     0.01s  
+  ✓ it flags a duplicate cpf (RN07/#9594)                                0.01s  
+  ✓ it blocks a duplicate cnpj on create (CA03)                          0.02s  
+  ✓ it validates and detects a duplicate alphanumeric cnpj on check-cnp… 0.01s  
+
+   PASS  Tests\Feature\Api\PlatformVersionControllerTest
+  ✓ it rejects a duplicated version_number on store                      0.01s  
+
+   PASS  Tests\Feature\Api\PostalCodeControllerTest
+  ✓ it returns 422 on duplicate cep                                      0.02s  
+
+   PASS  Tests\Feature\Api\RaceColorControllerTest
+  ✓ it rejects a duplicate code                                          0.01s  
+
+   PASS  Tests\Feature\Api\RoleControllerTest
+  ✓ it rejects duplicate role name within same guard on store            0.02s  
+  ✓ it rejects clone with duplicate name in same guard                   0.03s  
+
+   PASS  Tests\Feature\Api\SocialEntityControllerTest
+  ✓ it CA06: store with duplicate active CNPJ returns 422 and existing_… 0.02s  
+  ✓ it RN06: store with duplicate active CNEAS returns 422               0.02s  
+  ✓ it RN06: rejected store (duplicate CNEAS) leaves no orphan address   0.02s  
+
+   PASS  Tests\Feature\Api\SocialProfessionalControllerTest
+  ✓ it rejects duplicate cpf in same tenant                              0.02s  
+  ✓ it rejects duplicate mds_number in same tenant                       0.02s  
+  ✓ it still rejects duplicate CPF when both rows are alive              0.01s  
+
+   PASS  Tests\Feature\Api\SocialProgramControllerTest
+  ✓ it rejects a duplicate code                                          0.01s  
+
+   PASS  Tests\Feature\Api\SocialUnitControllerTest
+  ✓ it rejects duplicated social_unit_equipment_id in equipments payloa… 0.02s  
+
+   PASS  Tests\Feature\Api\SocialUnitEquipmentAssignmentControllerTest
+  ✓ it store rejects duplicate process_number for the same unit and equ… 0.02s  
+
+   PASS  Tests\Feature\Api\StateControllerTest
+  ✓ it rejects duplicate ibge_code within the same country with 422      0.02s  
+  ✓ it rejects duplicate uf in the same country with 422                 0.01s  
+
+   PASS  Tests\Feature\Api\UserAttachTenantControllerTest
+  ✓ it is idempotent — does not duplicate existing UTR                   0.01s  
+
+   PASS  Tests\Feature\Api\UserFromCpfControllerTest
+  ✓ it rejects duplicated CPF (already exists in system)                 0.02s  
+
+   PASS  Tests\Feature\Api\UserTenantRoleControllerTest
+  ✓ it rejects a duplicate (user, tenant, role)                          0.01s  
+
+   PASS  Tests\Feature\Console\BackfillTenantLegalDocumentsTest
+  ✓ it is idempotent — re-running does not duplicate documents or versi… 0.02s  
+
+   PASS  Tests\Feature\CopyGlobalLegalDocumentsToTenantTest
+  ✓ it is idempotent — re-running does not duplicate documents or versi… 0.02s  
+
+   PASS  Tests\Feature\Dashboard\RegistrationQualityTest
+  ✓ it counts duplicate records by repeated NIS per record, not per gro… 0.04s  
+  ✓ it counts duplicate records by repeated CPF (same person in more th… 0.04s  
+  ✓ it does not treat empty CPF/NIS as duplicates (RN03.1)               0.03s  
+  ✓ it deduplicates a pending citizen linked to more than one family     0.03s  
+
+   PASS  Tests\Feature\Migrations\MigrateSocialProfessionalAssignmentsToTenantTest
+  ✓ it is idempotent — running twice does not duplicate                  0.02s  
+
+   PASS  Tests\Feature\Person\TenantPersonSecurityTest
+  ✓ it rejects the raw id and the raw uuid in place of the person_ref (… 0.03s  
+  ✓ it rejects an expired person_ref (§10 — TTL curto)                   0.04s  
+  ✓ it rejects a person_ref issued to another municipality (§10)         0.03s  
+  ✓ it does not leak the person identifiers inside the token (§10 — opa… 0.03s  
+  ✓ it throttles the search that reaches the global repository (§10)     0.04s  
+  ✓ it throttles the identity confirmation, the trial-and-error oracle…  0.03s  
+  ✓ it denies filling fields of a person NOT linked to the municipality… 0.03s  
+  ✓ it denies linking into a family of another organization (RN07)       0.03s  
+  ✓ it requires person-search.index to register a person                 0.03s  
+  ✓ it keeps persons a global repository: no tenant scope, and authorsh… 0.03s  
+  ✓ it never accepts provenance or authorship from the payload (§10)     0.04s  
+  ✓ it never writes a plain CPF, a full name or a confirmation value to… 0.03s  
+
+   PASS  Tests\Feature\Person\TenantPersonTest
+  ✓ it keeps the current person search payload untouched for someone in… 0.04s  
+  ✓ it reports only the existence of a person from another municipality… 0.03s  
+  ✓ it offers the registration path when the CPF does not exist anywher… 0.03s  
+  ✓ it audits every query that reaches the global repository, with the…  0.03s  
+  ✓ it never reaches other municipalities on a partial name search (CA1… 0.03s  
+  ✓ it links a person from outside after confirming the identity (CA03)  0.03s  
+  ✓ it confirms the identity by the mother name, ignoring case and acce… 0.03s  
+  ✓ it never reveals the correct value when the confirmation fails, and… 0.03s  
+  ✓ it refuses the confirmation when the existing record has the field…  0.03s  
+  ✓ it registers a new person from the municipality, stamping the prove… 0.03s  
+  ✓ it requires the mother name when the municipality registers a perso… 0.03s  
+  ✓ it does not create a second person when the CPF already exists (CA0… 0.03s  
+  ✓ it does not create a person without CPF while there are similar one… 0.03s  
+  ✓ it audits the duplicate check by the COUNT, never by the names (CA0… 0.03s  
+  ✓ it creates a person without CPF with no fuss when there is nobody s… 0.03s  
+  ✓ it fills an empty field of a person linked to the municipality (CA0… 0.04s  
+  ✓ it refuses to overwrite a field that is already filled (CA10/RN08)   0.03s  
+  ✓ it has no delete route for a person (CA11/RN07)                      0.03s  
+
+   PASS  Tests\Feature\Seeders\CboAccessProfileSeederTest
+  ✓ it is idempotent — re-running duplicates nothing                     1.66s  
+
+   PASS  Tests\Feature\Seeders\CompositionLookupSeedersTest
+  ✓ it is idempotent — running both seeders twice does not duplicate     0.02s  
+
+   PASS  Tests\Feature\Seeders\IntakeLookupSeedersTest
+  ✓ it is idempotent — running both seeders twice does not duplicate     0.02s  
+
+   PASS  Tests\Feature\Seeders\LocalDevSeederTest
+  ✓ it is idempotent — a second run duplicates nothing and breaks no un… 1.10s  
+
+   PASS  Tests\Feature\Services\Cadunico\CadunicoSyncAddressInconsistencyTest
+  ✓ it does not duplicate the open row when the same family fails again… 0.04s  
+
+   PASS  Tests\Feature\Services\SetTenantOfficialAddressActionTest
+  ✓ it reuses the config created beforehand (does not duplicate tenant_… 0.01s  
+
+  Tests:    1 skipped, 117 passed (419 assertions)
+  Duration: 6.66s
+

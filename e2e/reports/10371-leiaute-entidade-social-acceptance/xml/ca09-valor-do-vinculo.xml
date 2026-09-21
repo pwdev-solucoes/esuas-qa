@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<SIAP>
+    <Codigo>004821</Codigo>
+    <Exercicio>2026</Exercicio>
+    <Mes>08</Mes>
+    <EntidadeSocial>
+        <NumeroCNEAS>4174595337388</NumeroCNEAS>
+        <NomeEntidadeSocial>Instituto Esperança</NomeEntidadeSocial>
+        <CNPJEntidadeSocial>71551876112671</CNPJEntidadeSocial>
+        <EnderecoEntidadeSocial>Rua, Av. Melissa Neves, 193, d'Oeste, Porto Carolina</EnderecoEntidadeSocial>
+        <CEP>57000000</CEP>
+        <SituacaoEntidadeSocial>1</SituacaoEntidadeSocial>
+        <Email>contato@entidade.test</Email>
+        <TipoLocalizacao>1</TipoLocalizacao>
+        <ParceriaPoderPublico>2</ParceriaPoderPublico>
+        <ParticipanteSUAS>1</ParticipanteSUAS>
+        <BeneficioEventual>2</BeneficioEventual>
+        <ExecucaoServicos>2</ExecucaoServicos>
+        <SituacaoUnidade>2</SituacaoUnidade>
+        <Modalidade>2</Modalidade>
+        <ValorVinculo>120000.00</ValorVinculo>
+    </EntidadeSocial>
+    <EntidadeSocial>
+        <NumeroCNEAS>5760851249962</NumeroCNEAS>
+        <NomeEntidadeSocial>Associação Lar Feliz</NomeEntidadeSocial>
+        <CNPJEntidadeSocial>31778824215879</CNPJEntidadeSocial>
+        <EnderecoEntidadeSocial>Rua, Rua Fátima Aguiar, 69, 86º Andar, d'Oeste, Daiane do Norte</EnderecoEntidadeSocial>
+        <CEP>57000000</CEP>
+        <SituacaoEntidadeSocial>1</SituacaoEntidadeSocial>
+        <Email>contato@entidade.test</Email>
+        <TipoLocalizacao>1</TipoLocalizacao>
+        <ParceriaPoderPublico>2</ParceriaPoderPublico>
+        <ParticipanteSUAS>1</ParticipanteSUAS>
+        <BeneficioEventual>2</BeneficioEventual>
+        <ExecucaoServicos>2</ExecucaoServicos>
+        <SituacaoUnidade>2</SituacaoUnidade>
+        <Modalidade>2</Modalidade>
+        <ValorVinculo>0.00</ValorVinculo>
+    </EntidadeSocial>
+</SIAP>

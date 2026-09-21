@@ -1,0 +1,38 @@
+
+   PASS  Tests\Feature\Api\Client\CadunicoImportControllerTest
+  ✓ it validates a well-formed CSV and returns an upload token (CA01)    0.92s  
+  ✓ it rejects a CSV from a different município (RN01)                   0.12s  
+  ✓ it rejects validation when the tenant has no município configured    0.09s  
+  ✓ it rejects a CSV with a divergent header (CA02)                      0.05s  
+  ✓ it blocks validation when an import is already active (RN11/CA07)    0.08s  
+  ✓ it confirms the import and queues stage 1 (HU02)                     0.11s  
+  ✓ it records the executor label with [Master] suffix when not a profe… 0.07s  
+  ✓ it rejects store with an unknown upload token                        0.04s  
+  ✓ it does not sync an import that is not completed                     0.05s  
+  ✓ it queues stage 2 when the import is completed (Etapa 2 manual)      0.05s  
+  ✓ it blocks sync when another batch is active in the tenant (RN11)     0.05s  
+  ✓ it lists only the tenant own history (CA12)                          0.07s  
+  ✓ it returns 404 for a cross-tenant import (CA12/RN10)                 0.05s  
+  ✓ it hides the module from an operador without the permission (CA03)   0.04s  
+  ✓ it stores a generic failure message without leaking exception detai… 0.05s  
+
+   PASS  Tests\Feature\Services\Cadunico\CadunicoIngestServiceTest
+  ✓ it loads persons (1 per row), dedups families and captures the muni… 0.04s  
+  ✓ it sanitizes CPF/NIS digits in the staging (RN09)                    0.03s  
+  ✓ it throws when the header is missing required columns                0.03s  
+
+   PASS  Tests\Feature\Services\Cadunico\CadunicoSyncServiceTest
+  ✓ it creates a new family, domicile and members (CA04)                 0.09s  
+  ✓ it updates by newer date and unlinks absent members without deletin… 0.10s  
+  ✓ it ignores the block when the file date is not newer (CA06)          0.07s  
+  ✓ it catalogs a block with missing update date (RN07)                  0.09s  
+  ✓ it creates the family but catalogs a member without CPF as a warnin… 0.09s  
+  ✓ it discards the block when the responsible has no CPF (RN07)         0.07s  
+  ✓ it parses income in both decimal formats (#1)                        0.07s  
+  ✓ it snapshots the responsible CPF on the family (#2)                  0.08s  
+  ✓ it updates the SAME family when CadÚnico reissues the code, by resp… 0.07s  
+  ✓ it does not mass-unlink when the new block has members without NIS…  0.07s  
+
+  Tests:    28 passed (95 assertions)
+  Duration: 3.28s
+

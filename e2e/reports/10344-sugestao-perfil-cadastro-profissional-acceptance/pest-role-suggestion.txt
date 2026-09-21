@@ -1,0 +1,27 @@
+
+   PASS  Tests\Feature\Api\Client\ProfessionalRoleSuggestionTest
+  ✓ it CA01: apresenta posto base e perfil funcional PRE-MARCADOS        0.39s  
+  ✓ it CA02: apresenta o add-on LGPD visivel porem DESMARCADO            0.03s  
+  ✓ it CA02: salvar sem marcar o add-on NAO concede acesso ao prontuari… 0.06s  
+  ✓ it CA03: marcar o add-on concede o acesso e registra a origem da su… 0.04s  
+  ✓ it CA04: recusar a sugestao cria so o posto base e audita a retirad… 0.04s  
+  ✓ it CA04: papel fora da sugestao e registrado como manually_added     0.04s  
+  ✓ it CA05: CBO sem entrada devolve 200 com o padrao minimo, nao erro   0.03s  
+  ✓ it CA05: salvar com CBO nao mapeado cria o profissional so com o po… 0.03s  
+  ✓ it CA06: recusa 422 ao salvar conjunto composto SO por add-on        0.03s  
+  ✓ it CA07: profissional de outro tenant responde 404                   0.03s  
+  ✓ it CA08: a trilha NUNCA registra o CPF em claro                      0.03s  
+  ✓ it RN10: o Operador do tenant NAO acessa a sugestao (403)            0.02s  
+  ✓ it RN13: recusa a sugestao de um CBO inativo                         0.03s  
+  ✓ it RN09: a sugestao nunca inclui o posto Master                      0.03s  
+  ✓ it RN12: cadastro sem ocupacao segue funcionando (contrato legado r… 0.03s  
+  ✓ it RN11: alterar a ocupacao grava o novo CBO sem reprocessar o aces… 0.04s  
+
+   PASS  Tests\Feature\Permissions\ProfessionalRoleSuggestionMasterOnlyTest
+  ✓ it keeps professionals.role-suggestion master-only                   1.11s  
+  ✓ it never leaks cbo-access-profiles into the client guard             1.10s  
+  ✓ it keeps permission coverage green (no authenticated route without…  0.02s  
+
+  Tests:    19 passed (97 assertions)
+  Duration: 3.19s
+

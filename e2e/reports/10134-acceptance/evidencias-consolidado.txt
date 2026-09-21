@@ -1,0 +1,22 @@
+=== CA01/CA02 — paridade de nomes pós-merge (parity-check-pos-merge.txt) ===
+Guarda de paridade de tokens semânticos (GLPI #10134)
+admin/src/style.css: 67 (:root) / 55 (.dark) / 74 (@theme inline)
+client/src/style.css: 67 (:root) / 55 (.dark) / 74 (@theme inline)
+
+OK: paridade de nomes de token confirmada nos três blocos (:root, .dark, @theme inline).
+
+=== CA03 — contraste WCAG dos 4 cenários (contrast-check.txt) ===
+CA03 cenário 1 — success, tema claro: 6.99:1 (PASS >= 4.5:1)
+CA03 cenário 2 — success, tema escuro (.dark, valor espelhado): 6.99:1 (PASS >= 4.5:1)
+CA03 cenário 3 — warning, tema claro: 7.38:1 (PASS >= 4.5:1)
+CA03 cenário 4 — warning, tema escuro (.dark, valor espelhado): 7.38:1 (PASS >= 4.5:1)
+
+OK: os 4 cenários atendem AA (>=4.5:1).
+
+=== CA04 — demonstração do caminho de erro, exit code 1 (ca04-deteccao-demo.txt) ===
+Guarda de paridade de tokens semânticos (GLPI #10134)
+admin/src/style.css: 67 (:root) / 55 (.dark) / 75 (@theme inline)
+client/src/style.css: 67 (:root) / 55 (.dark) / 74 (@theme inline)
+
+FALHA: 1 divergência(s) de paridade de token:
+  - @theme inline: --color-demo-only-admin-10134 ausente em client (presente em admin)

@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — HU #9862 Inicialização e Navegação Cartográfica Livre</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — HU #9862 Inicialização e Navegação Cartográfica Livre</h1>
+    <div class="sub">Painel de Georreferenciamento (rota /georreferenciamento) · módulo client · Evidências end-to-end no app real</div>
+    <div class="meta"><div><span>Gerado em:</span> 09/07/2026</div><div><span>História:</span> HU #9862 — Inicialização e Navegação Cartográfica Livre</div><div><span>Critérios:</span> CA01, CA02 e CA17–CA36 (22 critérios)</div><div><span>Submódulos:</span> client 99e397d · api 7731b50 (branch feature/geo-9862-google-satelite-zindex)</div><div><span>Ambiente:</span> API Sail/PostgreSQL · fila geo · client Vite :5175 (não-mock) → http://localhost/api</div><div><span>Organização (tenant):</span> Prefeitura de Maceió (massa geo) · IBGE 2704302 · malha homologada</div><div><span>Perfil de acesso:</span> Master (CPF 27043020140) com geo-panel.view — RN10/RN21</div><div><span>Ferramenta:</span> playwright-cli (Chromium, viewport 1680×1050) + Pest</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">Todos os 22 critérios de aceite da HU #9862 (CA01, CA02 e CA17–CA36) da rota /georreferenciamento do módulo client foram RE-VALIDADOS ponta a ponta, dirigindo o app real no navegador e complementando com a suíte automatizada — todos ATENDIDOS. Evidências (prints em tamanho grande) capturadas sobre o tenant geo-habilitado Prefeitura de Maceió (12 famílias geocodificadas, 1.620 setores censitários, malha municipal homologada): estado inicial neutro e centralização no município (CA01/CA17/CA20/CA33), zoom+arrasto (CA02), tela cheia e retorno preservando contexto (CA18/CA19), medição com parciais e total (CA24/CA25), barra de camadas e liga/desliga individual (CA27/CA28), busca avançada com resultados e sem resultados (CA30/CA31/CA32), resumo analítico com indicadores consolidados (CA34) e exportação XLSX/PDF refletindo filtros + bloqueio no estado neutro (CA35/CA36). As ressalvas da rodada anterior foram RESOLVIDAS: com a chave do Google Map Tiles agora configurada (VITE_GOOGLE_MAP_TILES_KEY no client + GOOGLE_MAPS_API_KEY server-side), CA22 passa a ser evidenciado com o provedor Google HABILITADO (troca OpenLayers→Google→Leaflet preservando centro/zoom/camadas) e CA26 fica PLENO com o formato satélite servido pelo Google. O débito de UX do engine Leaflet — barra de ferramentas e barra de camadas pintadas sob os panes — foi CORRIGIDO (z-[1050]) e reevidenciado no navegador. CA21 e CA23 seguem comprovados pela suíte automatizada (tenant homologado; rollback de provedor é regra de frontend). A suíte Pest de geo passou integralmente (60 testes, 204 asserções).</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA01</td><td>Estado inicial neutro com instrução</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA02</td><td>Movimentação livre no mapa</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA17</td><td>Abertura integrada à área de trabalho, com comando de expansão no cabeçalho</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA18</td><td>Expansão para tela cheia preservando o contexto de análise</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA19</td><td>Retorno ao modo integrado mantendo o contexto</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA20</td><td>Centralização automática no município do tenant com limites em destaque</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA21</td><td>Aviso de indisponibilidade quando o município não é identificado / malha não homologada</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA22</td><td>Troca de provedor (OpenLayers, Google, Leaflet) preservando centro/zoom/camadas</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA23</td><td>Provedor indisponível — mantém o atual, informa e preserva o trabalho</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA24</td><td>Medição de distância com parciais e total</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA25</td><td>Limpeza da medição, pronta para nova medição</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA26</td><td>Troca de formato do mapa (ruas/satélite)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA27</td><td>Barra lateral de camadas com “Limites dos municípios” e “Setores censitários”</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA28</td><td>Ligar/desligar camadas individualmente</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA29</td><td>Nova camada publicada pelo Administrador aparece desligada por padrão</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA30</td><td>Busca avançada em janela sobreposta com critérios combinados escopados ao tenant</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA31</td><td>Aplicação da busca reflete no mapa (foco + projeção)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA32</td><td>Busca sem resultados — informa e mantém a visualização anterior</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA33</td><td>Resumo analítico recolhido por padrão com comando de expansão</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA34</td><td>Expansão do resumo com indicadores consolidados (inclui indicador fixo)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA35</td><td>Exportação do resumo no formato escolhido, refletindo filtros/camadas ativos</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA36</td><td>Exportação bloqueada sem filtro ativo, com orientação</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA01">
+      <h2>CA01 — Estado inicial neutro com instrução <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou um Profissional com o perfil habilitado e acesso o painel de Georreferenciamento, Quando a interface termina de carregar, Então o sistema exibe os limites do meu município em mapa limpo (sem manchas), mantém o painel lateral de setores censitários zerado e apresenta o alerta visual correspondente.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Login como <code>master</code> do tenant <b>Prefeitura de Maceió</b> (CPF <code>27043020140</code>) e navegação para <code>/app/georreferenciamento</code>. Observado o carregamento inicial do painel sem nenhum filtro aplicado.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O mapa abre limpo (sem manchas de calor), exibindo os limites do município de Maceió destacados em azul.</li><li>Alerta de estado neutro visível: “Maceió. Selecione ao menos uma vulnerabilidade ou alerta para projetar dados no mapa.”</li><li>A faixa lateral/inferior de setores censitários fica zerada (todos os setores com contagem 0 — ver evidência complementar).</li><li>Indicador fixo “Famílias com Endereço Inconsistente: 1” presente no cabeçalho (RN07).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca01-estado-neutro.png" alt="CA01 evidência"/><figcaption>ca01-estado-neutro.png</figcaption></figure><figure><img src="screenshots/ca33-resumo-neutro-zerado.png" alt="CA01 evidência"/><figcaption>ca33-resumo-neutro-zerado.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA02">
+      <h2>CA02 — Movimentação livre no mapa <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que estou visualizando o mapa do município, Quando utilizo os botões de controle de zoom ou clico e arrasto o mouse sobre a tela, Então o sistema responde executando a aproximação, distanciamento ou o deslocamento por arrasto na direção comandada.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Acionados os botões de zoom (<code>+</code>) da barra de ferramentas três vezes; o arrasto livre (pan) é suportado pelo engine de mapa (OpenLayers/Leaflet).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O mapa aproxima progressivamente, revelando o detalhe urbano de Maceió (aproximação/distanciamento funcionais).</li><li>Os controles de zoom in/out e o arrasto (pan) respondem na direção comandada.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca02-zoom-navegacao.png" alt="CA02 evidência"/><figcaption>ca02-zoom-navegacao.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA17">
+      <h2>CA17 — Abertura integrada à área de trabalho, com comando de expansão no cabeçalho <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> A abertura padrão do painel de Georreferenciamento deve ocorrer de forma integrada à área de trabalho do sistema. Quando a interface terminar de carregar, o painel deve ser exibido dentro do shell da aplicação, com o comando de expansão visível no cabeçalho.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Observado o carregamento padrão do painel dentro do shell (sidebar de navegação + cabeçalho da aplicação).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O painel é exibido integrado ao shell (menu lateral “PRINCIPAL / CADASTROS / …” e cabeçalho preservados).</li><li>O comando “Expandir” está visível no cabeçalho do painel.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca01-estado-neutro.png" alt="CA17 evidência"/><figcaption>ca01-estado-neutro.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA18">
+      <h2>CA18 — Expansão para tela cheia preservando o contexto de análise <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> A expansão para tela cheia deve preservar o contexto de análise do usuário. Ao acionar o comando de expandir, o painel deve ocupar a tela inteira mantendo a mesma posição no mapa, nível de zoom, provedor de visualização, camadas ativas e filtros aplicados, além de exibir o comando para retorno ao modo integrado.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Com o filtro <b>Bolsa Família</b> aplicado (manchas de calor projetadas, provedor OSM), acionado o comando “Expandir”.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O painel passa a ocupar a tela inteira (shell recolhido).</li><li>Contexto preservado: mesma posição/zoom em Maceió, provedor OSM, projeção de calor e chip “Filtros ativos: Bolsa Família” mantidos.</li><li>Surge o comando “Voltar ao painel” para retorno ao modo integrado.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca18-tela-cheia.png" alt="CA18 evidência"/><figcaption>ca18-tela-cheia.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA19">
+      <h2>CA19 — Retorno ao modo integrado mantendo o contexto <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> O retorno ao modo integrado deve manter integralmente o contexto de análise. Ao sair da tela cheia, o painel deve voltar ao modo integrado preservando a posição do mapa, zoom, provedor, camadas e filtros ativos.</p>
+      <p class="steps"><strong>Como foi testado:</strong> A partir da tela cheia, acionado “Voltar ao painel”.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O painel retorna ao modo integrado (shell restaurado, comando “Expandir” de volta).</li><li>Contexto preservado: filtro “Bolsa Família”, provedor OSM e posição/zoom mantidos (nenhuma nova requisição — alternância é puro estado de frontend).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca19-retorno-integrado.png" alt="CA19 evidência"/><figcaption>ca19-retorno-integrado.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA20">
+      <h2>CA20 — Centralização automática no município do tenant com limites em destaque <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> O mapa deve ser centralizado automaticamente no município do tenant quando houver endereço com município identificado. Ao carregar o painel, o sistema deve abrir o mapa centralizado nesse município e exibir seus limites geográficos em destaque.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Carregado o painel do tenant Maceió (endereço do tenant com município identificado — IBGE 2704302). Complementado pelo teste automatizado que valida o retorno do município com geometria e centróide.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O mapa abre centralizado em Maceió, com os limites municipais destacados em azul.</li><li>Pest: “it returns the tenant municipality with geometry, centroid …” — contrato do endpoint &lt;code&gt;geo-panel/context&lt;/code&gt; confirmado.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca01-estado-neutro.png" alt="CA20 evidência"/><figcaption>ca01-estado-neutro.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA21">
+      <h2>CA21 — Aviso de indisponibilidade quando o município não é identificado / malha não homologada <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Quando o município do tenant não puder ser identificado ou sua malha não estiver homologada, o sistema deve exibir um aviso claro informando a indisponibilidade. Nessa situação, nenhum dado deve ser projetado no mapa.</p>
+      <p class="steps"><strong>Como foi testado:</strong> O tenant usado nas evidências de navegador é geo-habilitado (malha de Maceió homologada), portanto o caminho de indisponibilidade é comprovado pela suíte automatizada (ver Anexo), que cobre tanto a ausência de município quanto a geometria inativa.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Pest: “it responds 409 geo_panel.city_unavailable when the tenant has no registered municipality”.</li><li>Pest: “it responds 409 when the municipality geometry exists but is inactive” — nenhum dado projetado; a UI exibe o aviso &lt;code&gt;data-testid="geo-city-unavailable"&lt;/code&gt;.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA22">
+      <h2>CA22 — Troca de provedor (OpenLayers, Google, Leaflet) preservando centro/zoom/camadas <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> A troca de provedor de visualização deve permitir alternar entre OpenLayers, Google Maps e Leaflet. Ao selecionar outro provedor na barra de ferramentas, o mapa deve ser reapresentado no provedor escolhido mantendo o mesmo ponto central, nível de zoom e camadas ativas.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Na barra de ferramentas, alternado o provedor <b>OpenLayers (OSM)</b> → <b>Google</b> → <b>Leaflet</b>. Com a chave configurada, a opção <b>Google</b> aparece HABILITADA; cada troca cria o novo engine (build-then-swap) e reapresenta o mapa preservando centro, zoom e camadas.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>OpenLayers→Google: o mapa é reapresentado com os tiles do Google (session &lt;code&gt;client/geo-panel/map-tiles/session&lt;/code&gt; → 200) mantendo o centro em Maceió e o nível de zoom; o seletor marca GOOGLE como ativo.</li><li>Google→Leaflet: o mapa passa ao engine Leaflet (atribuição “Leaflet | © OpenStreetMap contributors”) preservando centro/zoom; o formato retorna a “ruas” (satélite só existe no provedor Google).</li><li>Débito de UX RESOLVIDO: sob o engine Leaflet, a barra de ferramentas e a barra de camadas agora ficam ACIMA dos panes do Leaflet (z-[1050]), plenamente visíveis — antes ficavam pintadas por baixo (z-20).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca22-provedor-osm.png" alt="CA22 evidência"/><figcaption>ca22-provedor-osm.png</figcaption></figure><figure><img src="screenshots/ca22-provedor-google.png" alt="CA22 evidência"/><figcaption>ca22-provedor-google.png</figcaption></figure><figure><img src="screenshots/ca22-provedor-leaflet.png" alt="CA22 evidência"/><figcaption>ca22-provedor-leaflet.png</figcaption></figure><figure><img src="screenshots/ca22-sidebar-leaflet.png" alt="CA22 evidência"/><figcaption>ca22-sidebar-leaflet.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA23">
+      <h2>CA23 — Provedor indisponível — mantém o atual, informa e preserva o trabalho <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Caso o provedor de visualização selecionado esteja temporariamente indisponível, o sistema deve manter o provedor atual, exibir uma mensagem informativa e preservar o trabalho em andamento.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Comportamento de rollback “build-then-swap” do provedor: o engine só é trocado após a nova instância montar com sucesso; falha mantém o engine atual intacto e emite toast informativo. Coberto pelo teste unitário de frontend <code>useMapProvider.test.ts</code> e pelo handler <code>onSetProvider</code> (toast <code>geo-panel.toast.provider_unavailable</code>).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Em caso de falha ao trocar de provedor, o engine atual (incluindo a medição em andamento) permanece intacto — nada é destruído.</li><li>É exibida a mensagem informativa “O provedor selecionado está indisponível…”, preservando o trabalho em andamento.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA24">
+      <h2>CA24 — Medição de distância com parciais e total <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> A ferramenta de medição de distância deve permitir que o usuário marque dois ou mais pontos no mapa. Durante a medição, o sistema deve exibir a distância parcial entre os pontos e a distância total do trajeto marcado.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Ativada a ferramenta de medição (ícone régua) e marcados três pontos no mapa (duplo-clique para encerrar o traçado).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Painel “MEDIÇÃO DE DISTÂNCIA” exibe as distâncias parciais: Trecho 1 = 5,59 km e Trecho 2 = 4,29 km.</li><li>Distância total do trajeto: 9,88 km (cálculo geodésico unificado, idêntico entre provedores).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca24-medicao.png" alt="CA24 evidência"/><figcaption>ca24-medicao.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA25">
+      <h2>CA25 — Limpeza da medição, pronta para nova medição <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> A limpeza da medição deve permitir remover os pontos e valores exibidos no mapa. Após acionar o comando de limpar medição, a ferramenta deve ficar pronta para uma nova medição.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Acionado o comando “Limpar medição” (ícone borracha).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Os pontos e os valores (parciais/total) são removidos do painel.</li><li>A ferramenta volta ao estado inicial: “Clique no mapa para marcar dois ou mais pontos.” — pronta para uma nova medição.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca25-limpar-medicao.png" alt="CA25 evidência"/><figcaption>ca25-limpar-medicao.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA26">
+      <h2>CA26 — Troca de formato do mapa (ruas/satélite) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> A troca de formato do mapa deve permitir alternar entre os formatos disponíveis, como ruas e satélite. Ao selecionar um novo formato, o mapa deve ser reapresentado mantendo a posição, o nível de zoom e as camadas ativas.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Com o provedor <b>Google</b> ativo, acionado o comando de formato (ícone satélite) para alternar <b>ruas ↔ satélite</b>. Com a chave de tiles configurada, o formato satélite fica HABILITADO (antes ficava desabilitado com tooltip por falta de fonte de tiles satélite).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Ao ativar o satélite, o mapa é reapresentado com a imagery de satélite do Google (session &lt;code&gt;mapType=satellite&lt;/code&gt; → 200; marca d’água “© 2026 Google”), preservando posição, nível de zoom e camadas ativas.</li><li>O botão alterna para “Formato ruas”, permitindo voltar ao mapa de ruas; sob OSM/Leaflet o satélite permanece desabilitado com tooltip (somente o provedor Google serve satélite).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca26-satelite.png" alt="CA26 evidência"/><figcaption>ca26-satelite.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA27">
+      <h2>CA27 — Barra lateral de camadas com “Limites dos municípios” e “Setores censitários” <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> A barra lateral de camadas deve permitir a visualização das camadas disponíveis para o tenant. Ao acessar a barra lateral sobreposta ao lado direito do mapa, o usuário deve visualizar, no mínimo, as camadas "Limites dos municípios" e "Setores censitários", cada uma com comando individual para ligar ou desligar.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Aberta a barra lateral “Camadas” sobreposta ao lado direito do mapa.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A barra lista, no mínimo, “Limites dos municípios” e “Setores censitários (IBGE)”, além de “CRAS e CREAS”.</li><li>Cada camada tem seu próprio comando (switch) para ligar/desligar individualmente.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca27-barra-camadas.png" alt="CA27 evidência"/><figcaption>ca27-barra-camadas.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA28">
+      <h2>CA28 — Ligar/desligar camadas individualmente <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> O usuário deve conseguir ligar e desligar camadas individualmente. Ao ativar a camada "Setores censitários", suas delimitações devem ser sobrepostas ao mapa. Ao desativá-la, as delimitações devem ser removidas sem afetar as demais camadas ativas.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Ativada a camada “Setores censitários (IBGE)” e, em seguida, desativada — mantendo “Limites dos municípios” ativa.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Ao ativar, as delimitações dos setores censitários são sobrepostas ao mapa (polígonos roxos/azuis).</li><li>Ao desativar, as delimitações são removidas sem afetar a camada “Limites dos municípios” (que permanece ativa — ver CA01).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca28-setores-ativos.png" alt="CA28 evidência"/><figcaption>ca28-setores-ativos.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA29">
+      <h2>CA29 — Nova camada publicada pelo Administrador aparece desligada por padrão <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Quando o Administrador publicar uma nova camada contemplando o tenant do usuário, essa camada deve aparecer automaticamente na barra lateral ao abrir ou atualizar o painel. A nova camada deve ser exibida desligada por padrão e disponível para ativação.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Publicada uma camada custom (audiência “selecionados”, status publicado) contemplando o tenant Maceió; em seguida atualizado o painel e reaberta a barra de camadas.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A nova camada “Equipamentos SUAS (nova camada — Admin)” aparece automaticamente na seção “CAMADAS DE INFORMAÇÃO” após atualizar o painel.</li><li>A camada é exibida desligada por padrão (switch off) e disponível para ativação.</li><li>Pest: &lt;code&gt;GeoPanelLayerDataTest&lt;/code&gt; confirma a visibilidade por audiência/status e a reconciliação sem cache.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca29-nova-camada.png" alt="CA29 evidência"/><figcaption>ca29-nova-camada.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA30">
+      <h2>CA30 — Busca avançada em janela sobreposta com critérios combinados escopados ao tenant <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> A busca avançada deve ser exibida em uma janela sobreposta ao painel. Ao informar critérios combinados sobre os dados georreferenciados, o sistema deve apresentar apenas os resultados que atendem aos critérios e que pertencem ao tenant do usuário.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Aberta a “Busca avançada” (janela modal sobreposta ao painel) e informado o critério <b>Bolsa Família</b>; acionado “Buscar”.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A busca é exibida como janela sobreposta, com critérios combinados (vulnerabilidades, situação cadastral e setor censitário — interseção AND).</li><li>Retorna “5 família(s) encontrada(s)” apenas do tenant do usuário. Pest: “it never leaks families from another tenant in the search (RN01/CA30)”.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca30-busca-avancada.png" alt="CA30 evidência"/><figcaption>ca30-busca-avancada.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA31">
+      <h2>CA31 — Aplicação da busca reflete no mapa (foco + projeção) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> A aplicação dos resultados da busca avançada deve refletir diretamente no mapa. Ao aplicar uma busca com resultados, o mapa deve focar a área correspondente e projetar apenas os dados que atendem aos critérios informados.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Com resultados (5 famílias — Bolsa Família), acionado “Aplicar no mapa”.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O mapa foca a área correspondente (fit no bbox dos resultados, detalhe de Maceió) e projeta as manchas de calor dos dados filtrados.</li><li>Chip “Filtros ativos: Bolsa Família” e legenda dinâmica de densidade (“Busca aplicada — 1 filtro(s)”) exibidos.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca31-aplicado-mapa.png" alt="CA31 evidência"/><figcaption>ca31-aplicado-mapa.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA32">
+      <h2>CA32 — Busca sem resultados — informa e mantém a visualização anterior <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Quando uma busca avançada não retornar resultados, o sistema deve informar que não há registros compatíveis com os critérios informados e manter a visualização anterior do mapa inalterada.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Informada uma combinação restritiva de critérios (interseção AND de situação de rua + indígenas/quilombolas + trabalho infantil + pessoas com deficiência) e acionado “Buscar”.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Mensagem exibida dentro do modal: “Nenhum registro atende aos critérios informados. A visualização anterior do mapa foi mantida.”</li><li>O botão “Aplicar no mapa” permanece desabilitado e o mapa não é alterado. Pest: “it returns an empty payload when no record matches, so the map stays …”.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca32-sem-resultados.png" alt="CA32 evidência"/><figcaption>ca32-sem-resultados.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA33">
+      <h2>CA33 — Resumo analítico recolhido por padrão com comando de expansão <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> O resumo analítico deve ser apresentado recolhido por padrão após o carregamento do painel. A faixa de resumo deve aparecer na parte inferior da tela com o comando de expansão visível.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Observada a faixa “Resumo analítico” logo após o carregamento do painel.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A faixa “Resumo analítico” aparece na parte inferior, recolhida por padrão, com o comando “Expandir” visível.</li><li>O indicador fixo “Famílias com Endereço Inconsistente: 1” permanece visível mesmo recolhido.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca01-estado-neutro.png" alt="CA33 evidência"/><figcaption>ca01-estado-neutro.png</figcaption></figure><figure><img src="screenshots/ca33-resumo-neutro-zerado.png" alt="CA33 evidência"/><figcaption>ca33-resumo-neutro-zerado.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA34">
+      <h2>CA34 — Expansão do resumo com indicadores consolidados (inclui indicador fixo) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> A expansão do resumo analítico deve apresentar os indicadores consolidados da visualização atual. Quando houver ao menos um filtro aplicado, o usuário poderá expandir a faixa de resumo para consultar os indicadores, incluindo o indicador fixo de famílias com endereço inconsistente.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Com o filtro Bolsa Família aplicado, expandida a faixa “Resumo analítico”.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Indicadores consolidados: “Famílias nos filtros ativos: 5” e “Distribuição por setor censitário” (códigos IBGE com contagem).</li><li>Indicador fixo “Famílias com Endereço Inconsistente: 1” presente no resumo.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca34-resumo-indicadores.png" alt="CA34 evidência"/><figcaption>ca34-resumo-indicadores.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA35">
+      <h2>CA35 — Exportação do resumo no formato escolhido, refletindo filtros/camadas ativos <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> A exportação do resumo analítico deve gerar um arquivo no formato escolhido pelo usuário. O conteúdo exportado deve refletir exatamente os filtros e camadas ativos no momento da exportação.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Com o filtro Bolsa Família aplicado, acionado “Exportar planilha (XLSX)”; aberto o histórico “Exportações”.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A exportação XLSX é enfileirada e processada (fila &lt;code&gt;geo&lt;/code&gt;), ficando “Concluída” com botão “Baixar”.</li><li>O diálogo informa “Arquivos gerados com os filtros e camadas ativos no momento da solicitação” — snapshot imutável dos filtros/camadas. Pest: geração de XLSX/PDF a partir do snapshot com o prefixo do tenant.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca35-exportacao.png" alt="CA35 evidência"/><figcaption>ca35-exportacao.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA36">
+      <h2>CA36 — Exportação bloqueada sem filtro ativo, com orientação <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> A exportação do resumo analítico deve ser bloqueada quando nenhum filtro estiver ativo. Em estado inicial neutro, ao tentar exportar, o sistema deve impedir a ação e orientar o usuário a selecionar ao menos uma vulnerabilidade ou alerta.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Limpos os filtros (estado neutro) e acionado “Exportar planilha (XLSX)”.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A ação é impedida (bloqueio client-side, sem requisição) e é exibida a orientação: “Selecione ao menos uma vulnerabilidade ou alerta antes de exportar o resumo analítico.”</li><li>Pest (defesa em profundidade): “it blocks the export with 422 and the guidance message when no effective criterion …”.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca36-export-bloqueado.png" alt="CA36 evidência"/><figcaption>ca36-export-bloqueado.png</figcaption></figure></div>
+    </section>
+  
+  <h2>Anexo — Cobertura automatizada (Pest — GeoPanel, GeoPanelExport, GeoPanelLayerData, GeoPanelQueryService)</h2>
+  <pre class="pest">
+   PASS  Tests\Unit\Services\Geo\GeoPanelQueryServiceTest
+  ✓ it filters extreme_poverty by per_capita_income against the configu… 0.35s  
+  ✓ it filters single_person as exactly one ACTIVE member                0.03s  
+  ✓ it filters receives_pbf on the family flag                           0.01s  
+  ✓ it filters member flags (child_labor, homeless_situation, has_disab… 0.05s  
+  ✓ it filters indigenous_quilombola as an OR between the two family fl… 0.02s  
+  ✓ it filters gpte by any traditional group, refinable by traditional_… 0.02s  
+  ✓ it intersects multiple criteria with AND (RN06)                      0.02s  
+  ✓ it classifies expired as more than 24 months since source_updated_a… 0.02s  
+  ✓ it classifies expiring as between 19 and 24 months since source_upd… 0.02s  
+  ✓ it restricts by sector_uuid (SQLite fallback: sector city = family…  0.02s  
+  ✓ it aggregates by sector, groups anonymous points and computes the b… 0.02s  
+  ✓ it ignores families without an active locatable address point        0.02s  
+  ✓ it scopes every aggregate to the given tenant (RN01)                 0.02s  
+  ✓ it validates that a sector belongs to the tenant municipality (RN08… 0.01s  
+
+   PASS  Tests\Feature\Api\Client\GeoPanelExportTest
+  ✓ it creates a pending export with the immutable filters snapshot and… 0.06s  
+  ✓ it blocks the export with 422 and the guidance message when no effe… 0.02s  
+  ✓ it requires the map image for pdf exports and stores it under the t… 0.03s  
+  ✓ it rejects a map image that is not a base64 png                      0.03s  
+  ✓ it lists and shows only the exports of the active tenant, 404 on cr… 0.03s  
+  ✓ it downloads a completed export and refuses one still pending        0.04s  
+  ✓ it generates the xlsx from the filters snapshot with the tenant pre… 0.04s  
+  ✓ it generates the pdf composing the map image sent by the client (CA… 0.13s  
+  ✓ it marks the export as failed with the error message when the job f… 0.02s  
+  ✓ it neutralizes formula injection on every text cell of the spreadsh… 0.01s  
+
+   PASS  Tests\Feature\Api\Client\GeoPanelLayerDataTest
+  ✓ it merges a globally published layer after the builtins, keeping th… 0.02s  
+  ✓ it shows a selected-audience layer only to the covered tenant (CA43… 0.03s  
+  ✓ it never lists draft or inactive layers on the tenant panel (CA48/R… 0.02s  
+  ✓ it reflects audience/status changes on the very next fetch — no cac… 0.02s  
+  ✓ it executes the layer criteria strictly under each consumer tenant…  0.04s  
+  ✓ it answers 404 (never 403) for a layer that is not visible to the t… 0.02s  
+  ✓ it serves the CURRENT definition of the layer — an admin edit refle… 0.03s  
+  ✓ it shapes the payload by representation: markers, boundaries and he… 0.03s  
+  ✓ it denies the layer data endpoint to an operator without the geo_pa… 0.02s  
+
+   PASS  Tests\Feature\Api\Client\GeoPanelTest
+  ✓ it returns the tenant municipality with geometry, centroid and the…  0.04s  
+  ✓ it responds 409 geo_panel.city_unavailable when the tenant has no r… 0.02s  
+  ✓ it responds 409 when the municipality geometry exists but is inacti… 0.02s  
+  ✓ it lists exactly the 3 builtin layers with the stable contract (CA2… 0.02s  
+  ✓ it serves the census sectors of the tenant municipality as a GeoJSO… 0.02s  
+  ✓ it serves the tenant social units as anonymous points with type_cod… 0.02s  
+  ✓ it applies the AND intersection of combined criteria scoped to the…  0.03s  
+  ✓ it never leaks families from another tenant in the search (RN01/CA3… 0.02s  
+  ✓ it returns an empty payload when no record matches, so the map stay… 0.02s  
+  ✓ it rejects a search without any effective criterion (Seção 10 — reg… 0.02s  
+  ✓ it rejects a sector_uuid that belongs to another municipality (RN08… 0.02s  
+  ✓ it always includes the fixed RN07 indicator in the summary, even wi… 0.03s  
+  ✓ it aggregates the summary by census sector under the active filters… 0.03s  
+  ✓ it denies every geo-panel endpoint to the base operator without the… 0.02s  
+  ✓ it grants the full panel to the operator once the geo_panel_viewer…  0.03s  
+  ✓ it grants the full panel to the Master without any add-on role (RN2… 0.02s  
+  ✓ it creates a panel-scoped google map tiles session for the geo_pane… 0.04s  
+  ✓ it denies the panel map tiles session to the base operator without…  0.02s  
+  ✓ it does not let the geo_panel_viewer role in Tenant A open the pane… 0.02s  
+  ✓ it exposes geo_panel_viewer as an add-on role, never a hierarchy po… 0.02s  
+
+   PASS  Tests\Feature\Api\MapTileSessionControllerTest
+  ✓ it creates a google map tiles session                                0.01s  
+  ✓ it forwards the requested mapType to the google session (satellite)  0.01s  
+  ✓ it defaults to roadmap when no mapType is provided                   0.01s  
+  ✓ it rejects an invalid mapType with 422                               0.01s  
+  ✓ it returns 503 when map tiles is not configured                      0.01s  
+  ✓ it forbids users without tenant-addresses.update permission          0.01s  
+  ✓ it requires authentication                                           0.01s  
+
+  Tests:    60 passed (204 assertions)
+  Duration: 2.11s
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

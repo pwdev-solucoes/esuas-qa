@@ -1,0 +1,25 @@
+{
+    "_evidencia": {
+        "hu": "#10530 (US-SIAP-02)",
+        "criterio": "D04 (apoio ao CA11)",
+        "descricao": "O nome vive SÓ no payload de leitura do pre-check: a recusa 422 da geração informa quantidade (nunca identidade), o activity_log não ganha linha decorrente e nenhuma mensagem de log de aplicação carrega o nome.",
+        "endpoint": "GET /api/client/siap-remittances/pre-check?exercise=2026&reference_month=8",
+        "dados": "FABRICADOS — nenhuma cópia de base real",
+        "mascaramento": "nome → \"Nome I. I.\" e CPF → 999.***.***-99, aplicados no artefato antes da gravação"
+    },
+    "recusa_422": {
+        "message": "The SIAP remittance cannot be generated: 1 social unit has an incomplete record for SIAP. Check the missing data in the pre-check screen.",
+        "errors": {
+            "social_units": [
+                "The SIAP remittance cannot be generated: 1 social unit has an incomplete record for SIAP. Check the missing data in the pre-check screen."
+            ]
+        }
+    },
+    "recusa_contem_nome": false,
+    "mensagens_de_log_capturadas": 0,
+    "log_contem_nome": false,
+    "activity_log": {
+        "antes": 6,
+        "depois": 11
+    }
+}

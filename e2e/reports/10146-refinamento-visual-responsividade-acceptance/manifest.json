@@ -1,0 +1,63 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — Refinamento do Design System, Elementos Visuais e Responsividade",
+    "subtitle": "HU #10146 · Landing Page do SigSUAS · Evidências end-to-end no site público",
+    "rows": [
+      ["Gerado em", "21/08/2026"],
+      ["Branch", "develop (landind-page d06be5f)"],
+      ["Spec", "Ad-hoc — critérios extraídos do ticket GLPI #10146 (não há story oficial no repo)"],
+      ["Ambiente", "Build de produção da landing (Nuxt) servido em :3000 com NUXT_LEADS_MOCK=true"],
+      ["Ferramenta", "playwright-cli (Chromium) + Playwright E2E"]
+    ]
+  },
+  "summary": "2 critérios de aceite, ambos evidenciados por navegador sobre o build real da landing. CA03 comprovado por capturas de página inteira nas três resoluções pedidas (1440, 768 e 375), sustentadas pela revisão de acessibilidade AA já aplicada (contraste medido, tipografia mínima de 12px, alvos de toque de 44px, foco visível) e pelos 3 cenários automatizados de acessibilidade da suíte. CA04 comprovado por capturas do mapa de calor de georreferenciamento com o card-legenda 'Exemplo de leitura' nítido em desktop e mobile.",
+  "cas": [
+    {
+      "id": "CA03",
+      "title": "Consistência visual e acessibilidade",
+      "status": "parc",
+      "gherkin": "Dado que o refinamento de interface foi implementado, Quando inspeciono a página em telas com resoluções diversas (Desktop, Tablet e Smartphone), Então o layout se ajusta proporcionalmente com espaçamentos harmoniosos e alto nível de legibilidade.",
+      "steps_html": "Abrir o build real da landing e capturar a página inteira em três resoluções: Desktop 1440×900, Tablet 768×1024 e Smartphone 375×812, com todas as imagens carregadas.",
+      "results": [
+        "O layout se reorganiza proporcionalmente nos três tamanhos: o hero passa de duas colunas para coluna única; os cards da dor fecham a linha do tablet sem célula órfã; os cinco H2 do miolo compartilham a mesma escala; a alternância de superfícies (navy → cinza-claro → branco) permanece íntegra de ponta a ponta.",
+        "Legibilidade sustentada por medições da revisão de acessibilidade aplicada: nenhum texto abaixo de 12px, contraste dos pares aprovados em nível AA (leads sobre superfície cinza a 7.24:1, mensagens de erro a 5.38:1, anel de foco a 6.59:1 ou superior), alvos de toque de pelo menos 44px no mobile e foco visível em todos os controles.",
+        "A suíte automatizada (apêndice) inclui 3 cenários dedicados de acessibilidade — foco visível nas duas superfícies, FAQ operável por teclado e hierarquia de títulos sem salto — todos aprovados."
+      ],
+      "images": [
+        "screenshots/ca03-1-desktop-1440.jpg",
+        "screenshots/ca03-2-tablet-768.jpg",
+        "screenshots/ca03-3-mobile-375.jpg"
+      ]
+    },
+    {
+      "id": "CA04",
+      "title": "Refinamento da simulação de inteligência territorial",
+      "status": "nav",
+      "gherkin": "Dado que o visitante rola a tela até a seção do mapa de calor de georreferenciamento, Quando o bloco entra em área visível, Então os elementos gráficos e legendas indicativas são renderizados com nitidez, destacando o valor analítico da funcionalidade.",
+      "steps_html": "Abrir a página e capturar a vitrine do Painel de Georreferenciamento com o card-legenda em desktop (1440) e em smartphone (375), aguardando a decodificação completa das imagens.",
+      "results": [
+        "O mapa de calor renderiza nítido, com as manchas de calor, as unidades CRAS e CREAS e os nomes de bairros legíveis, dentro da moldura rotulada 'Painel de Georreferenciamento'.",
+        "A legenda indicativa acompanha o mapa: o card 'Exemplo de leitura' apresenta a leitura analítica 'Mapa de calor de cadastros desatualizados' e a procedência 'Dados do CadÚnico do próprio município' — flutuante sobre o mapa no desktop e como bloco dedicado no mobile.",
+        "As imagens usam carregamento prioritário no hero e decodificação assíncrona; nenhuma caixa vazia de carregamento aparece nas capturas."
+      ],
+      "images": [
+        "screenshots/ca04-1-mapa-desktop.jpg",
+        "screenshots/ca04-2-mapa-mobile.jpg"
+      ]
+    }
+  ],
+  "notes": [
+    {
+      "title": "Spec ad-hoc montada a partir do ticket",
+      "html": "<p>Não existe story oficial para a HU #10146 no repositório; os critérios foram extraídos literalmente do ticket GLPI. As evidências refletem o estado entregue em develop até o commit <code>d06be5f</code> do repositório da landing.</p>"
+    },
+    {
+      "title": "A seção territorial dedicada foi absorvida pelo topo da página",
+      "html": "<p>O ticket cita \"a seção do mapa de calor de georreferenciamento\". No redesenho aprovado em 2026-08-20, a seção territorial dedicada foi removida e a simulação do mapa de calor passou a viver na vitrine de abertura da página (topo), com o card-legenda \"Exemplo de leitura\" — o visitante a vê imediatamente, sem precisar rolar. As evidências do CA04 retratam essa localização atual.</p>"
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Playwright E2E da landing — build real, NUXT_LEADS_MOCK=true; inclui os cenários A11Y-FOCUS, A11Y-FAQ-KEYBOARD e A11Y-HEADINGS)",
+    "file": "playwright-landing.txt"
+  }
+}

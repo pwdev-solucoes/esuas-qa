@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — US-DIAG-04</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  section.note { border:1px solid var(--line); border-left:4px solid #b06a00; border-radius:6px; padding:10px 14px; margin:10px 0; background:#fffdf7; font-size:13px; }
+  section.note h3 { margin:0 0 6px; font-size:13.5px; color:#8a5200; }
+  section.note p { margin:6px 0; }
+  section.note ul { margin:6px 0 6px 18px; padding:0; }
+  section.note pre { background:var(--bg); border:1px solid var(--line); border-radius:4px; padding:8px; overflow-x:auto; font-size:11px; white-space:pre-wrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — US-DIAG-04</h1>
+    <div class="sub">Épico HU-PRONT-DIAG (fase F6) · GLPI #10895 · Descumprimento de condicionalidades do Bolsa Família</div>
+    <div class="meta"><div><span>Gerado em:</span> 18/09/2026</div><div><span>História:</span> US-DIAG-04 — Registrar o descumprimento de condicionalidades do Bolsa Família (GLPI #10895)</div><div><span>Spec:</span> .planning/specs/US-DIAG-04-descumprimento-de-condicionalidades.md</div><div><span>Branch:</span> feature/diag-prontuario-blocos-4-6-8-10 (api ad2da3b · client bebf1c0)</div><div><span>Ambiente:</span> API Laravel/Sail (container api-laravel.test-1, porta 80) + PostgreSQL · client (Vite dev) em :5175</div><div><span>Organização (tenant):</span> E2E CadÚnico · família E2E Família No CRAS (código 9900000001, sem indicador de Bolsa Família)</div><div><span>Perfis usados:</span> Operacional do Tenant com add-on LGPD, lotado no E2E CRAS Centro (CPF 111.444.777-35); Operacional temporário lotado só no E2E CRAS Sem MDS, para o CA10</div><div><span>Ferramenta:</span> playwright-cli (Chromium headless) + Pest 4 (--filter=ConditionalityBreach)</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">Os 11 critérios de aceite da US-DIAG-04 foram verificados: 10 no navegador, combinados com a suíte automatizada, e 1 só pela suíte (isolamento entre organizações, que exige um segundo município). Nenhum critério ficou em falta e nenhum defeito foi encontrado. A família usada não tem indicador de Bolsa Família, o que permitiu exercer o aviso do CA07 no mesmo fluxo dos demais. O estado vazio (CA08) foi capturado antes de qualquer registro. Em seguida foram registradas três ocorrências para o mesmo integrante (educação 07/2026, saúde 08/2026 e educação 08/2026 com suspensão solicitada), e uma delas foi cancelada com motivo. A suíte automatizada fechou 61 testes verdes / 259 asserções.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA01</td><td>Registrar ocorrência de educação (happy path)</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA02</td><td>Registrar ocorrência de saúde</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA03</td><td>Escala de efeitos com os quatro códigos</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA04</td><td>Data em mês e ano</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA05</td><td>Várias ocorrências para o mesmo integrante</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA06</td><td>Solicitação de suspensão do efeito</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA07</td><td>Família sem indicador de Bolsa Família</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA08</td><td>Ausência de ocorrência não é cumprimento</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA09</td><td>Cancelar em vez de excluir</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA10</td><td>Negativa declara o motivo</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA11</td><td>Isolamento entre municípios</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA01">
+      <h2>CA01 — Registrar ocorrência de educação (happy path) <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Operacional do Tenant com o add-on LGPD, lotado no "CRAS Centro"
+Quando eu registrar a ocorrência na área de educação, com mês e ano, efeito "advertência" e suspensão não solicitada
+Então a ocorrência é salva
+E consta no prontuário com meu nome e a data do lançamento</p>
+      <p class="steps"><strong>Como foi testado:</strong> No prontuário da família <b>E2E Família No CRAS</b>, aba <b>Condicionalidades</b> → <b>Registrar ocorrência</b>. Integrante <b>E2E Integrante Local</b>, área <b>Educação</b>, efeito <b>1 — Advertência</b>, <b>Julho/2026</b>, suspensão <b>Não</b>. Salvar e expandir a linha.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Toast “Ocorrência de descumprimento registrada no prontuário.” e a linha 07/2026 · E2E Integrante Local · Educação · 1 — Advertência · Registrada.</li><li>Expandida, a linha traz a assinatura “Registrado por E2E Operador Prontuário em 18/09/2026” (RN10).</li><li>Pest: “registers an education breach with status registered, signed and dated”.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca01-formulario-preenchido.png" alt="CA01 evidência"/><figcaption>ca01-formulario-preenchido.png</figcaption></figure><figure><img src="screenshots/ca01-registrada.png" alt="CA01 evidência"/><figcaption>ca01-registrada.png</figcaption></figure><figure><img src="screenshots/ca01-assinatura.png" alt="CA01 evidência"/><figcaption>ca01-assinatura.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA02">
+      <h2>CA02 — Registrar ocorrência de saúde <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que a integrante descumpriu condicionalidade de pré-natal
+Quando eu registrar a ocorrência na área de saúde
+Então ela é salva com a mesma estrutura da ocorrência de educação
+E as duas áreas são distinguíveis na consulta</p>
+      <p class="steps"><strong>Como foi testado:</strong> Novo registro no mesmo formulário, com área <b>Saúde</b>, efeito <b>1 — Advertência</b>, <b>Agosto/2026</b>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O formulário é o mesmo para as duas áreas: área, efeito, mês/ano e suspensão.</li><li>O cabeçalho da aba passa a separar “1 em educação” e “1 em saúde”, e cada linha traz a área com selo próprio.</li><li>Pest: “registers a health breach with the same structure and keeps both areas distinguishable”.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca02-formulario-saude.png" alt="CA02 evidência"/><figcaption>ca02-formulario-saude.png</figcaption></figure><figure><img src="screenshots/ca02-duas-areas-distinguiveis.png" alt="CA02 evidência"/><figcaption>ca02-duas-areas-distinguiveis.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA03">
+      <h2>CA03 — Escala de efeitos com os quatro códigos <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Quando eu escolher o efeito
+Então me são oferecidos advertência, bloqueio, suspensão e cancelamento, com os códigos 1 a 4</p>
+      <p class="steps"><strong>Como foi testado:</strong> Abrir o seletor de efeito no formulário de registro.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O seletor oferece exatamente “1 — Advertência”, “2 — Bloqueio”, “3 — Suspensão” e “4 — Cancelamento”, em ordem crescente de gravidade.</li><li>O texto de apoio declara a escala progressiva: advertência (1) → bloqueio (2) → suspensão (3) → cancelamento (4).</li><li>Pest: qualquer efeito fora dos quatro códigos é recusado com 422 (quatro variações testadas), e uma área fora de educação/saúde também.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca03-quatro-efeitos.png" alt="CA03 evidência"/><figcaption>ca03-quatro-efeitos.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA04">
+      <h2>CA04 — Data em mês e ano <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Quando eu informar a data
+Então me são pedidos o mês e o ano, não o dia</p>
+      <p class="steps"><strong>Como foi testado:</strong> Observar o campo “Mês e ano da ocorrência” no formulário.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O campo tem dois seletores, mês (Janeiro a Dezembro) e ano. Não existe campo de dia.</li><li>A tela explica: “o efeito se refere a um período de apuração do programa — por isso se informa o mês e o ano, nunca o dia”.</li><li>Pest: o payload expõe mês e ano e nenhum campo de data completa; mês fora de 1–12 é recusado; mês futuro é recusado.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca01-formulario-preenchido.png" alt="CA04 evidência"/><figcaption>ca01-formulario-preenchido.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA05">
+      <h2>CA05 — Várias ocorrências para o mesmo integrante <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o integrante já tem uma ocorrência de advertência registrada
+Quando eu registrar outra, de bloqueio, em mês posterior
+Então as duas constam
+E a primeira não foi substituída</p>
+      <p class="steps"><strong>Como foi testado:</strong> Registrar, para o mesmo <b>E2E Integrante Local</b>, uma ocorrência de <b>Educação</b>, <b>2 — Bloqueio</b>, <b>Agosto/2026</b>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A lista passa a ter três linhas do mesmo integrante: 08/2026 Educação Bloqueio, 08/2026 Saúde Advertência e 07/2026 Educação Advertência.</li><li>A ocorrência de julho continua lá, inalterada. Nada foi substituído nem houve aviso de duplicidade.</li><li>Pest: “keeps several breaches of the SAME member, none replacing the previous” e “has NO unique index on the breaches table”.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca05-tres-ocorrencias.png" alt="CA05 evidência"/><figcaption>ca05-tres-ocorrencias.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA06">
+      <h2>CA06 — Solicitação de suspensão do efeito <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o município pediu a suspensão do efeito de um bloqueio
+Quando eu marcar que a suspensão foi solicitada
+Então o valor é salvo junto à ocorrência</p>
+      <p class="steps"><strong>Como foi testado:</strong> No registro do bloqueio (CA05), marcar <b>Sim</b> em “Foi solicitada a suspensão do efeito?”.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O bloqueio foi salvo com a suspensão marcada como solicitada.</li><li>A pergunta é sim ou não, com “Não” como padrão. A tela avisa que só se registra se a suspensão foi solicitada, sem acompanhar o resultado do pedido.</li><li>Pest: “stores suspension_requested alongside the breach” e “requires an ANSWER for suspension_requested — it has no third state”.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca06-suspensao-solicitada.png" alt="CA06 evidência"/><figcaption>ca06-suspensao-solicitada.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA07">
+      <h2>CA07 — Família sem indicador de Bolsa Família <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que a família está sem informação sobre Bolsa Família
+Quando eu registrar uma ocorrência de descumprimento para um integrante dela
+Então a ocorrência é salva
+E o sistema avisa que a família não consta como beneficiária, sem impedir o registro</p>
+      <p class="steps"><strong>Como foi testado:</strong> A família usada tem o indicador de Bolsa Família <b>vazio</b> no banco. Abrir o formulário de registro e salvar normalmente.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Ao abrir o formulário, o aviso aparece antes de salvar: “Esta família não consta como beneficiária do Bolsa Família. O aviso não impede o registro: a ocorrência será salva assim mesmo.”</li><li>As três ocorrências desta família foram salvas normalmente. Em nenhum momento o registro foi recusado.</li><li>Pest: registra com 201 e devolve o aviso quando o indicador é vazio ou “não”; o aviso também vem nas opções do formulário.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca07-aviso-nao-beneficiaria.png" alt="CA07 evidência"/><figcaption>ca07-aviso-nao-beneficiaria.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA08">
+      <h2>CA08 — Ausência de ocorrência não é cumprimento <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que a família não tem nenhuma ocorrência registrada
+Quando eu consultar o prontuário
+Então não há declaração de que ela está em cumprimento de condicionalidades
+E a ausência é apresentada como ausência de anotação</p>
+      <p class="steps"><strong>Como foi testado:</strong> Captura feita <b>antes</b> de qualquer registro, na primeira abertura da aba Condicionalidades.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A aba mostra “Nenhuma anotação registrada” e explica: “A ausência de anotação é apenas ausência de anotação: o prontuário não afirma nada sobre o que não foi registrado.”</li><li>Em nenhum lugar a tela diz que a família está em cumprimento.</li><li>Pest: a lista vazia não afirma nada sobre cumprimento, e a tabela não tem coluna de cumprimento.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca08-ausencia-nao-e-cumprimento.png" alt="CA08 evidência"/><figcaption>ca08-ausencia-nao-e-cumprimento.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA09">
+      <h2>CA09 — Cancelar em vez de excluir <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que registrei uma ocorrência no integrante errado
+Quando eu cancelá-la informando o motivo
+Então ela permanece visível marcada como cancelada
+E deixa de compor o perfil do período</p>
+      <p class="steps"><strong>Como foi testado:</strong> Na linha 07/2026, acionar <b>Cancelar ocorrência</b>, informar o motivo e confirmar.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O diálogo avisa que cancelar não apaga e exige o motivo. Não existe ação de excluir.</li><li>Depois de confirmar, a linha continua na lista, marcada “Cancelada”. Expandida, mostra “Cancelada por E2E Operador Prontuário em 18/09/2026” e o motivo.</li><li>A saída do perfil do período é regra de apuração, provada pela suíte: a ocorrência cancelada é gravada como cancelada, não é apagada, e só as registradas contam.</li><li>Pest: “cancels instead of deleting”, “requires cancel_reason on the DELETE” e 409 ao cancelar ou corrigir uma já cancelada.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca09-dialogo-cancelamento.png" alt="CA09 evidência"/><figcaption>ca09-dialogo-cancelamento.png</figcaption></figure><figure><img src="screenshots/ca09-cancelada-visivel.png" alt="CA09 evidência"/><figcaption>ca09-cancelada-visivel.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA10">
+      <h2>CA10 — Negativa declara o motivo <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Operacional lotado apenas em outra unidade
+E que a família é referenciada no "CRAS Centro"
+Quando eu tentar registrar uma ocorrência para ela
+Então não é permitido
+E a tela informa o motivo, sem nomear as unidades envolvidas</p>
+      <p class="steps"><strong>Como foi testado:</strong> Login com um Operacional, com add-on LGPD, lotado <b>apenas</b> no E2E CRAS Sem MDS, e abertura direta do prontuário da família.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A tela exibe “Acesso restrito”: “Esta família é referenciada e acompanhada em unidades onde você não possui lotação vigente. Procure o gestor Master do município.”</li><li>Nenhuma unidade é nomeada na mensagem.</li><li>A API respondeu 403 com o código de erro estável unit_not_assigned.</li><li>Pest: a mesma negativa vale para registrar e para consultar ocorrências; nenhuma permissão nova foi criada para este bloco.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca10-acesso-restrito.png" alt="CA10 evidência"/><figcaption>ca10-acesso-restrito.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA11">
+      <h2>CA11 — Isolamento entre municípios <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou usuário do município A
+Quando eu registrar ou consultar ocorrências
+Então alcanço somente famílias do município A</p>
+      <p class="steps"><strong>Como foi testado:</strong> Critério de backend: exige um segundo município, que a massa do navegador não tem.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Pest (6 testes de isolamento): família de outro município responde 404, nunca 403, em todos os verbos.</li><li>Uma ocorrência de outro município nunca aparece pela família do usuário, e a listagem só traz ocorrências da própria organização.</li><li>Integrante de outro município é recusado com 422 sem criar nada; cabeçalho de organização não vinculada é bloqueado.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+  
+  <h2>Observações e ressalvas</h2>
+  <section class="note"><h3>Operador temporário criado para o CA10, e removido depois</h3><p>A massa semeada não tem nenhum Operacional com add-on LGPD lotado só numa unidade que não acesse a família. O operador sem lotação vigente não serve: ele é barrado já no login. Para exercer o critério, criei um Operacional temporário lotado apenas no <b>E2E CRAS Sem MDS</b>. Ele foi <b>removido do banco</b> ao fim da captura, com a lotação e os papéis.</p></section><section class="note"><h3>Marcas deixadas na base</h3><p>Ficaram três ocorrências na família E2E Família No CRAS, todas do integrante E2E Integrante Local: 07/2026 educação (cancelada, com motivo), 08/2026 saúde e 08/2026 educação com suspensão solicitada. Elas ficam no prontuário, como a regra exige.</p></section><section class="note"><h3>Contador do cabeçalho da aba</h3><p>O resumo no topo da aba (“2 em educação · 1 em saúde”) conta as linhas exibidas, <b>incluindo</b> a cancelada. Não é a apuração do leiaute 15.7: a saída da ocorrência cancelada do perfil do período está provada pela suíte, que só conta registros com situação “registrada”. Fica registrado para que ninguém leia o contador da tela como número apurado.</p></section><section class="note"><h3>Ambiente</h3><p>Captura contra o client em <code>:5175</code>, o dev server já em execução, identificado pelo diretório do processo e pelo título da página. As migrations da fase foram aplicadas e o <code>E2ESeeder</code> reexecutado antes da captura. Nenhum arquivo de configuração foi alterado.</p></section>
+  
+  <h2>Anexo — Cobertura automatizada (Pest, --filter=ConditionalityBreach)</h2>
+  <pre class="pest">
+   PASS  Tests\Unit\ConditionalityBreachInvariantTest
+  ✓ it accepts a REGISTERED row with the three cancellation columns NUL… 0.54s  
+  ✓ it accepts a CANCELLED row with date, author and reason filled       0.03s  
+  ✓ it REFUSES a registered row carrying any cancellation column with d… 0.03s  
+  ✓ it REFUSES a registered row carrying any cancellation column with d… 0.03s  
+  ✓ it REFUSES a registered row carrying any cancellation column with d… 0.03s  
+  ✓ it REFUSES a cancelled row missing any of the three cancellation co… 0.03s  
+  ✓ it REFUSES a cancelled row missing any of the three cancellation co… 0.03s  
+  ✓ it REFUSES a cancelled row missing any of the three cancellation co… 0.03s  
+  ✓ it REFUSES a cancelled row missing any of the three cancellation co… 0.03s  
+  ✓ it REFUSES an unknown status — the column has exactly TWO values     0.03s  
+  ✓ it publishes the invariant as a PRODUCTION contract shared by the t… 0.03s  
+  ✓ it warns — and never throws — for a family that is not a PBF benefi… 0.03s  
+  ✓ it warns — and never throws — for a family that is not a PBF benefi… 0.03s  
+  ✓ it warns — and never throws — for a family that is not a PBF benefi… 0.03s  
+
+   PASS  Tests\Feature\Api\Client\FamilyConditionalityBreachTest
+  ✓ it registers an education breach with status registered, signed and… 0.13s  
+  ✓ it registers a health breach with the same structure and keeps both… 0.09s  
+  ✓ it offers the four effect codes 1..4 in ascending severity through…  0.08s  
+  ✓ it refuses any effect outside the four instrument codes (CA03) with… 0.07s  
+  ✓ it refuses any effect outside the four instrument codes (CA03) with… 0.07s  
+  ✓ it refuses any effect outside the four instrument codes (CA03) with… 0.07s  
+  ✓ it refuses any effect outside the four instrument codes (CA03) with… 0.07s  
+  ✓ it refuses any area outside education and health (CA03)              0.07s  
+  ✓ it exposes month and year and NO full-date field at all (CA04)       0.07s  
+  ✓ it refuses a month outside 1..12 (CA04) with (0)                     0.07s  
+  ✓ it refuses a month outside 1..12 (CA04) with (13)                    0.07s  
+  ✓ it refuses a month outside 1..12 (CA04) with (-1)                    0.07s  
+  ✓ it refuses a breach dated IN THE FUTURE, including a later month of… 0.08s  
+  ✓ it caps the form at the CURRENT month through options (§10)          0.07s  
+  ✓ it keeps several breaches of the SAME member, none replacing the pr… 0.08s  
+  ✓ it accepts two breaches of the same member, same area AND same mont… 0.09s  
+  ✓ it has NO unique index on the breaches table (D07)                   0.07s  
+  ✓ it stores suspension_requested alongside the breach (CA06)           0.07s  
+  ✓ it requires an ANSWER for suspension_requested — it has no third st… 0.07s  
+  ✓ it registers with 201 AND a warning when receives_pbf is NULL or fa… 0.07s  
+  ✓ it registers with 201 AND a warning when receives_pbf is NULL or fa… 0.07s  
+  ✓ it warns in options too, so the form can warn BEFORE the submit (CA… 0.07s  
+  ✓ it answers an EMPTY list and asserts NOTHING about compliance (CA08… 0.07s  
+  ✓ it has NO compliance column on the table (D10)                       0.06s  
+  ✓ it cancels instead of deleting: status cancelled, reason recorded,…  0.08s  
+  ✓ it requires cancel_reason on the DELETE (§7.3)                       0.08s  
+  ✓ it answers 409 when cancelling an ALREADY cancelled breach (§7.3)    0.08s  
+  ✓ it answers 409 when EDITING a cancelled breach (§7.2)                0.08s  
+  ✓ it corrects a breach registered on the WRONG member, keeping the au… 0.08s  
+  ✓ it refuses server-owned fields on the write (RN07/RN10) with datase… 0.07s  
+  ✓ it refuses server-owned fields on the write (RN07/RN10) with datase… 0.07s  
+  ✓ it refuses server-owned fields on the write (RN07/RN10) with datase… 0.07s  
+  ✓ it refuses server-owned fields on the write (RN07/RN10) with datase… 0.07s  
+  ✓ it refuses server-owned fields on the write (RN07/RN10) with datase… 0.07s  
+  ✓ it refuses server-owned fields on the write (RN07/RN10) with datase… 0.07s  
+  ✓ it refuses a member from ANOTHER family with 422, without confirmin… 0.07s  
+  ✓ it logs the structured fields and keeps notes and cancel_reason OUT… 0.08s  
+  ✓ it answers 403 with reason unit_not_assigned, without naming the un… 0.08s  
+  ✓ it applies the same denial to the READ side (CA10)                   0.08s  
+  ✓ it declares NO conditionality-breach ability anywhere (D08)          0.11s  
+  ✓ it carries NO can: middleware on the breach routes (D08)             0.06s  
+
+   PASS  Tests\Feature\TenantIsolation\FamilyConditionalityBreachIsolationTest
+  ✓ it answers 404 — never 403 — for a family of ANOTHER tenant, on ALL… 0.10s  
+  ✓ it never leaks a breach of ANOTHER tenant through MY family uuid (R… 0.07s  
+  ✓ it answers 404 when the breach belongs to ANOTHER family of the sam… 0.08s  
+  ✓ it scopes the block by tenant_id — my listing never shows the other… 0.08s  
+  ✓ it blocks the request when the X-Tenant-UUID points at a tenant the… 0.07s  
+  ✓ it refuses a member uuid from ANOTHER tenant with 422 and creates n… 0.07s  
+
+  Tests:    61 passed (259 assertions)
+  Duration: 5.21s
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

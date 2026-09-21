@@ -1,0 +1,42 @@
+== EXPLAIN + invariante 8.5 — Postgres dev (container) — 2026-09-15T21:19:33Z ==
+== Invariante 8.5 na base dev (deve ser 0 linhas) ==
+linhas: 0
+
+massa temporária: referral id=5 tenant=3 family=13 destino=2 (CREAS Dev Alfa)
+invariante 8.5 com a massa: 0 linhas
+
+== EXPLAIN — predicado do eixo 'encaminhamento recebido' (US-ACOMP-06), o consumidor do índice referrals_destination_access_idx ==
+SELECT 1 FROM referrals r WHERE r.tenant_id = 3 AND r.family_id = 13 AND r.destination_social_unit_id IN (2) AND r.status = 'registered' AND r.outcome = 'awaiting_return' AND r.deleted_at IS NULL
+  Index Only Scan using referrals_destination_access_idx on referrals r  (cost=0.13..8.15 rows=1 width=4)
+    Index Cond: ((tenant_id = 3) AND (family_id = 13) AND (destination_social_unit_id = 2))
+
+== EXPLAIN — consulta 8.1 da spec (destination_units do options) ==
+SELECT su.uuid, su.name, sut.uuid AS type_uuid FROM social_units su JOIN social_unit_types sut ON sut.id = su.type_id JOIN social_unit_status ss ON ss.id = su.status_id AND ss.code = '001' WHERE su.tenant_id = 3 AND su.deleted_at IS NULL AND su.type_id IN (SELECT DISTINCT destination_unit_type_id FROM referral_codes WHERE destination_unit_type_id IS NOT NULL AND is_active = true AND deleted_at IS NULL) AND su.id <> 1 ORDER BY su.name
+  Sort  (cost=35.74..35.75 rows=1 width=548)
+    Sort Key: su.name
+    ->  Nested Loop  (cost=8.75..35.73 rows=1 width=548)
+          Join Filter: (ss.id = su.status_id)
+          ->  Nested Loop  (cost=8.61..27.55 rows=1 width=556)
+                Join Filter: (sut.id = su.type_id)
+                ->  Nested Loop  (cost=8.46..19.38 rows=1 width=556)
+                      Join Filter: (su.type_id = referral_codes.destination_unit_type_id)
+                      ->  Unique  (cost=8.46..8.47 rows=1 width=8)
+                            ->  Sort  (cost=8.46..8.47 rows=1 width=8)
+                                  Sort Key: referral_codes.destination_unit_type_id
+                                  ->  Index Scan using referral_codes_is_active_code_index on referral_codes  (cost=0.14..8.46 rows=1 width=8)
+                                        Index Cond: (is_active = true)
+                                        Filter: ((destination_unit_type_id IS NOT NULL) AND (deleted_at IS NULL))
+                      ->  Seq Scan on social_units su  (cost=0.00..10.90 rows=1 width=548)
+                            Disabled: true
+                            Filter: ((deleted_at IS NULL) AND (id <> 1) AND (tenant_id = 3))
+                ->  Index Scan using social_unit_types_pkey on social_unit_types sut  (cost=0.14..8.16 rows=1 width=24)
+                      Index Cond: (id = referral_codes.destination_unit_type_id)
+          ->  Index Scan using social_unit_status_code_unique on social_unit_status ss  (cost=0.14..8.16 rows=1 width=8)
+                Index Cond: ((code)::text = '001'::text)
+
+== índices existentes em referrals / referral_codes (pg_indexes) ==
+  referral_codes_destination_area_code_index: CREATE INDEX referral_codes_destination_area_code_index ON public.referral_codes USING btree (destination_area, code)
+  referral_codes_destination_unit_type_index: CREATE INDEX referral_codes_destination_unit_type_index ON public.referral_codes USING btree (destination_unit_type_id)
+  referrals_destination_access_idx: CREATE INDEX referrals_destination_access_idx ON public.referrals USING btree (tenant_id, family_id, destination_social_unit_id) WHERE ((destination_social_unit_id IS NOT NULL) AND ((status)::text = 'registered'::text) AND ((outcome)::text = 'awaiting_return'::text) AND (deleted_at IS NULL))
+
+(transação revertida — nenhuma massa ficou na base dev)

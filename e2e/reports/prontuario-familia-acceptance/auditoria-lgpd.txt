@@ -1,0 +1,9 @@
+Auditoria LGPD — log_name = family_access (activity_log)
+Ambiente: dev (Sail), tenant 24 · Maceió Geo — 2026-07-13 16:34
+
+Total de aberturas de prontuário registradas ......... 12
+Aberturas pelo Master AUTORIZADO (u22) ...............  6
+Aberturas pelo usuário SEM permissão (u23, geoviewer)   0   <- 403 não gera rastro de abertura
+
+Leitura: a auditoria grava UMA linha por request autorizado (FamilyAccessAuditService::recordOpened,
+gravada ANTES do payload). A troca de abas NÃO gera novas linhas — a tela faz uma única chamada HTTP.

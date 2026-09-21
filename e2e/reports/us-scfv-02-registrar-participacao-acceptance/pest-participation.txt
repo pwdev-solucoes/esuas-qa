@@ -1,0 +1,204 @@
+
+   PASS  Tests\Unit\Models\SocialEntityTest
+  ✓ it has suasParticipationType relationship                            0.01s  
+
+   PASS  Tests\Unit\Models\SuasParticipationTypeTest
+  ✓ it has correct fillable attributes                                   0.01s  
+  ✓ it defaults is_active to true
+  ✓ it casts is_active to boolean
+  ✓ it uses soft deletes
+  ✓ it uses HasUuid trait
+  ✓ it uses LogsActivity trait
+  ✓ it defines socialEntities relationship as HasMany
+  ✓ it configures activity log with name suas_participation_type and dirty-only logging
+
+   PASS  Tests\Unit\ParticipationDomainsSeedTest
+  ✓ it semeia exatamente os oito servicos do bloco 16, na ordem do inst… 0.41s  
+  ✓ it semeia cada servico com o nome e os atributos exatos da matriz d… 0.02s  
+  ✓ it semeia cada servico com o nome e os atributos exatos da matriz d… 0.03s  
+  ✓ it semeia cada servico com o nome e os atributos exatos da matriz d… 0.02s  
+  ✓ it semeia cada servico com o nome e os atributos exatos da matriz d… 0.02s  
+  ✓ it semeia cada servico com o nome e os atributos exatos da matriz d… 0.02s  
+  ✓ it semeia cada servico com o nome e os atributos exatos da matriz d… 0.02s  
+  ✓ it semeia cada servico com o nome e os atributos exatos da matriz d… 0.02s  
+  ✓ it semeia cada servico com o nome e os atributos exatos da matriz d… 0.02s  
+  ✓ it semeia exatamente os cinco locais de realizacao, com os codigos…  0.02s  
+  ✓ it semeia cada local com o nome e o is_own_unit exatos da matriz do… 0.02s  
+  ✓ it semeia cada local com o nome e o is_own_unit exatos da matriz do… 0.02s  
+  ✓ it semeia cada local com o nome e o is_own_unit exatos da matriz do… 0.02s  
+  ✓ it semeia cada local com o nome e o is_own_unit exatos da matriz do… 0.02s  
+  ✓ it semeia cada local com o nome e o is_own_unit exatos da matriz do… 0.02s  
+  ✓ it marca is_own_unit em exatamente um local — o codigo 1 (RN05/§4.2… 0.02s  
+  ✓ it marca counts_as_scfv_elderly em exatamente um servico — o codigo… 0.02s  
+  ✓ it respeita a invariante elderly ⟹ scfv ⟹ group em todas as linhas   0.02s  
+  ✓ it marca requires_description em exatamente um servico — o codigo 9… 0.03s  
+  ✓ it preserva o salto 6 → 99 e marca is_instrument_extension so no 90… 0.02s  
+  ✓ it preserva o salto 4 → 9 dos locais (D05/RN05)                      0.02s  
+  ✓ it e idempotente: rodar duas vezes nao duplica nem renumera          0.02s  
+  ✓ it nao sobrescreve a inativacao feita pelo Administrador             0.02s  
+  ✓ it nao tem tenant_id em nenhuma das duas tabelas — sao lookups glob… 0.01s  
+  ✓ it nao aplica BelongsToTenant nos dois Models                        0.01s  
+  ✓ it aplica LogsActivity nos dois Models e audita os tres atributos d… 0.01s  
+
+   PASS  Tests\Unit\ParticipationInvariantTest
+  ✓ it accepts the THREE legal state combinations                        0.05s  
+  ✓ it REFUSES an active row carrying end or cancellation columns with…  0.02s  
+  ✓ it REFUSES an active row carrying end or cancellation columns with…  0.02s  
+  ✓ it REFUSES an active row carrying end or cancellation columns with…  0.02s  
+  ✓ it REFUSES an ended row without date or carrying cancellation with…  0.03s  
+  ✓ it REFUSES an ended row without date or carrying cancellation with…  0.02s  
+  ✓ it REFUSES a cancelled row without timestamp, without reason or car… 0.02s  
+  ✓ it REFUSES a cancelled row without timestamp, without reason or car… 0.02s  
+  ✓ it REFUSES a cancelled row without timestamp, without reason or car… 0.02s  
+  ✓ it REFUSES a cancelled row without timestamp, without reason or car… 0.02s  
+  ✓ it publishes the invariant as a PRODUCTION contract shared by the t… 0.02s  
+  ✓ it lets the PARTIAL UNIQUE INDEX refuse a second ACTIVE row for the… 0.02s  
+  ✓ it vigia a PESSOA no SERVICO, nao a unidade declarante (RN07)        0.03s  
+  ✓ it lets DIFFERENT services for the same member live side by side (R… 0.02s  
+  ✓ it lets the index accept a NEW active row when the previous one is…  0.02s  
+  ✓ it scopes the unique index BY TENANT — the same member+service in a… 0.02s  
+  ✓ it keeps free-text columns OUT of the activity log (RN10/D11)        0.02s  
+
+   PASS  Tests\Unit\ParticipationServiceInvariantTest
+  ✓ it nao tem nenhuma linha violando elderly ⟹ scfv ⟹ group             0.02s  
+  ✓ it mantem a invariante item a item nos oito servicos                 0.02s  
+  ✓ it reserva o contador de idosos a exatamente um servico              0.02s  
+  ✓ it declara family_member_participations como consumidora dos dois d… 0.02s  
+  ✓ it conta o uso de verdade agora que a tabela de participacoes exist… 0.03s  
+  ✓ it conta tambem participacao cancelada e soft-deletada (RN07 · §7.3… 0.03s  
+  ✓ it conta o uso pela coluna declarada assim que a tabela consumidora… 0.02s  
+
+   PASS  Tests\Unit\Services\Siap\SiapDomainMapTest
+  ✓ it collapses the four SUAS participation types into the three of SIAP
+
+   PASS  Tests\Feature\Api\Relationals\SuasParticipationTypeControllerTest
+  ✓ it lists only active suas participation types                        0.05s  
+  ✓ it returns up to 30 participation types and flags searchable above…  0.03s  
+  ✓ it exposes only id, name and code                                    0.01s  
+  ✓ it filters by search on name (case-insensitive)                      0.02s  
+  ✓ it filters by search on code                                         0.02s  
+  ✓ it rejects unauthenticated request with 401                          0.01s  
+  ✓ it rejects search shorter than 2 characters                          0.02s  
+  ✓ it accepts requests from the client guard                            0.01s  
+  ✓ it caches the active participation type set                          0.01s  
+  ✓ it invalidates the cache when a participation type is created        0.02s  
+  ✓ it invalidates the cache on bulk deactivate                          0.02s  
+  ✓ it drops a participation type from the cached set when it becomes i… 0.01s  
+
+   PASS  Tests\Feature\Api\SocialEntityControllerTest
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('sua… 0.04s  
+
+   PASS  Tests\Feature\Api\SuasParticipationTypeControllerTest
+  ✓ it lists suas participation types                                    0.02s  
+  ✓ it creates a suas participation type                                 0.02s  
+  ✓ it shows a suas participation type                                   0.02s  
+  ✓ it updates a suas participation type                                 0.02s  
+  ✓ it deletes a suas participation type                                 0.02s  
+  ✓ it validates required fields on create                               0.01s  
+  ✓ it requires authentication                                           0.01s  
+  ✓ it filters suas participation types by name                          0.02s  
+  ✓ it sorts suas participation types by code                            0.02s  
+  ✓ it blocks deletion when participation type is linked to a social en… 0.02s  
+  ✓ it allows deletion after social entity link is removed               0.02s  
+  ✓ it exposes is_active and defaults to true on create                  0.02s  
+  ✓ it filters suas participation types by is_active                     0.02s  
+  ✓ it bulk activates suas participation types                           0.02s  
+  ✓ it bulk deactivates suas participation types                         0.02s  
+  ✓ it forbids bulk activate without the bulk-update permission          0.02s  
+  ✓ it validates uuids on bulk activate                                  0.02s  
+  ✓ it rejects integer ids on bulk activate                              0.02s  
+
+   PASS  Tests\Feature\Client\FamilyMemberParticipationTest
+  ✓ it registers the member participation in the elderly SCFV, signed a… 0.07s  
+  ✓ it REQUIRES location_description when the location is NOT the own u… 0.06s  
+  ✓ it ACCEPTS the same location once the description is given (CA02/RN… 0.05s  
+  ✓ it does NOT require location_description when the location IS the o… 0.06s  
+  ✓ it DROPS a location_description sent for an own-unit location — the… 0.05s  
+  ✓ it REQUIRES other_description when the service requires it (CA15/D0… 0.06s  
+  ✓ it DROPS an other_description sent for a service that does NOT requ… 0.05s  
+  ✓ it REFUSES a person outside the CURRENT composition (CA04/RN02)      0.06s  
+  ✓ it REFUSES an integrant of ANOTHER family of the same tenant (RN02)  0.06s  
+  ✓ it carries the member_not_in_family error_code in the ACTION guard…  0.05s  
+  ✓ it keeps the participation ONGOING while there is no ended_on (CA05… 0.06s  
+  ✓ it records an ALREADY CLOSED period as ended when ended_on comes al… 0.06s  
+  ✓ it REFUSES an ended_on BEFORE the started_on (RN05)                  0.05s  
+  ✓ it REFUSES a SECOND active participation in the SAME service, point… 0.06s  
+  ✓ it REFUSES the second active participation even when ANOTHER unit d… 0.05s  
+  ✓ it lets a CANCELLED or ENDED participation NOT block a new one in t… 0.06s  
+  ✓ it lets the SAME member participate in DIFFERENT services at once (… 0.07s  
+  ✓ it creates a NEW participation on re-entry, leaving the previous on… 0.06s  
+  ✓ it REFUSES a started_on in the future and creates nothing (CA09/RN0… 0.06s  
+  ✓ it carries the started_on_in_future error_code in the ACTION guard…  0.04s  
+  ✓ it saves a RETROACTIVE participation in a remitted month AND return… 0.06s  
+  ✓ it does NOT warn when the month remittance is pending or failed (CA… 0.11s  
+  ✓ it warns BEFORE the submit, in the OPTIONS of a remitted month (CA1… 0.07s  
+  ✓ it CANCELS with a reason instead of deleting — the row stays, marke… 0.09s  
+  ✓ it REQUIRES a reason to cancel (RN10)                                0.08s  
+  ✓ it answers 409 IDEMPOTENT when cancelling an ALREADY cancelled part… 0.07s  
+  ✓ it REFUSES to cancel an ENDED participation — the period is fixed b… 0.07s  
+  ✓ it NEVER deletes: no route drops a row and no source calls delete()… 0.06s  
+  ✓ it NEVER logs the cancel_reason in the activity trail (RN10/D11)     0.07s  
+  ✓ it lets the ACCOMPANYING unit register, stamping the participation…  0.07s  
+  ✓ it REFUSES to declare through a unit where the professional has NO…  0.05s  
+  ✓ it evaluates the unit eligibility ON THE DATE of the entry, not tod… 0.06s  
+  ✓ it DENIES the whole participation surface for a family of ANOTHER u… 0.07s  
+  ✓ it does NOT let FOLLOWING one family authorize participation on ANO… 0.07s  
+  ✓ it keeps social_unit_id as a SNAPSHOT when the family reference uni… 0.06s  
+  ✓ it KEEPS listing a participation whose service or location was late… 0.08s  
+  ✓ it REFUSES status, created_by, updated_by, cancelled_by and cancel_… 0.06s  
+  ✓ it REFUSES status, created_by, updated_by, cancelled_by and cancel_… 0.05s  
+  ✓ it REFUSES status, created_by, updated_by, cancelled_by and cancel_… 0.05s  
+  ✓ it REFUSES status, created_by, updated_by, cancelled_by and cancel_… 0.06s  
+  ✓ it REFUSES status, created_by, updated_by, cancelled_by and cancel_… 0.05s  
+  ✓ it REFUSES status, created_by, updated_by, cancelled_by and cancel_… 0.06s  
+  ✓ it REFUSES status, created_by, updated_by, cancelled_by and cancel_… 0.05s  
+  ✓ it REFUSES status, created_by, updated_by, cancelled_by and cancel_… 0.06s  
+  ✓ it REFUSES the same forbidden fields on UPDATE, keeping the author…  0.06s  
+  ✓ it EDITS an active participation, restamping updated_by and preserv… 0.07s  
+  ✓ it CLOSES the period by editing, turning the participation into end… 0.07s  
+  ✓ it REFUSES to edit a CANCELLED participation (RN09)                  0.06s  
+  ✓ it REFUSES an edit that would create a SECOND active participation…  0.07s  
+  ✓ it serves the form options with members, units and the two catalogs… 0.05s  
+  ✓ it shows the ALREADY ACTIVE participations in the options, so the f… 0.07s  
+  ✓ it says WHY the form should not be offered, with a stable code (§7.… 0.07s  
+  ✓ it stamps can_edit/can_cancel in the LISTING for whoever is assigne… 0.06s  
+  ✓ it withholds can_edit/can_cancel and the cancel_reason from a reade… 0.08s  
+  ✓ it filters the block by member and by status without hiding anythin… 0.08s  
+
+   PASS  Tests\Feature\Manager\ParticipationDomainsTest
+  ✓ it lista os oito servicos com os codigos do instrumento e preserva…  0.04s  
+  ✓ it nunca expoe o id no payload dos dominios de participacao          0.03s  
+  ✓ it identifica o SCFV para adultos como extensao do produto, e so el… 0.02s  
+  ✓ it expoe os atributos de contagem de cada servico conforme a matriz… 0.03s  
+  ✓ it marca o contador de idosos em exatamente um servico — o codigo 2  0.02s  
+  ✓ it recusa marcar um segundo servico com o contador de idosos         0.03s  
+  ✓ it recusa a combinacao que viola elderly ⟹ scfv ⟹ group na criacao   0.03s  
+  ✓ it recusa desligar o grupo de um servico que continua contando como… 0.02s  
+  ✓ it cria um servico proprio do Administrador respeitando a invariant… 0.02s  
+  ✓ it aceita servico sem apelido e recusa apelido acima de 30 caracter… 0.03s  
+  ✓ it recusa renumerar o codigo de um servico, mas aceita o reenvio do… 0.03s  
+  ✓ it recusa renumerar o codigo de um local de realizacao               0.03s  
+  ✓ it lista os cinco locais com os codigos do instrumento e so o 1 com… 0.03s  
+  ✓ it nao registra nenhuma rota de escrita dos dominios de participaca… 0.02s  
+  ✓ it nao oferece escrita ao guard client, mas mantem a leitura das du… 0.04s  
+  ✓ it colhe exatamente as cinco abilities de cada dominio de participa… 0.05s  
+  ✓ it recusa excluir um servico ja usado em participacoes, orientando…  0.02s  
+  ✓ it recusa excluir um local ja usado em participacoes, orientando a…  0.03s  
+  ✓ it exclui um item sem uso, porque a lista e aberta e o engano preci… 0.03s  
+  ✓ it mantem o item inativado na lista e no historico, tirando-o so do… 0.03s  
+  ✓ it mantem o local inativado na lista completa e fora do select de a… 0.03s  
+  ✓ it audita a alteracao de um atributo de contagem com autor, data e…  0.02s  
+  ✓ it audita a alteracao do local de realizacao com o valor anterior d… 0.02s  
+  ✓ it deixa o Operacional Global consultar, mas nao manter, os dominio… 0.04s  
+
+   PASS  Tests\Feature\TenantIsolation\ParticipationIsolationTest
+  ✓ it answers 404 — never 403 — for a family of ANOTHER tenant, on ALL… 0.07s  
+  ✓ it never leaks a participation of ANOTHER tenant through MY family…  0.05s  
+  ✓ it answers 404 when the participation belongs to ANOTHER family of…  0.06s  
+  ✓ it scopes the Model by tenant_id even without the route (BelongsToT… 0.05s  
+  ✓ it blocks the request when the X-Tenant-UUID points at a tenant the… 0.05s  
+  ✓ it does NOT let a participation of ANOTHER tenant block a registrat… 0.06s  
+
+  Tests:    176 passed (954 assertions)
+  Duration: 7.06s
+

@@ -1,0 +1,16 @@
+Consulta 8.4 da spec — VOLUME DE CONFIRMACAO PENDENTE (Achado A2)
+Rodada contra o PostgreSQL real do ambiente (esuas_e2e), por organizacao.
+======================================================================================
+
+  tenant #1 PMA                integrantes aguardando confirmacao: 0
+  tenant #2 PMM                integrantes aguardando confirmacao: 0
+  tenant #3 Dev Alfa           integrantes aguardando confirmacao: 0
+  tenant #4 Dev Beta           integrantes aguardando confirmacao: 0
+  tenant #5 E2E CadÚnico      integrantes aguardando confirmacao: 1
+
+  TOTAL no ambiente: 1
+
+Contexto do universo consultado:
+  integrantes ativos (todas as organizacoes): 9
+  desses, COM grau de instrucao do CadUnico:  2
+  linhas de condicoes ja registradas:         3

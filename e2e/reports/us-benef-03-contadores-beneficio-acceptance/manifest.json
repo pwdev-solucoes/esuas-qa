@@ -1,0 +1,143 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — US-BENEF-03",
+    "subtitle": "Épico HU-PRONT-BENEF (fase F5) · Contadores de benefício na apuração (leiaute 15.6) — o leiaute fecha por completo",
+    "rows": [
+      [
+        "Gerado em",
+        "15/09/2026"
+      ],
+      [
+        "História",
+        "US-BENEF-03 — Ligar os contadores do leiaute 15.6 à apuração"
+      ],
+      [
+        "Spec",
+        ".planning/specs/US-BENEF-03-contadores-de-beneficio-na-apuracao.md"
+      ],
+      [
+        "Branch",
+        "feature/benef-prontuario-bloco-12"
+      ],
+      [
+        "Commits (api/)",
+        "470734e · f1cdcfc · e6e206f"
+      ],
+      [
+        "Commits (client/)",
+        "1e24138"
+      ],
+      [
+        "Commits (e2e/)",
+        "a ser fixado pelo orquestrador junto com este dossiê"
+      ],
+      [
+        "Ambiente",
+        "Stack E2E Docker · API em :8090 · client em :4174 · base recém-semeada, com massa acumulada de execuções anteriores"
+      ],
+      [
+        "Perfil usado",
+        "Master do município (a tela exige attendance-reports.view; sessão própria de Master, não a herdada do Operacional)"
+      ],
+      [
+        "Ferramenta",
+        "Playwright (Chromium) + Pest 4"
+      ]
+    ]
+  },
+  "summary": "Quatorze critérios de aceite. Quatro evidenciados no navegador (CA01, CA03, CA09, CA10, com quatro prints) e dez cobertos pela suíte automatizada (CA02, CA04, CA05, CA06, CA07, CA08, CA11, CA12, CA13, CA14). A suíte fecha com 20 testes e 68 asserções, em AttendanceReportEventualBenefitTest e EventualBenefitReportServiceTest. Os 4 cenários Playwright passam contra base recém-semeada e persistente. Nenhum critério em falha. Os números com massa (cestas básicas, natalidades, funerais) são provados pelo backend; o E2E prova o que é da UI — os quatro contadores acesos, as três naturezas declaradas lado a lado, a ausência do painel de indisponíveis e o zero declarado. Com esta HU o leiaute 15.6 fecha por completo.",
+  "criteria": [
+    {
+      "id": "CA01",
+      "title": "Contadores acesos (happy path)",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "ca01-os-quatro-contadores-de-beneficio-eventual-aparecem-acesos-n.png"
+      ]
+    },
+    {
+      "id": "CA02",
+      "title": "Contam concessões, não famílias",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "CA03",
+      "title": "As três formas de contagem declaradas na tela",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "ca03-as-tres-naturezas-de-contagem-do-leiaute-15-6-ficam-declarad-tres-naturezas-lado-a-lado.png"
+      ]
+    },
+    {
+      "id": "CA04",
+      "title": "Kit de emergência, aluguel social e outros somam em \"outros benefícios\"",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "CA05",
+      "title": "Tipo de atendimento não soma nestes contadores",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "CA06",
+      "title": "Encaminhamento para benefício não soma",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "CA07",
+      "title": "Cancelada não conta",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "CA08",
+      "title": "Retroativo conta no mês da concessão",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "CA09",
+      "title": "Leiaute 15.6 sem indisponíveis",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "ca09-o-leiaute-15-6-fechou-nao-existe-mais-painel-de-contadores-i.png"
+      ]
+    },
+    {
+      "id": "CA10",
+      "title": "Unidade sem concessão no período",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "ca10-unidade-sem-concessao-no-periodo-mostra-os-quatro-contadores.png"
+      ]
+    },
+    {
+      "id": "CA11",
+      "title": "Operacional vê apenas as suas unidades",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "CA12",
+      "title": "Isolamento entre municípios",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "CA13",
+      "title": "Tipo inativado continua contando",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "CA14",
+      "title": "Nada é persistido",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    }
+  ]
+}

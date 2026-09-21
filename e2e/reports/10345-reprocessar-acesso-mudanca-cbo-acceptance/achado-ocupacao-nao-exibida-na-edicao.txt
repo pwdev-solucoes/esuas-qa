@@ -1,0 +1,36 @@
+ACHADO (fora do escopo dos CAs, observado durante a execução)
+=============================================================
+
+Sintoma
+-------
+Na tela de EDIÇÃO do profissional (/app/cadastros/profissionais-municipais/<uuid>/editar),
+o combobox "Ocupação (CBO)" exibe sempre o placeholder "Selecione a ocupação...",
+mesmo quando o profissional JÁ TEM uma ocupação gravada. O Master não vê qual é a
+ocupação atual antes de alterá-la.
+
+Causa
+-----
+- ProfissionalMunicipalFormPage.vue:352-357 popula o rótulo do combobox a partir de
+  `professional.cbo` (objeto com code/name) via cboResource.prime(...).
+- app/Http/Resources/ProfessionalResource.php:55 expõe `cbo` sob whenLoaded('cbo').
+- app/Http/Controllers/.../ProfessionalController.php:114 (show) faz
+  ->load(['user.person', 'address']) — SEM 'cbo'.
+Logo o payload do show traz apenas `cbo_id`, e o rótulo nunca é montado.
+
+Impacto
+-------
+Cosmético/usabilidade, não funcional. O valor interno (cboId) É carregado a partir de
+cbo_id, de modo que salvar sem tocar no campo preserva a ocupação e NÃO dispara
+reprocessamento (comportamento confirmado pelo teste Pest "RN01: salvar sem mudar a
+ocupacao NAO dispara reprocessamento"). Nenhum critério de aceite da HU #10345 é
+reprovado por isso.
+
+Correção sugerida
+-----------------
+Incluir 'cbo' no eager load do show:
+  $professional->load(['user.person', 'address', 'cbo'])
+
+Evidência
+---------
+GET /api/client/professionals/9e96fb20-... => 200 com {"uuid": "...", "cbo_id": 715}
+(sem a chave "cbo").

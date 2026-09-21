@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — Refinamento do Design System, Elementos Visuais e Responsividade</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  section.note { border:1px solid var(--line); border-left:4px solid #b06a00; border-radius:6px; padding:10px 14px; margin:10px 0; background:#fffdf7; font-size:13px; }
+  section.note h3 { margin:0 0 6px; font-size:13.5px; color:#8a5200; }
+  section.note p { margin:6px 0; }
+  section.note ul { margin:6px 0 6px 18px; padding:0; }
+  section.note pre { background:var(--bg); border:1px solid var(--line); border-radius:4px; padding:8px; overflow-x:auto; font-size:11px; white-space:pre-wrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style><style>img[src*="ca03"]{width:auto !important;max-width:60% !important;display:block;margin:0 auto;}</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — Refinamento do Design System, Elementos Visuais e Responsividade</h1>
+    <div class="sub">HU #10146 · Landing Page do SigSUAS · Evidências end-to-end no site público</div>
+    <div class="meta"><div><span>Gerado em:</span> 21/08/2026</div><div><span>Branch:</span> develop (landind-page d06be5f)</div><div><span>Spec:</span> Ad-hoc — critérios extraídos do ticket GLPI #10146 (não há story oficial no repo)</div><div><span>Ambiente:</span> Build de produção da landing (Nuxt) servido em :3000 com NUXT_LEADS_MOCK=true</div><div><span>Ferramenta:</span> playwright-cli (Chromium) + Playwright E2E</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">2 critérios de aceite, ambos evidenciados por navegador sobre o build real da landing. CA03 comprovado por capturas de página inteira nas três resoluções pedidas (1440, 768 e 375), sustentadas pela revisão de acessibilidade AA já aplicada (contraste medido, tipografia mínima de 12px, alvos de toque de 44px, foco visível) e pelos 3 cenários automatizados de acessibilidade da suíte. CA04 comprovado por capturas do mapa de calor de georreferenciamento com o card-legenda 'Exemplo de leitura' nítido em desktop e mobile.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA03</td><td>Consistência visual e acessibilidade</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA04</td><td>Refinamento da simulação de inteligência territorial</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA03">
+      <h2>CA03 — Consistência visual e acessibilidade <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o refinamento de interface foi implementado, Quando inspeciono a página em telas com resoluções diversas (Desktop, Tablet e Smartphone), Então o layout se ajusta proporcionalmente com espaçamentos harmoniosos e alto nível de legibilidade.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Abrir o build real da landing e capturar a página inteira em três resoluções: Desktop 1440×900, Tablet 768×1024 e Smartphone 375×812, com todas as imagens carregadas.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O layout se reorganiza proporcionalmente nos três tamanhos: o hero passa de duas colunas para coluna única; os cards da dor fecham a linha do tablet sem célula órfã; os cinco H2 do miolo compartilham a mesma escala; a alternância de superfícies (navy → cinza-claro → branco) permanece íntegra de ponta a ponta.</li><li>Legibilidade sustentada por medições da revisão de acessibilidade aplicada: nenhum texto abaixo de 12px, contraste dos pares aprovados em nível AA (leads sobre superfície cinza a 7.24:1, mensagens de erro a 5.38:1, anel de foco a 6.59:1 ou superior), alvos de toque de pelo menos 44px no mobile e foco visível em todos os controles.</li><li>A suíte automatizada (apêndice) inclui 3 cenários dedicados de acessibilidade — foco visível nas duas superfícies, FAQ operável por teclado e hierarquia de títulos sem salto — todos aprovados.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca03-1-desktop-1440.jpg" alt="CA03 evidência"/><figcaption>ca03-1-desktop-1440.jpg</figcaption></figure><figure><img src="screenshots/ca03-2-tablet-768.jpg" alt="CA03 evidência"/><figcaption>ca03-2-tablet-768.jpg</figcaption></figure><figure><img src="screenshots/ca03-3-mobile-375.jpg" alt="CA03 evidência"/><figcaption>ca03-3-mobile-375.jpg</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA04">
+      <h2>CA04 — Refinamento da simulação de inteligência territorial <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o visitante rola a tela até a seção do mapa de calor de georreferenciamento, Quando o bloco entra em área visível, Então os elementos gráficos e legendas indicativas são renderizados com nitidez, destacando o valor analítico da funcionalidade.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Abrir a página e capturar a vitrine do Painel de Georreferenciamento com o card-legenda em desktop (1440) e em smartphone (375), aguardando a decodificação completa das imagens.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O mapa de calor renderiza nítido, com as manchas de calor, as unidades CRAS e CREAS e os nomes de bairros legíveis, dentro da moldura rotulada 'Painel de Georreferenciamento'.</li><li>A legenda indicativa acompanha o mapa: o card 'Exemplo de leitura' apresenta a leitura analítica 'Mapa de calor de cadastros desatualizados' e a procedência 'Dados do CadÚnico do próprio município' — flutuante sobre o mapa no desktop e como bloco dedicado no mobile.</li><li>As imagens usam carregamento prioritário no hero e decodificação assíncrona; nenhuma caixa vazia de carregamento aparece nas capturas.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca04-1-mapa-desktop.jpg" alt="CA04 evidência"/><figcaption>ca04-1-mapa-desktop.jpg</figcaption></figure><figure><img src="screenshots/ca04-2-mapa-mobile.jpg" alt="CA04 evidência"/><figcaption>ca04-2-mapa-mobile.jpg</figcaption></figure></div>
+    </section>
+  
+  <h2>Observações e ressalvas</h2>
+  <section class="note"><h3>Spec ad-hoc montada a partir do ticket</h3><p>Não existe story oficial para a HU #10146 no repositório; os critérios foram extraídos literalmente do ticket GLPI. As evidências refletem o estado entregue em develop até o commit <code>d06be5f</code> do repositório da landing.</p></section><section class="note"><h3>A seção territorial dedicada foi absorvida pelo topo da página</h3><p>O ticket cita "a seção do mapa de calor de georreferenciamento". No redesenho aprovado em 2026-08-20, a seção territorial dedicada foi removida e a simulação do mapa de calor passou a viver na vitrine de abertura da página (topo), com o card-legenda "Exemplo de leitura" — o visitante a vê imediatamente, sem precisar rolar. As evidências do CA04 retratam essa localização atual.</p></section>
+  
+  <h2>Anexo — Cobertura automatizada (Playwright E2E da landing — build real, NUXT_LEADS_MOCK=true; inclui os cenários A11Y-FOCUS, A11Y-FAQ-KEYBOARD e A11Y-HEADINGS)</h2>
+  <pre class="pest">
+Running 32 tests using 5 workers
+
+  -   5 [desktop] › tests/e2e/landing.spec.ts:166:1 › CA02 — em viewport mobile o menu vira hambúrguer (Sheet)
+  ✓   4 [desktop] › tests/e2e/landing.spec.ts:84:1 › HERO-V5 — hero assimétrico com vitrine e faixa de indicadores (725ms)
+  ✓   3 [desktop] › tests/e2e/landing.spec.ts:34:1 › CA01 — página única com as 8 seções da estrutura v2 (764ms)
+  ✓   1 [desktop] › tests/e2e/landing.spec.ts:59:1 › BENEFITS-SHOWCASE — benefícios abrem com o Painel do Técnico e 5 cards uniformes (829ms)
+  ✓   2 [desktop] › tests/e2e/landing.spec.ts:116:1 › HOW-IT-WORKS-TIMELINE — 4 atos com 4 módulos cada e desfecho de resultado (933ms)
+  ✓   8 [desktop] › tests/e2e/landing.spec.ts:219:1 › LEAD-PANEL — painel territorial da seção de demonstração mantém copy e equipe (401ms)
+  ✓   7 [desktop] › tests/e2e/landing.spec.ts:202:1 › V2-FAQ — accordion nativo abre e fecha as perguntas (541ms)
+  ✓   9 [desktop] › tests/e2e/landing.spec.ts:246:1 › CA05 — envio válido exibe a mensagem exata de sucesso (modo mock) (699ms)
+  ✓  10 [desktop] › tests/e2e/landing.spec.ts:256:1 › L3 — honeypot preenchido é aceito em silêncio (proteção anti-bot) (534ms)
+  ✓  11 [desktop] › tests/e2e/landing.spec.ts:271:1 › CA06 — município vazio bloqueia envio e destaca o campo (458ms)
+  ✓  12 [desktop] › tests/e2e/landing.spec.ts:281:1 › V2-CONSENT — consentimento LGPD desmarcado bloqueia o envio (383ms)
+  ✓  13 [desktop] › tests/e2e/landing.spec.ts:292:1 › A11Y-FOCUS — foco visível por teclado nas superfícies clara e escura (343ms)
+  ✓  14 [desktop] › tests/e2e/landing.spec.ts:325:1 › A11Y-FAQ-KEYBOARD — perguntas do FAQ operáveis por Enter e Espaço, com foco visível (321ms)
+  ✓  15 [desktop] › tests/e2e/landing.spec.ts:348:1 › A11Y-HEADINGS — um único h1 e hierarquia sem salto de nível (282ms)
+  ✓  16 [desktop] › tests/e2e/landing.spec.ts:361:1 › FOOTER-DARK — footer escuro com 4 links rápidos, sem "Demonstração" (291ms)
+  ✓  17 [mobile] › tests/e2e/landing.spec.ts:34:1 › CA01 — página única com as 8 seções da estrutura v2 (220ms)
+  ✓  18 [mobile] › tests/e2e/landing.spec.ts:59:1 › BENEFITS-SHOWCASE — benefícios abrem com o Painel do Técnico e 5 cards uniformes (261ms)
+  -  21 [mobile] › tests/e2e/landing.spec.ts:183:1 › V2-NAV — âncoras do header e do CTA levam às 5 seções
+  ✓  19 [mobile] › tests/e2e/landing.spec.ts:84:1 › HERO-V5 — hero assimétrico com vitrine e faixa de indicadores (226ms)
+  ✓  22 [mobile] › tests/e2e/landing.spec.ts:202:1 › V2-FAQ — accordion nativo abre e fecha as perguntas (317ms)
+  ✓  23 [mobile] › tests/e2e/landing.spec.ts:219:1 › LEAD-PANEL — painel territorial da seção de demonstração mantém copy e equipe (258ms)
+  ✓  24 [mobile] › tests/e2e/landing.spec.ts:116:1 › HOW-IT-WORKS-TIMELINE — 4 atos com 4 módulos cada e desfecho de resultado (412ms)
+  ✓  20 [mobile] › tests/e2e/landing.spec.ts:166:1 › CA02 — em viewport mobile o menu vira hambúrguer (Sheet) (970ms)
+  ✓   6 [desktop] › tests/e2e/landing.spec.ts:183:1 › V2-NAV — âncoras do header e do CTA levam às 5 seções (3.3s)
+  ✓  27 [mobile] › tests/e2e/landing.spec.ts:271:1 › CA06 — município vazio bloqueia envio e destaca o campo (352ms)
+  ✓  28 [mobile] › tests/e2e/landing.spec.ts:281:1 › V2-CONSENT — consentimento LGPD desmarcado bloqueia o envio (361ms)
+  ✓  30 [mobile] › tests/e2e/landing.spec.ts:348:1 › A11Y-HEADINGS — um único h1 e hierarquia sem salto de nível (152ms)
+  ✓  29 [mobile] › tests/e2e/landing.spec.ts:325:1 › A11Y-FAQ-KEYBOARD — perguntas do FAQ operáveis por Enter e Espaço, com foco visível (208ms)
+  ✓  31 [mobile] › tests/e2e/landing.spec.ts:361:1 › FOOTER-DARK — footer escuro com 4 links rápidos, sem "Demonstração" (185ms)
+  ✓  25 [mobile] › tests/e2e/landing.spec.ts:246:1 › CA05 — envio válido exibe a mensagem exata de sucesso (modo mock) (1.4s)
+  ✓  32 [mobile] › tests/e2e/landing.spec.ts:292:1 › A11Y-FOCUS — foco visível por teclado nas superfícies clara e escura (185ms)
+  ✓  26 [mobile] › tests/e2e/landing.spec.ts:256:1 › L3 — honeypot preenchido é aceito em silêncio (proteção anti-bot) (2.7s)
+
+  2 skipped
+  30 passed (6.9s)
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

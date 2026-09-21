@@ -1,0 +1,8 @@
+[2026-08-06 19:03:33] event=roles_synced | causer=E2E Super Admin | subject=CboAccessProfile#40
+  properties: {"cbo_code":"2516-05","roles_before":[],"roles_after":["family_viewer","operador","pf_tecnico_referencia"]}
+[2026-08-06 19:04:36] event=roles_synced | causer=E2E Super Admin | subject=CboAccessProfile#40
+  properties: {"cbo_code":"2516-05","roles_before":["family_viewer","operador","pf_tecnico_referencia"],"roles_after":["operador","pf_tecnico_referencia"]}
+[2026-08-06 19:05:02] event=roles_synced | causer=E2E Super Admin | subject=CboAccessProfile#40
+  properties: {"cbo_code":"2516-05","roles_before":["operador","pf_tecnico_referencia"],"roles_after":["family_viewer","operador","pf_tecnico_referencia"]}
+[2026-08-06 19:05:43] event=roles_synced | causer=E2E Super Admin | subject=CboAccessProfile#40
+  properties: {"cbo_code":"2516-05","roles_before":["family_viewer","operador","pf_tecnico_referencia"],"roles_after":["operador","pf_tecnico_referencia"]}

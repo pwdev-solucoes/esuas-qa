@@ -1,0 +1,43 @@
+
+   PASS  Tests\Unit\Models\FamilyMemberTest
+  ✓ it has the base and snapshot fillable attributes                     0.37s  
+  ✓ it casts booleans, dates and the unlinked timestamp                  0.01s  
+  ✓ it defaults is_responsible to false and status to active             0.01s  
+  ✓ it uses tenant scope, soft deletes, HasUuid and LogsActivity         0.01s  
+  ✓ it relates to family, person, kinship type and snapshot lookups      0.01s  
+  ✓ it creates a member tied to the same tenant as its family            0.07s  
+  ✓ it enforces unique person per family and tenant                      0.01s  
+
+   PASS  Tests\Feature\Family\FamilyCompositionTest
+  ✓ it includes a member with the kinship, recalculates the age profile… 0.09s  
+  ✓ it unlinks a member with date and reason WITHOUT deleting anything…  0.05s  
+  ✓ it lets the unlinked person be linked to ANOTHER family (CA03)       0.05s  
+  ✓ it answers 409 and does NOT unlink on its own when the person is in… 0.04s  
+  ✓ it refuses to include someone already in THIS family with its own e… 0.04s  
+  ✓ it marks and unmarks the civil documentation to be provided (CA05/R… 0.05s  
+  ✓ it fills an EMPTY mother name from the family record and declares t… 0.04s  
+  ✓ it answers 422 for a mother name ALREADY filled and tells the scree… 0.04s  
+  ✓ it denies mother-name for a person OUTSIDE the tenant link (§12)     0.04s  
+  ✓ it denies mother-name when the person only links to a family OUTSID… 0.04s  
+  ✓ it calculates the age profile and never accepts it from the client…  0.05s  
+  ✓ it offers the eleven kinships of the instrument and reserves the re… 0.05s  
+  ✓ it denies editing the composition of a family referenced in ANOTHER… 0.05s  
+  ✓ it requires date AND reason to unlink, and a note when the reason i… 0.04s  
+  ✓ it refuses to unlink the reference person and an already unlinked m… 0.05s  
+  ✓ it NEVER leaks unlinked_reason_note into the activity_log (§14)      0.04s  
+  ✓ it corrects the kinship of an existing member without touching the…  0.04s  
+
+   PASS  Tests\Feature\Family\FamilyImportDivergenceTest
+  ✓ it does NOT relink an unlinked member and CREATES the divergence (C… 0.06s  
+  ✓ it does not stack the same divergence on every remittance (idempotê… 0.05s  
+  ✓ it NEVER leaks the divergence payload into the activity_log (§14)    0.05s  
+  ✓ it lists the open divergences of the family and resolves one (CA10)  0.06s  
+
+   PASS  Tests\Feature\TenantIsolation\FamilyCompositionIsolationTest
+  ✓ it applies BelongsToTenant to FamilyMemberPendingDocument            0.03s  
+  ✓ it applies BelongsToTenant to FamilyImportDivergence                 0.02s  
+  ✓ it refuses to read the composition of a family from ANOTHER municip… 0.02s  
+
+  Tests:    31 passed (183 assertions)
+  Duration: 1.99s
+

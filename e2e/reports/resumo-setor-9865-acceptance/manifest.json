@@ -1,0 +1,69 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — HU #9865 Painel de Resumo por Setor Censitário e Busca de Território",
+    "subtitle": "Painel de Georreferenciamento (rota /georreferenciamento) · módulo client · Evidências end-to-end no app real",
+    "rows": [
+      ["Gerado em", "10/07/2026"],
+      ["História", "HU #9865 — Painel de Resumo por Unidade Territorial (Setor Censitário) e Busca de Território"],
+      ["Critérios", "CA06, CA07 e CA08 (3 critérios)"],
+      ["Submódulos", "client 99e397d · api 7731b50 (branch feature/geo-9862-google-satelite-zindex, base develop)"],
+      ["Ambiente", "API Sail/PostgreSQL · client Vite :5175 (não-mock) → http://localhost/api"],
+      ["Organização (tenant)", "Maceió Geo (massa geo) · 12 famílias geocodificadas · 1.620 setores censitários"],
+      ["Perfil de acesso", "Master (CPF 27043020140) com geo-panel.view — RN10/RN21"],
+      ["Ferramenta", "playwright-cli (Chromium, viewport 1680×1050) + Vitest + Pest"]
+    ]
+  },
+  "summary": "Os 3 critérios de aceite da HU #9865 sobre o resumo por unidade territorial (setor censitário) e a busca de território foram verificados dirigindo o app real no navegador (tenant Maceió Geo) e reforçados pela suíte automatizada — todos ATENDIDOS. CA06: com um filtro de vulnerabilidade aplicado (Bolsa Família, 5 famílias) e as manchas de calor no mapa, o painel lateral (Resumo analítico → “Distribuição por setor censitário”) lista os códigos das Unidades Territoriais com as respectivas contagens de famílias afetadas. CA07: pesquisando e selecionando o código de um setor específico (270430205060001) na barra de pesquisa do mapa (combobox “Setor censitário”, busca por código IBGE), o mapa foca automaticamente no perímetro desse setor e o resumo passa a exibir apenas a linha e os indicadores dessa unidade territorial (Famílias nos filtros ativos: 1, um único setor na distribuição). CA08: a métrica fixa “Famílias com Endereço Inconsistente: 1” é exibida de forma permanente no cabeçalho e na faixa de resumo, indicando a volumetria total do município (RN07). Cobertura automatizada: Vitest do GeoPanelSectorCombobox (16 testes) + Pest de geo (agregação por setor, restrição/validação de setor RN08, indicador fixo RN07).",
+  "cas": [
+    {
+      "id": "CA06",
+      "title": "Atualização estatística por Setor Censitário",
+      "status": "nav",
+      "gherkin": "Dado que apliquei um filtro de vulnerabilidade, Quando as manchas de calor aparecem no mapa, Então o painel lateral exibe os códigos das Unidades Territoriais (Setores Censitários) com suas respectivas contagens de famílias afetadas.",
+      "steps_html": "Aplicado o filtro <b>Bolsa Família</b> (5 famílias) na Busca avançada e expandida a faixa <b>Resumo analítico</b> na parte inferior do painel, com as manchas de calor projetadas no mapa.",
+      "results": [
+        "O painel “Distribuição por setor censitário” lista os códigos das Unidades Territoriais (270430205060001, 270430205070115, 270430205080097, 270430205100065, 270430205110048) com as respectivas contagens de famílias afetadas.",
+        "O indicador “Famílias nos filtros ativos: 5” consolida o total sob o filtro aplicado.",
+        "Pest: GeoPanelQueryServiceTest/GeoPanelTest cobrem a agregação por setor sob os filtros ativos (ver Anexo)."
+      ],
+      "images": [
+        "screenshots/ca06-distribuicao-setores.png"
+      ]
+    },
+    {
+      "id": "CA07",
+      "title": "Isolamento de dados por busca de Setor Censitário",
+      "status": "nav",
+      "gherkin": "Dado que pesquiso e seleciono o código de um setor censitário específico na barra de pesquisa do mapa, Quando a ação é processada, Então o mapa foca automaticamente no perímetro desse setor e o painel lateral de resumos passa a exibir apenas a linha e os indicadores estatísticos dessa unidade territorial.",
+      "steps_html": "No campo <b>Setor censitário</b> da Busca avançada (combobox “Pesquisar por código IBGE ou nome…”), digitado e selecionado o código <b>270430205060001</b>; em seguida <b>Buscar</b> → <b>Aplicar no mapa</b>.",
+      "results": [
+        "A barra de pesquisa filtra os setores pelo código IBGE digitado e permite selecionar a Unidade Territorial desejada.",
+        "Ao aplicar, o mapa foca automaticamente (auto-zoom) no perímetro do setor 270430205060001 (nível de rua) e o setor entra como filtro ativo.",
+        "O painel lateral de resumos passa a exibir apenas a linha desse setor: “Famílias nos filtros ativos: 1” e um único setor (270430205060001) na Distribuição por setor censitário.",
+        "Pest: GeoPanelQueryServiceTest confirma a restrição por sector_uuid e a validação de que o setor pertence ao município do tenant (RN08) — ver Anexo."
+      ],
+      "images": [
+        "screenshots/ca07-busca-setor.png",
+        "screenshots/ca07-isolamento-setor.png"
+      ]
+    },
+    {
+      "id": "CA08",
+      "title": "Visibilidade de endereços inconsistentes (métrica fixa RN07)",
+      "status": "nav",
+      "gherkin": "Dado que o painel de georreferenciamento está aberto, Quando olho para os indicadores laterais, Então visualizo de forma fixa a métrica \"Famílias com Endereço Inconsistente: X\", indicando a volumetria total do município.",
+      "steps_html": "Observado o cabeçalho e a faixa de <b>Resumo analítico</b> do painel, em qualquer estado (neutro ou com filtro aplicado).",
+      "results": [
+        "A métrica “Famílias com Endereço Inconsistente: 1” é exibida de forma fixa no cabeçalho do painel e na faixa de resumo, independentemente dos filtros — indicando a volumetria total do município.",
+        "Pest: GeoPanelTest confirma que o indicador fixo (RN07) está sempre presente no resumo, mesmo sem filtro (ver Anexo)."
+      ],
+      "images": [
+        "screenshots/ca08-endereco-inconsistente.png"
+      ]
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada — Vitest GeoPanelSectorCombobox + Pest de geo (agregação/restrição por setor, RN07/RN08)",
+    "file": "tests-9865.txt"
+  }
+}

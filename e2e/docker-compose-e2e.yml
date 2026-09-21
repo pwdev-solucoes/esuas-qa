@@ -1,0 +1,57 @@
+# Override para ambiente E2E. Estende docker-compose-staging.yml adicionando:
+#   - Mailpit (capturar emails de reset de senha)
+#   - env vars de Sanctum/Session apontando para o frontend em vite preview (4173)
+#
+# Uso (a partir da raiz do meta-repo):
+#   docker compose -f docker-compose-staging.yml -f e2e/docker-compose-e2e.yml up -d
+#
+# Não use isto em staging/prod — Mailpit é apenas para captura local.
+
+services:
+  app:
+    environment:
+      APP_ENV: e2e
+      APP_DEBUG: "false"
+      APP_URL: http://localhost:8090
+      FRONTEND_URL: http://localhost:4173
+      # O client do tenant é servido em 4174 (ver start-stack.sh). Sem a porta
+      # na lista stateful o login do client devolve 419 — e o valor do
+      # CONTAINER vence o api/.env (Dotenv não sobrescreve env já existente).
+      FRONTEND_URL_CLIENT: ${FRONTEND_URL_CLIENT:-http://localhost:4174}
+      SANCTUM_STATEFUL_DOMAINS: ${SANCTUM_STATEFUL_DOMAINS:-localhost:4173,127.0.0.1:4173,localhost:4174,127.0.0.1:4174}
+      SESSION_DOMAIN: localhost
+      SESSION_SAME_SITE: lax
+      SESSION_SECURE_COOKIE: "false"
+      MAIL_MAILER: smtp
+      MAIL_HOST: mailpit
+      MAIL_PORT: 1025
+      MAIL_USERNAME: null
+      MAIL_PASSWORD: null
+      MAIL_ENCRYPTION: null
+      MAIL_FROM_ADDRESS: no-reply@esuas.e2e
+      MAIL_FROM_NAME: "eSUAS E2E"
+      # Em E2E não rodamos MinIO no compose — força disk public para que
+      # photo_url do User funcione via Storage::url() sem dependência de S3.
+      FILESYSTEM_DISK: public
+    depends_on:
+      mailpit:
+        condition: service_started
+
+  nginx:
+    # Evita conflito com Sail/GLPI na 8080 do dev local.
+    ports: !override
+      - "127.0.0.1:8090:80"
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: esuas_mailpit_e2e
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:1026:1025"  # SMTP host:container
+      - "127.0.0.1:8026:8025"  # UI / HTTP API
+    environment:
+      MP_MAX_MESSAGES: 500
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+    networks:
+      - backend

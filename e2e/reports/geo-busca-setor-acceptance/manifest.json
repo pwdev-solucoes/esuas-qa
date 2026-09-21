@@ -1,0 +1,60 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — HU Busca de Setor Censitário, Isolamento e Inconsistências",
+    "subtitle": "Sprint 9 · Painel de Georreferenciamento do Tenant · CA06–CA08 · Evidências end-to-end no client (número da HU pendente — renomear quando conhecido)",
+    "rows": [
+      ["Gerado em", "05/07/2026"],
+      ["Branch", "sprint9-geo-busca-setor (client d953375 + fixes 671e924, f1a3ce2; api/admin intocados)"],
+      ["Spec", ".planning/specs/sprint9/geo-busca-setor-isolamento-inconsistencias.md"],
+      ["Ambiente", "API e2e :8090 (esuas_app / esuas_e2e, PostGIS) · client build preview :4173"],
+      ["Organização (tenant)", "E2E CadÚnico · Fortaleza · IBGE 2304400"],
+      ["Ferramenta", "playwright-cli (Chromium) + Pest 4"]
+    ]
+  },
+  "summary": "3 critérios de aceite (CA06–CA08 da história original do painel geo) — CA06 e CA07 com código novo, CA08 evidência-somente (indicador entregue na HU-GEO-01). Entrega 100% client (zero backend): as listas de setores do resumo passam a exibir o código IBGE (fonte mono) junto ao nome, e a seleção de setor virou combobox pesquisável (filtro por código ou nome, acento/caixa-insensível, navegável por teclado), preservando o fluxo Buscar → Aplicar → fly-to → resumo isolado. O ciclo de revisão rendeu 3 correções antes do aceite: bug de navegação por teclado (primeira seta pulava 'Todos os setores'), consistência código+nome na lista de resultados do próprio modal, e flip do listbox para cima quando não há espaço abaixo (clipping detectado na validação visual das evidências). Resultado geral: todos os critérios atendidos. Regressão backend: Pest geo-panel 51 testes / 186 asserções; suíte completa 2722 passed (única falha = MinioConnectivityTest, pré-existente catalogada). Client: ESLint 0, build vue-tsc limpo, Vitest 114 arquivos / 924 testes.",
+  "cas": [
+    {
+      "id": "CA06",
+      "title": "Atualização estatística por Setor Censitário — códigos e contagens (PO)",
+      "status": "nav",
+      "gherkin": "Dado que apliquei um filtro de vulnerabilidade, Quando as manchas de calor aparecem no mapa, Então o painel lateral exibe os códigos das Unidades Territoriais (Setores Censitários) com suas respectivas contagens de famílias afetadas.",
+      "steps_html": "Abrir o painel → expandir o Resumo analítico no estado neutro (lista zerada) → aplicar <b>Extrema pobreza</b> → conferir a distribuição por setor.",
+      "results": [
+        "Estado neutro: os 3 setores do município listados com CÓDIGO IBGE em fonte mono (230440005000001/2/3) + nome + contagem 0.",
+        "Com filtro aplicado: \"230440005000001 · Setor Fixture 001 - Oeste — 4\" (código sempre visível; antes o código sumia quando havia nome).",
+        "A lista de resultados dentro do próprio modal de busca segue o mesmo padrão código+nome (uniformização aplicada na revisão)."
+      ],
+      "images": ["screenshots/ca06-neutro-codigos-zerados.png", "screenshots/ca06-filtro-codigos-contagens.png"]
+    },
+    {
+      "id": "CA07",
+      "title": "Isolamento de dados por busca de Setor Censitário (PO)",
+      "status": "nav",
+      "gherkin": "Dado que pesquiso e seleciono o código de um setor censitário específico na barra de pesquisa do mapa, Quando a ação é processada, Então o mapa foca automaticamente no perímetro desse setor e o painel lateral de resumos passa a exibir apenas a linha e os indicadores estatísticos dessa unidade territorial.",
+      "steps_html": "Busca avançada → combobox <b>Setor censitário</b> → digitar <code>230440005</code> (filtro por código), <code>OESTE</code> (filtro por nome, caixa/acento-insensível) e <code>zzz</code> (estado vazio) → selecionar o setor <b>por teclado</b> (setas + Enter) → Buscar → Aplicar no mapa.",
+      "results": [
+        "Combobox pesquisável substitui o select nativo: digitar filtra as opções por código OU nome (normalização NFD); \"Todos os setores\" permanece sempre acessível; estado vazio \"nenhum setor encontrado\" com i18n.",
+        "Listbox abre PARA CIMA quando não há espaço abaixo (flip, correção da revisão) — todas as opções visíveis, sem clipping pelo corpo do modal (data-flip=\"up\" verificado no DOM).",
+        "Navegação por teclado validada ao vivo: 1ª seta foca \"Todos os setores\", 2ª avança para a opção real, Enter seleciona (bug da 1ª seta corrigido na revisão).",
+        "Ao aplicar: fly-to automático para o perímetro/bbox do setor e resumo analítico ISOLADO na linha única \"230440005000001 · Setor Fixture 001 - Oeste — 4\" (famílias nos filtros ativos: 4), ocultando os demais setores.",
+        "Contrato preservado: payload sector_uuid e fluxo existentes intactos (Pest geo-panel 51 verdes no apêndice)."
+      ],
+      "images": ["screenshots/ca07-combobox-filtro-codigo.png", "screenshots/ca07-combobox-filtro-nome.png", "screenshots/ca07-combobox-vazio.png", "screenshots/ca07-flyto-setor.png", "screenshots/ca07-resumo-isolado.png"]
+    },
+    {
+      "id": "CA08",
+      "title": "Visibilidade de endereços inconsistentes — indicador fixo (PO, evidência-somente)",
+      "status": "nav",
+      "gherkin": "Dado que o painel de georreferenciamento está aberto, Quando olho para os indicadores laterais, Então visualizo de forma fixa a métrica \"Famílias com Endereço Inconsistente: X\", indicando a volumetria total do município.",
+      "steps_html": "Conferir o indicador no header da página e no cabeçalho da faixa de resumo, <b>sem filtros</b> (estado neutro) e <b>com filtro ativo</b>. Funcionalidade entregue na HU-GEO-01 — nesta HU é regressão/evidência, sem código novo.",
+      "results": [
+        "\"Famílias com Endereço Inconsistente: 3\" fixo no header e no cabeçalho do resumo, no estado neutro (screenshot do CA06) e com filtro aplicado — total real do município (3 inconsistências abertas no banco), independente dos filtros."
+      ],
+      "images": ["screenshots/ca08-indicador-fixo-com-filtro.png"]
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Pest, --filter=GeoPanel — 51 testes / 186 asserções; suíte completa 2722 passed, única falha pré-existente catalogada MinioConnectivityTest)",
+    "file": "pest-geo-panel.txt"
+  }
+}

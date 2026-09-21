@@ -1,0 +1,15 @@
+Conferencia de completude do leiaute 15.11 — consulta 8.2 da spec (organizacao E2E CadUnico)
+FAMILIA       TIPO RESIDENCIA   AREA DE RISCO   VULNERABILIDADE
+----------------------------------------------------------------------
+9900000001    EM FALTA          EM FALTA        EM FALTA
+9900000002    EM FALTA          EM FALTA        EM FALTA
+9900000003    EM FALTA          EM FALTA        EM FALTA
+9900000004    EM FALTA          EM FALTA        EM FALTA
+9900000005    EM FALTA          EM FALTA        EM FALTA
+9900000006    EM FALTA          EM FALTA        EM FALTA
+9900000007    EM FALTA          ok              EM FALTA
+9900000008    EM FALTA          EM FALTA        EM FALTA
+9900000009    ok                ok              ok
+9900000010    EM FALTA          EM FALTA        EM FALTA
+9900000011    EM FALTA          EM FALTA        EM FALTA
+9900000012    EM FALTA          EM FALTA        EM FALTA

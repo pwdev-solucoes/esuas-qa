@@ -1,0 +1,111 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — Painel Permanente de Endereços Não Localizados",
+    "subtitle": "Sprint 8 · HU #9762 · Qualificação Territorial · Evidências end-to-end no frontend do tenant",
+    "rows": [
+      ["Gerado em", "02/07/2026 01:35"],
+      ["Branch", "sprint9-familias (api 3b4bcb4+38c64fd · client 52fb5a4)"],
+      ["Spec", ".planning/specs/sprint8/9762-painel-enderecos-nao-localizados.md"],
+      ["Ambiente", "API Sail/PostgreSQL (localhost:80) · client Vite :5174 (não-mock)"],
+      ["Organização (tenant)", "E2E CadÚnico · uuid 00000000-0000-4000-8000-0000000000c1 · IBGE 2304400 (Fortaleza)"],
+      ["Usuários", "Master E2E (permissão address-inconsistencies.index semeada) · Operador E2E (sem o papel territorial_qualifier)"],
+      ["Ferramenta", "playwright-cli (Chromium 1440×900) + Pest 4"],
+      ["Modelo de dados", "Única tabela nova da feature: family_address_inconsistencies (índice único parcial: 1 inconsistência aberta por família/tenant) · gatilho AddressLocalizationChecker dentro do CadunicoSyncService"]
+    ]
+  },
+  "summary": "HU #9762: 7 Critérios de Aceite evidenciados — CA01 e CA03 no navegador (painel com máscaras), CA-extra-C no navegador (menu oculto + 403 no acesso direto), e CA02 (acúmulo 50+10=60), CA-extra-A (autocorreção sai do painel) e CA-extra-D (isolamento territorial) pela suíte automatizada, que também cobre a idempotência do gatilho (não duplica linha aberta), a resiliência à concorrência (retry sobre o índice único parcial) e a governança de permissões (restritas fora dos papéis base; master preservado entre syncs). CA-extra-B (exportação CSV + auditoria) é deferido por design para o dossiê da Etapa 04, dona canônica do export (HU #9763). Suíte: 34 testes, 125 assertions, 100% verdes. Resultado geral: todos os critérios do escopo atendidos.",
+  "cas": [
+    {
+      "id": "CA01",
+      "title": "Visualização das famílias listadas",
+      "status": "nav",
+      "gherkin": "Dado que sou Profissional com permissão de acesso ao painel de inconsistências\nQuando navego até a área de Qualificação Territorial\nEntão o sistema exibe uma tabela permanente com todas as famílias do município\n     cujo endereço falhou no cruzamento de localização\nE cada linha mostra Código Familiar, Nome do RUF e o Endereço Rejeitado",
+      "steps_html": "Login como <b>Master E2E</b> → menu <b>Qualificação Territorial</b> (seção Cadastros). Massa: 6 inconsistências abertas cobrindo os 3 motivos da RN02 (<code>cep_missing</code>, <code>cep_not_found</code>, <code>no_match</code>).",
+      "results": [
+        "Painel permanente exibe a tabela com as famílias marcadas: Código Familiar, Responsável (RUF), CPF, NIS, Endereço rejeitado, Motivo (badge por razão: \"CEP ausente\", \"CEP inexistente\", \"Sem correspondência\") e \"Marcada em\".",
+        "Cabeçalho documenta o propósito: consulta e diagnóstico — a correção acontece nas futuras atualizações do CadÚnico (RN01: painel read-only).",
+        "Busca por código familiar/nome do responsável e filtro por motivo disponíveis."
+      ],
+      "images": ["screenshots/ca01-painel-familias-nao-localizadas.png"]
+    },
+    {
+      "id": "CA02",
+      "title": "Preservação de dados entre importações (acúmulo)",
+      "status": "auto",
+      "gherkin": "Dado que o painel já possui 50 famílias listadas de meses anteriores\nQuando um novo arquivo do CadÚnico é importado e gera mais 10 falhas de endereço\nEntão ao acessar o painel eu visualizo o total acumulado de 60 famílias pendentes",
+      "steps_html": "Coberto pela suíte automatizada (apêndice): teste do gatilho dentro do fluxo real de sincronização do CadÚnico.",
+      "results": [
+        "Teste \"accumulates new failures over previous batches (CA02: 50+10=60)\" comprova o acúmulo exato entre remessas — inconsistências antigas permanecem abertas e as novas somam.",
+        "Idempotência garantida em re-sync da mesma família (não duplica a linha aberta — índice único parcial testado no PostgreSQL real).",
+        "Resiliência: colisão de concorrência no índice único faz retry de atualização (nunca perde a marcação em silêncio) — testes do fix 38c64fd."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA03",
+      "title": "Restrição de visualização na tela (LGPD)",
+      "status": "nav",
+      "gherkin": "Dado que estou consultando a tabela em tela\nQuando verifico os campos da listagem\nEntão CPF e NIS aparecem mascarados por padrão",
+      "steps_html": "Com o painel aberto, captura da tabela de resultados.",
+      "results": [
+        "CPF mascarado no padrão <code>***.000.001-**</code> e NIS mascarado no padrão <code>***.*****.**-5</code> em todas as linhas, sem opção de revelar.",
+        "O mascaramento é aplicado no backend (Resource) — o payload da API já sai mascarado; suíte confirma que CPF/NIS em claro nunca aparecem na resposta.",
+        "O texto do endereço rejeitado nunca é gravado em log de auditoria (testado)."
+      ],
+      "images": ["screenshots/ca03-cpf-nis-mascarados.png"]
+    },
+    {
+      "id": "CA-extra-A",
+      "title": "Autocorreção sai do painel (RN01/RN02)",
+      "status": "auto",
+      "gherkin": "Dado uma família marcada como \"Endereço Não Localizado\"\nQuando uma importação futura traz para ela um endereço que passa no cruzamento\nEntão a inconsistência é resolvida e a família deixa de aparecer no painel",
+      "steps_html": "Coberto pela suíte automatizada (apêndice): sincronização posterior com CEP válido para família previamente marcada.",
+      "results": [
+        "A inconsistência aberta transiciona para \"resolved\" e a família sai do painel (o index só lista status=open).",
+        "O histórico é preservado (linha resolvida permanece na tabela para rastreabilidade — painel permanente e acumulativo)."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA-extra-B",
+      "title": "Exportação padronizada + auditoria (RN04/RN06)",
+      "status": "auto",
+      "gherkin": "Dado que tenho permissão de exportação\nQuando aciono \"Exportar CSV\"\nEntão recebo um arquivo com Código Familiar, RUF, NIS, telefone e o endereço rejeitado\nE o sistema grava, em segundo plano, uma trilha de auditoria com meu Usuário global",
+      "steps_html": "<b>Deferido para o dossiê da Etapa 04</b> — a dona canônica do endpoint de exportação é a HU #9763 (decisão do overview do plano). Nesta etapa o painel é 100% read-only; a permissão <code>address-inconsistencies.export</code> nasce junto com a rota na Etapa 04 (nos dois guards, preservando o invariante do registry).",
+      "results": [
+        "Status nesta etapa: pendente por design (split documentado).",
+        "Será evidenciado nos dossiês das HUs #9763/#9764."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA-extra-C",
+      "title": "Menu oculto sem permissão (RN05)",
+      "status": "nav",
+      "gherkin": "Dado um Operador SEM o papel de Qualificação Territorial\nQuando acesso o sistema\nEntão o menu \"Qualificação Territorial\" não aparece\nE o endpoint do painel responde 403 se acessado diretamente",
+      "steps_html": "Login como <b>Operador E2E</b> (papéis: apenas Operador — sem <code>territorial_qualifier</code>). Verificar a sidebar; em seguida, acesso direto por URL a <code>/app/qualificacao-territorial</code>.",
+      "results": [
+        "A sidebar do Operador NÃO exibe o item \"Qualificação Territorial\" (gate por permissão <code>address-inconsistencies.index</code>).",
+        "O acesso direto por URL redireciona para a página 403 (guard de rota + backend 403 no endpoint, coberto também pela suíte).",
+        "Suíte confirma que as permissões do painel são restritas: nunca atribuídas automaticamente ao Operador; semeadas no papel dedicado territorial_qualifier (level 26, add-on) e no master."
+      ],
+      "images": ["screenshots/ca-extra-c-operador-sem-menu.png", "screenshots/ca-extra-c-operador-403-acesso-direto.png"]
+    },
+    {
+      "id": "CA-extra-D",
+      "title": "Isolamento territorial (RN07)",
+      "status": "auto",
+      "gherkin": "Dado que estou no Tenant A\nQuando consulto ou exporto o painel\nEntão vejo apenas inconsistências do meu município, sem acesso às de outro tenant",
+      "steps_html": "Coberto pela suíte automatizada (apêndice): inconsistências criadas em dois tenants; index consultado autenticado no Tenant A.",
+      "results": [
+        "O painel lista somente inconsistências do tenant ativo (Global Scope de tenant no Model, testado cross-tenant).",
+        "A exportação isolada será evidenciada na Etapa 04 junto ao endpoint."
+      ],
+      "images": []
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Pest, --filter=AddressLocalizationChecker|AddressInconsistencyPanel|CadunicoSyncAddressInconsistency|SyncPermissions) — 34 passed, 125 assertions",
+    "file": "pest-address-inconsistencies.txt"
+  }
+}

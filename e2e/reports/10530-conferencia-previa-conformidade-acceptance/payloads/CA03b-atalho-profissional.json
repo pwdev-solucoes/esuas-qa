@@ -1,0 +1,58 @@
+{
+    "_evidencia": {
+        "hu": "#10530 (US-SIAP-02)",
+        "criterio": "CA03b",
+        "descricao": "Três camadas: (1) resolution.resource=tenant-professionals; (2) resolution.subject_uuid = uuid do PROFISSIONAL (a ficha responde 200) enquanto subject_uuid da pendência = lotação (a mesma rota responde 404); (3) a Zona B (lista por leiaute) serve o MESMO resolution — o residual da etapa 02b está fechado.",
+        "endpoint": "GET /api/client/siap-remittances/pre-check?exercise=2026&reference_month=8",
+        "dados": "FABRICADOS — nenhuma cópia de base real",
+        "mascaramento": "nome → \"Nome I. I.\" e CPF → 999.***.***-99, aplicados no artefato antes da gravação"
+    },
+    "pendencia_zona_bloqueio": {
+        "scope": "blocking",
+        "kind": "record_incomplete",
+        "field_name": "Matricula",
+        "subject_type": "social_tenant_professional_assignment",
+        "subject_uuid": "d4b4aaef-7bec-4cb3-bc29-db35b8728f10",
+        "subject_label": "Maria S. L.",
+        "affected_count": 1,
+        "message_key": "siap_remittance.pendency.professional_incomplete",
+        "message": "This professional assignment is missing a usable Matricula, required by SIAP. Fix the municipal professional record — it is within the municipality reach: until then, no remittance can be generated.",
+        "blocks_entire_remittance": true,
+        "affected_layouts": 11,
+        "resolution": {
+            "scope": "tenant",
+            "resource": "tenant-professionals",
+            "requires_role": null,
+            "subject_uuid": "868f923d-0604-4179-8bf8-cfb0f9243873"
+        }
+    },
+    "pendencia_zona_leiaute": {
+        "scope": "blocking",
+        "kind": "record_incomplete",
+        "field_name": "Matricula",
+        "subject_type": "social_tenant_professional_assignment",
+        "subject_uuid": "d4b4aaef-7bec-4cb3-bc29-db35b8728f10",
+        "subject_label": "Maria S. L.",
+        "affected_count": 1,
+        "message_key": "siap_remittance.pendency.professional_incomplete",
+        "message": "This professional assignment is missing a usable Matricula, required by SIAP. Fix the municipal professional record — it is within the municipality reach: until then, no remittance can be generated.",
+        "blocks_entire_remittance": true,
+        "resolution": {
+            "scope": "tenant",
+            "resource": "tenant-professionals",
+            "requires_role": null,
+            "subject_uuid": "868f923d-0604-4179-8bf8-cfb0f9243873"
+        }
+    },
+    "prova_de_abertura_da_ficha": {
+        "GET /api/client/professionals/{resolution.subject_uuid}": {
+            "status": 200,
+            "data.uuid": "868f923d-0604-4179-8bf8-cfb0f9243873",
+            "data.user.full_name": "Maria S. L."
+        },
+        "GET /api/client/professionals/{subject_uuid da pendência (lotação)}": {
+            "status": 404,
+            "nota": "o 404 que a etapa 02b corrigiu, mantido como prova negativa"
+        }
+    }
+}

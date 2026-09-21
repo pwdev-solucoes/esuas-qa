@@ -1,0 +1,42 @@
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Unit\Models\EventualBenefitTypeTest[39m
+  [32;1m✓[39;22m[90m [39m[90mit has correct fillable, casts and defaults[39m[90m                         [39m [90m0.38s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit uses soft deletes, HasUuid, LogsActivity and resolves by uuid[39m[90m    [39m [90m0.03s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit is a GLOBAL lookup — never tenant-scoped (D01/RN04)[39m[90m              [39m [90m0.01s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit has no global scope of is_active — history/apuration never filte[39m[90m…[39m [90m0.01s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit enforces unique code — even against soft-deleted rows (D06/RN01)[39m[90m [39m [90m0.01s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit configures the activity log with ALL the audited fields, includi[39m[90m…[39m [90m0.01s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit invariant 1 — remittance_counter is never null across the six se[39m[90m…[39m [90m0.01s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit invariant 2 — the Store Form Request rejects both conditionals t[39m[90m…[39m [90m0.01s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit invariant 2 — a single conditional true passes the Store Form Re[39m[90m…[39m [90m0.01s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit invariant 2 — no seeded row ever has both conditionals true (D04[39m[90m…[39m [90m0.01s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit invariant 3 — exactly one seeded type requires birth registratio[39m[90m…[39m [90m0.01s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit invariant 4 — all four SiapBenefitCounter cases are reachable by[39m[90m…[39m [90m0.01s[39m  
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Feature\Api\Manager\EventualBenefitTypeTest[39m
+  [32;1m✓[39;22m[90m [39m[90mit lists the six types with codes 1..6, never renumbered (CA01)[39m[90m     [39m [90m0.05s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit matches each of the six types to the expected remittance counter[39m[90m…[39m [90m0.03s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit has no type without remittance_counter, and the DB refuses a NUL[39m[90m…[39m [90m0.02s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit flags birth assistance (code 1) as the ONLY type requiring birth[39m[90m…[39m [90m0.02s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit flags funeral assistance (code 2) as the ONLY type requiring the[39m[90m…[39m [90m0.02s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit keeps food, kit, rent assistance and other benefits WITHOUT any[39m[90m… [39m [90m0.02s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit flags code 6 (Outros) as the ONLY type requiring the description[39m[90m…[39m [90m0.01s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit rejects client-guard tokens on every write route — unauthenticat[39m[90m…[39m [90m0.02s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit keeps the shared read alive for the client guard — the US-BENEF-[39m[90m…[39m [90m0.02s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit refuses to delete a type in use with 422 eventual_benefit_type_i[39m[90m…[39m [90m0.02s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit still soft deletes a type NOT referenced by any consumer (CA08)[39m[90m  [39m [90m0.02s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit refuses to delete a type referenced by a REAL concession, under[39m[90m… [39m [90m0.03s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit still deletes an unreferenced type under the PRODUCTION consumer[39m[90m…[39m [90m0.02s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit ignores a registered consumer whose table does not exist yet (Sc[39m[90m…[39m [90m0.01s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit keeps an inactivated type visible without the is_active filter —[39m[90m…[39m [90m0.02s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit audits the change of remittance_counter with the PREVIOUS value[39m[90m… [39m [90m0.02s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit rejects turning on the second conditional when the first is alre[39m[90m…[39m [90m0.01s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit rejects sending both conditionals true in the same store request[39m[90m…[39m [90m0.01s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit is a GLOBAL lookup — no tenant_id column, no BelongsToTenant tra[39m[90m…[39m [90m0.01s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit blocks write without permission[39m[90m                                  [39m [90m0.02s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit gives the admin_operador read-only access — every write is 403 ([39m[90m…[39m [90m0.97s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit lets the ADMIN role exercise all five abilities end to end (RN07[39m[90m…[39m [90m0.97s[39m  
+
+  [90mTests:[39m    [32;1m34 passed[39;22m[90m (150 assertions)[39m
+  [90mDuration:[39m [39m3.32s[39m
+

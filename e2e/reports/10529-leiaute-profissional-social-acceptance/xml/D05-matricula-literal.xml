@@ -1,0 +1,14 @@
+<!-- HU #10529 — D05 — a matricula 0012345 sai COMO ESTA, com o zero a esquerda: nenhum cast numerico, nenhum str_numbers, nenhum truncamento. E este valor literal que a regra 1312 cruza com o leiaute Vinculo da Folha de Pagamento. -->
+<!-- Remessa gerada de verdade; XML extraido do zip. CPF e nome mascarados (RN12). Dados fabricados. -->
+<?xml version="1.0"?>
+<SIAP>
+    <Codigo>004821</Codigo>
+    <Exercicio>2026</Exercicio>
+    <Mes>08</Mes>
+    <ProfissionalSocial>
+        <CPF>550.***.***-19</CPF>
+        <Nome>Carlos E. F.</Nome>
+        <NumeroMDS>1234567890123</NumeroMDS>
+        <Matricula>0012345</Matricula>
+    </ProfissionalSocial>
+</SIAP>

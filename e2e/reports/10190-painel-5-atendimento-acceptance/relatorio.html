@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — Painel 5: Atendimento</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — Painel 5: Atendimento</h1>
+    <div class="sub">HU #10190 · Dashboard do Tenant · Evidências end-to-end no client</div>
+    <div class="meta"><div><span>Gerado em:</span> 30/07/2026</div><div><span>HU:</span> #10190 — Painel 5: Atendimento</div><div><span>Branch:</span> feature/10190-painel-5-atendimento (api + client)</div><div><span>Spec:</span> .planning/specs/10190-painel-5-atendimento.md</div><div><span>Endpoint:</span> GET /api/client/dashboard/attendance</div><div><span>Ambiente:</span> API Sail/PostgreSQL (:80) · client Vite :5174 (não-mock)</div><div><span>Organização (tenant):</span> E2E CadÚnico · bairro de teste: Alazão</div><div><span>Ferramenta:</span> playwright-cli (Chromium) + Pest 4</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">9 Critérios de Aceite verificados: 4 por navegador (dirigindo o app real como Master), 1 parcial (UI + suíte) e 4 automatizados (Pest). O Painel 5 entrega as duas séries temporais distintas — Volume de Novos Cadastros (por mês de source_registered_at) e Volume de Atualizações Cadastrais (por mês de source_updated_at) —, recalculadas sob o filtro global por Bairro (RG01) e isoladas por tenant. Resultado geral: todos os critérios ATENDIDOS. Dados de evidência semeados no tenant E2E (0 novas inclusões / 20 atualizações no recorte municipal; 0 / 0 no bairro Alazão).</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA07</td><td>Acompanhamento temporal de produção (duas curvas distintas)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">RG01-a</td><td>Comportamento padrão — "Todos os Bairros" (consolidação municipal)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">RG01-b</td><td>Comportamento dinâmico — seleção de bairro recalcula</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">RG01-c</td><td>Ação rápida — "Limpar Filtro" volta ao município</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">RN07</td><td>Indicadores do Painel 5 (fontes de data corretas)</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA-CONSISTENCIA</td><td>Curva de atualizações bate ponto a ponto com o Painel 2</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA-NULL</td><td>Famílias sem data são excluídas da respectiva série</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA-VAZIO</td><td>Recorte sem produção retorna 12 pontos zerados</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA-ISOLAMENTO</td><td>Isolamento multi-tenant</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA07">
+      <h2>CA07 — Acompanhamento temporal de produção (duas curvas distintas) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que consulto o Painel 5 (aba "Atendimento")
+Quando navego pela linha do tempo
+Então visualizo, em gráficos distintos, a curva de novas famílias inseridas (por mês de source_registered_at) e a curva de cadastros atualizados (por mês de source_updated_at), mês a mês.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Login como Master → abrir a aba <code>Atendimento</code> do Painel do Técnico. A aba apresenta <b>dois gráficos de linha independentes</b>: "Volume de Novos Cadastros" (verde) e "Volume de Atualizações Cadastrais" (azul), cada um com 12 pontos mês a mês (ago/25 → jul/26).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Duas curvas temporais distintas renderizadas em Apache ECharts, uma por indicador.</li><li>Volume de Novos Cadastros = 0 nos últimos 12 meses; Volume de Atualizações Cadastrais = 20 nos últimos 12 meses.</li><li>Eixo temporal contíguo de 12 meses; meses sem produção aparecem com volume 0.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca07-municipal-duas-curvas.png" alt="CA07 evidência"/><figcaption>ca07-municipal-duas-curvas.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="RG01-a">
+      <h2>RG01-a — Comportamento padrão — "Todos os Bairros" (consolidação municipal) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que acabei de carregar a aba "Atendimento"
+Quando nenhum bairro está selecionado
+Então o endpoint é chamado sem neighborhood_uuid
+E as duas curvas refletem a consolidação municipal.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Ao carregar, o filtro global de Bairro inicia em <code>Todos os Bairros</code>. As curvas exibem a consolidação municipal (0 inclusões / 20 atualizações).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Filtro em "Todos os Bairros" por padrão (sem neighborhood_uuid).</li><li>Séries no nível municipal: 0 novos cadastros e 20 atualizações.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca07-municipal-duas-curvas.png" alt="RG01-a evidência"/><figcaption>ca07-municipal-duas-curvas.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="RG01-b">
+      <h2>RG01-b — Comportamento dinâmico — seleção de bairro recalcula <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o filtro global está em "Todos os Bairros"
+Quando eu seleciono um bairro
+Então o endpoint é chamado com o neighborhood_uuid do bairro
+E as duas curvas recalculam considerando apenas as famílias geocodificadas dentro do bairro.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Selecionar o bairro <code>Alazão</code> no filtro global. A barra fixa e as duas curvas recalculam instantaneamente, restringindo-se às famílias geocodificadas dentro do polígono do bairro (ST_Contains).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Filtro passa a "Alazão"; surge o botão "Limpar Filtro".</li><li>Legenda "Recalculado por bairro: Alazão" exibida no painel.</li><li>Curvas recalculadas para o recorte espacial: 0 novos cadastros e 0 atualizações (subconjunto do municipal).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/rg01b-bairro-alazao.png" alt="RG01-b evidência"/><figcaption>rg01b-bairro-alazao.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="RG01-c">
+      <h2>RG01-c — Ação rápida — "Limpar Filtro" volta ao município <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que estou com um bairro selecionado
+Quando eu aciono "Limpar Filtro"
+Então o endpoint é chamado sem neighborhood_uuid
+E o painel volta à consolidação municipal completa.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Com "Alazão" selecionado, acionar <code>Limpar Filtro</code>. O painel retorna imediatamente à visão "Todos os Bairros".</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Filtro volta a "Todos os Bairros"; legenda de bairro removida.</li><li>Curvas retornam à consolidação municipal (0 novos cadastros e 20 atualizações).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/rg01c-limpar-filtro.png" alt="RG01-c evidência"/><figcaption>rg01c-limpar-filtro.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="RN07">
+      <h2>RN07 — Indicadores do Painel 5 (fontes de data corretas) <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um recorte com famílias
+Quando o painel é calculado
+Então "Volume de Novos Cadastros" traz 12 pontos (mês → nº de famílias inseridas, por source_registered_at)
+E "Volume de Atualizações Cadastrais" traz 12 pontos (mês → nº de famílias atualizadas, por source_updated_at)
+E cada série traz o total do período.</p>
+      <p class="steps"><strong>Como foi testado:</strong> A UI evidencia os dois indicadores com seus totais do período; a corretude da fonte de data por série (source_registered_at para inclusões, source_updated_at para atualizações), a contiguidade dos 12 pontos e a exclusão de nulos são cobertas pela suíte Pest (apêndice).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Novos Cadastros agregados por mês de source_registered_at (curva verde).</li><li>Atualizações agregadas por mês de source_updated_at (curva azul).</li><li>Cada série acompanha o total do período ("nos últimos 12 meses").</li><li>Corretude do agrupamento e das bordas verificada pela suíte automatizada.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca07-municipal-duas-curvas.png" alt="RN07 evidência"/><figcaption>ca07-municipal-duas-curvas.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA-CONSISTENCIA">
+      <h2>CA-CONSISTENCIA — Curva de atualizações bate ponto a ponto com o Painel 2 <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado o mesmo recorte e a mesma janela de 12 meses
+Quando comparo cadastral_updates.points do Painel 5 com monthly_evolution.points do Painel 2 (#10186)
+Então os meses e volumes são iguais ponto a ponto.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Verificado pela suíte Pest — teste cruzado <code>it matches the Painel 2 monthly evolution point by point (RN07)</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>cadastral_updates.points idêntico a monthly_evolution.points do Painel 2 para o mesmo recorte.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA-NULL">
+      <h2>CA-NULL — Famílias sem data são excluídas da respectiva série <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado uma família com source_registered_at nulo
+Quando a curva de novos cadastros é calculada
+Então ela não é contada em nenhum ponto da curva de inclusões
+E, analogamente, source_updated_at nulo a exclui da curva de atualizações.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Verificado pela suíte Pest — <code>it excludes families with a null date from the respective series</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>source_registered_at nulo não entra na curva de inclusões; source_updated_at nulo não entra na de atualizações.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA-VAZIO">
+      <h2>CA-VAZIO — Recorte sem produção retorna 12 pontos zerados <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um recorte sem nenhuma família (ou sem produção na janela)
+Quando o painel é calculado
+Então cada série retorna 12 pontos com families 0 e total 0, sem erro.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Verificado pela suíte Pest — <code>it returns two 12-point zero series when the scope has no families</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Cada série retorna 12 pontos contíguos com families 0 e total 0, sem erro.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA-ISOLAMENTO">
+      <h2>CA-ISOLAMENTO — Isolamento multi-tenant <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um usuário vinculado ao Tenant A
+Quando ele solicita o Painel 5
+Então apenas famílias do Tenant A entram nas curvas
+E um neighborhood_uuid fora do município do Tenant A retorna 422.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Verificado pela suíte Pest — <code>DashboardAttendanceIsolationTest</code> (BelongsToTenant) e <code>it returns 422 for a neighborhood_uuid outside the tenant municipality</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Famílias de outro tenant nunca entram nos agregados (Global Scope BelongsToTenant).</li><li>neighborhood_uuid fora do município do tenant retorna 422; sem permissão retorna 403.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+  
+  <h2>Anexo — Cobertura automatizada (Pest — AttendanceTest + DashboardAttendanceIsolationTest)</h2>
+  <pre class="pest">
+   PASS  Tests\Feature\Dashboard\AttendanceTest
+  ✓ it returns two contiguous 12-point series from source_registered_at… 0.53s  
+  ✓ it counts a family in different months across the two independent s… 0.20s  
+  ✓ it excludes families with a null date from the respective series (C… 0.08s  
+  ✓ it matches the Painel 2 monthly evolution point by point (RN07)      0.11s  
+  ✓ it recalculates for a neighborhood, covering only geocoded families… 0.09s  
+  ✓ it returns two 12-point zero series when the scope has no families…  0.06s  
+  ✓ it returns 422 for a neighborhood_uuid outside the tenant municipal… 0.06s  
+  ✓ it denies the panel to the base operator without the dedicated role  0.05s  
+  ✓ it grants the panel to the Master without any add-on role            0.05s  
+
+   PASS  Tests\Feature\TenantIsolation\DashboardAttendanceIsolationTest
+  ✓ it never counts families from another tenant in the attendance pane… 0.09s  
+
+  Tests:    10 passed (43 assertions)
+  Duration: 1.42s
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

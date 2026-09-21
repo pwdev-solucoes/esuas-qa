@@ -1,0 +1,8 @@
+  ✓ it returns the enriched record blocks: responsible, address with do… 0.06s  
+  ✓ it projects only the ACTIVE vulnerability codes, in canonical order… 0.05s  
+  ✓ it lists the full active composition: kinship, age, cpf and educati… 0.05s  
+  ✓ it keeps a stable shape for a sparse family: empty vulnerabilities,… 0.05s  
+
+  Tests:    45 passed (206 assertions)
+  Duration: 4.82s
+

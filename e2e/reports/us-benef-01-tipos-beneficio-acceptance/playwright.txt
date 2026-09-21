@@ -1,0 +1,14 @@
+[globalSetup] Rate-limiter cache do Laravel zerado.
+
+Running 7 tests using 2 workers
+
+[tenant-auth.setup] sessão de tenant pronta em /Users/binho/Projetos/esuas-all/e2e/.auth/tenant.json
+  ✓  2 [setup] › tests/tenant-auth.setup.ts:82:6 › autentica usuário do tenant (client) e propaga cookies para o api-client (1.6s)
+  ✓  1 [setup] › tests/auth.setup.ts:10:6 › autentica super admin (UI) e propaga cookies para o api-client (3.1s)
+  ✓  3 [chromium] › tests/lookups/eventual-benefit-types.spec.ts:170:7 › US-BENEF-01 · Tipos de Benefício Eventual (admin) › CA01 — os seis tipos aparecem com os códigos 1 a 6 do instrumento, sem renumeração (5.7s)
+  ✓  4 [chromium] › tests/lookups/eventual-benefit-types.spec.ts:209:7 › US-BENEF-01 · Tipos de Benefício Eventual (admin) › CA02 — a regra de apuração do leiaute 15.6 confere item a item na listagem (5.7s)
+  ✓  5 [chromium] › tests/lookups/eventual-benefit-types.spec.ts:236:7 › US-BENEF-01 · Tipos de Benefício Eventual (admin) › CA04/CA05 — só o tipo 1 exige registro de nascimento, e só o tipo 2 exige o CPF do falecido (9.6s)
+  ✓  6 [chromium] › tests/lookups/eventual-benefit-types.spec.ts:296:7 › US-BENEF-01 · Tipos de Benefício Eventual (admin) › CA06 — os demais tipos não exigem campo adicional, e só o tipo 6 exige a observação (5.7s)
+  ✓  7 [chromium] › tests/lookups/eventual-benefit-types.spec.ts:332:7 › US-BENEF-01 · Tipos de Benefício Eventual (admin) › CA08 — a exclusão oferece a afordância e o diálogo de confirmação, sem apagar massa do E2E (6.1s)
+
+  7 passed (37.2s)

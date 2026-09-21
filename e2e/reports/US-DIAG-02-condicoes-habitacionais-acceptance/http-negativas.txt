@@ -1,0 +1,21 @@
+Negativas de acesso — capturadas no navegador, na sessao autenticada do
+Operacional do Tenant (CPF 111.444.777-35, add-on LGPD, lotacao vigente em
+E2E CRAS Centro e E2E CRAS Sem MDS).
+
+CA09 — familia referenciada em unidade fora da lotacao (E2E CREAS)
+------------------------------------------------------------------
+GET /api/client/families/00000000-0000-4000-8000-0000000f0002/housing-conditions
+=> 403 Forbidden
+{
+  "message": "Esta familia e referenciada e acompanhada em unidades onde voce nao possui lotacao vigente. Procure o gestor Master do municipio.",
+  "error_code": "unit_not_assigned"
+}
+A mensagem declara o motivo e NAO nomeia nenhuma unidade (nem "CRAS Centro",
+nem "CREAS"). O codigo estavel `unit_not_assigned` e o unico identificador.
+
+CA10 — familia fora do escopo da organizacao ativa
+--------------------------------------------------
+GET /api/client/families/00000000-0000-4000-8000-0000000fbbbb/housing-conditions
+=> 404 Not Found
+{ "message": "Registro nao encontrado." }
+404, nunca 403: a resposta nao confirma nem nega a existencia da familia.

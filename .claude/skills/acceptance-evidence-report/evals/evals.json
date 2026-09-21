@@ -1,0 +1,26 @@
+{
+  "skill_name": "acceptance-evidence-report",
+  "evals": [
+    {
+      "id": 0,
+      "name": "explicit-evidence-report-request",
+      "prompt": "Roda os critérios de aceite da importação do CadÚnico com o playwright e monta um relatório com os prints das telas, depois gera um PDF.",
+      "expected_output": "Invokes the acceptance-evidence-report flow: prepares the eSUAS stack (Sail running, E2ESeeder, cadunico queue worker), drives the client app with playwright-cli per CA capturing screenshots, runs Pest for backend CAs, builds manifest.json, runs scripts/generate_report.py (HTML) and scripts/html_to_pdf.mjs (PDF) into e2e/reports/cadunico-acceptance/. Uses setInputFiles for upload and the node script for file:// PDF.",
+      "files": []
+    },
+    {
+      "id": 1,
+      "name": "visual-proof-of-criteria",
+      "prompt": "Preciso de uma prova visual dos critérios de aceite da feature X — screenshots de cada CA e um HTML/PDF de evidência para auditoria.",
+      "expected_output": "Recognizes this as the evidence-report skill: extracts CA01..CAnn from the spec, classifies each as navegador/automatizado/parcial, captures named screenshots, assembles the HTML report with the summary table + per-CA sections + Pest appendix, and exports the A4 PDF. Reuses generate_report.py + html_to_pdf.mjs.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "terse-phrasing",
+      "prompt": "Documenta a verificação dos critérios de aceite dessa HU com evidência.",
+      "expected_output": "Despite terse phrasing, triggers the skill: reads the spec's CA Gherkin block, drives the eSUAS client app for the UI-observable criteria (handling login/select-tenant/legal-acceptance gates), references the automated suite for backend-only criteria, and produces relatorio.html + relatorio.pdf + screenshots in e2e/reports/<slug>-acceptance/.",
+      "files": []
+    }
+  ]
+}

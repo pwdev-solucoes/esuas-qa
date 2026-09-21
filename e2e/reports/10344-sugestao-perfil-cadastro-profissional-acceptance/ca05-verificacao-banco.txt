@@ -1,0 +1,14 @@
+== CA05 — CBO 5153-20 (Conselheiro tutelar), sem entrada no mapa ==
+user_tenant_role concedidos: operador
+event: roles_granted_from_suggestion
+properties: {
+    "tenant_id": 3,
+    "cbo_code": "5153-20",
+    "has_mapping": false,
+    "suggested": [],
+    "suggested_kept": [],
+    "suggested_removed": [],
+    "manually_added": [
+        "operador"
+    ]
+}

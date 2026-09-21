@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — US-ACOMP-07</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  section.note { border:1px solid var(--line); border-left:4px solid #b06a00; border-radius:6px; padding:10px 14px; margin:10px 0; background:#fffdf7; font-size:13px; }
+  section.note h3 { margin:0 0 6px; font-size:13.5px; color:#8a5200; }
+  section.note p { margin:6px 0; }
+  section.note ul { margin:6px 0 6px 18px; padding:0; }
+  section.note pre { background:var(--bg); border:1px solid var(--line); border-radius:4px; padding:8px; overflow-x:auto; font-size:11px; white-space:pre-wrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — US-ACOMP-07</h1>
+    <div class="sub">Épico HU-PRONT-ACOMP (fase F3) · GLPI #10887 · Unidade de destino no encaminhamento de trânsito interno</div>
+    <div class="meta"><div><span>Gerado em:</span> 15/09/2026 20:02</div><div><span>História:</span> US-ACOMP-07 — Unidade de destino no encaminhamento de trânsito interno (GLPI #10887)</div><div><span>Spec:</span> .planning/specs/US-ACOMP-07-ajuste-unidade-de-destino-no-encaminhamento.md</div><div><span>Branch:</span> feature/acomp-06-07-encaminhamento-recebido (api, admin e client), a partir de develop</div><div><span>Commits (api):</span> b52b731 (entrega) · 6f54a18 (revisão) · bf6f2b8 (mensagem neutra)</div><div><span>Commits (admin):</span> 5f5ebbf (catálogo) · 5d7d1cd (teste da trilha)</div><div><span>Commits (client):</span> 3e28b2d (registro e diálogo) · 6fec6f7 (revisão)</div><div><span>Ambiente:</span> Stack Sail · API em :80 · admin (Vite) em :5173 · client (Vite) em :5175 · base de desenvolvimento semeada por E2ESeeder</div><div><span>Organização (tenant):</span> E2E CadÚnico</div><div><span>Perfis usados:</span> Administrador do Painel Global (guard manager) e Operacional do tenant com add-on LGPD, lotado no E2E CRAS Centro</div><div><span>Ferramenta:</span> playwright-cli (Chromium) + Pest 4</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">Quinze critérios: doze numerados e três extras. Oito evidenciados no navegador (CA01, CA02, CA04, CA05, CA07, CA08, CA-extra-A e CA-extra-C, com onze prints), dois por artefato gerado pelo próprio sistema (CA09, com os dois PDFs anexados, e CA10, com a trilha de auditoria) e cinco cobertos pela suíte automatizada, onde o cenário exige um segundo município, dois operadores ou duas unidades do mesmo tipo (CA03, CA06, CA11, CA12 e CA-extra-B). A suíte de encaminhamentos fecha com 193 testes e 1275 asserções, e a suíte completa da API com 4581 testes, sem falhas. Nenhum critério em falha. A única pendência é declarada por desenho: a segunda metade do CA07 — o acesso ao prontuário pela unidade de destino — é a US-ACOMP-06 (#10888), HU seguinte na mesma branch.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA01</td><td>Escolher a unidade de destino (happy path)</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA02</td><td>A escolha respeita o tipo de destino do código</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA03</td><td>Não é possível encaminhar para a própria unidade</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA04</td><td>Aviso sobre o efeito no acesso</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA05</td><td>Os demais códigos continuam com destino em texto</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA06</td><td>Encaminhamento antigo não concede acesso</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA07</td><td>Completar a unidade em encaminhamento antigo sem desfecho</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA08</td><td>Encaminhamento com desfecho não é alterado</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA09</td><td>Formulário traz o nome da unidade escolhida</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA10</td><td>Alteração da unidade auditada</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA11</td><td>Contadores da remessa não mudam</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA12</td><td>Isolamento entre municípios</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA-extra-A</td><td>Marcação no Painel Global (RN01/RN09)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA-extra-B</td><td>Autor ou Master (D06)</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA-extra-C</td><td>PUT não troca a classe do código (D08)</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA01">
+      <h2>CA01 — Escolher a unidade de destino (happy path) <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou CLIENT_OPERADOR com CLIENT_FAMILY_VIEWER e lotação vigente no "CRAS Centro"
+Quando eu chamar GET /api/client/families/{silva}/referrals/options?social_unit_uuid={crasCentro}
+Então o código "13" vem com destination_unit_type_uuid = {tipo CREAS}
+E destination_units lista as unidades do município em atividade
+Quando eu chamar POST /api/client/families/{silva}/referrals com referral_code_uuid={13}
+     e destination_social_unit_uuid={creas}, sem destination_organization
+Então recebo 201
+E referrals.destination_social_unit_id = {creas.id}
+E referrals.destination_organization = "CREAS" (snapshot gravado pelo servidor)</p>
+      <p class="steps"><strong>Como foi testado:</strong> Como operador do tenant, no prontuário da família <b>E2E Família No CRAS</b>, aba Encaminhamentos → <b>Registrar encaminhamento</b>. Origem <b>E2E CRAS Centro</b>, código <b>13</b>, unidade de destino <b>E2E CREAS</b>, objetivo preenchido, <b>Salvar</b>. Conferência do registro direto no banco.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Com a origem escolhida, o código 13 passa a ser oferecido (o 14, que sai do CREAS, não).</li><li>O campo de destino deixa de ser texto livre e vira seleção de unidade.</li><li>Após salvar: toast “Encaminhamento registrado no prontuário.”.</li><li>No banco: destination_social_unit_id aponta para o E2E CREAS e destination_organization = "E2E CREAS", escrito pelo servidor (o formulário não envia texto), com status registered e desfecho aguardando retorno.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca01-ca04-toast-registro.png" alt="CA01 evidência"/><figcaption>ca01-ca04-toast-registro.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA02">
+      <h2>CA02 — A escolha respeita o tipo de destino do código <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que estou registrando um encaminhamento com o código "13" a partir do "CRAS Centro"
+Quando o front filtrar destination_units por destination_unit_type_uuid do código
+Então só aparecem unidades do tipo CREAS
+Quando eu forçar POST com destination_social_unit_uuid = {crasRural}
+Então recebo 422 em destination_social_unit_uuid com referral.destination_unit_not_selectable</p>
+      <p class="steps"><strong>Como foi testado:</strong> Abrir a lista de unidades de destino no formulário com o código 13 selecionado. A recusa no servidor é coberta pela suíte (unidade de tipo errado, paralisada e excluída, todas com a mesma mensagem).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A lista traz apenas &lt;b&gt;E2E CREAS&lt;/b&gt;; nenhum CRAS aparece, embora o município tenha três unidades.</li><li>Pest: “refuses a unit of the WRONG type, a PARALYSED one and a SOFT-DELETED one — same message, nothing created”.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca02-lista-so-creas.png" alt="CA02 evidência"/><figcaption>ca02-lista-so-creas.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA03">
+      <h2>CA03 — Não é possível encaminhar para a própria unidade <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que registro a partir do "CREAS Norte" com o código "14"
+Quando eu chamar o options com social_unit_uuid = {creasNorte}
+Então destination_units não contém o "CREAS Norte"
+E um POST com destination_social_unit_uuid = {creasNorte} recebe 422</p>
+      <p class="steps"><strong>Como foi testado:</strong> Critério provado pela suíte: exige duas unidades do MESMO tipo (origem e destino candidatos), cenário que a massa de evidência do navegador não tem — no município E2E há um único CREAS.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Pest: “never offers nor accepts the ORIGIN as destination — CREAS Norte with code 14 (CA03/RN04)”.</li><li>Na captura do CA02 a origem também não aparece na lista, mas ali ela já sairia pelo filtro de tipo.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA04">
+      <h2>CA04 — Aviso sobre o efeito no acesso <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que escolhi o "CREAS" como unidade de destino no formulário
+Então vejo o aviso "A equipe de CREAS passará a enxergar o prontuário desta família até o desfecho do encaminhamento."
+Quando eu salvar
+Então o registro é salvo sem diálogo de confirmação
+E o toast de sucesso repete o aviso</p>
+      <p class="steps"><strong>Como foi testado:</strong> Escolher a unidade de destino e observar o aviso; salvar e observar os toasts.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Ao escolher a unidade aparece o aviso, como região de status: “A equipe de E2E CREAS passará a enxergar o prontuário desta família até o desfecho do encaminhamento.”.</li><li>O salvamento ocorre direto, &lt;b&gt;sem nenhum diálogo de confirmação&lt;/b&gt;.</li><li>Dois toasts: o de sucesso e o informativo repetindo o aviso.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca04-aviso-acesso.png" alt="CA04 evidência"/><figcaption>ca04-aviso-acesso.png</figcaption></figure><figure><img src="screenshots/ca01-ca04-toast-registro.png" alt="CA04 evidência"/><figcaption>ca01-ca04-toast-registro.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA05">
+      <h2>CA05 — Os demais códigos continuam com destino em texto <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que escolhi o código "05" (externo, destination_unit_type_uuid = null)
+Então o campo de destino é o input de texto livre de antes
+E um POST com destination_social_unit_uuid recebe 422 (prohibited)
+E um POST sem destination_organization recebe 422 com referral.destination_required</p>
+      <p class="steps"><strong>Como foi testado:</strong> No mesmo formulário, trocar o código para <b>05</b> (externo) e observar o campo de destino.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O campo volta a ser texto livre, com o placeholder de sempre; não há seleção de unidade nem aviso.</li><li>Pest: “keeps external codes on free text: unit prohibited, text required; internal codes the reverse”.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca05-codigo-externo-texto.png" alt="CA05 evidência"/><figcaption>ca05-codigo-externo-texto.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA06">
+      <h2>CA06 — Encaminhamento antigo não concede acesso <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um encaminhamento "13" registrado antes da migration, com destination_social_unit_id NULL
+     e destination_organization = "CREAS Centro"
+Quando eu, lotado no "CREAS", abrir o prontuário da família
+Então recebo 403 unit_not_assigned
+E destination_social_unit_id continua NULL (nenhuma dedução)</p>
+      <p class="steps"><strong>Como foi testado:</strong> Critério de backend. A massa E2E tem um encaminhamento 13 anterior ao ajuste, com a chave estrangeira nula e o texto preservado (visível no CA07).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Pest: “keeps the pre-migration referral with FK NULL and text preserved — the CREAS professional still gets 403 unit_not_assigned (CA06/RN06/D09)”.</li><li>A migration de dados não deduz unidade a partir do texto: anexo &lt;code&gt;backend/activity-log-migration.txt&lt;/code&gt;.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA07">
+      <h2>CA07 — Completar a unidade em encaminhamento antigo sem desfecho <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado o encaminhamento do CA06, com outcome = 'awaiting_return'
+E que sou o autor (created_by), mesmo sem lotação vigente na origem na data do encaminhamento
+Quando eu chamar PATCH /api/client/families/{f}/referrals/{r}/destination-unit
+     com destination_social_unit_uuid = {creasCentro}
+Então recebo 200
+E referrals.destination_social_unit_id = {creasCentro.id}
+E o profissional lotado no "CREAS Centro" passa a abrir o prontuário (via referral_received — US-ACOMP-06)</p>
+      <p class="steps"><strong>Como foi testado:</strong> No prontuário da família <b>E2E Família Encaminhamento Legado</b>, o encaminhamento antigo mostra o destino em texto. Acionar <b>Definir unidade de destino</b>, escolher <b>E2E CREAS</b> e confirmar.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Antes: a coluna de destino mostra “E2E CREAS (texto legado)” e a ação está disponível.</li><li>O diálogo declara “Nenhuma unidade escolhida (destino registrado em texto)”, oferece só o E2E CREAS e repete o aviso de acesso.</li><li>Depois de confirmar, a linha passa a “E2E CREAS” &lt;b&gt;sem recarregar a página&lt;/b&gt;; no banco, a chave estrangeira e o texto mudam juntos.</li><li>&lt;b&gt;Metade deferida:&lt;/b&gt; “o profissional lotado no CREAS passa a abrir o prontuário” depende do eixo de acesso da US-ACOMP-06 (#10888), que ainda não existe. Ver as observações.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca07-1-legado-sem-unidade.png" alt="CA07 evidência"/><figcaption>ca07-1-legado-sem-unidade.png</figcaption></figure><figure><img src="screenshots/ca07-2-dialogo-unidade.png" alt="CA07 evidência"/><figcaption>ca07-2-dialogo-unidade.png</figcaption></figure><figure><img src="screenshots/ca07-3-unidade-definida.png" alt="CA07 evidência"/><figcaption>ca07-3-unidade-definida.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA08">
+      <h2>CA08 — Encaminhamento com desfecho não é alterado <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um encaminhamento "13" com outcome = 'not_attended'
+Então ReferralResource.destination_unit_editable = false e a ação não é exibida
+Quando eu forçar o PATCH destination-unit
+Então recebo 409 com error_code = "referral_destination_locked_by_outcome"</p>
+      <p class="steps"><strong>Como foi testado:</strong> No encaminhamento registrado no CA01, lançar o desfecho <b>Não atendido</b> e observar a lista; depois forçar a chamada PATCH pela própria sessão autenticada do navegador.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Com o desfecho lançado, a ação “Definir unidade de destino” &lt;b&gt;desaparece&lt;/b&gt; da linha.</li><li>A chamada forçada responde &lt;b&gt;409&lt;/b&gt; com error_code &lt;code&gt;referral_destination_locked_by_outcome&lt;/code&gt; (anexo &lt;code&gt;respostas-api.txt&lt;/code&gt;).</li><li>Pest cobre também o cancelado (409) e o código externo (422).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca08-desfecho-sem-acao.png" alt="CA08 evidência"/><figcaption>ca08-desfecho-sem-acao.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA09">
+      <h2>CA09 — Formulário traz o nome da unidade escolhida <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um encaminhamento "13" com destination_social_unit_id = {creasCentro} ("CREAS Centro")
+Quando eu chamar POST …/referrals/{r}/form
+Então o PDF traz "CREAS Centro" em "Órgão ou unidade de destino"
+E, se a unidade for renomeada para "CREAS Centro-Sul", a reemissão traz o nome novo
+E os demais campos do PDF são idênticos aos de antes</p>
+      <p class="steps"><strong>Como foi testado:</strong> Emitir o formulário do cidadão pelo prontuário; renomear a unidade no cadastro para “E2E CREAS Centro-Sul”; reemitir o formulário. Os dois PDFs estão anexados ao dossiê.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>1ª emissão (&lt;code&gt;ca09-formulario-encaminhamento.pdf&lt;/code&gt;): “ÓRGÃO OU UNIDADE DE DESTINO: &lt;b&gt;E2E CREAS&lt;/b&gt;”.</li><li>Após renomear a unidade, a reemissão (&lt;code&gt;ca09-formulario-apos-renomear.pdf&lt;/code&gt;) traz “&lt;b&gt;E2E CREAS Centro-Sul&lt;/b&gt;” — o nome vem do cadastro, ao vivo.</li><li>O instantâneo gravado em referrals.destination_organization continuou “E2E CREAS”, como previsto.</li><li>O nome da unidade foi restaurado depois da captura.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA10">
+      <h2>CA10 — Alteração da unidade auditada <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que alterei a unidade de destino de {creasCentro} para {creasNorte}
+Quando eu consultar activity_log (log_name = 'referral', subject = o encaminhamento)
+Então há um evento 'updated' com old.destination_social_unit_id = {creasCentro.id},
+     attributes.destination_social_unit_id = {creasNorte.id}, causer_id e created_at</p>
+      <p class="steps"><strong>Como foi testado:</strong> Depois da ação do CA07 (feita pela interface), consultar a trilha do encaminhamento. Anexo <code>activity-log-ca10.txt</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Evento &lt;code&gt;updated&lt;/code&gt; com autor identificado (causer_id) e data.</li><li>De: destination_social_unit_id nulo e texto “E2E CREAS (texto legado)”. Para: a chave estrangeira da unidade e o texto “E2E CREAS” — os dois campos mudam juntos.</li><li>Nota: nesta base o de/para fica na coluna &lt;code&gt;attribute_changes&lt;/code&gt; do activity_log; &lt;code&gt;properties&lt;/code&gt; guarda apenas o tenant_id.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA11">
+      <h2>CA11 — Contadores da remessa não mudam <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado o cenário de AttendanceReportReferralCrossTest, acrescido de encaminhamentos "13"/"14" com unidade de destino
+Quando eu chamar GET /api/client/attendance-reports do mesmo período
+Então os três contadores do 15.6 (cadunico_inclusion, cadunico_update, bpc) têm os mesmos valores de antes</p>
+      <p class="steps"><strong>Como foi testado:</strong> Critério de backend, coberto em AttendanceReportReferralCrossTest; o serviço de apuração não foi tocado pelo commit (conferido por diff).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A suíte compara os contadores antes e depois de acrescentar encaminhamentos internos com unidade de destino.</li><li>AttendanceReportService não aparece no diff da entrega.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA12">
+      <h2>CA12 — Isolamento entre municípios <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou usuário do município A
+Quando eu chamar o options
+Então destination_units só contém unidades do tenant A
+E um POST/PATCH com destination_social_unit_uuid de unidade do tenant B recebe 422
+     com a mesma mensagem de unidade inexistente</p>
+      <p class="steps"><strong>Como foi testado:</strong> Critério de backend (exige um segundo município). Coberto pela suíte de encaminhamentos e pela de isolamento.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Pest: “answers 422 with the SAME message for a unit of ANOTHER tenant and for a nonexistent uuid — on POST and on PATCH”.</li><li>Pest (isolamento): “lists only the tenant own destination units in options and refuses…”.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA-extra-A">
+      <h2>CA-extra-A — Marcação no Painel Global (RN01/RN09) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou ADMIN no admin/
+Quando eu chamar PUT /api/manager/referral-codes/{13} com destination_unit_type_uuid = {tipo CREAS}
+Então recebo 200 e o activity_log (log_name 'referral_code') registra a mudança
+Quando eu enviar destination_unit_type_uuid igual ao restricted_to_unit_type
+Então recebo 422 com referral_code.destination_type_equals_origin_type</p>
+      <p class="steps"><strong>Como foi testado:</strong> No Painel Global, catálogo de códigos: conferir a coluna nova, abrir o código 13, tentar salvar com o tipo de destino igual ao de origem, corrigir e conferir a trilha. Ao final o código foi desmarcado e remarcado para gerar trilha com autor.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A coluna “Destino (trânsito interno)” traz CREAS no código 13 e CRAS no 14; os demais ficam com “—”.</li><li>O formulário tem o campo “Tipo da unidade de destino (trânsito interno)”, com a opção “Não é trânsito interno”.</li><li>Escolher o mesmo tipo da origem é recusado: “O tipo da unidade de destino não pode ser igual ao tipo da unidade de origem (restrição).”.</li><li>A trilha mostra as duas alterações feitas pelo administrador (com autor) e as da migration de dados (sem autor), sempre com nomes, nunca identificadores.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca-extra-a-1-catalogo-13-14.png" alt="CA-extra-A evidência"/><figcaption>ca-extra-a-1-catalogo-13-14.png</figcaption></figure><figure><img src="screenshots/ca-extra-a-2-form-tipo-destino.png" alt="CA-extra-A evidência"/><figcaption>ca-extra-a-2-form-tipo-destino.png</figcaption></figure><figure><img src="screenshots/ca-extra-a-3-destino-igual-origem-recusado.png" alt="CA-extra-A evidência"/><figcaption>ca-extra-a-3-destino-igual-origem-recusado.png</figcaption></figure><figure><img src="screenshots/ca-extra-a-4-trilha-auditoria.png" alt="CA-extra-A evidência"/><figcaption>ca-extra-a-4-trilha-auditoria.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA-extra-B">
+      <h2>CA-extra-B — Autor ou Master (D06) <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um encaminhamento "13" sem desfecho registrado pelo operador X
+Quando o operador Y, com acesso ao prontuário, chamar o PATCH destination-unit
+Então recebo 403 com error_code = "referral_destination_not_author"
+E o Master recebe 200 na mesma chamada</p>
+      <p class="steps"><strong>Como foi testado:</strong> Critério de backend (exige dois operadores com acesso ao mesmo prontuário e o Master).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Pest: “answers 403 referral_destination_not_author for another operator with record access — and 200 for the Master”.</li><li>Pest (revisão): “treats a CLIENT_ADMIN of ANOTHER tenant as a plain operator here — editable false e 403”.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA-extra-C">
+      <h2>CA-extra-C — PUT não troca a classe do código (D08) <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um encaminhamento "05" (externo)
+Quando eu chamar PUT com referral_code_uuid = {13}
+Então recebo 422 com error_code = "referral_code_transit_class_change"</p>
+      <p class="steps"><strong>Como foi testado:</strong> Abrir a correção do encaminhamento interno e observar o campo de destino e os códigos oferecidos; depois forçar o PUT trocando o 13 por um código externo.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Na correção de um código interno o destino fica &lt;b&gt;somente leitura&lt;/b&gt;, com a orientação de usar a ação “Definir unidade de destino”.</li><li>O seletor de código só oferece códigos da mesma classe — nenhum externo.</li><li>A chamada forçada responde &lt;b&gt;422&lt;/b&gt; com error_code &lt;code&gt;referral_code_transit_class_change&lt;/code&gt; (anexo &lt;code&gt;respostas-api.txt&lt;/code&gt;).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca-extra-c-correcao-readonly.png" alt="CA-extra-C evidência"/><figcaption>ca-extra-c-correcao-readonly.png</figcaption></figure></div>
+    </section>
+  
+  <h2>Observações e ressalvas</h2>
+  <section class="note"><h3>CA07 — metade deferida à US-ACOMP-07 → US-ACOMP-06 (#10888)</h3><p>A última linha do CA07 (“o profissional lotado no CREAS passa a abrir o prontuário”) depende do terceiro eixo de acesso, que é a <b>US-ACOMP-06 (#10888)</b> — HU seguinte, planejada para a mesma branch. Esta entrega cria a coluna, o índice parcial e o caminho de escrita que a 06 consome; o dossiê da 06 fecha essa metade. Nada além disso ficou pendente nos demais critérios.</p></section><section class="note"><h3>Redação a calibrar com a área de negócio (P4 da spec)</h3><p>O aviso interpola o <b>nome</b> da unidade (“A equipe de E2E CREAS passará…”), enquanto o exemplo do CA04 usa o tipo (“A equipe de CREAS”). A mensagem de unidade incompatível na correção também pode ser revista. Ambas são decisão de redação, registradas para o PO e sem efeito sobre o comportamento.</p></section><section class="note"><h3>Débito conhecido — código de trânsito inativado no catálogo</h3><p>A lista de unidades de destino considera apenas os tipos de códigos internos <b>ativos</b>, enquanto o servidor aceita a unidade mesmo com o código inativado. Se o 13 ou o 14 for inativado, o diálogo “Definir unidade de destino” de um encaminhamento antigo fica sem opções. Registrado como acompanhamento de backend; não afeta nenhum critério desta HU.</p></section><section class="note"><h3>Migrations, índice e invariante</h3><p>As três migrations aplicam e revertem em base com dados (anexo <code>backend/migrate-rollback.txt</code>). O <code>EXPLAIN</code> confirma que o predicado do eixo da US-ACOMP-06 usa o índice parcial novo com varredura apenas por índice (<code>backend/explain-idx.txt</code>). A invariante §8.5 devolve zero linhas, com contraprova na suíte (<code>backend/invariante-8-5.txt</code>). Nenhuma permissão nova (<code>backend/permissions-sync.txt</code>).</p></section>
+  
+  <h2>Anexo — Cobertura automatizada (Pest, --filter=Referral)</h2>
+  <pre class="pest">
+   PASS  Tests\Unit\FollowUpMonthsAndCoherenceTest
+  ✓ it admits not_applicable ONLY in referrals_effective (RN04)          0.49s  
+  ✓ it suggests not_applicable IF AND ONLY IF the referral list is empt… 0.02s  
+
+   PASS  Tests\Unit\Models\ReferralCodeTest
+  ✓ it has correct fillable, casts and defaults                          0.02s  
+  ✓ it uses soft deletes, HasUuid, LogsActivity and resolves by uuid     0.05s  
+  ✓ it is a GLOBAL lookup — never tenant-scoped (RN08)                   0.02s  
+  ✓ it has no global scope of is_active — history and remittance never…  0.02s  
+  ✓ it keeps the four rules as data, cast to the enums (RN03–RN06)       0.02s  
+  ✓ it accepts NULL as a legitimate remittance counter value (CA02)      0.02s  
+  ✓ it enforces unique code — even against soft-deleted rows (RN09)      0.02s  
+  ✓ it configures the activity log with ALL the audited fields (RN10/§1… 0.02s  
+
+   PASS  Tests\Unit\Models\ReferralCounterReferenceTest
+  ✓ it is tenant-scoped and uuid-routed (§6.1/RN11)                      0.02s  
+  ✓ it is APPEND-ONLY by design: no SoftDeletes and no LogsActivity — t… 0.02s  
+  ✓ it never exposes an activity log configuration — not even an empty…  0.02s  
+
+   PASS  Tests\Unit\Models\ReferralFormEmissionTest
+  ✓ it is tenant-scoped and uuid-routed, with emitted_at as datetime (§… 0.02s  
+  ✓ it is APPEND-ONLY by design: no SoftDeletes and no LogsActivity — t… 0.02s  
+  ✓ it has NO file_path column — the PDF never rests in storage (P1)     0.02s  
+
+   PASS  Tests\Unit\Models\ReferralTest
+  ✓ it has the expected casts and defaults — status registered, outcome… 0.02s  
+  ✓ it is tenant-scoped, soft-deletable, uuid-routed and audited (RN14/… 0.02s  
+  ✓ it NEVER logs objective nor cancel_reason — and DOES log the struct… 0.02s  
+  ✓ it marks cancellation by STATUS, keeping the row alive — never soft… 0.06s  
+  ✓ it resolves the referral code and the family member even when soft-… 0.03s  
+
+   PASS  Tests\Feature\Api\Client\AttendanceReportReferralCrossTest
+  ✓ it never feeds the CadUnico counters from attendance type 4 — 9 att… 0.15s  
+  ✓ it keeps the three 15.6 counters identical when internal-transit re… 0.12s  
+
+   PASS  Tests\Feature\Api\Client\AttendanceReportTest
+  ✓ it declares exactly the one remaining unavailable counter — the F2…  0.08s  
+  ✓ it lights the three referral counters with distinct families and pe… 0.10s  
+  ✓ it counts the same family ONCE with two inclusion referrals in the…  0.09s  
+  ✓ it drops a cancelled referral from the counters while it stays visi… 0.11s  
+  ✓ it keeps counting a referral whose outcome became not_attended — th… 0.09s  
+  ✓ it counts a retroactive referral in the month it was made, not the…  0.08s  
+  ✓ it keeps counting past referrals of a code inactivated in the Globa… 0.09s  
+  ✓ it keeps counting past referrals of a code SOFT-DELETED in the Glob… 0.08s  
+  ✓ it declares zero on the three referral counters for a unit without…  0.09s  
+  ✓ it never feeds the BPC counter from a referral row without a person… 0.08s  
+
+   PASS  Tests\Feature\Api\Client\PendingReferralsTest
+  ✓ it lists the 14 awaiting referrals of the unit with family, destina… 0.15s  
+  ✓ it scopes the list: Master sees every unit of the tenant; the opera… 0.10s  
+  ✓ it refuses the pending list to an operator WITHOUT the LGPD add-on…  0.08s  
+  ✓ it keeps the pending line renderable after the family record is sof… 0.08s  
+  ✓ it refuses a sort parameter — the oldest-first order is the rule (§… 0.08s  
+
+   PASS  Tests\Feature\Api\Client\ReferralControllerTest
+  ✓ it registers a referral signed and dated, born awaiting_return (CA0… 0.09s  
+  ✓ it refuses a BPC referral WITHOUT the person, naming family_member_… 0.08s  
+  ✓ it saves a BPC referral WITH the person, deriving person_id from th… 0.09s  
+  ✓ it saves a CadUnico referral WITHOUT person — it counts FAMILIES (C… 0.09s  
+  ✓ it refuses a person outside the CURRENT family composition (RN05)    0.08s  
+  ✓ it refuses the CREAS-only code from a CRAS unit — and offers the CR… 0.10s  
+  ✓ it refuses an INACTIVE code — only the select filters is_active (RN… 0.08s  
+  ✓ it accepts a referral whose destination is the OWN unit — no origin… 0.09s  
+  ✓ it refuses saving without destination or objective, naming the miss… 0.08s  
+  ✓ it refuses a future date (CA09/RN06)                                 0.08s  
+  ✓ it accepts TODAY at 23h in the app timezone — the boundary never re… 0.09s  
+  ✓ it saves a retroactive referral in a remitted month AND returns the… 0.09s  
+  ✓ it does NOT warn when the month remittance is pending or failed (CA… 0.09s  
+  ✓ it keeps social_unit_id as a SNAPSHOT after the family moves to ano… 0.09s  
+  ✓ it refuses a referral for a family WITHOUT a reference unit (CA17)   0.08s  
+  ✓ it demands the person when the update swaps the code to BPC (CA16)   0.10s  
+  ✓ it re-validates the responsible against the EFFECTIVE date — changi… 0.10s  
+  ✓ it re-validates code×unit compatibility on the EFFECTIVE pair — mov… 0.09s  
+  ✓ it clears the person when the update sends family_member_uuid null…  0.10s  
+  ✓ it warns for the OLD and the NEW month when an update moves the dat… 0.09s  
+  ✓ it cancels keeping the row, and refuses a second cancel with 409 (C… 0.10s  
+  ✓ it emits the SAME remittance warning when cancelling a referral of…  0.09s  
+  ✓ it refuses editing a CANCELLED referral with 409 — cancelled is ter… 0.10s  
+  ✓ it prohibits client-sent authorship, status, outcome and person_id…  0.08s  
+  ✓ it returns units, responsibles, compatible codes and the remittance… 0.08s  
+  ✓ it offers only UNRESTRICTED codes when no origin unit is given in o… 0.08s  
+
+   PASS  Tests\Feature\Api\Client\ReferralCounterReferenceTest
+  ✓ it registers the counter-reference and the outcome in the SAME requ… 0.09s  
+  ✓ it keeps the outcome untouched when the note comes alone — annotati… 0.09s  
+  ✓ it keeps both annotations in chronological ASC order, each with its… 0.09s  
+  ✓ it has NO route to edit or delete an annotation — 405 on the collec… 0.09s  
+  ✓ it lets the outcome be corrected from not_attended to attended (CA0… 0.08s  
+  ✓ it refuses an outcome outside the four states and an empty one (§10… 0.08s  
+  ✓ it requires the note and caps it at 5000 chars — without echoing th… 0.08s  
+  ✓ it refuses a counter-reference on a cancelled referral with 409 — a… 0.08s  
+  ✓ it refuses an outcome change on a cancelled referral with 409 — can… 0.07s  
+  ✓ it denies the counter-reference for a family of another unit, namin… 0.09s  
+
+   PASS  Tests\Feature\Api\Client\ReferralDestinationUnitTest
+  ✓ it offers the destination type of code 13 and the active destinatio… 0.10s  
+  ✓ it lists every eligible destination unit when the origin is not inf… 0.08s  
+  ✓ it drops a destination type from destination_units when its interna… 0.08s  
+  ✓ it refuses a unit of the WRONG type, a PARALYSED one and a SOFT-DEL… 0.10s  
+  ✓ it never offers nor accepts the ORIGIN as destination — CREAS Norte… 0.10s  
+  ✓ it keeps external codes on free text: unit prohibited, text require… 0.10s  
+  ✓ it keeps the pre-migration referral with FK NULL and text preserved… 0.10s  
+  ✓ it lets the AUTHOR complete the unit through PATCH even without ass… 0.10s  
+  ✓ it locks the unit once there is an outcome — editable false + 409;…  0.10s  
+  ✓ it changes the unit of an OPEN internal referral, rewriting the sna… 0.10s  
+  ✓ it answers 422 with the SAME message for a unit of ANOTHER tenant a… 0.10s  
+  ✓ it answers 403 referral_destination_not_author for another operator… 0.11s  
+  ✓ it refuses swapping the code between external and internal classes…  0.13s  
+  ✓ it refuses swapping to another INTERNAL code whose destination type… 0.10s  
+  ✓ it refuses moving the ORIGIN onto the persisted destination unit —…  0.11s  
+  ✓ it does not revalidate the destination when the FK is NULL (legacy)… 0.10s  
+  ✓ it treats a CLIENT_ADMIN of ANOTHER tenant as a plain operator here… 0.09s  
+  ✓ it adds NO ability — the destination-unit route has no can: of its…  0.16s  
+  ✓ it leaves ZERO rows violating invariant 8.5 after a mixed workload…  0.10s  
+
+   PASS  Tests\Feature\Api\Client\ReferralIndexTest
+  ✓ it lists referrals chronologically by referred_on, newest first, wi… 0.09s  
+  ✓ it breaks same-day ties by created_at DESC then id DESC — the order… 0.08s  
+  ✓ it paginates stably when five referrals share the same day — no rep… 0.09s  
+  ✓ it keeps the cancelled referral visible, marked, with reason — it l… 0.08s  
+  ✓ it filters by period on the referral date                            0.08s  
+  ✓ it filters by referral code — and keeps filtering after the code is… 0.09s  
+  ✓ it filters by responsible professional, status and outcome           0.09s  
+  ✓ it refuses a sort parameter — the chronological order with tiebreak… 0.08s  
+  ✓ it writes ZERO activity_log rows for listing, filtering and paginat… 0.09s  
+  ✓ it runs a constant number of queries regardless of how many referra… 0.10s  
+
+   PASS  Tests\Feature\Api\ReferralCodeControllerTest
+  ✓ it lists referral codes exposing uuid and the four rules — never id  0.06s  
+  ✓ it shows the remittance counter and the person requirement of the B… 0.04s  
+  ✓ it shows NULL counter as an explicit "no specific counter" label (C… 0.04s  
+  ✓ it shows the unit-type restriction as an object with uuid, code and… 0.04s  
+  ✓ it creates a referral code with the code informed by the admin, map… 0.04s  
+  ✓ it rejects the uuid of a SOFT-DELETED unit type — the RN06 restrict… 0.04s  
+  ✓ it keeps showing the restriction when the unit type is soft-deleted… 0.04s  
+  ✓ it preserves the restriction when the PUT OMITS the key — absent ke… 0.04s  
+  ✓ it clears the restriction when the PUT sends the key explicitly nul… 0.04s  
+  ✓ it keeps a code restricted to a soft-deleted type EDITABLE via key…  0.05s  
+  ✓ it flags a live unit type with is_deleted false in the restriction…  0.03s  
+  ✓ it rejects a code outside the 2-digit zero-padded pattern of the in… 0.03s  
+  ✓ it rejects a duplicate code — the code is never generated (CA05)     0.03s  
+  ✓ it requires code, name and destination_area (CA05/RN03)              0.03s  
+  ✓ it rejects a destination area outside the enum, and accepts NULL re… 0.03s  
+  ✓ it rejects a remittance counter outside the enum — including the AT… 0.03s  
+  ✓ it audits the change of an apuration rule with old and new values i… 0.03s  
+  ✓ it exposes the audit trail with causer and pagination (CA11)         0.03s  
+  ✓ it soft deletes an unused referral code                              0.03s  
+  ✓ it bulk deactivates and bulk activates referral codes, logging the…  0.03s  
+  ✓ it rejects soft-deleted uuids in every bulk action at validation ti… 0.03s  
+  ✓ it filters actives for the new-record select, and returns inactives… 0.03s  
+  ✓ it filters by destination area — the health area returns only its r… 0.03s  
+  ✓ it filters by remittance counter and by restricted unit type uuid (… 0.03s  
+  ✓ it rejects filter values outside the enums with 422                  0.03s  
+  ✓ it blocks write without permission                                   0.02s  
+  ✓ it gives the admin_operador read-only access — every write is 403 (… 1.61s  
+  ✓ it lets the ADMIN role exercise all eight abilities end to end       1.57s  
+  ✓ it rejects client-guard tokens on every write route with 401, creat… 0.03s  
+  ✓ it keeps the shared read alive for the client guard — the tenant se… 0.03s  
+  ✓ it marks code 13 as internal transit to CREAS via PUT — 200, object… 0.04s  
+  ✓ it rejects a destination type equal to the origin type — on POST an… 0.04s  
+  ✓ it follows the RN06 contract for the destination type: null clears,… 0.04s  
+  ✓ it filters by is_internal_transit — true only the marked codes, fal… 0.04s  
+  ✓ it compares RESOLVED type ids on RN01 — the same uuid in a differen… 0.03s  
+
+   PASS  Tests\Feature\Api\ReferralCodeUsageTest
+  ✓ it refuses to delete a code in use with 422, guiding deactivation (… 0.04s  
+  ✓ it still soft deletes a code NOT referenced by any consumer (CA08)   0.03s  
+  ✓ it still deletes a code NOT referenced by any referral under the pr… 0.03s  
+  ✓ it refuses to delete a code referenced by a REAL referral — CA08 da… 0.04s  
+  ✓ it ignores a registered consumer whose table does not exist yet (Sc… 0.03s  
+  ✓ it bulk destroy is ATOMIC: one item in use blocks all three and is…  0.03s  
+  ✓ it bulk destroys unused codes, logging the bulk event with author (… 0.03s  
+
+   PASS  Tests\Feature\Client\FamilyFollowUpEvaluationTest
+  ✓ it suggests not_applicable ONLY when the period has no referral (CA… 0.10s  
+  ✓ it lists the referrals of the period with outcome and counter-refer… 0.08s  
+  ✓ it cuts the referrals by PERIOD and by the follow-up UNIT (D11)      0.08s  
+
+   PASS  Tests\Feature\Console\SyncPermissionsTest
+  ✓ it keeps referral-codes write abilities out of the client guard rol… 1.66s  
+  ✓ it grants the Operacional Global read-only access to referral codes… 1.60s  
+
+   PASS  Tests\Feature\Family\ReferralAuditTest
+  ✓ it NEVER leaks the objective nor the cancel reason into the activit… 0.10s  
+  ✓ it never echoes the objective in validation messages nor in denial…  0.11s  
+  ✓ it audits the destination unit change with old/attributes of the FK… 0.09s  
+
+   PASS  Tests\Feature\Family\ReferralCounterReferenceAuditTest
+  ✓ it NEVER writes the annotation into activity_log — the table row it… 0.08s  
+  ✓ it audits the outcome change with author and de/para in attribute_c… 0.09s  
+  ✓ it never echoes the note in the cancelled 409 body (RN03)            0.07s  
+
+   PASS  Tests\Feature\Migrations\MarkInternalTransitReferralCodesMigrationTest
+  ✓ it marks 13 → CREAS and 14 → CRAS on an existing base, leaving a tr… 0.03s  
+  ✓ it is idempotent — a second run changes nothing and adds no trail e… 0.03s  
+  ✓ it is a no-op for a missing code and never overrides a value alread… 0.03s  
+  ✓ it resolves the destination types even when they are soft-deleted —… 0.03s  
+  ✓ it skips a code already marked with a NULL-safe check — a soft-dele… 0.03s  
+  ✓ it never deduces destination_social_unit_id from the text of a pre-… 0.04s  
+  ✓ it logs a warning (without PII) when the code exists but its destin… 0.03s  
+
+   PASS  Tests\Feature\Referral\ReferralFormPdfTest
+  ✓ it renders the RN08 items and NEVER the objective, the uuid nor the… 0.08s  
+  ✓ it prints the referred PERSON name when the referral identifies one… 0.07s  
+  ✓ it STILL prints unit, phone and professional after they are soft-de… 0.07s  
+  ✓ it returns a PDF stream and records WHO emitted and WHEN — re-emiss… 0.30s  
+  ✓ it never writes ANY file to storage — the PDF only exists in the re… 0.19s  
+  ✓ it refuses to emit the form for a CANCELLED referral with 409 — and… 0.08s  
+  ✓ it prints the destination unit NAME from the registry, follows a re… 0.18s  
+
+   PASS  Tests\Feature\Seeders\IntakeLookupSeedersTest
+  ✓ it marks exactly the nine referral forms as requiring the referring… 0.04s  
+
+   PASS  Tests\Feature\Seeders\ReferralCodeSeederTest
+  ✓ it seeds the seven ranges of the instrument, zero-padded, never fil… 0.05s  
+  ✓ it groups each range under its destination area (RN03/CA12)          0.05s  
+  ✓ it marks EXACTLY three items with a remittance counter — 07, 08 and… 0.05s  
+  ✓ it marks EXACTLY one item requiring an identified person — the BPC…  0.05s  
+  ✓ it marks EXACTLY two items restricted by unit type — 13 to CRAS, 14… 0.05s  
+  ✓ it marks EXACTLY two items as internal transit — 13 to CREAS, 14 to… 0.06s  
+  ✓ it marks the five free codes 85–89 with the free area and the descr… 0.05s  
+  ✓ it is idempotent — running the seeder twice does not duplicate nor…  0.05s  
+  ✓ it guarantees the social unit types when run standalone (RN06 depen… 0.05s  
+  ✓ it resolves CRAS/CREAS ids even when the unit types are soft-delete… 0.06s  
+
+   PASS  Tests\Feature\TenantIsolation\AttendanceReportIsolationTest
+  ✓ it never counts tenant B referrals in the tenant A referral counter… 0.08s  
+
+   PASS  Tests\Feature\TenantIsolation\ReferralCounterReferenceIsolationTest
+  ✓ it lists pending referrals of the OWN tenant only — the other munic… 0.08s  
+  ✓ it answers 404 for the whole new surface on a family of ANOTHER ten… 0.09s  
+  ✓ it answers 404 when the referral belongs to ANOTHER family of the s… 0.08s  
+  ✓ it scopes counter-references by tenant through the BelongsToTenant…  0.09s  
+
+   PASS  Tests\Feature\TenantIsolation\ReferralIsolationTest
+  ✓ it answers 404 for a family of ANOTHER tenant with the SAME body as… 0.09s  
+  ✓ it answers 404 when the referral belongs to ANOTHER family — scoped… 0.10s  
+  ✓ it answers 403 unit_not_assigned for a family of another unit — WIT… 0.09s  
+  ✓ it answers 403 no_active_assignment when the professional has no as… 0.09s  
+  ✓ it answers 403 for the operator WITHOUT the LGPD add-on — the class… 0.08s  
+  ✓ it scopes referrals by tenant through the BelongsToTenant global sc… 0.09s  
+  ✓ it lists only the tenant own destination units in options and refus… 0.12s  
+
+  Tests:    193 passed (1275 assertions)
+  Duration: 20.70s
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

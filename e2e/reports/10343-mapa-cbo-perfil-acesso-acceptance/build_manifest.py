@@ -1,0 +1,279 @@
+#!/usr/bin/env python3
+"""Monta o manifest.json do dossiê de evidências da HU #10343."""
+import json
+import pathlib
+
+BASE = pathlib.Path(__file__).parent
+
+
+def txt(name: str) -> str:
+    return (BASE / name).read_text(encoding="utf-8").strip()
+
+
+CAS = [
+    {
+        "id": "CA01",
+        "title": "Administrador associa um CBO a um perfil funcional",
+        "status": "nav",
+        "gherkin": (
+            "Dado que o CBO 2516-05 (Assistente social) existe no cadastro de Ocupações e o perfil "
+            "funcional \"Técnico de Referência\" existe em Perfis e Permissões, quando o Administrador "
+            "cria a entrada de mapa associando os dois e salva, então a entrada passa a constar na "
+            "listagem do mapa e uma consulta pelo CBO 2516-05 retorna o perfil \"Técnico de Referência\"."
+        ),
+        "steps_html": (
+            "Autenticado como <b>Administrador</b> (guard <code>manager</code>) no Painel Global, abrir "
+            "<code>/app/cbo-access-profiles</code> → <b>Nova Entrada</b> → selecionar a ocupação "
+            "<code>2516-05 — Assistente social</code> → marcar o perfil funcional <b>Técnico de Referência "
+            "(PAIF / PAEFI)</b> e o add-on <b>Visualização de Detalhes da Família — LGPD</b> → "
+            "<b>Salvar</b>. Em seguida, consultar "
+            "<code>GET /api/cbo-access-profiles/resolve?cbo_code=2516-05</code>."
+        ),
+        "results": [
+            "Drawer abre com o posto base Operador já marcado e desabilitado (RN04) e sem o posto Master na lista (RN05).",
+            "Após salvar: \"Entrada do mapa criada com sucesso.\" e a linha aparece na listagem.",
+            "A linha exibe os três papéis; apenas o add-on LGPD leva o selo \"sugestão\" (RN06).",
+            "O endpoint resolve retorna HTTP 200 com o perfil pf_tecnico_referencia e is_suggested=true somente no family_viewer.",
+        ],
+        "images": [
+            "screenshots/ca01-drawer-vazio.png",
+            "screenshots/ca01-drawer-preenchido.png",
+            "screenshots/ca01-entrada-criada.png",
+        ],
+    },
+    {
+        "id": "CA02",
+        "title": "Conjunto sem o posto base operador é recusado",
+        "status": "parc",
+        "gherkin": (
+            "Dado um perfil funcional composto apenas por permissões de módulo, sem o posto base "
+            "Operacional do Tenant, quando o Administrador tenta associá-lo a um CBO, então o sistema "
+            "recusa com 422, a entrada não é criada, e a mensagem informa que todo perfil do mapa "
+            "precisa conter o posto base operador."
+        ),
+        "steps_html": (
+            "Na UI o posto base é <b>pré-marcado e não desmarcável</b>, de modo que o caso é inalcançável "
+            "pela tela (defesa em profundidade). A recusa do servidor foi provocada diretamente: "
+            "<code>POST /api/cbo-access-profiles</code> com <code>role_uuids</code> contendo apenas o "
+            "perfil funcional. Também coberto pelo teste Pest <i>\"CA02: recusa conjunto sem o posto base "
+            "Operacional do Tenant\"</i>."
+        ),
+        "results": [
+            "HTTP 422 com errors.role_uuids: \"Todo perfil do mapa precisa conter o posto base Operacional do Tenant.\"",
+            "Nenhuma entrada criada — a contagem do mapa permanece em 39.",
+            "Na UI, o checkbox do Operador aparece [checked] [disabled] com a nota \"Obrigatório em toda entrada do mapa\".",
+        ],
+        "images": ["screenshots/ca01-drawer-vazio.png"],
+    },
+    {
+        "id": "CA03",
+        "title": "Entrada composta apenas por add-on LGPD é recusada",
+        "status": "auto",
+        "gherkin": (
+            "Dado o CBO 2515-30 (Psicólogo social), quando o Administrador tenta criar uma entrada cujo "
+            "único conteúdo é o add-on family_viewer, então o sistema recusa com 422 e nenhuma entrada é criada."
+        ),
+        "steps_html": (
+            "Caso inalcançável pela tela (o posto base é obrigatório na UI). Provocado por "
+            "<code>POST /api/cbo-access-profiles</code> com <code>role_uuids</code> contendo apenas "
+            "<code>family_viewer</code>. A regra reusa "
+            "<code>UserTenantRoleSyncService::assertResultingSetHasBasePost()</code> (GLPI #10141) em vez "
+            "de reescrevê-la."
+        ),
+        "results": [
+            "HTTP 422 com errors.role_uuids: \"Não é possível manter apenas perfis de ação única. O profissional precisa ter também um perfil base nesta organização.\"",
+            "Nenhuma linha criada em cbo_access_profiles nem em cbo_access_profile_roles.",
+            "Achado corrigido durante esta captura: a exceção da regra canônica saía como {message, exception, trace} e o formulário não conseguiria exibi-la; o Validator passou a reemiti-la no formato de validação.",
+        ],
+        "images": [],
+    },
+    {
+        "id": "CA04",
+        "title": "Mapa não aceita o posto Master",
+        "status": "parc",
+        "gherkin": (
+            "Dado o CBO 1114-15 (Dirigente do serviço público municipal), quando o Administrador tenta "
+            "associá-lo a um perfil que contenha o posto Master, então o sistema recusa com 422 e a "
+            "mensagem informa que o mapa só entrega o posto Operacional do Tenant."
+        ),
+        "steps_html": (
+            "Na UI o posto Master <b>não é oferecido</b>: o formulário só lista papéis do guard "
+            "<code>client</code> com <code>level >= 30</code>, e o Master é 20. A recusa do servidor foi "
+            "provocada por <code>POST /api/cbo-access-profiles</code> com "
+            "<code>[operador, master]</code>."
+        ),
+        "results": [
+            "HTTP 422: \"O mapa só entrega o posto Operacional do Tenant. O perfil \\\"Master\\\" está acima dele e não pode ser mapeado — elevar alguém a Master permanece ato manual.\"",
+            "A regra é por level (< 30), não por nome — bloqueia também qualquer posto futuro acima do Operador.",
+            "No drawer, o grupo \"Perfis funcionais\" lista os 9 perfis do Anexo A e nenhum posto acima do Operador.",
+        ],
+        "images": ["screenshots/ca01-drawer-vazio.png"],
+    },
+    {
+        "id": "CA05",
+        "title": "Mapa não aceita módulos vedados",
+        "status": "nav",
+        "gherkin": (
+            "Dado um perfil funcional que inclua acesso a Usuários do tenant (INV-052), Configurações do "
+            "tenant (INV-051) ou Aceite legal (INV-045), quando o Administrador tenta associá-lo a "
+            "qualquer CBO, então o sistema recusa com 422, nomeando na mensagem o módulo vedado que "
+            "causou a recusa."
+        ),
+        "steps_html": (
+            "Criado um perfil-armadilha (<code>pf_armadilha_e2e</code>) carregando a permissão "
+            "<code>users.store</code>. No Painel Global: <b>Nova Entrada</b> → ocupação "
+            "<code>5153-20</code> → marcar o perfil-armadilha → <b>Salvar</b>. O perfil foi removido "
+            "após a captura."
+        ),
+        "results": [
+            "HTTP 422 e a mensagem NOMEIA o módulo: \"O perfil ... concede acesso a \\\"Usuários\\\", módulo vedado ao mapa. Esse acesso é atribuição privativa do Master no próprio tenant.\"",
+            "A mensagem aparece no formulário, ligada ao campo do conjunto de papéis.",
+            "Nenhuma entrada criada — a contagem permanece em 39.",
+            "A varredura cobre users, user-tenant-roles, tenant-settings/config/tce-parameters/responsibles, professionals.roles e a escrita de legal-documents.",
+        ],
+        "images": ["screenshots/ca05-modulo-vedado-422.png"],
+    },
+    {
+        "id": "CA06",
+        "title": "Operacional Global consulta mas não altera",
+        "status": "nav",
+        "gherkin": (
+            "Dado um Operacional Global autenticado no Painel Global, quando ele abre a listagem do mapa, "
+            "então ele visualiza todas as entradas e nenhuma ação de criar, editar ou remover é "
+            "oferecida; e quando ele tenta submeter diretamente uma alteração de entrada, então o "
+            "sistema responde 403 e o mapa permanece inalterado."
+        ),
+        "steps_html": (
+            "Login como <b>Operacional Global</b> (papel <code>admin_operador</code>, level 10), aceite "
+            "dos documentos legais e abertura de <code>/app/cbo-access-profiles</code>. Em seguida, "
+            "submissão direta de <code>POST</code>, <code>PATCH</code> e <code>DELETE</code> à API."
+        ),
+        "results": [
+            "A listagem carrega normalmente (15 linhas na página) — leitura permitida pela RN10.",
+            "A tabela tem apenas 4 colunas (CBO, Ocupação, Perfis do padrão, Status): a coluna \"Ações\" não é renderizada.",
+            "O botão \"Nova Entrada\" não existe na página; nenhum botão de editar ou remover é oferecido.",
+            "GET → 200; POST, PATCH e DELETE → 403 \"Acesso negado.\"; o mapa permanece com 39 entradas.",
+        ],
+        "images": ["screenshots/ca06-operacional-global-somente-leitura.png"],
+    },
+    {
+        "id": "CA07",
+        "title": "Alteração do mapa fica registrada na trilha de auditoria",
+        "status": "nav",
+        "gherkin": (
+            "Dado que o Administrador altera a entrada do CBO 2410-05 (Advogado), removendo a sugestão do "
+            "add-on family_viewer, quando a alteração é salva, então uma entrada de auditoria é "
+            "registrada com usuário, ação, CBO afetado e momento, consultável na trilha de auditoria."
+        ),
+        "steps_html": (
+            "Executado sobre a entrada do CBO <code>2516-05</code> (mesmo fluxo do critério): abrir "
+            "<b>Editar entrada</b>, desmarcar o add-on <b>Visualização de Detalhes da Família — LGPD</b> "
+            "e salvar. Trilha conferida em <code>activity_log</code> "
+            "(<code>log_name = cbo_access_profile</code>)."
+        ),
+        "results": [
+            "Registro gravado com event=roles_synced, causer=\"E2E Super Admin\" e timestamp.",
+            "properties trazem o DIFF completo: cbo_code, roles_before (com family_viewer) e roles_after (sem).",
+            "O diff é registrado explicitamente pelo Service — o trait LogsActivity não captura mudança de pivot.",
+            "Alteração que não muda o conjunto não gera registro (evita ruído na trilha).",
+            "A entrada volta a exibir apenas Operador + Técnico de Referência na listagem.",
+        ],
+        "images": ["screenshots/ca07-addon-removido.png"],
+    },
+    {
+        "id": "CA08",
+        "title": "CBO fora do subconjunto curado não tem entrada",
+        "status": "nav",
+        "gherkin": (
+            "Dado o CBO 5153-20 (Conselheiro tutelar), que foi deliberadamente mantido fora do "
+            "subconjunto curado, quando alguém consulta o mapa por esse CBO, então nenhuma entrada é "
+            "retornada e a consulta informa que o CBO segue o padrão mínimo (posto base operador, nenhum "
+            "módulo operacional)."
+        ),
+        "steps_html": (
+            "Busca por <code>5153-20</code> na listagem do mapa e consulta a "
+            "<code>GET /api/cbo-access-profiles/resolve?cbo_code=5153-20</code>."
+        ),
+        "results": [
+            "A listagem responde \"Nenhum resultado encontrado\" — o CBO não tem entrada (RN11).",
+            "O resolve responde HTTP 200 (não é erro) com data=null.",
+            "meta.fallback=\"minimum_base_post\", meta.base_role=\"operador\" e a mensagem do padrão mínimo.",
+            "Contraste: o mesmo endpoint para 2516-05 devolve a entrada completa com fallback=null.",
+        ],
+        "images": ["screenshots/ca08-conselheiro-tutelar-sem-entrada.png"],
+    },
+]
+
+EXTRAS = [
+    {
+        "id": "RN01",
+        "title": "Complementar — o CBO é imutável na edição",
+        "status": "nav",
+        "gherkin": "RN01 — a chave do mapa é o código CBO isolado: 1 CBO ⇒ no máximo 1 entrada ativa.",
+        "steps_html": "Abrir <b>Editar entrada</b> de uma entrada existente.",
+        "results": [
+            "A ocupação aparece como campo somente-leitura, com a nota de que para trocá-la é preciso remover a entrada e criar outra, preservando o rastro das duas na auditoria.",
+        ],
+        "images": ["screenshots/rn01-cbo-imutavel-na-edicao.png"],
+    },
+    {
+        "id": "RN13",
+        "title": "Complementar — remover a entrada é soft delete e não revoga acesso",
+        "status": "nav",
+        "gherkin": "RN13 — remover uma entrada é soft delete; concessões já efetivadas nos tenants não são afetadas.",
+        "steps_html": "Clicar em <b>Remover entrada</b> e confirmar no diálogo.",
+        "results": [
+            "O diálogo declara que a ação não revoga acesso já concedido e que a ocupação volta ao padrão mínimo.",
+            "Após a remoção: 38 entradas ativas e 39 com soft-deleted — o registro é preservado.",
+            "O CBO pôde ser remapeado em seguida (índice único parcial em deleted_at IS NULL).",
+        ],
+        "images": ["screenshots/rn13-dialog-remover.png"],
+    },
+    {
+        "id": "SEED",
+        "title": "Complementar — Anexo A semeado (39 de 40 CBOs)",
+        "status": "nav",
+        "gherkin": "RN11 — o mapa inicial é o do Anexo A, com 9 perfis funcionais cobrindo 39 dos 40 CBOs informados pelo PO.",
+        "steps_html": "Listagem do mapa após rodar <code>CboAccessProfileRoleSeeder</code> + <code>CboAccessProfileMapSeeder</code> no ambiente.",
+        "results": [
+            "39 entradas ativas e 9 perfis funcionais (level 40) no guard client.",
+            "O CBO 5153-20 (Conselheiro tutelar) permanece deliberadamente fora.",
+            "Os seeders são idempotentes: reexecutar não duplica entradas nem papéis.",
+        ],
+        "images": ["screenshots/00-listagem-mapa.png"],
+    },
+]
+
+manifest = {
+    "meta": {
+        "title": "Relatório de Critérios de Aceite — Mapa CBO → Perfil de Acesso",
+        "subtitle": "HU #10343 · US-001 (épico HU-CBO-PERFIL) · Evidências end-to-end no Painel Global",
+        "rows": [
+            ["Gerado em", "06/08/2026"],
+            ["Branch", "feature/10343-mapa-cbo-perfil-acesso (api + admin)"],
+            ["Spec", ".planning/specs/10343-mapa-cbo-perfil-acesso.md"],
+            ["Ambiente", "API Sail/PostgreSQL :8000 · Painel Global (admin) Vite :5175 · guard manager"],
+            ["Perfis exercitados", "Administrador (admin, level 0) · Operacional Global (admin_operador, level 10)"],
+            ["Dados", "Anexo A semeado — 39 entradas de mapa, 9 perfis funcionais"],
+            ["Ferramenta", "playwright-cli (Chromium) + Pest"],
+        ],
+    },
+    "summary": (
+        "Os 8 critérios de aceite da HU #10343 foram verificados: 5 diretamente no navegador (CA01, CA05, "
+        "CA06, CA07, CA08), 2 de forma combinada — UI mais chamada direta à API, por serem inalcançáveis "
+        "pela tela graças à defesa em profundidade (CA02, CA04) — e 1 exclusivamente pela API e pela suíte "
+        "automatizada (CA03). Todos atendidos. Somam-se 3 seções complementares (RN01, RN13 e o seed do "
+        "Anexo A). A captura revelou e corrigiu um desvio de contrato no CA03: a exceção da regra canônica "
+        "de posto base retornava {message, exception, trace} em vez do formato de validação, e o "
+        "formulário não conseguiria exibi-la. Apêndice: 46 testes Pest verdes."
+    ),
+    "cas": CAS + EXTRAS,
+    "appendix": {
+        "label": "Cobertura automatizada (Pest, --filter=\"CboAccessProfile|SyncPermissions\") — 46 testes",
+        "file": "pest-cbo-access-profile.txt",
+    },
+}
+
+out = BASE / "manifest.json"
+out.write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
+print(f"manifest.json escrito com {len(manifest['cas'])} seções")

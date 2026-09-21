@@ -1,0 +1,14 @@
+<!-- CA10 — a unidade 1585688806193 e do meu municipio; a 8125735273733, de outro (com 9 impressoras). Esperado: UMA linha, so a minha; nenhum vestigio da outra -->
+<!-- Gerado pela remessa 07/2026 do tenant de teste. Conteudo do EquipamentoUnidade.xml do pacote, sem edicao. -->
+<?xml version="1.0"?>
+<SIAP>
+    <Codigo>004821</Codigo>
+    <Exercicio>2026</Exercicio>
+    <Mes>07</Mes>
+    <EquipamentoUnidade>
+        <NumeroMDS>1585688806193</NumeroMDS>
+        <Equipamento>2</Equipamento>
+        <Quantidade>3</Quantidade>
+        <QuantidadeUso>3</QuantidadeUso>
+    </EquipamentoUnidade>
+</SIAP>

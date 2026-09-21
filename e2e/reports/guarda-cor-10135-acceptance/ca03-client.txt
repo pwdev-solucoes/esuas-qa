@@ -1,0 +1,18 @@
+=== CA03: injeção de #ff0000 fora da allowlist ===
+
+> esuas-client@0.1.0 check:colors
+> node scripts/check-color-tokens.mjs
+
+Guarda de cor fora do token (GLPI #10135) — 299 arquivos .vue em src/ (inclui src/components/ui/**)
+
+x 1 ocorrencia(s) de cor literal fora da allowlist:
+
+  src/components/__proof10135__.vue
+    src/components/__proof10135__.vue:2  #ff0000
+      <div style="color: #ff0000">proof</div>
+
+Excecoes declaradas (visiveis por RN03/RN05): 1
+  src/components/map/MapPointPicker.vue — Marcador SVG do OpenLayers: a lib exige um data-URI de SVG com stroke/fill literais no icone; a cor de marca ja vem de brand-tokens.ts e so o branco do traco/miolo do pin e literal — nao ha token semantico consumivel dentro do SVG.
+
+FALHA: 1 cor(es) literal(is) fora do token. Corrija usando um token semantico ou, se for consumidor imperativo legitimo, adicione uma entrada justificada na ALLOWLIST de scripts/check-color-tokens.mjs.
+exit=1

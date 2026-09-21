@@ -1,0 +1,40 @@
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Feature\Api\Client\FamilyEventualBenefitLifecycleTest[39m
+  [32;1m✓[39;22m[90m [39m[90mit NEVER leaks notes/birth_registration_number/deceased_cpf/cancel_[39m[90m…[39m [90m0.36s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit cancels keeping the row VISIBLE and marked, stops counting, warn[39m[90m…[39m [90m0.06s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit devolve quem cancelou, quando e o motivo no payload da concessao[39m[90m…[39m [90m0.06s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit never calls delete() nor forceDelete() through the cancel route[39m[90m… [39m [90m0.05s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit lets an Operacional lotado at the unit that FOLLOWS the family r[39m[90m…[39m [90m0.05s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit denies registering for a family outside reach, with a STABLE err[39m[90m…[39m [90m0.05s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit keeps social_unit_id as a SNAPSHOT after the family moves to ano[39m[90m…[39m [90m0.05s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit creates NO referral when registering an eventual benefit grant ([39m[90m…[39m [90m0.04s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit creates NO eventual benefit grant when registering a referral fo[39m[90m…[39m [90m0.04s[39m  
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Feature\Api\Client\FamilyEventualBenefitShowTest[39m
+  [32;1m✓[39;22m[90m [39m[90mit returns the deceased_cpf INTACT on show while the SAME grant is[39m[90m… [39m [90m0.07s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit answers 404 when the grant belongs to ANOTHER family — scoped bi[39m[90m…[39m [90m0.05s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit answers 404 when the grant belongs to ANOTHER organization (RN13[39m[90m…[39m [90m0.05s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit answers 403 unit_not_assigned for a family of another unit — WIT[39m[90m…[39m [90m0.05s[39m  
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Feature\Api\Client\FamilyEventualBenefitTest[39m
+  [32;1m✓[39;22m[90m [39m[90mit registers a cesta basica grant signed and dated, with status reg[39m[90m…[39m [90m0.05s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit refuses a birth grant WITHOUT birth_registration_number (CA02)[39m[90m   [39m [90m0.04s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit refuses a funeral grant WITHOUT deceased_cpf (CA03)[39m[90m              [39m [90m0.04s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit saves a funeral grant with a deceased CPF outside the family com[39m[90m…[39m [90m0.05s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit refuses deceased_cpf sent for a type that does NOT require it —[39m[90m… [39m [90m0.05s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit refuses the "Outros" type WITHOUT notes (CA05b)[39m[90m                  [39m [90m0.04s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit accepts THREE cesta basica grants for the SAME family in the SAM[39m[90m…[39m [90m0.05s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit refuses a future granted_on date, creating nothing (CA07)[39m[90m        [39m [90m0.05s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit saves a retroactive grant in an ALREADY REMITTED month AND retur[39m[90m…[39m [90m0.05s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit clears the OLD type conditional fields when the type changes on[39m[90m… [39m [90m0.06s[39m  
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Feature\TenantIsolation\FamilyEventualBenefitIsolationTest[39m
+  [32;1m✓[39;22m[90m [39m[90mit answers 404 — never 403 — for a family of ANOTHER tenant, on ALL[39m[90m…[39m [90m0.06s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit never leaks a grant of ANOTHER tenant through MY family uuid (RN[39m[90m…[39m [90m0.05s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit answers 404 when the grant belongs to ANOTHER family of the same[39m[90m…[39m [90m0.05s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit scopes the block by tenant_id even without the route — my listin[39m[90m…[39m [90m0.05s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit blocks the request when the X-Tenant-UUID points at a tenant the[39m[90m…[39m [90m0.04s[39m  
+
+  [90mTests:[39m    [32;1m28 passed[39;22m[90m (160 assertions)[39m
+  [90mDuration:[39m [39m2.10s[39m
+

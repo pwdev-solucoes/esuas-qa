@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<SIAP>
+    <Codigo>004821</Codigo>
+    <Exercicio>2026</Exercicio>
+    <Mes>08</Mes>
+    <EntidadeSocial>
+        <NumeroCNEAS>2317586160561</NumeroCNEAS>
+        <NomeEntidadeSocial>Casa de Apoio São José (extinta em 2026)</NomeEntidadeSocial>
+        <CNPJEntidadeSocial>41687552039453</CNPJEntidadeSocial>
+        <EnderecoEntidadeSocial>Rua, Av. Ávila, 91, do Norte, Filipe do Leste</EnderecoEntidadeSocial>
+        <CEP>57000000</CEP>
+        <SituacaoEntidadeSocial>3</SituacaoEntidadeSocial>
+        <Email>contato@entidade.test</Email>
+        <TipoLocalizacao>1</TipoLocalizacao>
+        <ParceriaPoderPublico>2</ParceriaPoderPublico>
+        <ParticipanteSUAS>1</ParticipanteSUAS>
+        <BeneficioEventual>2</BeneficioEventual>
+        <ExecucaoServicos>2</ExecucaoServicos>
+        <SituacaoUnidade>2</SituacaoUnidade>
+        <Modalidade>2</Modalidade>
+        <ValorVinculo>12345.20</ValorVinculo>
+    </EntidadeSocial>
+    <EntidadeSocial>
+        <NumeroCNEAS>5497775543290</NumeroCNEAS>
+        <NomeEntidadeSocial>Obra Social Boa Vista (extinta em 2024)</NomeEntidadeSocial>
+        <CNPJEntidadeSocial>72082364985552</CNPJEntidadeSocial>
+        <EnderecoEntidadeSocial>Rua, Travessa Padrão, 836, do Norte, Danilo d'Oeste</EnderecoEntidadeSocial>
+        <CEP>57000000</CEP>
+        <SituacaoEntidadeSocial>4</SituacaoEntidadeSocial>
+        <Email>contato@entidade.test</Email>
+        <TipoLocalizacao>1</TipoLocalizacao>
+        <ParceriaPoderPublico>2</ParceriaPoderPublico>
+        <ParticipanteSUAS>1</ParticipanteSUAS>
+        <BeneficioEventual>2</BeneficioEventual>
+        <ExecucaoServicos>2</ExecucaoServicos>
+        <SituacaoUnidade>1</SituacaoUnidade>
+        <Modalidade>2</Modalidade>
+        <ValorVinculo>12345.20</ValorVinculo>
+    </EntidadeSocial>
+</SIAP>

@@ -1,0 +1,10 @@
+
+> esuas-client@0.1.0 check:colors
+> node scripts/check-color-tokens.mjs
+
+Guarda de cor fora do token (GLPI #10135) — 298 arquivos .vue em src/ (inclui src/components/ui/**)
+
+Excecoes declaradas (visiveis por RN03/RN05): 1
+  src/components/map/MapPointPicker.vue — Marcador SVG do OpenLayers: a lib exige um data-URI de SVG com stroke/fill literais no icone; a cor de marca ja vem de brand-tokens.ts e so o branco do traco/miolo do pin e literal — nao ha token semantico consumivel dentro do SVG.
+
+OK: zero cor literal fora do token (2 ocorrencia(s) allowlistada(s)).

@@ -1,0 +1,22 @@
+<!--
+  HU #10370 (US-SIAP-03) — dossiê de aceite
+  CA11
+  Cenário: duas unidades na plataforma, em tenants diferentes — o arquivo traz só a do tenant da remessa
+  Gerado em: 2026-08-13 13:55:50 por tests/Feature/Api/Siap10370EvidenceDumpTest.php (temporário)
+  Origem: UnidadeSocial.xml extraído do zip da remessa realmente gerada pelo POST client/siap-remittances
+-->
+<?xml version="1.0"?>
+<SIAP>
+    <Codigo>004821</Codigo>
+    <Exercicio>2026</Exercicio>
+    <Mes>08</Mes>
+    <UnidadeSocial>
+        <NumeroMDS>2704302000123</NumeroMDS>
+        <NomeUnidadeSocial>CRAS Alto do Cruzeiro (meu município)</NomeUnidadeSocial>
+        <TipoLocalizacao>1</TipoLocalizacao>
+        <EnderecoUnidadeSocial>Rua, das Flores, 123, Centro, Maceió</EnderecoUnidadeSocial>
+        <CEP>57000000</CEP>
+        <SituacaoUnidadeSocial>1</SituacaoUnidadeSocial>
+        <ClassificacaoUnidadeSocial>1</ClassificacaoUnidadeSocial>
+    </UnidadeSocial>
+</SIAP>

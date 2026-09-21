@@ -1,0 +1,289 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — US-SCFV-02</title><style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  section.note { border:1px solid var(--line); border-left:4px solid #b06a00; border-radius:6px; padding:10px 14px; margin:10px 0; background:#fffdf7; font-size:13px; }
+  section.note h3 { margin:0 0 6px; font-size:13.5px; color:#8a5200; }
+  section.note p { margin:6px 0; }
+  section.note ul { margin:6px 0 6px 18px; padding:0; }
+  section.note pre { background:var(--bg); border:1px solid var(--line); border-radius:4px; padding:8px; overflow-x:auto; font-size:11px; white-space:pre-wrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style>
+<body><div class="wrap">
+<header class="cover"><h1>Relatório de Critérios de Aceite — US-SCFV-02</h1>
+<div class="sub">Épico HU-PRONT-SCFV (fase F4) · Registrar a participação do integrante em serviço, programa ou projeto</div>
+<div class="meta"><div><span>Gerado em:</span> 09/09/2026</div><div><span>História:</span> US-SCFV-02 — Registrar a participação do integrante</div><div><span>Spec:</span> <code>.planning/specs/US-SCFV-02-registrar-participacao-do-integrante.md</code></div><div><span>Branch:</span> <code>feature/scfv-prontuario-bloco-16</code></div><div><span>Commits (api/):</span> <code>df24800</code> · <code>1714fac</code> · <code>4f31dd3</code> · <code>c6d9f2b</code> · <code>b9458db</code> · <code>ac8a782</code></div><div><span>Commits (client/):</span> <code>e412caa</code></div><div><span>Commits (e2e/):</span> <code>e31bced</code></div><div><span>Ambiente:</span> Stack E2E Docker · API em :8090 · client (vite preview) em :4174 · base recém-semeada</div><div><span>Perfil usado:</span> Operacional do tenant (guard <code>client</code>) com add-on LGPD e lotação vigente</div><div><span>Ferramenta:</span> Playwright (Chromium, project <code>chromium-tenant</code>) + Pest 4</div></div></header>
+<h2 style="border-top:none;padding-top:0">Resumo</h2>
+<p>Quinze critérios de aceite. <strong>Nove evidenciados no navegador</strong> (CA01, CA02, CA03, CA04, CA06, CA07, CA09, CA11 e CA15, com oito prints) e <strong>seis cobertos pela suíte automatizada</strong> (CA05, CA08, CA10, CA12, CA13 e CA14). A suíte fecha com <strong>176 testes e 954 asserções</strong> no filtro <code>Participation</code> e 93 no isolamento entre municípios; os <strong>33 cenários Playwright</strong> do arquivo do prontuário — cobrindo as cinco histórias das fases F3 e F4 — passam contra base recém-semeada. <strong>Nenhum critério em falha</strong> e nenhum defeito de produto encontrado: o código de produção ficou intocado pela suíte.</p>
+<table class="summary"><thead><tr><th>CA</th><th>Critério</th><th>Situação</th><th>Evidência</th></tr></thead>
+<tbody><tr><td class="caid">CA01</td><td>Registrar participação em SCFV (happy path)</td><td><span class="pill" style="background:#0a7d33">ATENDIDO</span></td><td>Print + Pest</td></tr><tr><td class="caid">CA02</td><td>Local fora da unidade pede identificação</td><td><span class="pill" style="background:#0a7d33">ATENDIDO</span></td><td>Print + Pest</td></tr><tr><td class="caid">CA03</td><td>Local na própria unidade não pede identificação</td><td><span class="pill" style="background:#0a7d33">ATENDIDO</span></td><td>Print + Pest</td></tr><tr><td class="caid">CA04</td><td>Pessoa precisa ser integrante da família</td><td><span class="pill" style="background:#0a7d33">ATENDIDO</span></td><td>Print + Pest</td></tr><tr><td class="caid">CA05</td><td>Participação em andamento</td><td><span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></td><td>Pest</td></tr><tr><td class="caid">CA06</td><td>Duas participações vigentes no mesmo serviço são recusadas</td><td><span class="pill" style="background:#0a7d33">ATENDIDO</span></td><td>Print + Pest</td></tr><tr><td class="caid">CA07</td><td>Participação simultânea em serviços diferentes</td><td><span class="pill" style="background:#0a7d33">ATENDIDO</span></td><td>Print + Pest</td></tr><tr><td class="caid">CA08</td><td>Reingresso após desligamento</td><td><span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></td><td>Pest</td></tr><tr><td class="caid">CA09</td><td>Data futura recusada</td><td><span class="pill" style="background:#0a7d33">ATENDIDO</span></td><td>Print + Pest</td></tr><tr><td class="caid">CA10</td><td>Retroativo em período já declarado</td><td><span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></td><td>Pest</td></tr><tr><td class="caid">CA11</td><td>Cancelar em vez de excluir</td><td><span class="pill" style="background:#0a7d33">ATENDIDO</span></td><td>Print + Pest</td></tr><tr><td class="caid">CA12</td><td>Acesso pela unidade que acompanha</td><td><span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></td><td>Pest</td></tr><tr><td class="caid">CA13</td><td>Negativa declara o motivo</td><td><span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></td><td>Pest</td></tr><tr><td class="caid">CA14</td><td>Isolamento entre municípios</td><td><span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></td><td>Pest (TenantIsolation)</td></tr><tr><td class="caid">CA15</td><td>Item “Outros” exige descrição</td><td><span class="pill" style="background:#0a7d33">ATENDIDO</span></td><td>Print + Pest</td></tr></tbody></table>
+<section class="ca"><h2>CA01 — Registrar participação em SCFV (happy path) <span class="pill" style="background:#0a7d33">ATENDIDO</span></h2><div class="gherkin"><p><strong>Dado</strong> que sou Operacional com add-on LGPD, lotado no CRAS Centro, <strong>quando</strong> registro a participação de uma integrante no SCFV para idosos realizado nesta própria unidade, <strong>então</strong> a participação é salva e consta como em andamento, com meu nome e a data do lançamento.</p></div><div class="results"><ul><li>A linha entra em "Em andamento" com o estado no atributo <code>data-status</code>.</li><li>A <strong>unidade que declara</strong> é escolha explícita do profissional e fica gravada como snapshot — não é derivada da unidade de referência da família.</li><li>Autoria e data carimbadas pelo servidor.</li></ul></div><div class="evid"><figure><img src="screenshots/scfv02-a-registro.png" alt="Participação registrada no SCFV para idosos"><figcaption>scfv02-a-registro.png — Participação registrada no SCFV para idosos</figcaption></figure></div></section><section class="ca"><h2>CA02 — Local fora da unidade pede identificação <span class="pill" style="background:#0a7d33">ATENDIDO</span></h2><div class="gherkin"><p><strong>Quando</strong> informo um local que não é a própria unidade e tento salvar sem identificar onde acontece, <strong>então</strong> o registro não é salvo e o sistema pede o nome e o contato do local.</p></div><div class="results"><ul><li>A regra lê o <strong>atributo</strong> <code>is_own_unit</code> do lookup, <strong>nunca</strong> o código literal.</li><li>É orientação expressa do instrumento — o que permite à equipe localizar o participante depois.</li></ul></div><div class="evid"><figure><img src="screenshots/scfv02-b-identificacao-local.png" alt="O campo aparece quando o local não é a própria unidade"><figcaption>scfv02-b-identificacao-local.png — O campo aparece quando o local não é a própria unidade</figcaption></figure></div></section><section class="ca"><h2>CA03 — Local na própria unidade não pede identificação <span class="pill" style="background:#0a7d33">ATENDIDO</span></h2><div class="gherkin"><p><strong>Quando</strong> registro participação realizada nesta própria unidade, <strong>então</strong> o campo de identificação do local não é exigido.</p></div><div class="results"><ul><li>Verificado que o campo <strong>não existe no DOM</strong> nesse caso — asserção mais forte que "está desabilitado".</li></ul></div><div class="evid"><figure><img src="screenshots/scfv02-b-identificacao-local.png" alt="Na própria unidade, o campo nem existe"><figcaption>scfv02-b-identificacao-local.png — Na própria unidade, o campo nem existe</figcaption></figure></div></section><section class="ca"><h2>CA04 — Pessoa precisa ser integrante da família <span class="pill" style="background:#0a7d33">ATENDIDO</span></h2><div class="gherkin"><p><strong>Quando</strong> tento escolher alguém que não integra a composição vigente, <strong>então</strong> o registro não é salvo.</p></div><div class="results"><ul><li>O integrante <strong>desvinculado não é sequer oferecido</strong> na escolha — a interface não promete o que a regra recusa.</li><li>No servidor, a tentativa forçada devolve <strong>422</strong>.</li></ul></div><div class="evid"><p class="noimg">Sem prova visual: critério verificado pela suíte automatizada (ver anexo).</p></div></section><section class="ca"><h2>CA05 — Participação em andamento <span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></h2><div class="gherkin"><p><strong>Dado</strong> que registrei sem data de desligamento, <strong>então</strong> ela consta como em andamento e continuará contando nos meses seguintes.</p></div><div class="results"><ul><li>Coberto por teste; o estado "em andamento" é a ausência de <code>ended_on</code>.</li></ul></div><div class="evid"><p class="noimg">Sem prova visual: critério verificado pela suíte automatizada (ver anexo).</p></div></section><section class="ca"><h2>CA06 — Duas participações vigentes no mesmo serviço são recusadas <span class="pill" style="background:#0a7d33">ATENDIDO</span></h2><div class="gherkin"><p><strong>Dado</strong> que a integrante já tem participação vigente no SCFV para idosos, <strong>quando</strong> tento registrar outra no mesmo serviço, <strong>então</strong> o registro é recusado e o sistema indica a participação existente.</p></div><div class="results"><ul><li>A tela avisa <strong>antes</strong> do envio, sem bloquear o botão; e a recusa do servidor <strong>fecha o formulário e leva o profissional até a linha existente</strong>, destacada e expandida — em vez de morrer num erro genérico.</li><li>Nada é duplicado: a vigente continua sendo a mesma.</li><li><strong>O corpo do 409 não nomeia a unidade que declarou.</strong> Isso importa porque o índice único é por integrante + serviço e <strong>não</strong> inclui a unidade: a mesma recusa acontece quando a vigente foi declarada por <em>outra</em> unidade, e dizer qual seria vazamento.</li><li>A última linha de defesa é o índice único parcial, provado por teste de corrida.</li></ul></div><div class="evid"><figure><img src="screenshots/scfv02-c-duplicado.png" alt="A recusa leva até a participação existente"><figcaption>scfv02-c-duplicado.png — A recusa leva até a participação existente</figcaption></figure></div></section><section class="ca"><h2>CA07 — Participação simultânea em serviços diferentes <span class="pill" style="background:#0a7d33">ATENDIDO</span></h2><div class="gherkin"><p><strong>Quando</strong> registro a mesma pessoa também em um grupo do PAIF, <strong>então</strong> as duas são salvas e ambas constam como em andamento.</p></div><div class="results"><ul><li>A unicidade é por <strong>serviço</strong>, não por pessoa — participar de coisas diferentes ao mesmo tempo é o esperado.</li></ul></div><div class="evid"><figure><img src="screenshots/scfv02-d-simultaneas.png" alt="SCFV e grupo do PAIF convivendo"><figcaption>scfv02-d-simultaneas.png — SCFV e grupo do PAIF convivendo</figcaption></figure></div></section><section class="ca"><h2>CA08 — Reingresso após desligamento <span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></h2><div class="gherkin"><p><strong>Dado</strong> um adolescente desligado, <strong>quando</strong> registro novo ingresso, <strong>então</strong> uma nova participação é criada e a anterior permanece no histórico.</p></div><div class="results"><ul><li>Consequência direta do índice parcial, que só barra dois <strong>vigentes</strong>.</li></ul></div><div class="evid"><p class="noimg">Sem prova visual: critério verificado pela suíte automatizada (ver anexo).</p></div></section><section class="ca"><h2>CA09 — Data futura recusada <span class="pill" style="background:#0a7d33">ATENDIDO</span></h2><div class="gherkin"><p><strong>Quando</strong> informo data de ingresso posterior a hoje, <strong>então</strong> o registro não é salvo.</p></div><div class="results"><ul><li>O bloqueio começa no campo: <strong>as duas datas</strong> trazem <code>max</code> igual a hoje.</li><li>⚠️ Medido: o servidor devolve <strong>422 sem <code>error_code</code></strong> — o Form Request corta antes da Action. A guarda com código estável existe e foi coberta por chamada direta à Action.</li></ul></div><div class="evid"><figure><img src="screenshots/scfv02-e-data-futura.png" alt="Data futura barrada no formulário"><figcaption>scfv02-e-data-futura.png — Data futura barrada no formulário</figcaption></figure></div></section><section class="ca"><h2>CA10 — Retroativo em período já declarado <span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></h2><div class="gherkin"><p><strong>Dado</strong> que a remessa daquele mês já foi gerada, <strong>quando</strong> registro participação retroativa, <strong>então</strong> ela é salva e o sistema avisa que a remessa precisa ser gerada novamente.</p></div><div class="results"><ul><li><strong>Aviso, não bloqueio</strong> — mesmo mecanismo já validado nas fases anteriores.</li></ul></div><div class="evid"><p class="noimg">Sem prova visual: critério verificado pela suíte automatizada (ver anexo).</p></div></section><section class="ca"><h2>CA11 — Cancelar em vez de excluir <span class="pill" style="background:#0a7d33">ATENDIDO</span></h2><div class="gherkin"><p><strong>Quando</strong> cancelo informando o motivo, <strong>então</strong> a participação permanece visível marcada como cancelada e deixa de contar.</p></div><div class="results"><ul><li>O motivo é <strong>obrigatório</strong>: confirmar sem ele não cancela nada.</li><li><strong>Cancelar não apaga</strong>: a linha continua no histórico, com o estado no atributo.</li><li>Nenhuma rota aciona <code>delete()</code> — o <code>DELETE</code> HTTP mapeia para cancelar.</li><li>O motivo do cancelamento <strong>nunca</strong> entra na trilha de auditoria.</li></ul></div><div class="evid"><figure><img src="screenshots/scfv02-f-cancelada.png" alt="A participação cancelada permanece, marcada"><figcaption>scfv02-f-cancelada.png — A participação cancelada permanece, marcada</figcaption></figure></div></section><section class="ca"><h2>CA12 — Acesso pela unidade que acompanha <span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></h2><div class="gherkin"><p><strong>Dado</strong> que sou Operacional do CREAS, que acompanha a família referenciada no CRAS, <strong>quando</strong> registro participação, <strong>então</strong> é permitido e a participação pertence ao CREAS.</p></div><div class="results"><ul><li>⚠️ <strong>Medido:</strong> o eixo de acompanhamento abre o prontuário, mas <strong>não substitui a elegibilidade da unidade declarante</strong> — declarar por uma unidade exige lotação vigente <em>na data</em>.</li></ul></div><div class="evid"><p class="noimg">Sem prova visual: critério verificado pela suíte automatizada (ver anexo).</p></div></section><section class="ca"><h2>CA13 — Negativa declara o motivo <span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></h2><div class="gherkin"><p><strong>Quando</strong> tento registrar para família fora do meu alcance, <strong>então</strong> não é permitido e a tela informa o motivo, sem nomear as unidades envolvidas.</p></div><div class="results"><ul><li>Reusa o ponto único de decisão de acesso, com os dois eixos entregues na fase anterior.</li></ul></div><div class="evid"><p class="noimg">Sem prova visual: critério verificado pela suíte automatizada (ver anexo).</p></div></section><section class="ca"><h2>CA14 — Isolamento entre municípios <span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></h2><div class="gherkin"><p><strong>Quando</strong> alcanço família ou participação de outro município, <strong>então</strong> recebo 404.</p></div><div class="results"><ul><li>404, nunca 403 — diferenciar confirmaria a existência do prontuário.</li><li>93 testes verdes no diretório de isolamento.</li></ul></div><div class="evid"><p class="noimg">Sem prova visual: critério verificado pela suíte automatizada (ver anexo).</p></div></section><section class="ca"><h2>CA15 — Item “Outros” exige descrição <span class="pill" style="background:#0a7d33">ATENDIDO</span></h2><div class="gherkin"><p><strong>Quando</strong> escolho o serviço de código 99 e salvo sem descrição, <strong>então</strong> o registro é recusado.</p></div><div class="results"><ul><li>O campo aparece <strong>só</strong> quando o serviço tem <code>requires_description</code> — atributo do lookup, não código literal.</li><li>Resolve a rastreabilidade que a própria história apontava: o código 99 não informa nada por si.</li></ul></div><div class="evid"><figure><img src="screenshots/scfv02-ca15-outros-descricao.png" alt="O item “Outros” pedindo descrição"><figcaption>scfv02-ca15-outros-descricao.png — O item “Outros” pedindo descrição</figcaption></figure></div></section>
+<h2>Observações e ressalvas</h2>
+<section class="note"><h3>Nenhum defeito de produto — e a prova de que o teste pega o defeito</h3><p>A suíte de 61 testes não precisou tocar em código de produção. Além disso, o executor fez um <b>teste de mutação</b>: removeu temporariamente o carimbo do contexto do leitor no request do container, confirmou que o teste de regressão <b>falha</b> sem ele, e reverteu no mesmo comando. Isso prova que a proteção contra o defeito da fase anterior — <code>can_edit</code>/<code>can_cancel</code> sempre falsos na listagem — está de fato ativa, e não apenas passando por acaso.</p></section><section class="note"><h3>Cinco expectativas do plano estavam erradas e foram MEDIDAS</h3><ul><li><b>Data futura e integrante não vigente</b> devolvem 422 <b>sem</b> <code>error_code</code>: o Form Request corta antes da Action. As guardas com código estável existem e foram cobertas por chamada direta.</li><li><b><code>ended_on</code> futura</b> reusa a constante de <code>started_on_in_future</code>.</li><li><b><code>store</code> com <code>ended_on</code></b> grava <code>ended</code> direto, sem passar por <code>active</code>.</li><li><b>Declarar por uma unidade exige lotação vigente na data</b>, além do eixo de acompanhamento — o eixo abre o prontuário, não a declaração.</li></ul></section><section class="note"><h3>A ação herdada da US-SCFV-01 foi fechada</h3><p>O guard de "item em uso não é excluído" daquela história havia sido escrito tolerante à ausência desta tabela. Ao criá-la, o teste-sonda quebrou — <b>terceira ocorrência</b> desse padrão no projeto. Foi investigado antes de mudar: o serviço não mudou de comportamento, só o mundo mudou. A asserção vazia foi trocada por <b>dois testes reais</b> (conta uso de verdade; conta também cancelada e soft-deletada). <b>Com isso o CA08 da US-SCFV-01 deixa de ser vacuamente verdadeiro.</b></p></section><section class="note"><h3>Sobre o que a tela mostra e o que não pode vazar</h3><p>A linha expandida mostra <b>"Unidade que declara"</b> de propósito: é participação que este profissional <i>pode</i> ver, e escondê-la dele não protegeria ninguém. O que não pode vazar é a unidade <b>na recusa</b> — e essa asserção foi feita onde a regra vive, no corpo do 409, não no texto da tela.</p></section><section class="note"><h3>O que este dossiê não prova</h3><ul><li>Reingresso e retroativo pela tela (CA08, CA10) — cobertos pela suíte.</li><li>O acesso pelo eixo de acompanhamento na tela (CA12) — exige um profissional com lotação vigente no CREAS, que o seed não monta.</li><li>Os contadores do leiaute 15.8 — é a US-SCFV-03.</li></ul></section>
+<h2>Anexo I — Cobertura automatizada (Pest 4, --filter=Participation)</h2><pre class="pest">PASS  Tests\Unit\Models\SocialEntityTest
+  ✓ it has suasParticipationType relationship                            0.01s  
+
+   PASS  Tests\Unit\Models\SuasParticipationTypeTest
+  ✓ it has correct fillable attributes                                   0.01s  
+  ✓ it defaults is_active to true
+  ✓ it casts is_active to boolean
+  ✓ it uses soft deletes
+  ✓ it uses HasUuid trait
+  ✓ it uses LogsActivity trait
+  ✓ it defines socialEntities relationship as HasMany
+  ✓ it configures activity log with name suas_participation_type and dirty-only logging
+
+   PASS  Tests\Unit\ParticipationDomainsSeedTest
+  ✓ it semeia exatamente os oito servicos do bloco 16, na ordem do inst… 0.41s  
+  ✓ it semeia cada servico com o nome e os atributos exatos da matriz d… 0.02s  
+  ✓ it semeia cada servico com o nome e os atributos exatos da matriz d… 0.03s  
+  ✓ it semeia cada servico com o nome e os atributos exatos da matriz d… 0.02s  
+  ✓ it semeia cada servico com o nome e os atributos exatos da matriz d… 0.02s  
+  ✓ it semeia cada servico com o nome e os atributos exatos da matriz d… 0.02s  
+  ✓ it semeia cada servico com o nome e os atributos exatos da matriz d… 0.02s  
+  ✓ it semeia cada servico com o nome e os atributos exatos da matriz d… 0.02s  
+  ✓ it semeia cada servico com o nome e os atributos exatos da matriz d… 0.02s  
+  ✓ it semeia exatamente os cinco locais de realizacao, com os codigos…  0.02s  
+  ✓ it semeia cada local com o nome e o is_own_unit exatos da matriz do… 0.02s  
+  ✓ it semeia cada local com o nome e o is_own_unit exatos da matriz do… 0.02s  
+  ✓ it semeia cada local com o nome e o is_own_unit exatos da matriz do… 0.02s  
+  ✓ it semeia cada local com o nome e o is_own_unit exatos da matriz do… 0.02s  
+  ✓ it semeia cada local com o nome e o is_own_unit exatos da matriz do… 0.02s  
+  ✓ it marca is_own_unit em exatamente um local — o codigo 1 (RN05/§4.2… 0.02s  
+  ✓ it marca counts_as_scfv_elderly em exatamente um servico — o codigo… 0.02s  
+  ✓ it respeita a invariante elderly ⟹ scfv ⟹ group em todas as linhas   0.02s  
+  ✓ it marca requires_description em exatamente um servico — o codigo 9… 0.03s  
+  ✓ it preserva o salto 6 → 99 e marca is_instrument_extension so no 90… 0.02s  
+  ✓ it preserva o salto 4 → 9 dos locais (D05/RN05)                      0.02s  
+  ✓ it e idempotente: rodar duas vezes nao duplica nem renumera          0.02s  
+  ✓ it nao sobrescreve a inativacao feita pelo Administrador             0.02s  
+  ✓ it nao tem tenant_id em nenhuma das duas tabelas — sao lookups glob… 0.01s  
+  ✓ it nao aplica BelongsToTenant nos dois Models                        0.01s  
+  ✓ it aplica LogsActivity nos dois Models e audita os tres atributos d… 0.01s  
+
+   PASS  Tests\Unit\ParticipationInvariantTest
+  ✓ it accepts the THREE legal state combinations                        0.05s  
+  ✓ it REFUSES an active row carrying end or cancellation columns with…  0.02s  
+  ✓ it REFUSES an active row carrying end or cancellation columns with…  0.02s  
+  ✓ it REFUSES an active row carrying end or cancellation columns with…  0.02s  
+  ✓ it REFUSES an ended row without date or carrying cancellation with…  0.03s  
+  ✓ it REFUSES an ended row without date or carrying cancellation with…  0.02s  
+  ✓ it REFUSES a cancelled row without timestamp, without reason or car… 0.02s  
+  ✓ it REFUSES a cancelled row without timestamp, without reason or car… 0.02s  
+  ✓ it REFUSES a cancelled row without timestamp, without reason or car… 0.02s  
+  ✓ it REFUSES a cancelled row without timestamp, without reason or car… 0.02s  
+  ✓ it publishes the invariant as a PRODUCTION contract shared by the t… 0.02s  
+  ✓ it lets the PARTIAL UNIQUE INDEX refuse a second ACTIVE row for the… 0.02s  
+  ✓ it vigia a PESSOA no SERVICO, nao a unidade declarante (RN07)        0.03s  
+  ✓ it lets DIFFERENT services for the same member live side by side (R… 0.02s  
+  ✓ it lets the index accept a NEW active row when the previous one is…  0.02s  
+  ✓ it scopes the unique index BY TENANT — the same member+service in a… 0.02s  
+  ✓ it keeps free-text columns OUT of the activity log (RN10/D11)        0.02s  
+
+   PASS  Tests\Unit\ParticipationServiceInvariantTest
+  ✓ it nao tem nenhuma linha violando elderly ⟹ scfv ⟹ group             0.02s  
+  ✓ it mantem a invariante item a item nos oito servicos                 0.02s  
+  ✓ it reserva o contador de idosos a exatamente um servico              0.02s  
+  ✓ it declara family_member_participations como consumidora dos dois d… 0.02s  
+  ✓ it conta o uso de verdade agora que a tabela de participacoes exist… 0.03s  
+  ✓ it conta tambem participacao cancelada e soft-deletada (RN07 · §7.3… 0.03s  
+  ✓ it conta o uso pela coluna declarada assim que a tabela consumidora… 0.02s  
+
+   PASS  Tests\Unit\Services\Siap\SiapDomainMapTest
+  ✓ it collapses the four SUAS participation types into the three of SIAP
+
+   PASS  Tests\Feature\Api\Relationals\SuasParticipationTypeControllerTest
+  ✓ it lists only active suas participation types                        0.05s  
+  ✓ it returns up to 30 participation types and flags searchable above…  0.03s  
+  ✓ it exposes only id, name and code                                    0.01s  
+  ✓ it filters by search on name (case-insensitive)                      0.02s  
+  ✓ it filters by search on code                                         0.02s  
+  ✓ it rejects unauthenticated request with 401                          0.01s  
+  ✓ it rejects search shorter than 2 characters                          0.02s  
+  ✓ it accepts requests from the client guard                            0.01s  
+  ✓ it caches the active participation type set                          0.01s  
+  ✓ it invalidates the cache when a participation type is created        0.02s  
+  ✓ it invalidates the cache on bulk deactivate                          0.02s  
+  ✓ it drops a participation type from the cached set when it becomes i… 0.01s  
+
+   PASS  Tests\Feature\Api\SocialEntityControllerTest
+  ✓ it CA02: store requires all mandatory SIAP layout fields with (&#x27;sua… 0.04s  
+
+   PASS  Tests\Feature\Api\SuasParticipationTypeControllerTest
+  ✓ it lists suas participation types                                    0.02s  
+  ✓ it creates a suas participation type                                 0.02s  
+  ✓ it shows a suas participation type                                   0.02s  
+  ✓ it updates a suas participation type                                 0.02s  
+  ✓ it deletes a suas participation type                                 0.02s  
+  ✓ it validates required fields on create                               0.01s  
+  ✓ it requires authentication                                           0.01s  
+  ✓ it filters suas participation types by name                          0.02s  
+  ✓ it sorts suas participation types by code                            0.02s  
+  ✓ it blocks deletion when participation type is linked to a social en… 0.02s  
+  ✓ it allows deletion after social entity link is removed               0.02s  
+  ✓ it exposes is_active and defaults to true on create                  0.02s  
+  ✓ it filters suas participation types by is_active                     0.02s  
+  ✓ it bulk activates suas participation types                           0.02s  
+  ✓ it bulk deactivates suas participation types                         0.02s  
+  ✓ it forbids bulk activate without the bulk-update permission          0.02s  
+  ✓ it validates uuids on bulk activate                                  0.02s  
+  ✓ it rejects integer ids on bulk activate                              0.02s  
+
+   PASS  Tests\Feature\Client\FamilyMemberParticipationTest
+  ✓ it registers the member participation in the elderly SCFV, signed a… 0.07s  
+  ✓ it REQUIRES location_description when the location is NOT the own u… 0.06s  
+  ✓ it ACCEPTS the same location once the description is given (CA02/RN… 0.05s  
+  ✓ it does NOT require location_description when the location IS the o… 0.06s  
+  ✓ it DROPS a location_description sent for an own-unit location — the… 0.05s  
+  ✓ it REQUIRES other_description when the service requires it (CA15/D0… 0.06s  
+  ✓ it DROPS an other_description sent for a service that does NOT requ… 0.05s  
+  ✓ it REFUSES a person outside the CURRENT composition (CA04/RN02)      0.06s  
+  ✓ it REFUSES an integrant of ANOTHER family of the same tenant (RN02)  0.06s  
+  ✓ it carries the member_not_in_family error_code in the ACTION guard…  0.05s  
+  ✓ it keeps the participation ONGOING while there is no ended_on (CA05… 0.06s  
+  ✓ it records an ALREADY CLOSED period as ended when ended_on comes al… 0.06s  
+  ✓ it REFUSES an ended_on BEFORE the started_on (RN05)                  0.05s  
+  ✓ it REFUSES a SECOND active participation in the SAME service, point… 0.06s  
+  ✓ it REFUSES the second active participation even when ANOTHER unit d… 0.05s  
+  ✓ it lets a CANCELLED or ENDED participation NOT block a new one in t… 0.06s  
+  ✓ it lets the SAME member participate in DIFFERENT services at once (… 0.07s  
+  ✓ it creates a NEW participation on re-entry, leaving the previous on… 0.06s  
+  ✓ it REFUSES a started_on in the future and creates nothing (CA09/RN0… 0.06s  
+  ✓ it carries the started_on_in_future error_code in the ACTION guard…  0.04s  
+  ✓ it saves a RETROACTIVE participation in a remitted month AND return… 0.06s  
+  ✓ it does NOT warn when the month remittance is pending or failed (CA… 0.11s  
+  ✓ it warns BEFORE the submit, in the OPTIONS of a remitted month (CA1… 0.07s  
+  ✓ it CANCELS with a reason instead of deleting — the row stays, marke… 0.09s  
+  ✓ it REQUIRES a reason to cancel (RN10)                                0.08s  
+  ✓ it answers 409 IDEMPOTENT when cancelling an ALREADY cancelled part… 0.07s  
+  ✓ it REFUSES to cancel an ENDED participation — the period is fixed b… 0.07s  
+  ✓ it NEVER deletes: no route drops a row and no source calls delete()… 0.06s  
+  ✓ it NEVER logs the cancel_reason in the activity trail (RN10/D11)     0.07s  
+  ✓ it lets the ACCOMPANYING unit register, stamping the participation…  0.07s  
+  ✓ it REFUSES to declare through a unit where the professional has NO…  0.05s  
+  ✓ it evaluates the unit eligibility ON THE DATE of the entry, not tod… 0.06s  
+  ✓ it DENIES the whole participation surface for a family of ANOTHER u… 0.07s  
+  ✓ it does NOT let FOLLOWING one family authorize participation on ANO… 0.07s  
+  ✓ it keeps social_unit_id as a SNAPSHOT when the family reference uni… 0.06s  
+  ✓ it KEEPS listing a participation whose service or location was late… 0.08s  
+  ✓ it REFUSES status, created_by, updated_by, cancelled_by and cancel_… 0.06s  
+  ✓ it REFUSES status, created_by, updated_by, cancelled_by and cancel_… 0.05s  
+  ✓ it REFUSES status, created_by, updated_by, cancelled_by and cancel_… 0.05s  
+  ✓ it REFUSES status, created_by, updated_by, cancelled_by and cancel_… 0.06s  
+  ✓ it REFUSES status, created_by, updated_by, cancelled_by and cancel_… 0.05s  
+  ✓ it REFUSES status, created_by, updated_by, cancelled_by and cancel_… 0.06s  
+  ✓ it REFUSES status, created_by, updated_by, cancelled_by and cancel_… 0.05s  
+  ✓ it REFUSES status, created_by, updated_by, cancelled_by and cancel_… 0.06s  
+  ✓ it REFUSES the same forbidden fields on UPDATE, keeping the author…  0.06s  
+  ✓ it EDITS an active participation, restamping updated_by and preserv… 0.07s  
+  ✓ it CLOSES the period by editing, turning the participation into end… 0.07s  
+  ✓ it REFUSES to edit a CANCELLED participation (RN09)                  0.06s  
+  ✓ it REFUSES an edit that would create a SECOND active participation…  0.07s  
+  ✓ it serves the form options with members, units and the two catalogs… 0.05s  
+  ✓ it shows the ALREADY ACTIVE participations in the options, so the f… 0.07s  
+  ✓ it says WHY the form should not be offered, with a stable code (§7.… 0.07s  
+  ✓ it stamps can_edit/can_cancel in the LISTING for whoever is assigne… 0.06s  
+  ✓ it withholds can_edit/can_cancel and the cancel_reason from a reade… 0.08s  
+  ✓ it filters the block by member and by status without hiding anythin… 0.08s  
+
+   PASS  Tests\Feature\Manager\ParticipationDomainsTest
+  ✓ it lista os oito servicos com os codigos do instrumento e preserva…  0.04s  
+  ✓ it nunca expoe o id no payload dos dominios de participacao          0.03s  
+  ✓ it identifica o SCFV para adultos como extensao do produto, e so el… 0.02s  
+  ✓ it expoe os atributos de contagem de cada servico conforme a matriz… 0.03s  
+  ✓ it marca o contador de idosos em exatamente um servico — o codigo 2  0.02s  
+  ✓ it recusa marcar um segundo servico com o contador de idosos         0.03s  
+  ✓ it recusa a combinacao que viola elderly ⟹ scfv ⟹ group na criacao   0.03s  
+  ✓ it recusa desligar o grupo de um servico que continua contando como… 0.02s  
+  ✓ it cria um servico proprio do Administrador respeitando a invariant… 0.02s  
+  ✓ it aceita servico sem apelido e recusa apelido acima de 30 caracter… 0.03s  
+  ✓ it recusa renumerar o codigo de um servico, mas aceita o reenvio do… 0.03s  
+  ✓ it recusa renumerar o codigo de um local de realizacao               0.03s  
+  ✓ it lista os cinco locais com os codigos do instrumento e so o 1 com… 0.03s  
+  ✓ it nao registra nenhuma rota de escrita dos dominios de participaca… 0.02s  
+  ✓ it nao oferece escrita ao guard client, mas mantem a leitura das du… 0.04s  
+  ✓ it colhe exatamente as cinco abilities de cada dominio de participa… 0.05s  
+  ✓ it recusa excluir um servico ja usado em participacoes, orientando…  0.02s  
+  ✓ it recusa excluir um local ja usado em participacoes, orientando a…  0.03s  
+  ✓ it exclui um item sem uso, porque a lista e aberta e o engano preci… 0.03s  
+  ✓ it mantem o item inativado na lista e no historico, tirando-o so do… 0.03s  
+  ✓ it mantem o local inativado na lista completa e fora do select de a… 0.03s  
+  ✓ it audita a alteracao de um atributo de contagem com autor, data e…  0.02s  
+  ✓ it audita a alteracao do local de realizacao com o valor anterior d… 0.02s  
+  ✓ it deixa o Operacional Global consultar, mas nao manter, os dominio… 0.04s  
+
+   PASS  Tests\Feature\TenantIsolation\ParticipationIsolationTest
+  ✓ it answers 404 — never 403 — for a family of ANOTHER tenant, on ALL… 0.07s  
+  ✓ it never leaks a participation of ANOTHER tenant through MY family…  0.05s  
+  ✓ it answers 404 when the participation belongs to ANOTHER family of…  0.06s  
+  ✓ it scopes the Model by tenant_id even without the route (BelongsToT… 0.05s  
+  ✓ it blocks the request when the X-Tenant-UUID points at a tenant the… 0.05s  
+  ✓ it does NOT let a participation of ANOTHER tenant block a registrat… 0.06s  
+
+  Tests:    176 passed (954 assertions)
+  Duration: 7.06s</pre><h2>Anexo II — Cenários Playwright do prontuário (33 cenários, F3 + F4)</h2><pre class="pest">[globalSetup] Rate-limiter cache do Laravel zerado.
+
+Running 33 tests using 2 workers
+
+  ✓   2 [setup] › tests/auth.setup.ts:10:6 › autentica super admin (UI) e propaga cookies para o api-client (1.6s)
+[tenant-auth.setup] sessão de tenant pronta em /Users/binho/Projetos/esuas-all/e2e/.auth/tenant.json
+  ✓   1 [setup] › tests/tenant-auth.setup.ts:82:6 › autentica usuário do tenant (client) e propaga cookies para o api-client (1.9s)
+  ✓   3 [chromium-tenant] › tests/client/family-follow-up.spec.ts:222:7 › US-ACOMP-02 — acompanhamento familiar no prontuário (client) › (g) família nunca acompanhada mostra o estado vazio do bloco (6.5s)
+  ✓   4 [chromium-tenant] › tests/client/family-follow-up.spec.ts:245:7 › US-ACOMP-02 — acompanhamento familiar no prontuário (client) › (b) num CRAS o select oferece só o PAIF — o PAEFI não é ofertado (7.3s)
+  ✓   5 [chromium-tenant] › tests/client/family-follow-up.spec.ts:263:7 › US-ACOMP-02 — acompanhamento familiar no prontuário (client) › (d) data futura é barrada no próprio formulário (7.9s)
+  ✓   6 [chromium-tenant] › tests/client/family-follow-up.spec.ts:291:7 › US-ACOMP-02 — acompanhamento familiar no prontuário (client) › (a) registra o ingresso no PAIF a partir de um CRAS (9.3s)
+  ✓   7 [chromium-tenant] › tests/client/family-follow-up.spec.ts:324:7 › US-ACOMP-02 — acompanhamento familiar no prontuário (client) › (c) segundo ingresso na mesma unidade e serviço é recusado, apontando o existente (9.3s)
+  ✓   8 [chromium-tenant] › tests/client/family-follow-up.spec.ts:352:7 › US-ACOMP-02 — acompanhamento familiar no prontuário (client) › (e) cancelar com motivo mantém a linha no prontuário, marcada (7.1s)
+  ✓   9 [chromium-tenant] › tests/client/family-follow-up.spec.ts:417:7 › US-ACOMP-02 — negativa de acesso ao bloco de acompanhamento (client) › (f) Operacional sem acesso não vê o bloco, e a negativa não nomeia unidade (6.4s)
+  ✓  10 [chromium-tenant] › tests/client/family-follow-up.spec.ts:540:7 › US-ACOMP-03 — desligamento e avaliação de resultados (client) › (c) os meses de acompanhamento são apresentados calculados e NÃO digitáveis (6.7s)
+  ✓  11 [chromium-tenant] › tests/client/family-follow-up.spec.ts:561:7 › US-ACOMP-03 — desligamento e avaliação de resultados (client) › (d) &quot;não se aplica&quot; vem sugerida quando não houve encaminhamento — e é alterável (7.5s)
+  ✓  12 [chromium-tenant] › tests/client/family-follow-up.spec.ts:591:7 › US-ACOMP-03 — desligamento e avaliação de resultados (client) › (b) concluir sem a avaliação é recusado, e o acompanhamento continua vigente (7.9s)
+  ✓  13 [chromium-tenant] › tests/client/family-follow-up.spec.ts:617:7 › US-ACOMP-03 — desligamento e avaliação de resultados (client) › (e) a combinação incoerente pede confirmação — e, confirmada, é salva como informada (9.9s)
+  ✓  14 [chromium-tenant] › tests/client/family-follow-up.spec.ts:665:7 › US-ACOMP-03 — desligamento e avaliação de resultados (client) › (a) o desligamento aparece no prontuário com a avaliação ao lado (6.6s)
+  ✓  15 [chromium-tenant] › tests/client/family-follow-up.spec.ts:688:7 › US-ACOMP-03 — desligamento e avaliação de resultados (client) › (f) a avaliação não tem ação de excluir nem de editar — e não há reabertura (6.5s)
+  ✓  16 [chromium-tenant] › tests/client/family-follow-up.spec.ts:709:7 › US-ACOMP-03 — desligamento e avaliação de resultados (client) › reingresso após desligamento é aceito, e a linha anterior permanece intacta (9.3s)
+  ✓  17 [chromium-tenant] › tests/client/family-follow-up.spec.ts:821:7 › US-SCFV-02 — participação em serviços no prontuário (client) › (h) família sem participação mostra o estado vazio, não uma tabela vazia (6.5s)
+  ✓  18 [chromium-tenant] › tests/client/family-follow-up.spec.ts:838:7 › US-SCFV-02 — participação em serviços no prontuário (client) › (e) data futura é barrada no próprio formulário (6.7s)
+  ✓  19 [chromium-tenant] › tests/client/family-follow-up.spec.ts:856:7 › US-SCFV-02 — participação em serviços no prontuário (client) › (b) local fora da unidade exige a identificação de onde acontece (8.1s)
+  ✓  20 [chromium-tenant] › tests/client/family-follow-up.spec.ts:881:7 › US-SCFV-02 — participação em serviços no prontuário (client) › (CA15) o serviço &quot;Outros&quot; exige descrição; os demais não (8.1s)
+  ✓  21 [chromium-tenant] › tests/client/family-follow-up.spec.ts:899:7 › US-SCFV-02 — participação em serviços no prontuário (client) › (CA04) integrante desvinculado não é oferecido na escolha (7.3s)
+  ✓  22 [chromium-tenant] › tests/client/family-follow-up.spec.ts:915:7 › US-SCFV-02 — participação em serviços no prontuário (client) › (a) registra a participação no SCFV para idosos — happy path (10.4s)
+  ✓  23 [chromium-tenant] › tests/client/family-follow-up.spec.ts:945:7 › US-SCFV-02 — participação em serviços no prontuário (client) › (c) segundo registro no mesmo serviço é recusado, apontando o existente (10.3s)
+  ✓  24 [chromium-tenant] › tests/client/family-follow-up.spec.ts:1008:7 › US-SCFV-02 — participação em serviços no prontuário (client) › (d) a mesma pessoa participa de serviços diferentes ao mesmo tempo (10.2s)
+  ✓  25 [chromium-tenant] › tests/client/family-follow-up.spec.ts:1027:7 › US-SCFV-02 — participação em serviços no prontuário (client) › (f) cancelar com motivo mantém a linha no prontuário, marcada (7.8s)
+  ✓  26 [chromium-tenant] › tests/client/family-follow-up.spec.ts:1233:7 › US-ACOMP-04 — acesso ao prontuário pela unidade que acompanha (client) › (a) quando a minha unidade acompanha, o prontuário da família de outra unidade abre (6.1s)
+  ✓  27 [chromium-tenant] › tests/client/family-follow-up.spec.ts:1244:7 › US-ACOMP-04 — acesso ao prontuário pela unidade que acompanha (client) › (b) o acesso é ao prontuário INTEIRO — composição, atendimentos e encaminhamentos (6.1s)
+  ✓  28 [chromium-tenant] › tests/client/family-follow-up.spec.ts:1261:7 › US-ACOMP-04 — acesso ao prontuário pela unidade que acompanha (client) › (c) cancelado NÃO concede: o acesso fecha, e a negativa declara os dois eixos sem nomear unidade (13.1s)
+  ✓  29 [chromium-tenant] › tests/client/family-follow-up.spec.ts:1308:7 › US-ACOMP-04 — acesso ao prontuário pela unidade que acompanha (client) › DESLIGADO mantém o acesso — só o cancelamento fecha (US-ACOMP-03 destrava este par) (17.7s)
+  ✓  30 [chromium-tenant] › tests/client/family-follow-up.spec.ts:1463:7 › US-ACOMP-05 — contadores de acompanhamento na apuração (client) › (a) os contadores do 15.6 e do 15.7 aparecem ACESOS, onde antes diziam indisponível (40ms)
+  ✓  31 [chromium-tenant] › tests/client/family-follow-up.spec.ts:1485:7 › US-ACOMP-05 — contadores de acompanhamento na apuração (client) › (b) os quatro perfis indisponíveis são IDENTIFICADOS com a fase de que dependem (74ms)
+  ✓  32 [chromium-tenant] › tests/client/family-follow-up.spec.ts:1527:7 › US-ACOMP-05 — contadores de acompanhamento na apuração (client) › (c) o ponto de atenção lista acompanhamentos vigentes sem nenhum atendimento (28ms)
+  ✓  33 [chromium-tenant] › tests/client/family-follow-up.spec.ts:1543:7 › US-ACOMP-05 — contadores de acompanhamento na apuração (client) › (e) unidade sem nenhum acompanhamento aparece com ZERO DECLARADO (30ms)
+
+  33 passed (4.2m)</pre>
+<footer>SigSUAS — eSUAS · Dossiê de aceite gerado a partir de execução real contra a stack E2E · US-SCFV-02</footer>
+</div></body></html>

@@ -1,0 +1,463 @@
+=== php artisan test --filter=SocialEntity ===
+
+   PASS  Tests\Unit\Models\SocialEntityLegalRepresentativeTest
+  ✓ it has correct fillable attributes                                   0.10s  
+  ✓ it uses HasUuid trait
+  ✓ it uses LogsActivity trait
+  ✓ it uses SoftDeletes trait
+  ✓ it uses BelongsToTenant trait
+  ✓ it has correct route key name (uuid)
+  ✓ it has correct casts                                                 0.01s  
+  ✓ it has socialEntity BelongsTo relationship                           0.01s  
+  ✓ it has person BelongsTo relationship
+  ✓ it has tenant BelongsTo relationship
+  ✓ it uses correct log name
+  ✓ it logs only the expected attributes
+
+   PASS  Tests\Unit\Models\SocialEntityStatusTest
+  ✓ it has correct fillable attributes                                   0.02s  
+  ✓ it defaults is_active to true
+  ✓ it casts is_active to boolean
+  ✓ it uses soft deletes
+  ✓ it uses HasUuid trait
+
+   PASS  Tests\Unit\Models\SocialEntityTest
+  ✓ it has correct fillable attributes
+  ✓ it uses soft deletes
+  ✓ it uses HasUuid trait
+  ✓ it uses BelongsToTenant trait
+  ✓ it has correct casts
+  ✓ it casts has_active_service_agreement as boolean preserving null
+  ✓ it has tenant relationship
+  ✓ it has address relationship
+  ✓ it has socialEntityStatus relationship
+  ✓ it has locationType relationship
+  ✓ it has suasParticipationType relationship
+  ✓ it has contractModality relationship
+  ✓ it uses LogsActivity trait
+  ✓ it has statusHistory morph many relation
+  ✓ it logs activity only on tracked attributes
+  ✓ it has legalRepresentatives HasMany relationship
+  ✓ it has currentLegalRepresentative HasOne relationship
+
+   PASS  Tests\Feature\Api\Relationals\SocialEntityStatusControllerTest
+  ✓ it lists only active social entity statuses                          0.93s  
+  ✓ it returns up to 30 statuses and flags searchable above the thresho… 0.03s  
+  ✓ it exposes only id, name and code                                    0.02s  
+  ✓ it filters by search on name (case-insensitive)                      0.09s  
+  ✓ it filters by search on code                                         0.02s  
+  ✓ it rejects unauthenticated request with 401                          0.02s  
+  ✓ it rejects search shorter than 2 characters                          0.03s  
+  ✓ it accepts requests from the client guard                            0.02s  
+  ✓ it caches the active status set                                      0.04s  
+  ✓ it invalidates the cache when a status is created                    0.02s  
+  ✓ it invalidates the cache on bulk deactivate                          0.09s  
+  ✓ it drops a status from the cached set when it becomes inactive       0.02s  
+
+   PASS  Tests\Feature\Api\SocialEntityControllerTest
+  ✓ it lists social entities for tenant                                  0.12s  
+  ✓ it creates a social entity                                           0.08s  
+  ✓ it creates the address tenant-bound atomically and links it to the…  0.04s  
+  ✓ it captures the geolocation POINT when geometry is sent in the addr… 0.04s  
+  ✓ it sanitizes cnpj/head_office_cnpj via str_numbers on store          0.04s  
+  ✓ it rejects the embedded address when required sub-fields are missin… 0.04s  
+  ✓ it shows a social entity with relationships                          0.03s  
+  ✓ it shows the current legal representative with its person            0.04s  
+  ✓ it updates a social entity                                           0.04s  
+  ✓ it updates the linked address in place when the address block is se… 0.04s  
+  ✓ it deletes a social entity                                           0.05s  
+  ✓ it validates required fields                                         0.05s  
+  ✓ it bulkDestroy soft-deleta várias entidades do tenant ativo          0.04s  
+  ✓ it bulkDestroy rejeita uuids de outros tenants (defesa em profundid… 0.03s  
+  ✓ it bulkDestroy é barrado sem a permissão social-entities.bulk-destr… 0.04s  
+  ✓ it bulkChangeStatus aplica social_entity_status_id e separa changed… 0.04s  
+  ✓ it bulkChangeStatus exige social_entity_status_id no payload         0.03s  
+  ✓ it bulkChangeStatus é barrado sem a permissão social-entities.bulk-… 0.03s  
+  ✓ it requires X-Tenant-UUID header                                     0.04s  
+  ✓ it requires authentication                                           0.02s  
+  ✓ it isolates tenant data                                              0.03s  
+  ✓ it filters by legal_name                                             0.03s  
+  ✓ it sorts by legal_name                                               0.03s  
+  ✓ it includes socialEntityStatus when requested                        0.03s  
+  ✓ it changes status of a social entity via dedicated endpoint          0.04s  
+  ✓ it does not record activity when status does not change              0.03s  
+  ✓ it returns paginated status history of a social entity               0.04s  
+  ✓ it validates social_entity_status_id existence on changeStatus       0.03s  
+  ✓ it forbids changeStatus when entity belongs to a different tenant    0.03s  
+  ✓ it forbids viewing status history of entity from another tenant      0.03s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('cne… 0.03s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('leg… 0.03s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('cnp… 0.03s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('hea… 0.04s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('ema… 0.03s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('add… 0.03s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('soc… 0.03s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('loc… 0.03s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('sua… 0.03s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('con… 0.03s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('has… 0.04s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('pro… 0.03s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('exe… 0.03s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('has… 0.03s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('con… 0.03s  
+  ✓ it CA02: store rejects invalid cnpj digit verifier                   0.03s  
+  ✓ it CA02: store rejects invalid head_office_cnpj digit verifier       0.03s  
+  ✓ it CA02: executed_services_description required when executes_servi… 0.04s  
+  ✓ it CA05: store returns success message and persists entity           0.04s  
+  ✓ it CA06: store with duplicate active CNPJ returns 422 and existing_… 0.03s  
+  ✓ it CA06: soft-deleted entity with same CNPJ does not block new stor… 0.04s  
+  ✓ it RN06: store with duplicate active CNEAS returns 422               0.04s  
+  ✓ it RN06: rejected store (duplicate CNEAS) leaves no orphan address   0.04s  
+  ✓ it tenant isolation: show entity from another tenant returns 403 or… 0.04s  
+  ✓ it tenant isolation: update entity from another tenant returns 403   0.03s  
+  ✓ it tenant isolation: destroy entity from another tenant returns 403  0.03s  
+  ✓ it CA01: store persists has_active_service_agreement and returns it… 0.04s  
+  ✓ it CA01: store accepts false as an informed value                    0.04s  
+  ✓ it CA02: store without has_active_service_agreement returns 422 wit… 0.04s  
+  ✓ it CA02: store with explicit null is rejected                        0.04s  
+  ✓ it CA03: legacy entity keeps a null agreement and is exposed as nul… 0.03s  
+  ✓ it CA06: update without has_active_service_agreement returns 422 an… 0.03s  
+  ✓ it CA06b: update with has_active_service_agreement saves the value   0.04s  
+  ✓ it CA08: social_entity_status_id and has_active_service_agreement a… 0.05s  
+  ✓ it CA09: changing the agreement records an activity with causer and… 0.04s  
+  ✓ it CA09b: activity endpoint is forbidden without social-entities.vi… 0.04s  
+  ✓ it RN10: activity endpoint forbids entities from another tenant      0.03s  
+  ✓ it CA10: filters the listing by the three agreement states           0.05s  
+  ✓ it CA10: an unknown filter value is ignored instead of erroring      0.04s  
+  ✓ it RN10: the agreement filter never crosses the active tenant        0.04s  
+
+   PASS  Tests\Feature\Api\SocialEntityLegalRepresentativeControllerTest
+  ✓ it CA03: store reuses existing Person by CPF                         0.08s  
+  ✓ it CA03: store creates new Person when CPF does not exist            0.04s  
+  ✓ it CA03: store creates representative with is_current true           0.03s  
+  ✓ it RN08: store of new representative closes current one              0.03s  
+  ✓ it index returns representative history ordered by start_date desc   0.04s  
+  ✓ it destroy closes representative without soft deleting               0.03s  
+  ✓ it tenant isolation: index on entity from another tenant returns 40… 0.05s  
+  ✓ it tenant isolation: store on entity from another tenant returns 40… 0.05s  
+
+   PASS  Tests\Feature\Api\SocialEntityStatusControllerTest
+  ✓ it lists social entity statuses                                      0.03s  
+  ✓ it creates a social entity status                                    0.03s  
+  ✓ it shows a social entity status                                      0.02s  
+  ✓ it updates a social entity status                                    0.04s  
+  ✓ it deletes a social entity status                                    0.02s  
+  ✓ it validates required fields on create                               0.02s  
+  ✓ it requires authentication                                           0.02s  
+  ✓ it filters social entity statuses by name                            0.02s  
+  ✓ it sorts social entity statuses by code                              0.03s  
+  ✓ it exposes is_active and defaults to true on create                  0.02s  
+  ✓ it filters social entity statuses by is_active                       0.03s  
+  ✓ it bulk activates social entity statuses                             0.03s  
+  ✓ it bulk deactivates social entity statuses                           0.03s  
+  ✓ it forbids bulk activate without the bulk-update permission          0.03s  
+  ✓ it validates uuids on bulk activate                                  0.03s  
+  ✓ it rejects integer ids on bulk activate                              0.02s  
+
+   PASS  Tests\Feature\TenantIsolation\CrossTenantControllerAuditTest
+  ✓ it SocialEntityController nega acesso cross-tenant em show           0.03s  
+
+  Tests:    141 passed (435 assertions)
+  Duration: 6.58s
+
+
+=== php artisan test --filter=Siap ===
+
+   PASS  Tests\Unit\Services\Siap\SiapDomainMapTest
+  ✓ it inverts Parda and Amarela between the eSUAS and SIAP scales       0.01s  
+  ✓ it keeps the race colors that coincide in both scales
+  ✓ it returns null for a race color without counterpart
+  ✓ it maps social unit types to the SIAP classification
+  ✓ it refuses to translate a unit status the SIAP does not define
+  ✓ it derives the extinction status from the end date against the exer… 0.02s  
+  ✓ it lets the derivation win over the code chosen in the lookup (D04)
+  ✓ it turns an extinct unit without a usable end date into a pendency (D05)
+  ✓ it ignores the end date for statuses that are not extinction
+  ✓ it only translates the entity status that has a safe counterpart
+  ✓ it translates the paralysed entity added by the HU #10371 (CA05d)
+  ✓ it derives the entity extinction status from the end date against the exercise (RN08)
+  ✓ it turns an extinct entity without a usable end date into a pendency (D08)
+  ✓ it keeps the four original cadastral statuses out of the SIAP scale (CA05e / D03)
+  ✓ it ignores the end date for the entity in activity
+  ✓ it collapses the four SUAS participation types into the three of SIAP
+  ✓ it maps the contract modality to the SIAP scale (HU #10369 / D06)
+  ✓ it refuses to translate a contract modality outside the SIAP scale
+  ✓ it maps kinship to the family position scale
+  ✓ it leaves the ambiguous education level unmapped
+  ✓ it maps booleans to the SIM/NAO pair
+  ✓ it strips the zero padding only for the auxiliary tables
+  ✓ it maps the 14 equipment types of the SIAP Table 35 (RN04)
+  ✓ it refuses an equipment code outside the SIAP Table 35 (RN04)
+  ✓ it keeps paddedCode permissive where unitEquipment is strict (D09)
+  ✓ it maps the 21 structures of the SIAP Table 36 (RN04)
+  ✓ it refuses a structure code outside the SIAP Table 36 (RN04)
+  ✓ it keeps paddedCode permissive where unitStructure is strict (D04)
+  ✓ it refuses a numeric value with a size different from the exact one
+  ✓ it never sanitizes a non numeric value to make it fit
+  ✓ it flags truncation instead of cutting text in silence
+  ✓ it formats dates in ISO and decimals with two places
+  ✓ it registers exactly the 11 layouts of the SIAP social assistance section
+  ✓ it puts UnidadeSocial first, since 8 other layouts depend on it
+  ✓ it names every file after its layout, as the Manual requires
+
+   PASS  Tests\Unit\Siap\SiapDownloadFileNameTest
+  ✓ it keeps only the last path segment, killing the traversal (CA13)    0.16s  
+  ✓ it never lets CR, LF or other control characters survive (CA13)      0.02s  
+  ✓ it transliterates unicode and applies the allowlist                  0.02s  
+  ✓ it keeps names that are already clean untouched                      0.01s  
+  ✓ it forces exactly one .zip extension                                 0.02s  
+  ✓ it falls back to the suggested name when nothing usable remains (CA… 0.02s  
+  ✓ it falls back to the suggested name when nothing usable remains (CA… 0.02s  
+  ✓ it falls back to the suggested name when nothing usable remains (CA… 0.02s  
+  ✓ it falls back to the suggested name when nothing usable remains (CA… 0.01s  
+  ✓ it falls back to the suggested name when nothing usable remains (CA… 0.01s  
+  ✓ it falls back to the suggested name when nothing usable remains (CA… 0.02s  
+  ✓ it never returns an empty name, even against a hostile fallback      0.02s  
+  ✓ it caps the file name at 120 characters, extension included (CA13b)  0.02s  
+  ✓ it builds the suggestion from municipality, exercise and month       0.02s  
+  ✓ it falls back to the stored file name when the tenant has no usable… 0.02s  
+  ✓ it still suggests a name when there is no stored file yet            0.02s  
+
+   PASS  Tests\Unit\Siap\SiapSubjectLabelResolverTest
+  ✓ it resolves the three tenant subject types in one query each (R2)    0.43s  
+  ✓ it dedupes repeated subject uuids before querying                    0.02s  
+  ✓ it ignores an unknown subject type without breaking                  0.02s  
+  ✓ it leaves an orphan uuid out of the map instead of failing           0.02s  
+  ✓ it leaves a soft deleted record out of the map                       0.03s  
+  ✓ it never resolves a label that belongs to another tenant (CA09)      0.02s  
+
+   PASS  Tests\Feature\Api\SiapRemittanceGenerationTest
+  ✓ it refuses the generation when the identifier is missing (CA06)      0.13s  
+  ✓ it refuses the generation for a legacy identifier outside the TCE-A… 0.03s  
+  ✓ it creates the remittance and dispatches the job when the identifie… 0.05s  
+  ✓ it generates a zip with all 11 layouts, including the ones without…  0.11s  
+  ✓ it emits the service agreement and the operating status as independ… 0.07s  
+  ✓ it emits the informed service agreement as SIM (CA08b)               0.07s  
+  ✓ it refuses the generation when the service agreement was never info… 0.04s  
+  ✓ it emits the unit address in the Manual order, with street number a… 0.07s  
+  ✓ it brings every unit of the municipality with the seven fields of t… 0.08s  
+  ✓ it keeps the paralysed unit inside the remittance (CA02)             0.06s  
+  ✓ it emits the unit extinct within the reference exercise as 3 (CA03)  0.08s  
+  ✓ it emits the unit extinct in a previous exercise as 4 (CA04)         0.06s  
+  ✓ it lets the end date override the status code chosen in the lookup…  0.07s  
+  ✓ it turns the extinct unit without a usable end date into a blocking… 0.04s  
+  ✓ it blocks the remittance while an inactive unit has no SIAP counter… 0.04s  
+  ✓ it translates the unit classification to the SIAP domain (CA05)      0.07s  
+  ✓ it suppresses the reference point first and keeps the complement (C… 0.07s  
+  ✓ it also suppresses the complement when the reference point is not e… 0.07s  
+  ✓ it never lets the address exceed 255 characters, not even in the wo… 0.07s  
+  ✓ it delivers the layout with the header only when there is no unit (… 0.06s  
+  ✓ it contains exclusively the units of my municipality (CA11)          0.07s  
+  ✓ it leaves the soft-deleted unit out of the remittance                0.08s  
+  ✓ it records the layout outcome of a layout without movement           0.06s  
+  ✓ it re-evaluates the block inside the job (TOCTOU)                    0.04s  
+  ✓ it refuses the generation when a unit has no MDS number (CA07)       0.04s  
+  ✓ it refuses the generation when the unit classification is outside t… 0.04s  
+  ✓ it refuses the generation when the unit address has no postal code…  0.04s  
+  ✓ it counts municipalities, not fields: one unit missing two values i… 0.03s  
+  ✓ it keeps the unit block with its own message alongside the new enti… 0.03s  
+  ✓ it re-evaluates the unit block inside the job (D07/TOCTOU)           0.07s  
+  ✓ it refuses a second generation while one is still running            0.05s  
+  ✓ it never lists or downloads a remittance from another tenant         0.04s  
+  ✓ it refuses the download while the remittance is not completed        0.03s  
+  ✓ it brings every entity of the municipality with the seventeen field… 0.10s  
+  ✓ it keeps the entity without foundation date and head office CNPJ in… 0.08s  
+  ✓ it emits the declared service agreement regardless of the contract…  0.07s  
+  ✓ it emits the yes or no indicators as 1 and 2 (CA04)                  0.07s  
+  ✓ it emits the entity extinct within the reference exercise as 3 (CA0… 0.07s  
+  ✓ it emits the entity extinct in a previous exercise as 4 (CA05b)      0.07s  
+  ✓ it turns the extinct entity without a usable end date into a blocki… 0.05s  
+  ✓ it emits the paralysed entity as 2 (CA05d)                           0.06s  
+  ✓ it keeps the cadastral statuses without a SIAP counterpart as block… 0.05s  
+  ✓ it emits the contract amount with two decimal places and a dot sepa… 0.09s  
+  ✓ it delivers the entity layout with the header only when there is no… 0.06s  
+  ✓ it contains exclusively the entities of my municipality (CA11)       0.07s  
+  ✓ it keeps the soft deleted entity out of the file (RN01 — regressão)  0.07s  
+  ✓ it emits the entity address in the Manual order, ending with the mu… 0.07s  
+  ✓ it suppresses the entity reference point first and keeps the comple… 0.07s  
+  ✓ it also suppresses the entity complement when the reference point i… 0.07s  
+  ✓ it never lets the entity address exceed 255 characters, not even in… 0.07s  
+  ✓ it refuses the generation when an entity has no CNEAS number (CA06)  0.09s  
+  ✓ it refuses the generation when an entity has no e-mail (CA07)        0.13s  
+  ✓ it refuses the generation when an entity has no contract amount (CA… 0.09s  
+  ✓ it does not block the remittance when the contract amount is zero (… 0.10s  
+  ✓ it counts entities, not fields: one entity missing two values is on… 0.03s  
+  ✓ it evaluates the CARDUG before the entity records                    0.05s  
+  ✓ it re-evaluates the entity block inside the job (TOCTOU)             0.05s  
+  ✓ it generates the remittance when every entity and unit is complete   0.10s  
+  ✓ it never carries the entity name, CNPJ or e-mail into the entity bl… 0.05s  
+  ✓ it brings the inventory of every unit into the layout (CA01)         0.09s  
+  ✓ it consolidates distinct purchases of the same equipment into one r… 0.08s  
+  ✓ it emits the equipment without a purchase date and reports nothing…  0.07s  
+  ✓ it keeps the only informed purchase date after consolidating (CA04)  0.11s  
+  ✓ it keeps the row in the file when the in-use quantity exceeds the t… 0.09s  
+  ✓ it omits the equipment with zero total quantity, without any penden… 0.08s  
+  ✓ it omits the zeroed row but still reports the contradiction (CA07b)  0.08s  
+  ✓ it reports nothing for a unit without any equipment (CA08)           0.08s  
+  ✓ it delivers the layout with header only when no unit has equipment…  0.07s  
+  ✓ it contains exclusively the equipment of my municipality (CA10)      0.08s  
+  ✓ it keeps emitting an equipment type that was deactivated in the glo… 0.07s  
+  ✓ it refuses the generation when an equipment code is outside Table 3… 0.04s  
+  ✓ it refuses the generation for a non numeric equipment code (CA05b)   0.05s  
+  ✓ it points the equipment refusal to the Global Administration Panel…  0.03s  
+  ✓ it counts equipment codes, not links: the same code in two units is… 0.03s  
+  ✓ it does not block a municipality for an invalid code it does not us… 0.08s  
+  ✓ it keeps the inventory contradiction informative after the block (D… 0.07s  
+  ✓ it re-evaluates the equipment block inside the job (TOCTOU)          0.05s  
+  ✓ it evaluates the CARDUG, the unit and the entity before the equipme… 0.05s  
+  ✓ it keeps the unit and entity blocks with their own messages (não-re… 0.05s  
+  ✓ it generates the remittance when every equipment code is inside Tab… 0.08s  
+  ✓ it brings every structure of every unit into the layout (CA01)       0.10s  
+  ✓ it refuses the generation when a structure code is outside Table 36… 0.04s  
+  ✓ it refuses the generation when a structure code is outside Table 36… 0.04s  
+  ✓ it refuses the generation when a structure code is outside Table 36… 0.04s  
+  ✓ it refuses the generation for a non numeric structure code (CA02b)   0.04s  
+  ✓ it never drops a linked structure in silence anymore (RN04d)         0.03s  
+  ✓ it offers the two ways out in the structure refusal (CA03c)          0.04s  
+  ✓ it counts structure codes, not links: the same code in two units is… 0.03s  
+  ✓ it keeps emitting a structure whose lookup item was deactivated (CA… 0.07s  
+  ✓ it does not filter out a school-profile structure (CA03b)            0.10s  
+  ✓ it reports nothing for a unit without any structure (CA04)           0.19s  
+  ✓ it delivers the layout with header only when no unit has a structur… 0.11s  
+  ✓ it contains exclusively the structures of my municipality (CA06)     0.07s  
+  ✓ it does not block a municipality for a structure code it does not u… 0.08s  
+  ✓ it re-evaluates the structure block inside the job (TOCTOU)          0.05s  
+  ✓ it evaluates the professional block last, after the structure one    0.06s  
+  ✓ it generates the remittance when every structure code is inside Tab… 0.08s  
+  ✓ it brings every professional assigned in the reference month into t… 0.09s  
+  ✓ it emits one line per unit for a professional assigned to two units… 0.08s  
+  ✓ it includes assignments that started or ended in the middle of the…  0.08s  
+  ✓ it leaves out assignments that ended before or started after the mo… 0.08s  
+  ✓ it keeps a professional inactivated after the reference month in th… 0.08s  
+  ✓ it leaves a soft deleted professional out of the layout without a p… 0.12s  
+  ✓ it reports nothing for a professional without any assignment (CA07)  0.08s  
+  ✓ it delivers the layout with header only when nobody is assigned (CA… 0.07s  
+  ✓ it contains exclusively the professionals of my municipality (CA11)  0.08s  
+  ✓ it emits the registration number as is and never sanitizes it (D05)  0.07s  
+  ✓ it refuses the generation when an assigned professional has no regi… 0.05s  
+  ✓ it refuses a malformed registration number without transforming it…  0.04s  
+  ✓ it refuses a malformed registration number without transforming it…  0.04s  
+  ✓ it refuses the generation when the assigned professional has no usa… 0.05s  
+  ✓ it refuses the generation when the assigned professional has no usa… 0.05s  
+  ✓ it counts assignments, not pendencies, in the professional refusal   0.04s  
+  ✓ it re-evaluates the professional block inside the job (TOCTOU)       0.05s  
+  ✓ it refuses reference months outside 1 to 12 (CA08/D03) with dataset… 0.03s  
+  ✓ it refuses reference months outside 1 to 12 (CA08/D03) with dataset… 0.03s  
+  ✓ it refuses reference months outside 1 to 12 (CA08/D03) with dataset… 0.03s  
+  ✓ it says the remittance only accepts months 1 to 12 (CA08b)           0.03s  
+  ✓ it still accepts month 12, the last valid one (CA08/D03)             0.03s  
+  ✓ it also refuses month 13 in the pre-check (R4)                       0.03s  
+  ✓ it lets the tenant Operacional list, open and download — never gene… 1.52s  
+  ✓ it downloads with the suggested name by default and honours the cho… 0.06s  
+  ✓ it exposes the suggested file name in the resource (RN09)            0.04s  
+  ✓ it neutralises path traversal in the download name (CA13)            0.04s  
+  ✓ it never lets CRLF reach the Content-Disposition header (CA13)       0.04s  
+  ✓ it falls back to the suggested name when the chosen one is unusable… 0.04s  
+  ✓ it falls back to the suggested name when the chosen one is unusable… 0.04s  
+  ✓ it caps an oversized chosen name instead of failing (CA13b)          0.03s  
+  ✓ it ignores a non-string file_name instead of failing (CA13b)         0.04s  
+
+   PASS  Tests\Feature\Api\SiapRemittancePreCheckTest
+  ✓ it separates the blocking identifier pendency from the per-layout o… 0.07s  
+  ✓ it states that the identifier pendency blocks the entire remittance… 0.03s  
+  ✓ it still lists every layout while the remittance is blocked (CA06)   0.03s  
+  ✓ it marks per-layout pendencies as non blocking                       0.03s  
+  ✓ it reports a required field that has no source in the system         0.03s  
+  ✓ it does not persist anything during the pre-check                    0.03s  
+  ✓ it releases the generation when the identifier is valid              0.03s  
+  ✓ it counts records only from the active tenant                        0.03s  
+  ✓ it names the entity whose service agreement was never informed (CA0… 0.04s  
+  ✓ it shows the incomplete entity pendency in the blocking zone AND in… 0.04s  
+  ✓ it counts the promoted entity pendency only once (CA12b)             0.03s  
+  ✓ it keeps record_incomplete and domain_unmapped apart after the prom… 0.04s  
+  ✓ it carries the entity legal name as subject_label but never the CNP… 0.04s  
+  ✓ it drops the pendency as soon as the municipality informs the value… 0.04s  
+  ✓ it turns a contract modality outside the SIAP scale into a pendency… 0.04s  
+  ✓ it stops reporting EntidadeSocial as a layout without data source    0.04s  
+  ✓ it shows the incomplete unit pendency in the blocking zone AND in t… 0.03s  
+  ✓ it counts the promoted pendency only once (D08b)                     0.03s  
+  ✓ it sends the unmapped unit classification to the Global Panel (CA08… 0.05s  
+  ✓ it names the unit without postal code by subject_label, never by ad… 0.04s  
+  ✓ it keeps the CARDUG pendency blocking alongside the unit ones (não-… 0.03s  
+  ✓ it releases the pre-check as soon as every unit is complete (happy…  0.04s  
+  ✓ it rejects an invalid reference month                                0.03s  
+  ✓ it refuses the accounting references 13 and 14 since D03 (HU #10531… 0.03s  
+  ✓ it refuses the accounting references 13 and 14 since D03 (HU #10531… 0.04s  
+  ✓ it reports the inventory contradiction without blocking the generat… 0.04s  
+  ✓ it evaluates the contradiction over the consolidated value, not per… 0.04s  
+  ✓ it emits one informative pendency per consolidated pair, not per pu… 0.04s  
+  ✓ it does not turn the layout partial because of an informative pende… 0.04s  
+  ✓ it counts the informative pendency apart from the blocking and layo… 0.04s  
+  ✓ it still marks the layout partial for a pendency that removes a rec… 0.04s  
+  ✓ it shows the equipment code pendency in the blocking zone AND in th… 0.04s  
+  ✓ it blocks the pre-check for a non numeric equipment code as well (C… 0.04s  
+  ✓ it names the offending code and the Global Panel in the equipment p… 0.04s  
+  ✓ it counts the promoted equipment pendency only once                  0.03s  
+  ✓ it keeps the informative pendency out of the blocking zone (D05)     0.04s  
+  ✓ it still releases the generation when only the inventory is contrad… 0.04s  
+  ✓ it shows the structure code pendency in the blocking zone AND in th… 0.04s  
+  ✓ it blocks the pre-check for a non numeric structure code as well (C… 0.04s  
+  ✓ it offers the two ways out in the structure pendency (CA03c)         0.04s  
+  ✓ it points the structure block to the global support register (CA08)  0.04s  
+  ✓ it does not raise a pendency for an unlinked structure outside Tabl… 0.04s  
+  ✓ it counts the promoted structure pendency only once (CA07)           0.03s  
+  ✓ it keeps the equipment pendencies untouched by the structure block…  0.04s  
+  ✓ it stops reporting ProfissionalSocial as a header only layout (HU #… 0.04s  
+  ✓ it carries the professional name as subject_label but never CPF or…  0.04s  
+  ✓ it names the assignment without CPF by uuid and by subject_label (D… 0.04s  
+  ✓ it shows the professional pendency in the blocking zone AND in the…  0.04s  
+  ✓ it points the professional block to the tenant own register          0.05s  
+  ✓ it warns about the payroll cross reference without blocking (CA09)   0.04s  
+  ✓ it does not warn about the payroll when the layout has no line (CA0… 0.04s  
+  ✓ it counts the professionals that exist only in the parallel registr… 0.05s  
+  ✓ it never carries the parallel professionals identity into the pende… 0.04s  
+  ✓ it does not count a professional who exists in both registries (CA1… 0.06s  
+  ✓ it releases the generation when every record is complete (CA01 da #… 0.05s  
+  ✓ it names the unit without MDS number by its own name (CA02/RN03)     0.04s  
+  ✓ it keeps the CARDUG pendency without subject_label and outside the…  0.04s  
+  ✓ it marks the unmapped domain code resolution as global, without a t… 0.04s  
+  ✓ it keeps the generation available when the only pendency is informa… 0.04s  
+  ✓ it drops only the fixed pendency on the next pre-check (CA07/RN08)   0.05s  
+  ✓ it changes nothing and logs nothing while reporting 12 incomplete r… 0.07s  
+  ✓ it never leaks another tenant records or labels into the pre-check…  0.04s  
+  ✓ it lets the tenant Operacional run the pre-check without unlocking…  1.49s  
+  ✓ it persists the pendency by subject_uuid only, never by name (CA11/… 0.12s  
+  ✓ it keeps the name out of the 422 payload, the activity log and the…  0.05s  
+  ✓ it carries the subject_uuid inside the resolution for the three ten… 0.05s  
+  ✓ it resolves the professional shortcut to the professional, not to t… 0.05s  
+  ✓ it serves the same correction shortcut in the per-layout zone (CA03… 0.04s  
+  ✓ it does not offer a shortcut for pendencies with no source registry… 0.03s  
+  ✓ it returns a resolution uuid that the professional detail endpoint…  0.05s  
+  ✓ it falls back to the assignment uuid when the target cannot be reso… 0.04s  
+
+   PASS  Tests\Feature\Api\SocialEntityControllerTest
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('cne… 0.07s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('leg… 0.03s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('cnp… 0.03s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('hea… 0.04s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('ema… 0.04s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('add… 0.03s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('soc… 0.04s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('loc… 0.04s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('sua… 0.04s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('con… 0.04s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('has… 0.03s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('pro… 0.03s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('exe… 0.04s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('has… 0.04s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('con… 0.03s  
+
+   PASS  Tests\Feature\Api\TenantTceParameterControllerTest
+  ✓ it saves the TCE parameters without the identifier and warns about…  0.04s  
+
+   PASS  Tests\Feature\Api\TenantTceParameterSiapReadinessTest
+  ✓ it does not block other modules when the identifier is missing (RN1… 0.04s  
+  ✓ it reports readiness as true once the identifier is in the TCE-AL f… 0.03s  
+  ✓ it reports readiness as false for a legacy value outside the TCE-AL… 0.03s  
+
+   PASS  Tests\Feature\Seeders\LocalDevSeederTest
+  ✓ it leaves the scenario complete enough for the SIAP remittance to a… 1.29s  
+
+  Tests:    277 passed (1448 assertions)
+  Duration: 17.46s
+

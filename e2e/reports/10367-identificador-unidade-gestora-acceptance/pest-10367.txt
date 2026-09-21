@@ -1,0 +1,107 @@
+
+   PASS  Tests\Unit\Models\TenantTceParameterTest
+  ✓ it has correct fillable attributes                                   0.33s  
+  ✓ it uses the expected traits                                          0.01s  
+  ✓ it defines tenant relationship                                       0.01s  
+  ✓ it normalizes managing_unit_cnpj preserving the alphanumeric format… 0.01s  
+  ✓ it generates a uuid via factory                                      0.05s  
+
+   PASS  Tests\Unit\Rules\ValidCardugIdentifierTest
+  ✓ it accepts exactly six digits (RN01/CA01)                            0.03s  
+  ✓ it accepts six zeros — the format rule is about shape, not value     0.01s  
+  ✓ it rejects fewer than six digits with the length message (CA02) wit… 0.01s  
+  ✓ it rejects fewer than six digits with the length message (CA02) wit… 0.01s  
+  ✓ it rejects fewer than six digits with the length message (CA02) wit… 0.01s  
+  ✓ it rejects more than six digits with the length message (CA02)       0.01s  
+  ✓ it rejects non numeric characters with its own message (CA03) with…  0.01s  
+  ✓ it rejects non numeric characters with its own message (CA03) with…  0.01s  
+  ✓ it rejects non numeric characters with its own message (CA03) with…  0.01s  
+  ✓ it rejects non numeric characters with its own message (CA03) with…  0.01s  
+  ✓ it rejects non numeric characters with its own message (CA03) with…  0.01s  
+  ✓ it rejects non numeric characters with its own message (CA03) with…  0.01s  
+  ✓ it rejects a non string value                                        0.01s  
+  ✓ it exposes the format as a single source of truth (RN03/D01)         0.01s  
+
+   PASS  Tests\Unit\Services\Siap\SiapDomainMapTest
+  ✓ it inverts Parda and Amarela between the eSUAS and SIAP scales       0.01s  
+  ✓ it keeps the race colors that coincide in both scales
+  ✓ it returns null for a race color without counterpart
+  ✓ it maps social unit types to the SIAP classification
+  ✓ it refuses to translate a unit status the SIAP does not define
+  ✓ it only translates the entity status that has a safe counterpart
+  ✓ it collapses the four SUAS participation types into the three of SIAP
+  ✓ it maps kinship to the family position scale
+  ✓ it leaves the ambiguous education level unmapped
+  ✓ it maps booleans to the SIM/NAO pair
+  ✓ it strips the zero padding only for the auxiliary tables
+  ✓ it refuses a numeric value with a size different from the exact one
+  ✓ it never sanitizes a non numeric value to make it fit
+  ✓ it flags truncation instead of cutting text in silence
+  ✓ it formats dates in ISO and decimals with two places
+  ✓ it registers exactly the 11 layouts of the SIAP social assistance section
+  ✓ it puts UnidadeSocial first, since 8 other layouts depend on it
+  ✓ it names every file after its layout, as the Manual requires
+
+   PASS  Tests\Feature\Api\SiapRemittanceGenerationTest
+  ✓ it refuses the generation when the identifier is missing (CA06)      0.07s  
+  ✓ it refuses the generation for a legacy identifier outside the TCE-A… 0.02s  
+  ✓ it creates the remittance and dispatches the job when the identifie… 0.05s  
+  ✓ it generates a zip with all 11 layouts, including the ones without…  0.05s  
+  ✓ it records the layout outcome of a layout without movement           0.10s  
+  ✓ it re-evaluates the block inside the job (TOCTOU)                    0.04s  
+  ✓ it refuses a second generation while one is still running            0.04s  
+  ✓ it never lists or downloads a remittance from another tenant         0.04s  
+  ✓ it refuses the download while the remittance is not completed        0.07s  
+
+   PASS  Tests\Feature\Api\SiapRemittancePreCheckTest
+  ✓ it separates the blocking identifier pendency from the per-layout o… 0.03s  
+  ✓ it states that the identifier pendency blocks the entire remittance… 0.02s  
+  ✓ it still lists every layout while the remittance is blocked (CA06)   0.03s  
+  ✓ it marks per-layout pendencies as non blocking                       0.02s  
+  ✓ it reports a required field that has no source in the system         0.05s  
+  ✓ it does not persist anything during the pre-check                    0.03s  
+  ✓ it releases the generation when the identifier is valid              0.02s  
+  ✓ it counts records only from the active tenant                        0.03s  
+  ✓ it rejects an invalid reference month                                0.03s  
+  ✓ it accepts the special reference months 13 and 14 with (13)          0.02s  
+  ✓ it accepts the special reference months 13 and 14 with (14)          0.02s  
+
+   PASS  Tests\Feature\Api\TenantTceParameterControllerTest
+  ✓ it shows TCE parameters (creates if not exists)                      0.03s  
+  ✓ it updates TCE parameters with a valid alphanumeric UG CNPJ (RN07/R… 0.02s  
+  ✓ it saves the managing unit identifier with exactly six digits (CA01… 0.02s  
+  ✓ it rejects an identifier with the wrong number of digits (RN01/CA02… 0.02s  
+  ✓ it rejects an identifier with the wrong number of digits (RN01/CA02… 0.02s  
+  ✓ it rejects an identifier with the wrong number of digits (RN01/CA02… 0.02s  
+  ✓ it rejects an identifier with non numeric characters and does NOT s… 0.05s  
+  ✓ it rejects an identifier with non numeric characters and does NOT s… 0.04s  
+  ✓ it rejects an identifier with non numeric characters and does NOT s… 0.02s  
+  ✓ it trims the identifier before validating                            0.02s  
+  ✓ it saves the TCE parameters without the identifier and warns about…  0.02s  
+  ✓ it never writes to another tenant when tenant_id comes in the paylo… 0.02s  
+  ✓ it records the identifier change in the audit trail with author and… 0.02s  
+  ✓ it rejects an invalid UG CNPJ (RN15)                                 0.02s  
+  ✓ it forbids the Operacional from updating TCE parameters (RN03)       0.02s  
+  ✓ it manager shows TCE parameters of any tenant by uuid (no binding)   0.02s  
+  ✓ it manager updates TCE parameters of any tenant by uuid              0.02s  
+  ✓ it applies the same identifier format rule on the manager variant (… 0.02s  
+  ✓ it forbids a manager without permission from updating TCE by uuid    0.02s  
+
+   PASS  Tests\Feature\Api\TenantTceParameterIdentifierChangeTest
+  ✓ it does not ask for confirmation while no remittance was generated…  0.03s  
+  ✓ it warns the Master when a remittance was already generated (CA08)   0.02s  
+  ✓ it saves the new identifier once the Master confirms (CA08)          0.02s  
+  ✓ it keeps previously generated remittances untouched after the chang… 0.03s  
+  ✓ it marks old remittances as generated with the previous identifier…  0.03s  
+  ✓ it does not ask for confirmation when the identifier does not chang… 0.02s  
+  ✓ it exposes has_generated_remittances reflecting reality (CA08)       0.03s  
+  ✓ it does not leak has_generated_remittances across tenants (CA08 + i… 0.03s  
+
+   PASS  Tests\Feature\Api\TenantTceParameterSiapReadinessTest
+  ✓ it does not block other modules when the identifier is missing (RN1… 0.03s  
+  ✓ it reports readiness as true once the identifier is in the TCE-AL f… 0.02s  
+  ✓ it reports readiness as false for a legacy value outside the TCE-AL… 0.03s  
+
+  Tests:    87 passed (296 assertions)
+  Duration: 2.55s
+

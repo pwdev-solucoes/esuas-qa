@@ -1,0 +1,14 @@
+<!-- HU #10529 — CA07 (RN09) — dois profissionais no cadastro, so um lotado: o arquivo traz 1 linha (matricula 555001). O de matricula 555002, sem lotacao, NAO consta — e isso nao e pendencia. -->
+<!-- Remessa gerada de verdade; XML extraido do zip. CPF e nome mascarados (RN12). Dados fabricados. -->
+<?xml version="1.0"?>
+<SIAP>
+    <Codigo>004821</Codigo>
+    <Exercicio>2026</Exercicio>
+    <Mes>08</Mes>
+    <ProfissionalSocial>
+        <CPF>390.***.***-05</CPF>
+        <Nome>Maria S. L.</Nome>
+        <NumeroMDS>1234567890123</NumeroMDS>
+        <Matricula>555001</Matricula>
+    </ProfissionalSocial>
+</SIAP>

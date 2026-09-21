@@ -1,0 +1,62 @@
+{
+    "cenario": "CA05e — entidade em \"Suspensa\" (003), sem correspondente na escala do SIAP",
+    "entidade_incompleta": {
+        "uuid": "d43b98a0-b61c-4e4c-9d10-42f2fe40bb63",
+        "observacao": "a pendência identifica a entidade por uuid — nunca razão social, CNPJ ou e-mail (RN18)"
+    },
+    "entidade_completa_no_mesmo_tenant": "be1776f9-8297-4352-b785-3b10dd33c8a3",
+    "POST client/siap-remittances": {
+        "status": 422,
+        "body": {
+            "message": "The SIAP remittance cannot be generated: 1 social entity has an incomplete record for SIAP. Check the missing data in the pre-check screen.",
+            "errors": {
+                "social_entities": [
+                    "The SIAP remittance cannot be generated: 1 social entity has an incomplete record for SIAP. Check the missing data in the pre-check screen."
+                ]
+            }
+        }
+    },
+    "remessas_criadas": 0,
+    "arquivos_gravados": [],
+    "GET client/siap-remittances/pre-check": {
+        "can_generate": false,
+        "pendencia_na_zona_de_bloqueio": {
+            "scope": "blocking",
+            "kind": "domain_unmapped",
+            "field_name": "SituacaoEntidadeSocial",
+            "subject_type": "social_entity",
+            "subject_uuid": "d43b98a0-b61c-4e4c-9d10-42f2fe40bb63",
+            "affected_count": 1,
+            "message_key": "siap_remittance.pendency.entity_domain_unmapped",
+            "message": "The value in SituacaoEntidadeSocial has no counterpart in the SIAP table. Review the classification in the entity record: until then, no remittance can be generated.",
+            "blocks_entire_remittance": true,
+            "affected_layouts": 11,
+            "resolution": {
+                "resource": "tenant-tce-parameters",
+                "requires_role": "master"
+            }
+        },
+        "pendencia_na_lista_do_leiaute": {
+            "scope": "blocking",
+            "kind": "domain_unmapped",
+            "field_name": "SituacaoEntidadeSocial",
+            "subject_type": "social_entity",
+            "subject_uuid": "d43b98a0-b61c-4e4c-9d10-42f2fe40bb63",
+            "affected_count": 1,
+            "message_key": "siap_remittance.pendency.entity_domain_unmapped",
+            "message": "The value in SituacaoEntidadeSocial has no counterpart in the SIAP table. Review the classification in the entity record: until then, no remittance can be generated.",
+            "blocks_entire_remittance": true
+        },
+        "layout_EntidadeSocial": {
+            "name": "EntidadeSocial",
+            "record_count": 1,
+            "pendency_count": null
+        },
+        "summary": {
+            "layout_count": 11,
+            "record_count": 1,
+            "blocking_pendency_count": 1,
+            "layout_pendency_count": 17
+        }
+    }
+}

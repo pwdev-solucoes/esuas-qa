@@ -1,0 +1,129 @@
+
+   PASS  Tests\Feature\Client\AttendanceReportDiagnosisTest
+  ✓ it acende os tres perfis do 15.7 sobre as novas familias do mes (CA… 0.75s  
+  ✓ it deixa apenas o acolhimento declarado indisponivel, apontando a F… 0.09s  
+  ✓ it conta a familia UMA vez no descumprimento, por mais ocorrencias…  0.09s  
+  ✓ it nao conta ocorrencia cancelada, de outro mes nem soft-deletada n… 0.10s  
+  ✓ it deriva a evasao escolar da situacao escolar declarada — nao exis… 0.10s  
+  ✓ it nao conta como evasao a situacao escolar nao informada, o "nao s… 0.11s  
+  ✓ it conta as bordas da faixa escolar como a spec manda: 4 anos entra… 0.10s  
+  ✓ it nao conta gestante adulta e conta a adolescente, pela idade NA D… 0.11s  
+  ✓ it confere a completude do 15.10 e mantem incomplete DIFERENTE da s… 0.12s  
+  ✓ it nao conta no 15.10 o atendimento cancelado, o de outro mes nem a… 0.10s  
+  ✓ it confere a completude do 15.11 sobre as familias atendidas no mes… 0.10s  
+  ✓ it declara ZERO para a unidade sem movimento, nunca omite o bloco (… 0.09s  
+  ✓ it conta o nome da mae ausente ou em branco entre as incompletas (C… 0.10s  
+  ✓ it aponta o Painel Global quando o grau de instrucao nao tem de-par… 0.11s  
+  ✓ it nao inventa pendencia de configuracao quando todo grau tem de-pa… 0.11s  
+  ✓ it nao leva nome, CPF, NIS nem identificador de cidadao no payload…  0.09s  
+  ✓ it reflete a correcao na consulta seguinte, sem cache a invalidar (… 0.10s  
+  ✓ it mostra ao Operacional apenas as unidades em que ele tem lotacao…  0.11s  
+  ✓ it nao deixa a conferencia de um municipio enxergar o outro (CA14/R… 0.09s  
+
+   PASS  Tests\Unit\Enums\SiapNewFamilyProfileTest
+  ✓ it conta SETE perfis acesos e UM apagado depois da F6 (CA01/CA02/D0… 0.01s  
+  ✓ it acende os TRES perfis da F6 e apaga o depends_on deles (D02) with dataset "descumprimento de condicionalidades"
+  ✓ it acende os TRES perfis da F6 e apaga o depends_on deles (D02) with dataset "evasao escolar"
+  ✓ it acende os TRES perfis da F6 e apaga o depends_on deles (D02) with dataset "gravidez na adolescencia"
+  ✓ it mantem o acolhimento DECLARADO indisponivel, apontando a F7 (CA02)
+  ✓ it mantem o VALOR do case como chave do payload — sem mapa intermediario
+
+   PASS  Tests\Unit\Services\FollowUp\FollowUpProfileRangesTest
+  ✓ it fixa as tres constantes do D12 num lugar so
+  ✓ it deriva as bordas DAS constantes, nunca de literais
+  ✓ it inclui e exclui exatamente nas quatro bordas da faixa escolar (§8.2) with dataset "tres anos: pequeno demais, NAO conta"
+  ✓ it inclui e exclui exatamente nas quatro bordas da faixa escolar (§8.2) with dataset "quatro anos EM PONTO: conta"
+  ✓ it inclui e exclui exatamente nas quatro bordas da faixa escolar (§8.2) with dataset "dezessete anos: conta"
+  ✓ it inclui e exclui exatamente nas quatro bordas da faixa escolar (§8.2) with dataset "dezoito anos EM PONTO: NAO conta"
+  ✓ it anda com o periodo apurado — a faixa e resolvida no ULTIMO DIA do mes, nunca hoje
+  ✓ it nao perde a borda dos 4 anos quando a data vem com hora, como o SQLite a grava (regressao do 1b6eee9)
+  ✓ it nao inventa faixa sem data de nascimento nem com nascimento no futuro
+
+   PASS  Tests\Feature\Client\FollowUpReportServiceTest
+  ✓ it conta as familias distintas com acompanhamento vigente em algum…  0.04s  
+  ✓ it conta o ingresso e o desligamento ocorridos no meio do mes (CA02… 0.03s  
+  ✓ it nao conta a familia desligada no mes anterior, mas conta naquele… 0.03s  
+  ✓ it conta o mes do desligamento mesmo apos a razao e o servico serem… 0.03s  
+  ✓ it conta 1 em cada unidade quando a familia e acompanhada por duas…  0.03s  
+  ✓ it conta 1 quando a familia e acompanhada em dois servicos da MESMA… 0.03s  
+  ✓ it conta as novas familias do mes (CA05)                             0.06s  
+  ✓ it conta o reingresso como nova familia (CA06/I2)                    0.03s  
+  ✓ it nao conta o acompanhamento cancelado em nenhum dos dois contador… 0.05s  
+  ✓ it nao conta o acompanhamento removido operacionalmente (deleted_at… 0.03s  
+  ✓ it reproduz o cenario canonico de conferencia do §9 (3 em acompanha… 0.05s  
+  ✓ it qualifica APENAS as novas familias, nunca todas as acompanhadas…  0.06s  
+  ✓ it conta a mesma familia em varios perfis — eles nao sao exclusivos… 0.04s  
+  ✓ it nao conta membro inativo nem removido no perfil de trabalho infa… 0.04s  
+  ✓ it conta o BPC mesmo com o programa inativado no catalogo global     0.04s  
+  ✓ it nao conta receives_pbf NULL e nao afirma que a familia nao receb… 0.03s  
+  ✓ it nao conta renda per capita nula em extrema pobreza (RN08)         0.04s  
+  ✓ it declara o unico perfil sem fonte, com o motivo e a fase (CA09/D0… 0.03s  
+  ✓ it sinaliza os acompanhamentos vigentes ha mais de seis meses sem a… 0.06s  
+  ✓ it conta PROCESSOS, e nao familias, no ponto de atencao (D10)        0.03s  
+  ✓ it ignora atendimento cancelado e de outra unidade no cruzamento da… 0.04s  
+  ✓ it respeita o corte configurado em follow_up.stale_months (I5/D10)   0.03s  
+  ✓ it nao sinaliza acompanhamento desligado nem cancelado no ponto de…  0.03s  
+  ✓ it devolve zero DECLARADO para a unidade sem nenhum acompanhamento…  0.03s  
+  ✓ it curto-circuita sem tocar o banco quando o recorte de unidades e…  0.03s  
+  ✓ it nao conta acompanhamento de outro municipio (RN13/CA14)           0.03s  
+  ✓ it nao persiste absolutamente nada — a apuracao e derivada (RN09/D0… 0.04s  
+  ✓ it nao devolve nenhum identificador de familia no resultado (D11/RN… 0.03s  
+
+   PASS  Tests\Feature\Client\AttendanceReportFollowUpTest
+  ✓ it reproduces the canonical scenario of §9 in the HTTP payload — 3…  0.10s  
+  ✓ it lights up families_in_follow_up inside counters and removes it f… 0.09s  
+  ✓ it declares the four profiles that depend on F6/F7 — never omitted,… 0.09s  
+  ✓ it keeps the single unavailable profile declared even for a unit wi… 0.08s  
+  ✓ it exposes stale_follow_ups as a quantity and the configured thresh… 0.09s  
+  ✓ it carries the threshold from config so the cut can move without a…  0.09s  
+  ✓ it shows the operator only the units of the current assignment, wit… 0.09s  
+  ✓ it never counts follow-ups of another organization in any of the ne… 0.09s  
+  ✓ it persists absolutely nothing — identical row counts before and af… 0.09s  
+  ✓ it never leaks any citizen data through the new follow-up fields (D… 0.09s  
+  ✓ it never counts a cancelled follow-up in the HTTP payload (CA11/RN1… 0.09s  
+  ✓ it keeps the new blocks consistent when the report is narrowed to a… 0.09s  
+
+   PASS  Tests\Feature\Api\Client\AttendanceReportTest
+  ✓ it derives the four counters per unit and the total includes types…  0.10s  
+  ✓ it declares an empty unavailable_counters list — F5 lit the last re… 0.09s  
+  ✓ it excludes cancelled attendances from the report while they remain… 0.12s  
+  ✓ it counts a retroactive attendance in the month it happened, not th… 0.10s  
+  ✓ it reflects a type correction on the next query and stores nothing…  0.10s  
+  ✓ it reports attendances without an identified person separately, via… 0.10s  
+  ✓ it scopes the Operacional to units with an assignment in force TODA… 0.11s  
+  ✓ it shows the master every unit of the tenant, and a unit without mo… 0.09s  
+  ✓ it never leaks citizen data in the serialized payload — no name, no… 0.10s  
+  ✓ it keeps counting past attendances of a type inactivated in the Glo… 0.10s  
+  ✓ it narrows the report to a single unit when social_unit_uuid is giv… 0.09s  
+  ✓ it keeps unit_count at the Operacional full scope when filtering on… 0.10s  
+  ✓ it rejects with a named 422 a unit outside the user scope — never a… 0.10s  
+  ✓ it rejects an out-of-range reference month with the SIAP named mess… 0.09s  
+  ✓ it denies the Operacional without the manual grant — the restricted… 0.09s  
+  ✓ it denies a granted user without an ACTIVE professional bond in the… 0.10s  
+  ✓ it lights the three referral counters with distinct families and pe… 0.11s  
+  ✓ it counts the same family ONCE with two inclusion referrals in the…  0.10s  
+  ✓ it counts two distinct people of the SAME family in the BPC counter… 0.10s  
+  ✓ it counts the family once in EACH counter — distinct per counter, n… 0.09s  
+  ✓ it drops a cancelled referral from the counters while it stays visi… 0.11s  
+  ✓ it keeps counting a referral whose outcome became not_attended — th… 0.10s  
+  ✓ it counts a retroactive referral in the month it was made, not the…  0.10s  
+  ✓ it keeps counting past referrals of a code inactivated in the Globa… 0.09s  
+  ✓ it keeps counting past referrals of a code SOFT-DELETED in the Glob… 0.10s  
+  ✓ it declares zero on the three referral counters for a unit without…  0.09s  
+  ✓ it never feeds the BPC counter from a referral row without a person… 0.09s  
+
+   PASS  Tests\Unit\Siap\FamiliaLayoutTest
+  ✓ it converts the zero-padded code to the Manual numbering (15.11) wi… 0.01s  
+  ✓ it converts the zero-padded code to the Manual numbering (15.11) with dataset "Outros 000 -> 0"
+  ✓ it converts the zero-padded code to the Manual numbering (15.11) with dataset "Situação de rua 001"
+  ✓ it converts the zero-padded code to the Manual numbering (15.11) with dataset "Sem especificidades"
+  ✓ it converts the zero-padded code to the Manual numbering (15.11) with dataset "já sem padding"
+  ✓ it converts the zero-padded code to the Manual numbering (15.11) with dataset "nulo continua nulo"
+  ✓ it converts the zero-padded code to the Manual numbering (15.11) with dataset "vazio continua nulo"
+  ✓ it returns an INTEGER zero for 000 — never an empty string nor null
+  ✓ it no longer lists any field without source (HU #10621 + US-DIAG-05)
+  ✓ it declares pending COMPOSITION — never no_data_source — now that every field has a source (§7.4)
+
+  Tests:    111 passed (400 assertions)
+  Duration: 7.55s
+

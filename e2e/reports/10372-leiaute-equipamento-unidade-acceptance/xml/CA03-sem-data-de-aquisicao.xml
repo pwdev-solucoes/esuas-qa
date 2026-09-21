@@ -1,0 +1,14 @@
+<!-- CA03 — impressora sem data de aquisicao. Esperado: DataUltimaCompra vazio e NENHUMA pendencia -->
+<!-- Gerado pela remessa 07/2026 do tenant de teste. Conteudo do EquipamentoUnidade.xml do pacote, sem edicao. -->
+<?xml version="1.0"?>
+<SIAP>
+    <Codigo>004821</Codigo>
+    <Exercicio>2026</Exercicio>
+    <Mes>07</Mes>
+    <EquipamentoUnidade>
+        <NumeroMDS>2961892450297</NumeroMDS>
+        <Equipamento>6</Equipamento>
+        <Quantidade>4</Quantidade>
+        <QuantidadeUso>3</QuantidadeUso>
+    </EquipamentoUnidade>
+</SIAP>

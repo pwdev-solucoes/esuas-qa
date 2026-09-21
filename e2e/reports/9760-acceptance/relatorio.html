@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — Acesso Restrito ao Prontuário da Família</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:980px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-wrap:wrap; gap:14px; margin-top:12px; }
+  figure { margin:0; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:300px; background:#fff; }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:11px; color:var(--muted); padding:6px 8px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { .evid, section.ca { break-inside:avoid; } figure { width:280px; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — Acesso Restrito ao Prontuário da Família</h1>
+    <div class="sub">Sprint 8 · HU #9760 (+ CA06–CA09 da HU #9759) · Evidências end-to-end no frontend do tenant</div>
+    <div class="meta"><div><span>Gerado em:</span> 02/07/2026 00:20</div><div><span>Branch:</span> sprint9-familias (api d953773+38fd466 · client aee4a81)</div><div><span>Spec:</span> .planning/specs/sprint8/9760-acesso-restrito-prontuario-familia.md</div><div><span>Ambiente:</span> API Sail/PostgreSQL (localhost:80) · client Vite :5174 (não-mock)</div><div><span>Organização (tenant):</span> E2E CadÚnico · uuid 00000000-0000-4000-8000-0000000000c1 · IBGE 2304400 (Fortaleza)</div><div><span>Usuários:</span> Master E2E (bypass de papel) · Operador E2E (Profissional ativo, papel family_viewer concedido/revogado ao vivo)</div><div><span>Ferramenta:</span> playwright-cli (Chromium 1440×900, 2 sessões simultâneas) + Pest 4</div><div><span>Cobertura adicional:</span> Fecha os CAs 06–09 da HU #9759 (mesmos cenários, dossiê único — split documentado no overview do plano)</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">HU #9760: 4 Critérios de Aceite evidenciados — CA05 e CA06 integralmente no navegador (com verificação da auditoria no banco), CA07 no navegador (revogação de papel ao vivo; inativação coberta pela suíte) e CA08 automatizado (404 cross-tenant). Os cenários exercitados aqui também fecham os CAs 06–09 da HU #9759. Fluxo demonstrado ao vivo com duas sessões simultâneas de navegador: operador sem permissão bloqueado (botão desabilitado + 403 in-page), Master abre o prontuário por bypass, auditoria silenciosa gravada (1 registro por abertura, CPF mascarado), concessão do papel habilita o operador no request seguinte e a revogação bloqueia de imediato. Suíte automatizada: 21 testes, 74 assertions, 100% verdes. Resultado geral: todos os critérios atendidos.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA05</td><td>Bloqueio de ação para operador comum (RN04) — também CA06 da #9759</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA06</td><td>Acesso autorizado + auditoria silenciosa (RN04/RN05) — também CA07/CA08 da #9759</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA07</td><td>Revogação imediata por remoção de papel ou inativação (RN06) — também CA09 da #9759</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA08</td><td>Isolamento territorial no acesso (RN07) — também CA10 (parte 404) da #9759</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA05">
+      <h2>CA05 — Bloqueio de ação para operador comum (RN04) — também CA06 da #9759 <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Profissional SEM a permissão especial de privacidade
+E realizei uma busca por nome que listou pessoas
+Quando a tabela exibe as pessoas localizadas
+Então o botão de visualização na coluna de Ações aparece desabilitado
+E não consigo abrir os detalhes da família daquele cidadão
+E, se eu chamar o endpoint de detalhe diretamente, recebo 403</p>
+      <p class="steps"><strong>Como foi testado:</strong> Login como <b>Operador E2E</b> (sem o papel LGPD) → Pesquisa de Pessoas → busca por CPF <code>10000000108</code>. Em seguida, deep-link direto para <code>/app/cadastros/familias/{uuid}</code> (equivale a chamar o endpoint de detalhe).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Botão "Visualizar Família" visível porém desabilitado, com tooltip: "Acesso restrito (LGPD): requer a permissão 'Visualização de Detalhes da Família'".</li><li>No deep-link direto, o backend responde 403 e a tela exibe o alerta "Acesso restrito" com orientação para solicitar acesso ao Master — nenhum dado da família é exibido.</li><li>Suíte confirma o 403 do endpoint (GET families/{uuid}/details sem permissão) e que a tentativa negada NÃO gera registro de auditoria.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca05-operador-botao-desabilitado.png" alt="CA05 evidência"/><figcaption>ca05-operador-botao-desabilitado.png</figcaption></figure><figure><img src="screenshots/ca05-operador-403-acesso-restrito.png" alt="CA05 evidência"/><figcaption>ca05-operador-403-acesso-restrito.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA06">
+      <h2>CA06 — Acesso autorizado + auditoria silenciosa (RN04/RN05) — também CA07/CA08 da #9759 <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que possuo a permissão especial ativa (ou sou Master)
+Quando clico em "Visualizar" na coluna de Ações de uma pessoa localizada
+Então sou direcionado à tela cheia "Visualizar Família" daquele núcleo familiar
+E o sistema grava, em segundo plano, um log de auditoria com meu Usuário único global,
+     o nome do Profissional local, o tenant, a data/hora e o Código Familiar
+E nenhum aviso de auditoria é exibido a mim</p>
+      <p class="steps"><strong>Como foi testado:</strong> Login como <b>Master E2E</b> → busca por CPF → clicar em <b>Visualizar Família</b>. Após o carregamento, consulta direta à tabela <code>activity_log</code> no PostgreSQL (saída em <code>auditoria-family-access.txt</code>).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Master é direcionado à tela cheia "Visualizar Família": código familiar 1600000001, status Ativa, endereço, composição familiar com 4 membros (RF primeiro, nome social precede o civil).</li><li>Registro de auditoria gravado em segundo plano: log_name=family_access, event=record_opened, com tenant_id, family_code, professional_name "E2E Master CadÚnico [Master]", datetime e CPF do usuário global MASCARADO (***.982.247-**).</li><li>Exatamente 1 registro por abertura (verificado no banco: 1 abertura Master + 1 abertura Operador autorizado = 2 registros).</li><li>Nenhum aviso de auditoria exibido ao operador — a página não menciona a gravação além do texto estático de cabeçalho.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca06-master-tela-visualizar-familia.png" alt="CA06 evidência"/><figcaption>ca06-master-tela-visualizar-familia.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA07">
+      <h2>CA07 — Revogação imediata por remoção de papel ou inativação (RN06) — também CA09 da #9759 <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o Master remove de mim o papel com "families.view-details"
+Ou me inativa como Profissional do município
+Quando eu tento abrir um prontuário no request seguinte
+Então o acesso é bloqueado (botão desabilitado e endpoint 403)
+E meu Usuário global continua válido em outros tenants</p>
+      <p class="steps"><strong>Como foi testado:</strong> Com o Operador logado e com o prontuário ABERTO em outra sessão de navegador, o Master desmarca o papel "Visualização de Detalhes da Família — LGPD" no drawer de perfis e salva. O Operador recarrega a página do prontuário (novo request), sem novo login.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>No request seguinte à revogação, o mesmo prontuário que estava aberto responde 403 e a tela mostra o alerta "Acesso restrito" — efeito em tempo real, sem depender de logout.</li><li>Ramo da inativação (Profissional inativado → 403 no próximo request) e a preservação do usuário global em outros tenants são cobertos pela suíte automatizada (cenários CA07/CA-extra-D/CA-extra-E).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca07-revogacao-403.png" alt="CA07 evidência"/><figcaption>ca07-revogacao-403.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA08">
+      <h2>CA08 — Isolamento territorial no acesso (RN07) — também CA10 (parte 404) da #9759 <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que estou autenticado no Tenant A
+Quando tento abrir o prontuário de uma família do Tenant B
+Então o sistema responde 404 (recurso fora do escopo do tenant)</p>
+      <p class="steps"><strong>Como foi testado:</strong> Coberto pela suíte automatizada (apêndice): usuário autenticado no Tenant A requisita <code>GET families/{uuid}/details</code> de família do Tenant B.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Resposta 404 (não 403) para família de outro tenant — o recurso simplesmente não existe no escopo, sem vazar sua existência.</li><li>Guard-rail explícito no controller (binding por uuid resolve antes do middleware de tenant — mesmo padrão dos módulos existentes).</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+  
+  <h2>Anexo — Cobertura automatizada (Pest, --filter=FamilyDetails|FamilyAccess|ClientUserPolicyStackedRoles) — 21 passed, 74 assertions · Auditoria verificada no banco em auditoria-family-access.txt</h2>
+  <pre class="pest">
+   PASS  Tests\Unit\Services\FamilyAccessAuditServiceTest
+  ✓ it writes one family_access/record_opened entry with the RN05 prope… 0.45s  
+  ✓ it labels the professional name as "&lt;Nome&gt; [Master]" when the Master has…  0.01s  
+  ✓ it prefers the local professional name over the master label when t… 0.02s  
+
+   PASS  Tests\Unit\Services\FamilyAccessServiceTest
+  ✓ it detects the master role only in the tenant where it was granted   0.03s  
+  ✓ it detects the view-details permission per tenant, via the dedicate… 0.02s  
+  ✓ it stops counting a revoked (force-deleted) role as a grant          0.02s  
+  ✓ it resolves the active professional and denies inactive/soft-delete… 0.03s  
+
+   PASS  Tests\Feature\Api\Client\FamilyDetailsTest
+  ✓ it denies the base operator without the restricted permission (CA05… 0.07s  
+  ✓ it grants the operator with the family_viewer role and audits silen… 0.05s  
+  ✓ it lets the Master open the record via role bypass, without the res… 0.04s  
+  ✓ it blocks immediately when the professional is inactivated, even ke… 0.04s  
+  ✓ it blocks on the request right after the role is revoked, keeping t… 0.05s  
+  ✓ it returns 404 (not 403) for a family of another tenant (CA08 9760…  0.05s  
+  ✓ it does not let a grant in Tenant A open records in Tenant B (CA-ex… 0.05s  
+  ✓ it wires the dedicated family_viewer role in the seeder: level 25,…  0.03s  
+  ✓ it keeps the restricted permission out of the base roles after perm… 0.89s  
+  ✓ it lists family_viewer as assignable by the Master (listAssignable…  0.04s  
+
+   PASS  Tests\Feature\Policies\ClientUserPolicyStackedRolesTest
+  ✓ it resolves the SENIOR role (operador, level 30) even when the fami… 0.03s  
+  ✓ it resolves the SENIOR role even when the family_viewer add-on is i… 0.02s  
+  ✓ it an operador stacked with family_viewer still CANNOT create anoth… 0.03s  
+  ✓ it an operador stacked with family_viewer still CANNOT update anoth… 0.03s  
+
+  Tests:    21 passed (74 assertions)
+  Duration: 2.42s
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

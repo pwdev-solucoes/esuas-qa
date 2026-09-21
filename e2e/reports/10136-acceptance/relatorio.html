@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — HU #10136</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — HU #10136</h1>
+    <div class="sub">Botões e campos somente leitura com comportamento previsível · Design system cross-cutting (admin/ + client/) · Evidências end-to-end no navegador</div>
+    <div class="meta"><div><span>Gerado em:</span> 30/07/2026 21:29</div><div><span>Ticket:</span> GLPI #10136 — Botões e campos somente leitura com comportamento previsível</div><div><span>Spec:</span> .planning/specs/10136-campos-readonly-botoes-previsiveis.md</div><div><span>Branch:</span> feature/10136-campos-readonly-botoes-previsiveis (admin/ e client/)</div><div><span>Commits:</span> admin adee37b (aprovado em revisão, zero achados) · client da897c2 + eb7ef17 (achados de revisão corrigidos no 2º commit)</div><div><span>Ambiente:</span> API Sail :80 (container api-laravel.test-1, reusado) · admin Vite :5173 (worktree isolado no commit adee37b) · client Vite :5174 (branch real, checkout já existente)</div><div><span>Usuários:</span> Manager admin: 'Administrador eSUAS' CPF 44983702016 (role admin, seed UserSeeder). Client master: 'João Coordenador' CPF 15543849079 (role master, tenants Fortaleza/Maceió, seed UserSeeder)</div><div><span>Ferramenta:</span> playwright-cli (Chromium) + npm run audit:ui (scripts/audit-ui-consistency.mjs, admin e client)</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">6 critérios de aceite (CA01–CA06). Feature sem back-end: puramente de componentes Vue/Tailwind compartilhados entre admin/ e client/. CA01, CA02, CA04 e CA05 evidenciados por navegador (screenshots + inspeção de atributos/classes reais renderizadas); CA03 evidenciado por navegador + pela suíte automatizada 'npm run audit:ui' (zero desvios em ambos os repos); CA06 evidenciado injetando propositalmente um desvio real num arquivo temporário e descartável, provando que o script detecta e reporta 'arquivo:linha' — o arquivo foi removido logo em seguida e 'git status' confirmou que nada ficou pendente. Resultado geral: todos os 6 CAs atendidos.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA01</td><td>Campo somente leitura é inequívoco</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA02</td><td>Somente leitura não engana o teclado</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA03</td><td>Botões primários uniformes</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA04</td><td>Ação destrutiva nunca compete com a primária</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA05</td><td>Foco visível e idêntico entre Admin e Client</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA06</td><td>Desvio é detectável (caminho de erro)</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA01">
+      <h2>CA01 — Campo somente leitura é inequívoco <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um prontuário aberto em modo consulta
+Quando inspeciono um campo somente leitura
+Então ele usa o mesmo par de tokens (fundo/texto) em todas as telas do módulo
+E carrega o atributo `readonly` (ou `aria-readonly="true"`)
+E é anunciado como somente leitura por leitor de tela</p>
+      <p class="steps"><strong>Como foi testado:</strong> No <b>client</b>, login como master (15543849079) → tenant Fortaleza → <code>/app/cadastros/profissionais-municipais/:uuid/editar</code> (edição de um profissional municipal já cadastrado). O campo <b>CPF</b> usa <code>:readonly="isEdit"</code> em <code>ProfissionalMunicipalFormPage.vue:390</code>, delegado ao componente-base <code>Input.vue</code> (RN02/RN03 da spec). Inspecionado via <code>page.evaluate</code> no elemento real (não apenas a árvore de acessibilidade) para capturar os atributos DOM que o leitor de tela consome.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Atributo nativo &lt;code&gt;readOnly = true&lt;/code&gt; no elemento &amp;lt;input&amp;gt; (confirmado via eval, ver &lt;code&gt;ca01-cpf-a11y-attrs.json&lt;/code&gt;).</li><li>&lt;code&gt;aria-readonly="true"&lt;/code&gt; injetado automaticamente pelo componente — o atributo é exatamente o que leitores de tela (NVDA/JAWS/VoiceOver) usam para anunciar 'somente leitura', sem que a tela precise declará-lo (RN03).</li><li>Classe computada do elemento inclui &lt;code&gt;read-only:bg-muted read-only:text-muted-foreground read-only:cursor-default read-only:caret-transparent read-only:shadow-none&lt;/code&gt; — o mesmo par de tokens fundo/texto vem do componente &lt;code&gt;Input.vue&lt;/code&gt;, não colado na tela (RN02).</li><li>Visualmente o campo CPF aparece com fundo/texto acinzentados (muted), distinto dos demais campos editáveis da mesma tela (ver screenshot).</li><li>Árvore de acessibilidade completa da tela salva em &lt;code&gt;ca01-accessibility-snapshot.yml&lt;/code&gt; para referência (o snapshot ARIA do playwright-cli não expõe 'readonly' como rótulo textual — por isso a evidência primária desta CA é a leitura direta dos atributos DOM/ARIA reais em &lt;code&gt;ca01-cpf-a11y-attrs.json&lt;/code&gt;, que é o dado que efetivamente chega ao leitor de tela).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca01-campo-readonly-cpf.png" alt="CA01 evidência"/><figcaption>ca01-campo-readonly-cpf.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA02">
+      <h2>CA02 — Somente leitura não engana o teclado <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado o mesmo campo
+Quando navego por Tab
+Então ele é focável (para leitura) mas não aceita digitação
+E não exibe cursor de texto piscando, que sinalizaria edição possível</p>
+      <p class="steps"><strong>Como foi testado:</strong> No mesmo campo CPF (readonly, tela de edição de profissional municipal): clique para focar (equivalente a alcançar o campo por Tab), confirmado via <code>document.activeElement === el</code> → <code>true</code>. Em seguida, tentativa de digitação de 9 dígitos (<code>page.keyboard.type('999999999')</code>) diretamente no campo focado.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Campo é focável: &lt;code&gt;document.activeElement&lt;/code&gt; aponta para o elemento após o clique/Tab.</li><li>Valor do campo permanece inalterado após a tentativa de digitação: &lt;code&gt;814.590.269-80&lt;/code&gt; antes e depois (confirmado por leitura de &lt;code&gt;el.value&lt;/code&gt;) — o atributo &lt;code&gt;readonly&lt;/code&gt; nativo do HTML bloqueia a edição mesmo com o campo focado.</li><li>A classe &lt;code&gt;read-only:caret-transparent&lt;/code&gt; (visível na inspeção de CA01) torna o cursor de texto transparente quando o campo está em modo readonly — não há cursor piscando sinalizando edição possível.</li><li>Print 'antes' e 'depois' da tentativa de digitação, para comparação visual.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca02-focado-antes-digitar.png" alt="CA02 evidência"/><figcaption>ca02-focado-antes-digitar.png</figcaption></figure><figure><img src="screenshots/ca02-depois-digitar-inalterado.png" alt="CA02 evidência"/><figcaption>ca02-depois-digitar-inalterado.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA03">
+      <h2>CA03 — Botões primários uniformes <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado qualquer formulário de `admin/` ou `client/`
+Quando comparo os botões de ação principal
+Então todos usam a mesma variante e o mesmo `size` do design system
+E nenhum sobrescreve altura, `padding` ou cor por classe utilitária avulsa</p>
+      <p class="steps"><strong>Como foi testado:</strong> Navegador: screenshot do botão primário 'Salvar profissional' no rodapé do formulário de edição de profissional municipal (<b>client</b>) e do botão primário 'Salvar' no diálogo 'Novo País' (<b>admin</b>). Classe computada de cada botão lida via <code>el.className</code> e comparada contra o <code>cva</code> de <code>components/ui/button/index.ts</code> (idêntico nos dois repos). Automatizado: <code>npm run audit:ui</code> rodado em <code>admin/</code> (worktree, commit adee37b) e <code>client/</code> (branch real, commit eb7ef17), saída completa salva em <code>audit-ui-admin.txt</code> / <code>audit-ui-client.txt</code> (consolidado em <code>audit-ui-consolidado.txt</code>).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>client 'Salvar profissional': classe &lt;code&gt;bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2 has-[&gt;svg]:px-3&lt;/code&gt; — combinação exata do &lt;code&gt;variant="default" size="default"&lt;/code&gt; do cva, sem classe utilitária extra de cor/altura/padding.</li><li>admin 'Salvar' (diálogo Novo País): classe &lt;code&gt;bg-primary text-primary-foreground hover:bg-primary/90 h-10 rounded-md px-4 has-[&gt;svg]:px-4&lt;/code&gt; — mesma variante &lt;code&gt;default&lt;/code&gt;, &lt;code&gt;size="lg"&lt;/code&gt; (também um valor canônico do cva, não um override manual; a diferença de altura entre os dois é uma escolha de &lt;code&gt;size&lt;/code&gt; prop válida do design system, não uma classe colada).</li><li>npm run audit:ui em admin/: 'Resultado: ZERO desvios' (586 arquivos .vue varridos); as ocorrências listadas no relatório são exceções RN07 explicitamente documentadas (ex.: toggle de visualização tabela/cards com estado, não botão de ação), não desvios.</li><li>npm run audit:ui em client/: 'OK: zero desvios de conformidade de UI' (279 arquivos .vue varridos), com 2 exceções RN07 documentadas (DatePicker trigger, tile de logo — nenhum é botão de ação do design system).</li><li>Ver anexo consolidado para a saída completa de ambos os comandos.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca03-botoes-client-profissional.png" alt="CA03 evidência"/><figcaption>ca03-botoes-client-profissional.png</figcaption></figure><figure><img src="screenshots/ca03-botoes-admin-pais.png" alt="CA03 evidência"/><figcaption>ca03-botoes-admin-pais.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA04">
+      <h2>CA04 — Ação destrutiva nunca compete com a primária <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado uma tela com ação destrutiva (excluir, inativar)
+Quando a observo
+Então ela usa a variante `destructive`
+E não ocupa a posição visual de ação primária do formulário</p>
+      <p class="steps"><strong>Como foi testado:</strong> <b>Client</b>: menu 'Mais ações' → 'Inativar' na listagem de Profissionais Municipais, abrindo o diálogo de confirmação. <b>Admin</b>: menu 'Mais ações' → 'Excluir' na listagem de Países, abrindo <code>DeleteCountryDialog.vue</code>. Em ambos, classe computada dos botões 'Cancelar' vs. ação destrutiva foi lida via <code>el.className</code>. Nenhuma exclusão/inativação foi de fato confirmada — os diálogos foram fechados via 'Cancelar' para não alterar dados de seed.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>client 'Inativar': &lt;code&gt;bg-destructive text-white hover:bg-destructive/90 ... h-10 rounded-md px-4&lt;/code&gt; (variant="destructive"); 'Cancelar' ao lado: &lt;code&gt;border bg-background ...&lt;/code&gt; (variant="outline") — a ação destrutiva não ocupa a posição de ação primária do formulário (não é &lt;code&gt;bg-primary&lt;/code&gt;).</li><li>admin 'Excluir': mesma combinação &lt;code&gt;bg-destructive text-white ...&lt;/code&gt;; 'Cancelar': &lt;code&gt;border bg-background ...&lt;/code&gt; — idêntico ao client.</li><li>Visualmente, em ambos os prints o botão destrutivo (vermelho, ícone de lixeira) fica claramente separado e com menor ênfase de posição que uma ação primária típica, ao lado do 'Cancelar' neutro.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca04-dialog-destrutivo-client.png" alt="CA04 evidência"/><figcaption>ca04-dialog-destrutivo-client.png</figcaption></figure><figure><img src="screenshots/ca04-dialog-destrutivo-admin.png" alt="CA04 evidência"/><figcaption>ca04-dialog-destrutivo-admin.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA05">
+      <h2>CA05 — Foco visível e idêntico entre Admin e Client <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado qualquer botão em foco por teclado
+Quando comparo Admin e Client
+Então o anel de foco tem o mesmo token e espessura
+E contraste ≥ 3:1 contra o fundo adjacente</p>
+      <p class="steps"><strong>Como foi testado:</strong> Foco programático (equivalente a chegar por Tab) no botão primário de cada app — 'Salvar profissional' (client, formulário de edição) e 'Salvar' (admin, diálogo Novo País) — seguido de screenshot. Classe computada de cada botão comparada token a token.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Ambos os botões carregam exatamente &lt;code&gt;focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]&lt;/code&gt; — mesmo token de tema (&lt;code&gt;--ring&lt;/code&gt;) e mesma espessura (3px), herdados do &lt;code&gt;cva&lt;/code&gt; compartilhado (RN06), sem nenhuma sobrescrita local.</li><li>Visualmente os dois prints mostram um anel azul de ~3px ao redor do botão, com contraste nítido contra o fundo branco/card adjacente em ambas as telas (validação manual ≥ 3:1 — o projeto não tem ferramenta automatizada de contraste, conforme já registrado na spec §10).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca05-foco-client-botao.png" alt="CA05 evidência"/><figcaption>ca05-foco-client-botao.png</figcaption></figure><figure><img src="screenshots/ca05-foco-admin-botao.png" alt="CA05 evidência"/><figcaption>ca05-foco-admin-botao.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA06">
+      <h2>CA06 — Desvio é detectável (caminho de erro) <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um componente que sobrescreve a variante por classe utilitária
+Quando executo a auditoria de conformidade
+Então ele é listado como desvio, com `arquivo:linha`</p>
+      <p class="steps"><strong>Como foi testado:</strong> Para provar que o script <b>detecta</b> desvios (e não apenas que passa com zero desvios, o que por si só não comprova capacidade de detecção), foi criado um arquivo <b>temporário e descartável</b> — <code>client/src/pages/app/__audit-ui-demo-temp.vue</code>, fora de qualquer diretório real do módulo — contendo um <code>&lt;button class="bg-destructive h-10 px-5"&gt;</code> nativo replicando de propósito a variante <code>destructive</code>. Rodado <code>npm run audit:ui</code> (saída salva em <code>audit-ui-deteccao-demo.txt</code>), o arquivo foi removido em seguida (<code>rm</code>) e <code>git status</code> confirmou working tree limpa — nada do arquivo de demonstração permaneceu, commitado ou não.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Saída do script (com o arquivo de demo presente): &lt;code&gt;[R2] RN05 — &amp;lt;button&amp;gt; nativo replicando o design system: 1 desvio(s)&lt;/code&gt;, listando exatamente &lt;code&gt;src/pages/app/__audit-ui-demo-temp.vue:11 — &amp;lt;button&amp;gt; nativo reimplementa a aparencia do componente Button (use &amp;lt;Button variant=... size=...&amp;gt;)&lt;/code&gt; — formato &lt;code&gt;arquivo:linha&lt;/code&gt; conforme RN07.</li><li>Exit code do comando: 1 (falha o gate de PR), confirmando que a auditoria é efetivamente bloqueante, não apenas informativa.</li><li>Após &lt;code&gt;rm&lt;/code&gt; do arquivo, nova execução de &lt;code&gt;npm run audit:ui&lt;/code&gt; voltou a reportar 'OK: zero desvios de conformidade de UI' (exit 0) e &lt;code&gt;git status --short&lt;/code&gt; em &lt;code&gt;client/&lt;/code&gt; não mostrou nenhuma alteração pendente — a demonstração não deixou rastro.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+  
+  <h2>Anexo — Cobertura automatizada — npm run audit:ui (admin/, client/) + demonstração de detecção do CA06</h2>
+  <pre class="pest">======================================================================
+1) npm run audit:ui — admin/ (worktree feature/10136-campos-readonly-botoes-previsiveis, commit adee37b)
+======================================================================
+
+&gt; sigsuas-frontend-admin@0.1.0 audit:ui
+&gt; node scripts/audit-ui-consistency.mjs
+
+Auditoria de conformidade de UI — HU #10136
+Arquivos .vue varridos: 586
+
+Exceções explícitas (RN07 — listadas, nunca silenciadas):
+
+  [RN05-nativo] em src/components/ui/ — 0 ocorrência(s)
+  Motivo: É o próprio design system: `components/ui/` é onde a aparência dos botões é definida (Button.vue/cva) e onde as primitivas reka-ui renderizam `&lt;button&gt;` nativo.
+
+  [RN05-nativo-condicional] — 82 ocorrência(s)
+  Motivo: Controle segmentado com estado (toggle de visualização, seletor de modo, barra do editor): a "variante" alterna com o estado e a versão ativa usa tokens que não correspondem a uma variante única do `Button` (ex.: `bg-primary/10` + `border-primary`). Migração avaliada como evolução — está listada aqui, item a item, e não é silenciada.
+    src/components/app/AppSidebar.vue:188 — replica a variante "default" por estado
+    src/components/app/AppSidebar.vue:296 — replica a variante "default" por estado
+    src/components/app/RichTextEditor.vue:209 — replica a variante "secondary" por estado
+    src/modules/address-sources/components/AddressSourcesFilters.vue:111 — replica a variante "secondary" por estado
+    src/modules/address-sources/components/AddressSourcesFilters.vue:126 — replica a variante "secondary" por estado
+    src/modules/address-zone-types/components/AddressZoneTypesFilters.vue:115 — replica a variante "secondary" por estado
+    src/modules/address-zone-types/components/AddressZoneTypesFilters.vue:130 — replica a variante "secondary" por estado
+    src/modules/cbos/components/CbosFilters.vue:125 — replica a variante "secondary" por estado
+    src/modules/cbos/components/CbosFilters.vue:140 — replica a variante "secondary" por estado
+    src/modules/cities/components/CitiesFilters.vue:128 — replica a variante "secondary" por estado
+    src/modules/cities/components/CitiesFilters.vue:143 — replica a variante "secondary" por estado
+    src/modules/contract-modalities/components/ContractModalitiesFilters.vue:115 — replica a variante "secondary" por estado
+    src/modules/contract-modalities/components/ContractModalitiesFilters.vue:130 — replica a variante "secondary" por estado
+    src/modules/countries/components/CountriesFilters.vue:109 — replica a variante "secondary" por estado
+    src/modules/countries/components/CountriesFilters.vue:124 — replica a variante "secondary" por estado
+    src/modules/dne-imports/components/DneImportsFilters.vue:117 — replica a variante "secondary" por estado
+    src/modules/dne-imports/components/DneImportsFilters.vue:130 — replica a variante "secondary" por estado
+    src/modules/dne-imports/components/DneImportsFilters.vue:175 — replica a variante "secondary" por estado
+    src/modules/dne-imports/components/DneImportsFilters.vue:190 — replica a variante "secondary" por estado
+    src/modules/education-levels/components/EducationLevelsFilters.vue:111 — replica a variante "secondary" por estado
+    src/modules/education-levels/components/EducationLevelsFilters.vue:126 — replica a variante "secondary" por estado
+    src/modules/geo-layer-imports/components/GeoLayerImportsFilters.vue:132 — replica a variante "secondary" por estado
+    src/modules/geo-layer-imports/components/GeoLayerImportsFilters.vue:145 — replica a variante "secondary" por estado
+    src/modules/geo-layer-imports/components/GeoLayerImportsFilters.vue:190 — replica a variante "secondary" por estado
+    src/modules/geo-layer-imports/components/GeoLayerImportsFilters.vue:205 — replica a variante "secondary" por estado
+    src/modules/geo-layers/components/GeoLayerCriteriaBuilder.vue:105 — replica a variante "default" por estado
+    src/modules/legal-document-types/components/LegalDocumentTypesFilters.vue:133 — replica a variante "secondary" por estado
+    src/modules/legal-document-types/components/LegalDocumentTypesFilters.vue:148 — replica a variante "secondary" por estado
+    src/modules/legal-documents/components/LegalDocumentsFilters.vue:127 — replica a variante "secondary" por estado
+    src/modules/legal-documents/components/LegalDocumentsFilters.vue:142 — replica a variante "secondary" por estado
+    src/modules/legal-documents/components/dialogs/VersionHistoryDrawer.vue:94 — replica a variante "default" por estado
+    src/modules/location-types/components/LocationTypesFilters.vue:109 — replica a variante "secondary" por estado
+    src/modules/location-types/components/LocationTypesFilters.vue:124 — replica a variante "secondary" por estado
+    src/modules/nationalities/components/NationalitiesFilters.vue:111 — replica a variante "secondary" por estado
+    src/modules/nationalities/components/NationalitiesFilters.vue:126 — replica a variante "secondary" por estado
+    src/modules/persons/components/PersonsSearchBar.vue:53 — replica a variante "secondary" por estado
+    src/modules/persons/components/PersonsSearchBar.vue:67 — replica a variante "secondary" por estado
+    src/modules/persons/components/PersonsSearchBar.vue:81 — replica a variante "secondary" por estado
+    src/modules/phone-types/components/PhoneTypesFilters.vue:111 — replica a variante "secondary" por estado
+    src/modules/phone-types/components/PhoneTypesFilters.vue:126 — replica a variante "secondary" por estado
+    src/modules/postal-codes/components/PostalCodesFilters.vue:150 — replica a variante "secondary" por estado
+    src/modules/postal-codes/components/PostalCodesFilters.vue:165 — replica a variante "secondary" por estado
+    src/modules/race-colors/components/RaceColorsFilters.vue:111 — replica a variante "secondary" por estado
+    src/modules/race-colors/components/RaceColorsFilters.vue:126 — replica a variante "secondary" por estado
+    src/modules/roles/components/RolesFilters.vue:120 — replica a variante "secondary" por estado
+    src/modules/roles/components/RolesFilters.vue:135 — replica a variante "secondary" por estado
+    src/modules/sexes/components/SexesFilters.vue:111 — replica a variante "secondary" por estado
+    src/modules/sexes/components/SexesFilters.vue:126 — replica a variante "secondary" por estado
+    src/modules/social-entity-statuses/components/SocialEntityStatusesFilters.vue:117 — replica a variante "secondary" por estado
+    src/modules/social-entity-statuses/components/SocialEntityStatusesFilters.vue:132 — replica a variante "secondary" por estado
+    src/modules/social-specificities/components/SocialSpecificitiesFilters.vue:117 — replica a variante "secondary" por estado
+    src/modules/social-specificities/components/SocialSpecificitiesFilters.vue:132 — replica a variante "secondary" por estado
+    src/modules/social-unit-equipments/components/SocialUnitEquipmentsFilters.vue:117 — replica a variante "secondary" por estado
+    src/modules/social-unit-equipments/components/SocialUnitEquipmentsFilters.vue:132 — replica a variante "secondary" por estado
+    src/modules/social-unit-statuses/components/SocialUnitStatusesFilters.vue:117 — replica a variante "secondary" por estado
+    src/modules/social-unit-statuses/components/SocialUnitStatusesFilters.vue:132 — replica a variante "secondary" por estado
+    src/modules/social-unit-structures/components/SocialUnitStructuresFilters.vue:117 — replica a variante "secondary" por estado
+    src/modules/social-unit-structures/components/SocialUnitStructuresFilters.vue:132 — replica a variante "secondary" por estado
+    src/modules/social-unit-types/components/SocialUnitTypesFilters.vue:113 — replica a variante "secondary" por estado
+    src/modules/social-unit-types/components/SocialUnitTypesFilters.vue:128 — replica a variante "secondary" por estado
+    src/modules/states/components/StatesFilters.vue:126 — replica a variante "secondary" por estado
+    src/modules/states/components/StatesFilters.vue:141 — replica a variante "secondary" por estado
+    src/modules/street-types/components/StreetTypesFilters.vue:129 — replica a variante "secondary" por estado
+    src/modules/street-types/components/StreetTypesFilters.vue:144 — replica a variante "secondary" por estado
+    src/modules/streets/components/StreetsFilters.vue:142 — replica a variante "secondary" por estado
+    src/modules/streets/components/StreetsFilters.vue:157 — replica a variante "secondary" por estado
+    src/modules/suas-participation-types/components/SuasParticipationTypesFilters.vue:117 — replica a variante "secondary" por estado
+    src/modules/suas-participation-types/components/SuasParticipationTypesFilters.vue:132 — replica a variante "secondary" por estado
+    src/modules/tenant-statuses/components/TenantStatusesFilters.vue:111 — replica a variante "secondary" por estado
+    src/modules/tenant-statuses/components/TenantStatusesFilters.vue:126 — replica a variante "secondary" por estado
+    src/modules/tenants/components/TenantsFilters.vue:121 — replica a variante "secondary" por estado
+    src/modules/tenants/components/TenantsFilters.vue:136 — replica a variante "secondary" por estado
+    src/modules/territorial-unit-types/components/TerritorialUnitTypesFilters.vue:119 — replica a variante "secondary" por estado
+    src/modules/territorial-unit-types/components/TerritorialUnitTypesFilters.vue:134 — replica a variante "secondary" por estado
+    src/modules/territorial-units/components/TerritorialUnitsFilters.vue:167 — replica a variante "secondary" por estado
+    src/modules/territorial-units/components/TerritorialUnitsFilters.vue:182 — replica a variante "secondary" por estado
+    src/modules/traditional-population-groups/components/TraditionalPopulationGroupsFilters.vue:119 — replica a variante "secondary" por estado
+    src/modules/traditional-population-groups/components/TraditionalPopulationGroupsFilters.vue:134 — replica a variante "secondary" por estado
+    src/modules/users/components/UsersFilters.vue:133 — replica a variante "secondary" por estado
+    src/modules/users/components/UsersFilters.vue:148 — replica a variante "secondary" por estado
+    src/pages/app/GeoLayerFormPage.vue:363 — replica a variante "default" por estado
+    src/pages/app/PersonFormPage.vue:164 — replica a variante "default" por estado
+
+Resultado: ZERO desvios.
+
+======================================================================
+2) npm run audit:ui — client/ (branch feature/10136-campos-readonly-botoes-previsiveis, commit eb7ef17)
+======================================================================
+
+&gt; esuas-client@0.1.0 audit:ui
+&gt; node scripts/audit-ui-consistency.mjs
+
+Auditoria de conformidade de UI (HU #10136) — 279 arquivos .vue em src/
+
+[R1] RN05 — &lt;Button&gt; com override de variante: 0 desvio(s)
+[R2] RN05 — &lt;button&gt; nativo replicando o design system: 0 desvio(s)
+[R3] RN01 — :disabled usado como "modo visualizacao": 0 desvio(s)
+[R4] RN02 — classe de readonly colada na tela: 0 desvio(s)
+Excecoes declaradas (visiveis por RN07): 2
+  src/components/app/DatePicker.vue:56 [R2] — Gatilho de Popover do campo de data (PopoverTrigger as-child): e controle de formulario com aparencia de Input, nao acao do design system.
+  src/modules/tenant-settings/components/OrganizationLogoHeader.vue:84 [R2] — Tile clicavel do logo da organizacao (60x60, avatar com upload): nao e botao de acao — nenhuma variante/size do Button descreve esse elemento.
+
+OK: zero desvios de conformidade de UI.
+
+======================================================================
+3) CA06 — demonstração de detecção: arquivo temporário injetado com desvio proposital
+   (client/src/pages/app/__audit-ui-demo-temp.vue — REMOVIDO logo após a captura,
+    confirmado via 'git status' limpo; não commitado, não faz parte do código real)
+======================================================================
+
+&gt; esuas-client@0.1.0 audit:ui
+&gt; node scripts/audit-ui-consistency.mjs
+
+Auditoria de conformidade de UI (HU #10136) — 280 arquivos .vue em src/
+
+[R1] RN05 — &lt;Button&gt; com override de variante: 0 desvio(s)
+[R2] RN05 — &lt;button&gt; nativo replicando o design system: 1 desvio(s)
+  src/pages/app/__audit-ui-demo-temp.vue:11 — &lt;button&gt; nativo reimplementa a aparencia do componente Button (use &lt;Button variant=... size=...&gt;)
+      bg-destructive h-10 px-5
+
+[R3] RN01 — :disabled usado como "modo visualizacao": 0 desvio(s)
+[R4] RN02 — classe de readonly colada na tela: 0 desvio(s)
+Excecoes declaradas (visiveis por RN07): 2
+  src/components/app/DatePicker.vue:56 [R2] — Gatilho de Popover do campo de data (PopoverTrigger as-child): e controle de formulario com aparencia de Input, nao acao do design system.
+  src/modules/tenant-settings/components/OrganizationLogoHeader.vue:84 [R2] — Tile clicavel do logo da organizacao (60x60, avatar com upload): nao e botao de acao — nenhuma variante/size do Button descreve esse elemento.
+
+FALHA: 1 desvio(s) de conformidade de UI.
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

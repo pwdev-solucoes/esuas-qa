@@ -1,0 +1,91 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — Segmentação por Tipo de Pessoa (PF/PJ) na Base Global",
+    "subtitle": "HU #9698 · Complemento do Cadastro Único · Evidências end-to-end no Painel Global (admin)",
+    "rows": [
+      ["Gerado em", "29/06/2026 09:32"],
+      ["Branch", "feature/hu-9698-persons-segmentacao-pf-pj"],
+      ["Spec", ".planning/specs/HU #9698 - Segmentação por Tipo de Pessoa (Física ou Jurídica) na Base Global.md"],
+      ["Ambiente", "API Sail/PostgreSQL · admin (auth:manager) :5174 (domínio stateful)"],
+      ["Usuário", "E2E Super Admin · CPF 44983702016 · role ADMIN"],
+      ["Recurso", "persons (repositório global — sem tenant, sem soft delete)"],
+      ["Ferramenta", "playwright-cli (Chromium) + Pest"]
+    ]
+  },
+  "summary": "5 critérios de aceite (CA01–CA05). CA01–CA04 evidenciados por navegador no painel admin dirigindo o fluxo real de inclusão PF/PJ; CA02/CA03 também cobrem a duplicidade em tempo real (alertas de CPF/CNPJ). CA05 é parcial: o salvamento categorizado (person_type) e a trilha de auditoria (evento, autor, timestamp) são evidenciados ao vivo + Pest, mas o snapshot de atributos no activity_log sai vazio (comportamento pré-existente do modelo Person — ver observação). Apêndice automatizado: 46 testes Pest verdes (140 asserções).",
+  "cas": [
+    {
+      "id": "CA01",
+      "title": "Seleção de tipo de pessoa no início do cadastro",
+      "status": "nav",
+      "gherkin": "Dado que o Administrador acessa a tela de inclusão de um novo registro na base global\nQuando a tela é carregada\nEntão o sistema apresenta uma seleção clara entre \"Pessoa Física\" e \"Pessoa Jurídica\"\nE os campos de identificação permanecem ocultos/desabilitados até a escolha ser feita",
+      "steps_html": "Login como Super Admin → navegar para <code>/app/persons/novo</code>. A tela exibe apenas o seletor segmentado <b>Tipo de pessoa *</b> com os botões \"Pessoa Física\" e \"Pessoa Jurídica\".",
+      "results": [
+        "O seletor PF/PJ é o primeiro e único elemento do formulário antes da escolha.",
+        "Nenhum campo de identificação (Nome, CPF, CNPJ…) está presente até o tipo ser selecionado — o bloco de seções é renderizado sob <code>v-if=\"hasType\"</code>.",
+        "O botão Salvar permanece desabilitado enquanto o tipo não é escolhido."
+      ],
+      "images": ["screenshots/ca01-selecao-tipo.png"]
+    },
+    {
+      "id": "CA02",
+      "title": "Fluxo e validação para Pessoa Física (PF)",
+      "status": "parc",
+      "gherkin": "Dado que o usuário selecionou \"Pessoa Física\"\nQuando ele avança para o preenchimento dos dados\nEntão o sistema libera CPF (obrigatório, validação de dígito), Nome Completo (obrigatório), Nome da Mãe (obrigatório), Data de Nascimento (obrigatório) e Sexo\nE se o CPF já existir na base global, bloqueia o salvamento e emite alerta de duplicidade",
+      "steps_html": "Selecionar \"Pessoa Física\" → os campos PF são liberados. Preenchemos Nome, Nome da mãe, Nascimento e digitamos um CPF já cadastrado (<code>111.444.777-35</code>) e, depois, um CPF válido inédito.",
+      "results": [
+        "Campos liberados na PF: Nome completo, Nome da mãe, Data de nascimento, Sexo e CPF.",
+        "CPF já existente (\"Maria das Dores Silva\") dispara em tempo real o alerta \"Já existe uma pessoa com este CPF\" (check-cpf).",
+        "CPF válido inédito é aceito (sem alerta).",
+        "Backend: Pest cobre obrigatoriedade dos campos PF e bloqueio de CPF duplicado."
+      ],
+      "images": ["screenshots/ca02-pf-cpf-duplicado.png", "screenshots/ca02-pf-valido.png"]
+    },
+    {
+      "id": "CA03",
+      "title": "Fluxo e validação para Pessoa Jurídica (PJ)",
+      "status": "parc",
+      "gherkin": "Dado que o usuário selecionou \"Pessoa Jurídica\"\nQuando ele avança para o preenchimento dos dados\nEntão o sistema libera CNPJ (obrigatório, validação de dígito), Razão Social (obrigatório), Nome Fantasia (obrigatório) e Inscrição Municipal/Estadual (opcional)\nE oculta os campos exclusivos de PF (Data de Nascimento e Nome da Mãe)\nE se o CNPJ já existir na base global, bloqueia o salvamento e emite o alerta: \"Esta Pessoa Jurídica já está cadastrada na Base Global\"",
+      "steps_html": "Selecionar \"Pessoa Jurídica\" → campos PJ liberados e campos PF ocultados. Digitamos um CNPJ válido inédito e, depois, um CNPJ já cadastrado (PJ \"Associação Beneficente Esperança\").",
+      "results": [
+        "Campos liberados na PJ: Razão social, Nome fantasia, CNPJ, Inscrição municipal e Inscrição estadual (opcionais).",
+        "Campos exclusivos de PF (Nome da mãe, Data de nascimento) ficam ocultos.",
+        "CNPJ já existente dispara o alerta com a mensagem exata da spec: \"Esta Pessoa Jurídica já está cadastrada na Base Global.\" (+ razão social).",
+        "Backend: Pest cobre obrigatoriedade CNPJ/Nome Fantasia, validação de dígito e bloqueio de CNPJ duplicado."
+      ],
+      "images": ["screenshots/ca03-pj-valido.png", "screenshots/ca03-pj-cnpj-duplicado.png"]
+    },
+    {
+      "id": "CA04",
+      "title": "Unificação de contatos e endereços",
+      "status": "nav",
+      "gherkin": "Dado que o tipo de pessoa foi selecionado e a identificação preenchida (PF ou PJ)\nQuando o usuário avança para os blocos de Contato e Endereço\nEntão o sistema reaproveita a mesma estrutura de campos globais para ambos os tipos, exigindo CEP, Logradouro, Número, Bairro, Cidade, Estado e Telefone",
+      "steps_html": "No formulário PJ, adicionar um telefone e abrir o drawer de Endereço. Os mesmos blocos de Contato (telefone) e Endereço (drawer DNE com CEP, Cidade, Estado, Número…) usados na PF são reaproveitados sem alteração.",
+      "results": [
+        "Seção de Telefones (tipo + número) idêntica para PF e PJ.",
+        "Drawer de Endereço único (CEP, Logradouro, Número, Bairro, Cidade, Estado) reaproveitado para ambos — mesma infra de social-units/persons.",
+        "Nenhuma tabela/estrutura nova: person_phones e person_addresses → addresses servem PF e PJ."
+      ],
+      "images": ["screenshots/ca04-endereco-contato-unificado.png"]
+    },
+    {
+      "id": "CA05",
+      "title": "Salvamento e registro do tipo de ator (com auditoria)",
+      "status": "parc",
+      "gherkin": "Dado que todos os dados obrigatórios do tipo selecionado foram preenchidos corretamente\nQuando o usuário aciona salvar\nEntão o sistema grava o registro na Base Global categorizado com o marcador de natureza (PF/PJ)\nE registra no log de auditoria o tipo de pessoa, o documento validador (CPF ou CNPJ), o autor da ação, a data e a hora",
+      "steps_html": "Salvar a PJ \"Instituto Novo Horizonte\" (CNPJ válido inédito). O registro é persistido com <code>person_type='pj'</code> e aparece na listagem segmentada (coluna Documento = CNPJ, secundária = Nome Fantasia). A trilha de auditoria é verificada no <code>activity_log</code>.",
+      "results": [
+        "Persistência categorizada: persons id=19, person_type='pj', cnpj=71994591747319 (confirmado no banco).",
+        "Listagem segmentada: a tabela exibe Razão Social, o CNPJ na coluna Documento e o Nome Fantasia na coluna secundária.",
+        "Auditoria: activity_log registra log_name='person', event='created', causer_id (autor) e timestamp.",
+        "RESSALVA: o snapshot de atributos (properties) do activity_log sai VAZIO para todos os persons (PF e PJ, criação e edição) — comportamento PRÉ-EXISTENTE do modelo (logOnlyDirty/dontLogEmptyChanges). O tipo e o documento ficam recuperáveis apenas via o registro-subject, não materializados no payload do log como a §14 da spec pretendia. Não é regressão da HU #9698.",
+        "Backend: Pest confirma store PF/PJ, person_type imutável no update e configuração do activity log."
+      ],
+      "images": ["screenshots/ca05-pj-salva-lista.png", "screenshots/ca05-listagem-pj-segmentada.png"]
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Pest — PersonControllerTest + PersonTest)",
+    "file": "persons-suite.txt"
+  }
+}

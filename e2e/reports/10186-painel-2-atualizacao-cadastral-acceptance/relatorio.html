@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — Painel 2: Atualização Cadastral</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — Painel 2: Atualização Cadastral</h1>
+    <div class="sub">HU #10186 · Dashboard do tenant · Evidências end-to-end no client</div>
+    <div class="meta"><div><span>Gerado em:</span> 30/07/2026</div><div><span>HU:</span> #10186 — Painel 2: Atualização Cadastral</div><div><span>Branch:</span> feature/10186-painel-2-atualizacao-cadastral (api + client)</div><div><span>Spec:</span> .planning/specs/10186-painel-2-atualizacao-cadastral.md</div><div><span>Ambiente:</span> API Sail/PostgreSQL+PostGIS · client :5174 (não-mock)</div><div><span>Organização (tenant):</span> E2E CadÚnico · 96 famílias (recorte municipal)</div><div><span>Limiar de vencimento:</span> 24 meses (FamilyVulnerabilityService::EXPIRED_MONTHS)</div><div><span>Ferramenta:</span> playwright-cli (Chromium) + Pest</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">8 critérios evidenciados: 5 por navegador dirigindo o client real (CA04 realce de alerta na faixa "Mais de 24 meses", indicadores e distribuição do RN04, evolução mensal, e o RG01 nas modalidades padrão/dinâmico/limpar) e 3 por suíte automatizada (partição + consistência com o KPI 1 da barra fixa, isolamento multi-tenant e gate de permissão). Todos atendidos. Suíte Pest do backend: 10 testes verdes (53 asserções).</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA04</td><td>Identificação de cadastros vencidos (realce em cor de alerta)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">RN04-ind</td><td>Indicadores do Painel 2 (Atualizado / Vencido / Sem informação) e distribuição</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">RN04-evo</td><td>Evolução mensal de atualizações (gráfico de linha, 12 meses)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">RG01-a</td><td>Filtro global por Bairro — comportamento padrão ("Todos os Bairros")</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">RG01-bc</td><td>Filtro global por Bairro — recálculo dinâmico e "Limpar Filtro"</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">PART</td><td>Partição e consistência com a barra fixa</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">ISO</td><td>Isolamento multi-tenant</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">PERM</td><td>Gate de permissão (sem dashboard.view-indicators → 403 / painel oculto)</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA04">
+      <h2>CA04 — Identificação de cadastros vencidos (realce em cor de alerta) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que acesso o Painel 2 (aba "Atualização Cadastral")
+Quando analiso o gráfico de distribuição do tempo de atualização
+Então o sistema destaca visualmente, em cor de alerta, a parcela de famílias no grupo "Mais de 24 meses".</p>
+      <p class="steps"><strong>Como foi testado:</strong> Login como Master, aba <b>Atualização Cadastral</b>. Leitura do gráfico <b>Distribuição do Tempo de Atualização</b>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A faixa &lt;b&gt;"Mais de 24 meses"&lt;/b&gt; é renderizada em &lt;b&gt;vermelho (alerta)&lt;/b&gt;, distinta das demais faixas (azul).</li><li>O cartão "Cadastro Vencido" também aparece em vermelho, reforçando o alerta para busca ativa.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/rn04-ca04-topo-distribuicao.png" alt="CA04 evidência"/><figcaption>rn04-ca04-topo-distribuicao.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="RN04-ind">
+      <h2>RN04-ind — Indicadores do Painel 2 (Atualizado / Vencido / Sem informação) e distribuição <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um recorte com famílias
+Quando o painel é calculado
+Então "Atualizado" = famílias com atualização nos últimos 24 meses (≤24m)
+E "Vencido" = famílias sem atualização há mais de 24 meses (&gt;24m)
+E a distribuição traz Até 12 / 13–18 / 19–24 / Mais de 24 meses (+ Sem informação).</p>
+      <p class="steps"><strong>Como foi testado:</strong> Cartões de topo + gráfico de distribuição (Apache ECharts) no recorte municipal.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Cadastro Atualizado 22 (22,9%), Cadastro Vencido 1 (1,0%), Sem Informação 73 (76,0%).</li><li>Distribuição (gráfico): a faixa "Mais de 24 meses" aparece com 1 família em vermelho (alerta) e "Sem informação" com 73; as demais faixas somam as 22 famílias atualizadas em até 24 meses.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/rn04-ca04-topo-distribuicao.png" alt="RN04-ind evidência"/><figcaption>rn04-ca04-topo-distribuicao.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="RN04-evo">
+      <h2>RN04-evo — Evolução mensal de atualizações (gráfico de linha, 12 meses) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um recorte com famílias atualizadas ao longo do tempo
+Quando o painel é calculado
+Então a evolução mensal traz 12 pontos (mês → volume de atualizações).</p>
+      <p class="steps"><strong>Como foi testado:</strong> Gráfico <b>Evolução Mensal de Atualizações</b> (linha, Apache ECharts).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Série contígua de 12 meses (ago/25 → jul/26), com o volume de famílias atualizadas por mês.</li><li>Meses sem atualização aparecem com volume 0; a linha evidencia a tendência recente de alta.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/rn04-evolucao-mensal.png" alt="RN04-evo evidência"/><figcaption>rn04-evolucao-mensal.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="RG01-a">
+      <h2>RG01-a — Filtro global por Bairro — comportamento padrão ("Todos os Bairros") <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que acabei de carregar a aba "Atualização Cadastral"
+Quando nenhum bairro está selecionado
+Então o filtro inicia em "Todos os Bairros"
+E os indicadores, a distribuição e a evolução refletem a consolidação municipal.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Ao abrir o dashboard, o filtro global (topo, à direita) inicia em <code>Todos os Bairros</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Filtro em "Todos os Bairros"; barra fixa de KPIs e Painel 2 exibem a consolidação municipal (96 famílias).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/rn04-ca04-topo-distribuicao.png" alt="RG01-a evidência"/><figcaption>rn04-ca04-topo-distribuicao.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="RG01-bc">
+      <h2>RG01-bc — Filtro global por Bairro — recálculo dinâmico e "Limpar Filtro" <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o filtro global está em "Todos os Bairros"
+Quando eu seleciono o bairro "Itapoã"
+Então os cartões, a distribuição e a evolução recalculam para as famílias do bairro (RN09)
+E ao acionar "Limpar Filtro" o painel volta à consolidação municipal.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Seleção do bairro <b>Itapoã</b> no filtro global; um único evento recalcula a barra fixa E o painel (RG01/RN10).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Recálculo instantâneo: Cadastro Atualizado 22 → 3 (100%), Vencido 1 → 0; barra fixa e painel exibem "Recalculado por bairro: Itapoã".</li><li>A distribuição recalcula (Até 12 meses 2, De 13 a 18 meses 1, demais 0).</li><li>O botão "Limpar Filtro" retorna imediatamente à visão municipal (Atualizado volta a 22, filtro a "Todos os Bairros").</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/rg01-bairro-itapoa.png" alt="RG01-bc evidência"/><figcaption>rg01-bairro-itapoa.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="PART">
+      <h2>PART — Partição e consistência com a barra fixa <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Então Atualizado + Vencido + Sem informação = Total de Famílias
+E up_to_12m + m13_to_18 + m19_to_24 + over_24m + no_information = Total
+E "Atualizado" (≤24m) é igual ao numerador do KPI 1 (% Atualização Cadastral) da barra fixa (#10184).</p>
+      <p class="steps"><strong>Como foi testado:</strong> Verificado na UI (22+1+1 = 24) e por testes automatizados (Pest) — ver apêndice.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Na tela: 22 (Atualizado) + 1 (Vencido) + 73 (Sem informação) = 96 (Total).</li><li>CadastralUpdateTest: partição das 5 faixas e teste cruzado "updated == numerador do KPI 1" (RN10).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/rn04-ca04-topo-distribuicao.png" alt="PART evidência"/><figcaption>rn04-ca04-topo-distribuicao.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="ISO">
+      <h2>ISO — Isolamento multi-tenant <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um usuário vinculado ao Tenant A
+Quando ele solicita o Painel 2
+Então apenas famílias do Tenant A entram nos cálculos
+E um neighborhood_uuid fora do município do Tenant A retorna 422.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Coberto por teste automatizado (Pest) — ver apêndice.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>DashboardCadastralUpdateIsolationTest: famílias do Tenant B nunca são contadas para o Tenant A.</li><li>CadastralUpdateTest: 422 para bairro fora do município do tenant.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="PERM">
+      <h2>PERM — Gate de permissão (sem dashboard.view-indicators → 403 / painel oculto) <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um usuário sem dashboard.view-indicators
+Quando ele chama o endpoint do Painel 2
+Então recebe 403 (e o painel não é exibido).</p>
+      <p class="steps"><strong>Como foi testado:</strong> Coberto por teste automatizado (Pest) — o endpoint reusa o gate da barra fixa (#10184).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>CadastralUpdateTest: operador sem o papel dedicado recebe 403; Master acessa sem add-on.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+  
+  <h2>Anexo — Cobertura automatizada (Pest — CadastralUpdate + Isolamento)</h2>
+  <pre class="pest">
+   PASS  Tests\Feature\Dashboard\CadastralUpdateTest
+  ✓ it classifies families into the 4 time bands + no-information and p… 0.40s  
+  ✓ it places a family updated exactly at the 24-month boundary in 19–2… 0.05s  
+  ✓ it returns a contiguous 12-month evolution with empty months as zer… 0.07s  
+  ✓ it reports "updated" equal to the strategic indicators KPI 1 numera… 0.06s  
+  ✓ it recalculates for a neighborhood, covering only geocoded families… 0.06s  
+  ✓ it returns zeroed groups and a 12-point zero evolution when the sco… 0.04s  
+  ✓ it returns 422 for a neighborhood_uuid outside the tenant municipal… 0.04s  
+  ✓ it denies the panel to the base operator without the dedicated role  0.04s  
+  ✓ it grants the panel to the Master without any add-on role            0.04s  
+
+   PASS  Tests\Feature\TenantIsolation\DashboardCadastralUpdateIsolationTest
+  ✓ it never counts families from another tenant in the cadastral updat… 0.05s  
+
+  Tests:    10 passed (53 assertions)
+  Duration: 0.93s
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

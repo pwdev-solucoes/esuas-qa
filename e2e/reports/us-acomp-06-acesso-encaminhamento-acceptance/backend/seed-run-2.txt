@@ -1,0 +1,8 @@
+  Database\Seeders\CboSeeder ................................... 1,048 ms DONE  
+
+  Database\Seeders\ReferralCodeSeeder ................................ RUNNING  
+  Database\Seeders\ReferralCodeSeeder ............................. 10 ms DONE  
+
+E2E cenário do prontuário garantido (3 unidades, 3 operadores, 14 famílias, 1 encaminhamento legado, 1 encaminhamento recebido).
+  Database\Seeders\E2EProntuarioSeeder ......................... 1,891 ms DONE  
+

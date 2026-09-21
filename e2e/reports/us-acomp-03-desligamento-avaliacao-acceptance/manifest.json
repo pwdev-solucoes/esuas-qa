@@ -1,0 +1,155 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — US-ACOMP-03",
+    "subtitle": "Épico HU-PRONT-ACOMP (fase F3) · Desligamento do acompanhamento com avaliação de resultados",
+    "rows": [
+      [
+        "Gerado em",
+        "09/09/2026"
+      ],
+      [
+        "História",
+        "US-ACOMP-03 — Desligamento e avaliação de resultados"
+      ],
+      [
+        "Spec",
+        ".planning/specs/US-ACOMP-03-desligamento-e-avaliacao-de-resultados.md"
+      ],
+      [
+        "Branch",
+        "feature/acomp-prontuario-bloco-24 (api/ e client/), a partir de develop"
+      ],
+      [
+        "Commits (api/)",
+        "a7dec5b · 797c328 · 6cb27c4 · 49563fd · 6d0ea57 · 86eb11c"
+      ],
+      [
+        "Commits (client/)",
+        "22e9e7a · 1f248f1"
+      ],
+      [
+        "Commits (e2e/)",
+        "dd62759"
+      ],
+      [
+        "Ambiente",
+        "Stack E2E Docker · API em :8090 · client (vite preview) em :4174 · base esuas_e2e recém-semeada por migrate:fresh --seed"
+      ],
+      [
+        "Perfil usado",
+        "Operacional do tenant (guard client) — “E2E Operador Prontuário”, com lotação vigente e add-on LGPD"
+      ],
+      [
+        "Ferramenta",
+        "Playwright (Chromium, project chromium-tenant) + Pest 4"
+      ]
+    ]
+  },
+  "summary": "Quatorze critérios de aceite. Seis evidenciados no navegador (CA01, CA02, CA03, CA06, CA08 e CA11, com seis prints) e oito cobertos pela suíte automatizada. A suíte fecha com 42 testes e 397 asserções no filtro FollowUpDischarge|FollowUpEvaluation, dentro de 182 testes no filtro FollowUp e 87 no isolamento entre municípios. Os 20 cenários Playwright do arquivo unificado passam contra base recém-semeada. Nenhum critério em falha, e nenhum defeito de produto foi encontrado pela suíte — a camada de aplicação passou íntegra na primeira verificação. Este dossiê numera os critérios pela especificação técnica, cuja ordem difere da do chamado #10839; o relatório traz uma tabela de correspondência que localiza cada critério do chamado, inclusive os três evidenciados apenas no anexo automatizado (data anterior ao ingresso, preservação do histórico e negativa por unidade).",
+  "criteria": [
+    {
+      "id": "CA01",
+      "title": "Desligar preenchendo a avaliação de resultados",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "acomp03-a-desligado-com-avaliacao.png"
+      ]
+    },
+    {
+      "id": "CA02",
+      "title": "Concluir sem a avaliação é recusado",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "acomp03-b-sem-avaliacao-bloqueado.png"
+      ]
+    },
+    {
+      "id": "CA03",
+      "title": "Tempo de acompanhamento derivado, não digitável",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "acomp03-c-meses-readonly.png"
+      ]
+    },
+    {
+      "id": "CA04",
+      "title": "Avaliação periódica não encerra o acompanhamento",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "CA05",
+      "title": "Histórico de avaliações do acompanhamento",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "CA06",
+      "title": "“Não se aplica” sugerida apenas sem encaminhamentos",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "acomp03-d-sugestao-nao-se-aplica.png"
+      ]
+    },
+    {
+      "id": "CA07",
+      "title": "Encaminhamentos do período apresentados com seus desfechos",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "CA08",
+      "title": "Combinação incoerente pede confirmação",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "acomp03-e-incoerencia-confirmacao.png"
+      ]
+    },
+    {
+      "id": "CA09",
+      "title": "Avaliação não se apaga nem se edita (append-only)",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "CA10",
+      "title": "Registro descritivo fora da trilha de auditoria",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "CA11",
+      "title": "A correção se faz por avaliação nova, ao lado da anterior",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "acomp03-f-sem-excluir-avaliacao.png"
+      ]
+    },
+    {
+      "id": "CA12",
+      "title": "Correção de data e razão do desligamento",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "CA13",
+      "title": "Desligamento retroativo em período já declarado",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "CA14",
+      "title": "Isolamento entre municípios",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "Extra",
+      "title": "Reingresso após desligamento — critério destravado da US-ACOMP-02",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "acomp03-reingresso.png"
+      ]
+    }
+  ]
+}

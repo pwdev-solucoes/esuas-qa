@@ -1,0 +1,280 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — Construtor de Camadas (Etapa 01: backend)",
+    "subtitle": "Sprint 9 · HU-CAM-01…04 (CA37–CA52) + CA29 HU-GEO-01 · API + Pest + admin + client",
+    "rows": [
+      [
+        "Gerado em",
+        "04/07/2026"
+      ],
+      [
+        "Branch",
+        "sprint9-construtor-camadas (api c89180c · admin af39815+340fbb3 · client 69b14fe+95fed31)"
+      ],
+      [
+        "Spec",
+        ".planning/specs/sprint9/hu-cam-construtor-de-camadas.md"
+      ],
+      [
+        "Ambiente",
+        "API :8090 (esuas_app) · PostgreSQL/PostGIS esuas_e2e · admin/client builds :4173"
+      ],
+      [
+        "Suítes",
+        "Pest 2722✓ (8623 asserções) · Vitest admin 1168✓ · Vitest client 878✓ · ESLint 0 erros"
+      ],
+      [
+        "Ferramenta",
+        "curl (Sanctum stateful) + tinker + Pest + playwright-cli (Chromium)"
+      ]
+    ]
+  },
+  "summary": "Dossiê consolidado das 3 etapas do Construtor de Camadas (backend api → admin → client). Os 16 critérios CA37–CA52, o ciclo de vida RN06 sem DELETE e o CA29 da HU-GEO-01 estão evidenciados em três planos: transcript vivo da API (Sanctum stateful, PostGIS real), suítes automatizadas (Pest 108 testes do módulo; Vitest 21 admin + 26 client) e 24 capturas de navegador — Painel Global (catálogo, form em página, preview OpenLayers por organização de referência, dialogs de ciclo de vida, perfil somente leitura) e Painel do Tenant (sidebar com camadas mescladas desligadas por padrão, render heatmap/choropleth/markers, remoção ao vivo com toast CA48 e reativação CA49). Revisões: Etapa 01 APROVADO; Etapas 02 e 03 APROVADO COM RESSALVAS, com todos os achados baixos aplicados em commits fix ou registrados como notas ao PO.",
+  "cas": [
+    {
+      "id": "CA37",
+      "title": "Criação de camada válida (HU-CAM-01)",
+      "status": "parc",
+      "gherkin": "Dado que sou Administrador e as bases geográficas primárias estão homologadas, Quando informo nome, descrição, critérios de busca e forma de representação e salvo, Então a camada é criada com status de rascunho e passa a constar no catálogo.",
+      "steps_html": "POST /api/geo-layers como super admin (Sanctum stateful) com nome, descrição, <code>criteria.vulnerabilities=[receives_pbf]</code> e <code>representation=heatmap</code> — Anexo A.",
+      "results": [
+        "HTTP 201; camada criada com status=draft e uuid próprio; aparece no GET /geo-layers.",
+        "Pest: suíte GeoLayerController cobre criação e catálogo (Anexo B).",
+        "UI: form em página '/app/geo-layers/nova'; camada 'Cobertura SCFV — evidência E2E' criada e listada como Rascunho."
+      ],
+      "images": [
+        "screenshots/ca37-camada-criada-rascunho.png"
+      ]
+    },
+    {
+      "id": "CA38",
+      "title": "Bloqueio por dados obrigatórios (HU-CAM-01)",
+      "status": "parc",
+      "gherkin": "Dado que estou criando uma camada, Quando tento salvar sem nome ou sem ao menos um critério de busca, Então o sistema bloqueia a ação e indica claramente os itens pendentes.",
+      "steps_html": "POST /api/geo-layers sem <code>name</code> e com <code>criteria={}</code> — Anexo A.",
+      "results": [
+        "HTTP 422 na API com itens pendentes.",
+        "UI: mensagens de campo 'Informe o nome/descrição da camada' e 'Informe ao menos um critério efetivo' bloqueiam o salvar."
+      ],
+      "images": [
+        "screenshots/ca38-bloqueio-obrigatorios.png"
+      ]
+    },
+    {
+      "id": "CA39",
+      "title": "Nome duplicado (HU-CAM-01)",
+      "status": "parc",
+      "gherkin": "Dado que já existe uma camada com determinado nome, Quando tento salvar outra camada com o mesmo nome, Então o sistema bloqueia e informa que o nome já está em uso.",
+      "steps_html": "POST /api/geo-layers com o mesmo nome em CAIXA ALTA (variação de caixa e acentos) — Anexo A.",
+      "results": [
+        "HTTP 422 na API (variação de caixa).",
+        "UI: 'Já existe uma camada com este nome.' exibido no campo ao tentar criar 'COBERTURA SCFV — EVIDÊNCIA E2E' (caixa alta)."
+      ],
+      "images": [
+        "screenshots/ca39-nome-duplicado.png"
+      ]
+    },
+    {
+      "id": "CA40",
+      "title": "Pré-visualização por tenant de referência (HU-CAM-01)",
+      "status": "parc",
+      "gherkin": "Dado que criei uma camada em rascunho, Quando aciono a pré-visualização escolhendo um município de referência, Então o sistema exibe a representação da camada sobre o mapa daquele município conforme os critérios definidos.",
+      "steps_html": "Decisão do PO (2026-07-04): preview usa <b>tenant único de referência</b> (combobox). POST /geo-layers/{uuid}/preview com <code>tenant_uuid</code> do tenant 1 (Fortaleza) — Anexo A (inclui adendos).",
+      "results": [
+        "Cenário negativo: tenant sem município com geometria homologada → HTTP 422 com mensagem clara.",
+        "Cenário positivo: HTTP 200 com city_geometry de Fortaleza, total=6, by_sector com 2 setores fixture e 6 pontos anônimos (chaves só lat/lng/count — sem PII).",
+        "Trilha: event=previewed com properties={tenant: uuid} (LGPD).",
+        "Nota de ambiente: geometria/setores de Fortaleza estavam is_active=false no banco e2e (efeito replace-all da sync #9868) e foram reativados — artefato de massa, não bug de produto.",
+        "Nota ao PO (revisão Etapa 02, severidade média): no preview de 'Delimitações', o admin desenha polígono municipal + pontos + tabela por setor; o choropleth por setor é renderizado no painel do tenant (o contrato manager não expõe geometrias de setor)."
+      ],
+      "images": [
+        "screenshots/ca40-preview-tenant-referencia.png"
+      ]
+    },
+    {
+      "id": "CA41",
+      "title": "Consulta sem permissão de edição — Operacional Global (HU-CAM-01)",
+      "status": "parc",
+      "gherkin": "Dado que sou Operacional Global, Quando acesso o catálogo de camadas, Então visualizo a lista com status e público de cada camada, sem comandos de criação, edição ou publicação.",
+      "steps_html": "Lado servidor: RoleSeeder concede só geo-layers.index/show ao papel admin_operador; escrita → 403 (Pest, Anexo B). Evidência visual da UI deferida à Etapa 02 (admin).",
+      "results": [
+        "Pest: admin_operador lê catálogo/detalhe; os 7 verbos de escrita retornam 403.",
+        "UI: logado como Operacional Global (papel admin_operador), o catálogo não exibe 'Nova camada' e o menu Ações só traz 'Ver detalhes'; rota /nova responde 403 Acesso negado."
+      ],
+      "images": [
+        "screenshots/ca41-operador-somente-leitura.png",
+        "screenshots/ca41-operador-rota-create-negada.png"
+      ]
+    },
+    {
+      "id": "CA42",
+      "title": "Publicação global (HU-CAM-02)",
+      "status": "parc",
+      "gherkin": "Dado que tenho uma camada em rascunho válida, Quando publico com público 'todos os tenants', Então a camada passa a aparecer na barra lateral do Painel de Georreferenciamento de todos os tenants ativos, desligada por padrão.",
+      "steps_html": "POST /geo-layers/{uuid}/publish com <code>audience=global</code>; em seguida GET /api/client/geo-panel/layers como master do tenant 1 — Anexo A.",
+      "results": [
+        "HTTP 200: status=published, published_at gravado.",
+        "Listagem do tenant mescla 3 built-ins + camada custom (kind=custom, builtin=false) — fecha também o CA29 da HU-GEO-01.",
+        "UI (client): camada global 'Famílias beneficiárias do PBF' ligada no painel do tenant renderiza mancha (heatmap OL) sobre Fortaleza. Nota ao PO: o heatmap OL usa o gradiente default (a cor/palette da camada é aplicada em markers/boundaries; opacidade respeitada)."
+      ],
+      "images": [
+        "screenshots/ca42-dialog-publicacao-global.png",
+        "screenshots/ca42-heatmap-pbf-painel-tenant.png"
+      ]
+    },
+    {
+      "id": "CA43",
+      "title": "Publicação direcionada (HU-CAM-02)",
+      "status": "parc",
+      "gherkin": "Dado que tenho uma camada em rascunho válida, Quando publico selecionando tenants específicos, Então somente os tenants selecionados passam a visualizar a camada em seus painéis.",
+      "steps_html": "2ª camada publicada com <code>audience=selected</code> apenas para o tenant 2; fetch do tenant 1 — Anexo A.",
+      "results": [
+        "Camada L2 published/selected; 'L2 visível p/ tenant 1? False'.",
+        "Pest cobre o positivo (tenant selecionado vê) e o negativo."
+      ],
+      "images": [
+        "screenshots/ca43-dialog-publicacao-direcionada.png"
+      ]
+    },
+    {
+      "id": "CA44",
+      "title": "Bloqueio sem base geográfica homologada (HU-CAM-02)",
+      "status": "parc",
+      "gherkin": "Dado que as bases geográficas primárias não estão homologadas, Quando tento publicar uma camada, Então o sistema bloqueia a publicação e informa a pendência das bases obrigatórias.",
+      "steps_html": "Flip temporário de sync_status das bases (synced→syncing) via tinker, tentativa de publish, reversão — Anexo A.",
+      "results": [
+        "API: HTTP 422 com a pendência das bases (flip temporário de sync_status, revertido).",
+        "UI: alerta dentro do dialog de publicação orientando a homologar as duas bases em Importações de Camadas Geográficas.",
+        "Pest: matriz completa da trava RN03."
+      ],
+      "images": [
+        "screenshots/ca44-bloqueio-bases-nao-homologadas.png"
+      ]
+    },
+    {
+      "id": "CA45",
+      "title": "Alteração de público com efeito imediato (HU-CAM-02)",
+      "status": "parc",
+      "gherkin": "Dado que uma camada está publicada para tenants específicos, Quando altero o público incluindo ou removendo tenants, Então a disponibilidade da camada é atualizada imediatamente nos painéis dos tenants afetados.",
+      "steps_html": "PATCH /geo-layers/{uuid}/audience incluindo o tenant 1; próximo GET do tenant 1 sem nenhuma outra ação — Anexo A.",
+      "results": [
+        "'L2 visível p/ tenant 1?' passa de False para True no fetch imediatamente seguinte — visibilidade resolvida em leitura, sem cache/materialização."
+      ],
+      "images": [
+        "screenshots/ca45-dialog-alterar-publico.png"
+      ]
+    },
+    {
+      "id": "CA46",
+      "title": "Isolamento de dados na camada (HU-CAM-02)",
+      "status": "parc",
+      "gherkin": "Dado que uma camada foi publicada globalmente, Quando um tenant a liga em seu painel, Então visualiza apenas os dados do seu próprio escopo, sem qualquer dado de outro tenant.",
+      "steps_html": "GET /api/client/geo-panel/layers/{uuid}/data com X-Tenant-UUID do tenant 1; camada draft consultada pelo tenant — Anexo A.",
+      "results": [
+        "Dados executados sob o tenant consumidor: total=6, pontos anônimos (lat/lng/count).",
+        "Camada draft/não visível → HTTP 404 (nunca 403 — não vaza existência).",
+        "Pest: 2 tenants no mesmo município com massas próprias → pontos 100% disjuntos; tenant_id vem do header validado pelo EnsureTenantScope (merge sobrescreve forjado).",
+        "UI (client): render por representação sob o escopo do tenant — choropleth por setor com intensidade graduada (4/2 famílias, cor do style #7c3aed) e marcadores anônimos graduados. Nota: no engine Leaflet o heatmap tem paridade mínima (círculos difusos), registrado como débito de paridade visual."
+      ],
+      "images": [
+        "screenshots/ca-representacao-boundaries-choropleth.png",
+        "screenshots/ca-representacao-markers.png"
+      ]
+    },
+    {
+      "id": "CA47",
+      "title": "Edição de camada publicada (HU-CAM-03)",
+      "status": "parc",
+      "gherkin": "Dado que uma camada está publicada, Quando edito sua descrição ou seus critérios de busca e salvo, Então a nova definição passa a valer para todos os tenants contemplados.",
+      "steps_html": "Editar a camada publicada 'Famílias beneficiárias do PBF' em /app/geo-layers/{uuid}/editar; salvar nova descrição.",
+      "results": [
+        "UI: aviso âmbar 'Esta camada está publicada: ao salvar, a nova definição vale imediatamente para todas as organizações contempladas.'",
+        "Descrição atualizada refletida no catálogo imediatamente após salvar (endpoint de dados executa sempre a definição corrente)."
+      ],
+      "images": [
+        "screenshots/ca47-aviso-edicao-publicada.png"
+      ]
+    },
+    {
+      "id": "CA50",
+      "title": "Rastreabilidade das ações (HU-CAM-03)",
+      "status": "parc",
+      "gherkin": "Dado que realizei qualquer ação sobre uma camada, Quando o registro de auditoria é consultado, Então constam a ação, o autor e a data/hora.",
+      "steps_html": "Consulta ao activity_log (log_name=geo_layer) após o roteiro completo — Anexo A.",
+      "results": [
+        "Trilha completa: created, published, audience_changed, inactivated, reactivated, previewed — com causer_id e timestamp, sem PII.",
+        "GET /geo-layers/{uuid} expõe o histórico (campo history) — base do CA52."
+      ],
+      "images": [
+        "screenshots/ca50-historico-acoes.png"
+      ]
+    },
+    {
+      "id": "CA51",
+      "title": "Catálogo com filtros (HU-CAM-04) — lado servidor",
+      "status": "parc",
+      "gherkin": "Dado que acesso o catálogo de camadas, Quando aplico filtros por status (rascunho, publicada, inativa) ou por público, Então a lista exibe somente as camadas que atendem aos filtros.",
+      "steps_html": "GET /geo-layers?filter[status]=published&filter[audience]=selected — Anexo A. Evidência visual da UI deferida à Etapa 02.",
+      "results": [
+        "API: filter[status]+filter[audience] combinados.",
+        "UI: catálogo com badges de status/público; filtro 'Publicada' oculta rascunhos/inativas."
+      ],
+      "images": [
+        "screenshots/ca51-catalogo.png",
+        "screenshots/ca51-filtro-publicadas.png"
+      ]
+    },
+    {
+      "id": "CA52",
+      "title": "Detalhe da camada com histórico (HU-CAM-04) — lado servidor",
+      "status": "parc",
+      "gherkin": "Dado que estou no catálogo, Quando abro uma camada, Então visualizo nome, descrição, critérios de busca, forma de representação, público de publicação, status e histórico de alterações.",
+      "steps_html": "GET /geo-layers/{uuid} — Anexo A. Evidência visual da UI deferida à Etapa 02.",
+      "results": [
+        "Show traz definição completa + history ordenado (reactivated → inactivated → published → created)."
+      ],
+      "images": [
+        "screenshots/ca52-detalhe-camada.png"
+      ]
+    },
+    {
+      "id": "RN06/P5",
+      "title": "Ciclo de vida sem exclusão — inativar/reativar/405",
+      "status": "parc",
+      "gherkin": "Camadas não são excluídas definitivamente enquanto houver histórico de uso — apenas inativadas (RN06). Recurso sem DELETE (405).",
+      "steps_html": "POST inactivate → fetch do tenant; POST reactivate → fetch; DELETE /geo-layers/{uuid} — Anexo A.",
+      "results": [
+        "API: inativada some do fetch do tenant; reativada volta ao público configurado; DELETE → 405.",
+        "UI: dialog de inativação com aviso de efeito imediato (CA48); dialog de reativação (CA49); listagem reflete Inativa → Publicada mantendo público Global.",
+        "UI (client, CA48 ao vivo): com a camada LIGADA no painel, o Administrador a inativa; ao reabrir a barra de camadas o cliente reconcilia, desliga a camada e exibe o toast 'não está mais disponível — removida ou inativada pelo administrador' (toggle some da sidebar).",
+        "UI (client, CA49): reativada pelo Administrador, a camada volta à sidebar DESLIGADA (refetch de dados garantido pelo descarte de cache)."
+      ],
+      "images": [
+        "screenshots/ca48-dialog-inativar.png",
+        "screenshots/ca49-dialog-reativar.png",
+        "screenshots/ca48-ca49-ciclo-vida-listagem.png",
+        "screenshots/ca48-toast-camada-removida.png",
+        "screenshots/ca49-camada-reativada-desligada.png"
+      ]
+    },
+    {
+      "id": "CA29*",
+      "title": "CA29 da HU-GEO-01 — mescla do catálogo no painel (fechado aqui)",
+      "status": "parc",
+      "gherkin": "(HU-GEO-01) Dado que camadas do Construtor foram publicadas para o meu tenant, Quando abro o painel, Então a barra lateral lista as camadas built-in e as camadas publicadas, desligadas por padrão.",
+      "steps_html": "Deferido da entrega HU-GEO-01 para esta (split documentado nos dois dossiês). GET /api/client/geo-panel/layers — Anexo A.",
+      "results": [
+        "API: resposta mescla built-ins + camadas custom publicadas visíveis ao tenant.",
+        "UI (client): grupo 'Camadas de informação' na barra do painel lista as 4 camadas publicadas com nome/descrição, todas DESLIGADAS por padrão.",
+        "Fechamento registrado também no dossiê da HU-GEO-01 (e2e/reports/hugeo01-acceptance/CA29-fechamento.md)."
+      ],
+      "images": [
+        "screenshots/ca29-sidebar-camadas-custom.png"
+      ]
+    }
+  ],
+  "appendix": {
+    "label": "Anexo A (transcript da API viva) + Anexo B (Pest --filter=GeoLayer|GeoPanelLayerData: 108 passed / 544 asserções)",
+    "file": "anexos-etapa01.txt"
+  }
+}

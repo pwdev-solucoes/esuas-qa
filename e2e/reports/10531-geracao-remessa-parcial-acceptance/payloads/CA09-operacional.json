@@ -1,0 +1,62 @@
+{
+    "_cenario": "CA09/D02 — CLIENT_OPERADOR lista o histórico (o que a #10530/02b negava), abre, baixa; store segue 403 (D05)",
+    "_correcao": "A etapa 02b da #10530 supôs que o histórico era \"ato de gestão\" e negou index ao Operacional. A RN10 do PO diz o contrário — esta HU corrige a atribuição.",
+    "matriz_de_permissoes": {
+        "siap-remittances.index": {
+            "operador": true,
+            "master": true
+        },
+        "siap-remittances.show": {
+            "operador": true,
+            "master": true
+        },
+        "siap-remittances.download": {
+            "operador": true,
+            "master": true
+        },
+        "siap-remittances.pre-check": {
+            "operador": true,
+            "master": true
+        },
+        "siap-remittances.store": {
+            "operador": false,
+            "master": true
+        }
+    },
+    "index_200": [
+        {
+            "id": 1,
+            "uuid": "10327b08-fae4-41ef-af5f-193dddc93d0b",
+            "tenant_id": 1,
+            "exercise": 2026,
+            "reference_month": 8,
+            "reference_label": "08/2026",
+            "status": "completed",
+            "status_label": "Gerada",
+            "cardug_identifier": "004821",
+            "generated_with_previous_identifier": false,
+            "file_size": 8192,
+            "file_checksum": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "suggested_file_name": "remessa-assistencia-social-maceio-2026-08.zip",
+            "layout_count": 11,
+            "record_count": 12,
+            "pendency_count": 0,
+            "error_message": null,
+            "requested_by_label": "E2E Master [Master]",
+            "started_at": "2026-08-17T17:17:24.000000Z",
+            "finished_at": "2026-08-17T17:18:24.000000Z",
+            "created_at": "2026-08-17T17:18:24.000000Z"
+        }
+    ],
+    "show_200": {
+        "uuid": "10327b08-fae4-41ef-af5f-193dddc93d0b",
+        "status": "completed"
+    },
+    "download_200": {
+        "content_disposition": "attachment; filename=remessa-assistencia-social-maceio-2026-08.zip"
+    },
+    "store_403": {
+        "message": "Access denied."
+    },
+    "nada_gravado_pelo_403": true
+}

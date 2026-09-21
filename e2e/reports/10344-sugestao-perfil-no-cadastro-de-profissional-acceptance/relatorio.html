@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — Sugestão de acesso por ocupação</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — Sugestão de acesso por ocupação</h1>
+    <div class="sub">HU #10344 · US-002 (épico HU-CBO-PERFIL) · Evidências end-to-end no Painel do Tenant</div>
+    <div class="meta"><div><span>Gerado em:</span> 06/08/2026</div><div><span>Branch:</span> feature/10344-sugestao-perfil-no-cadastro-de-profissional (api + client)</div><div><span>Spec:</span> .planning/specs/10344-sugestao-perfil-no-cadastro-de-profissional.md</div><div><span>Ambiente:</span> API Sail/PostgreSQL :8000 · Painel do Tenant (client) Vite :5175 · guard client</div><div><span>Perfil exercitado:</span> Master (CLIENT_ADMIN, level 20) — E2E Master CadÚnico</div><div><span>Organização (tenant):</span> E2E CadÚnico · uuid 00000000-0000-4000-8000-0000000000c1</div><div><span>Dados:</span> Mapa da HU #10343 semeado — 2516-05 mapeado, 5153-20 deliberadamente fora</div><div><span>Ferramenta:</span> playwright-cli (Chromium) + Pest</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">Os 8 critérios de aceite da HU #10344 foram verificados: 4 diretamente no navegador (CA01, CA03, CA04, CA05), 1 combinado — proposta conferida na tela e o salvamento pelo contrato (CA02) — e 3 pelo contrato da API somado à suíte automatizada (CA06, CA07, CA08). Todos atendidos. Somam-se 3 seções complementares (RN09, RN10, RN11). A captura encontrou e corrigiu um defeito real: o endpoint relacional de CBOs devolve um resource enxuto sem uuid, de modo que a chave cbo_uuid nunca era resolvida e a sugestão jamais carregava na tela — o contrato passou a aceitar cbo_id. A varredura do CA08 também confirmou, com dado real, o RISCO-02 registrado na spec. Apêndice: 19 testes Pest verdes.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA01</td><td>Sugestão aparece pré-marcada ao informar o CBO</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA02</td><td>Add-on LGPD aparece sugerido e desmarcado</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA03</td><td>Confirmação afirmativa do add-on registra a origem</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA04</td><td>Master recusa a sugestão</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA05</td><td>CBO sem entrada no mapa</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA06</td><td>Salvar somente add-on é recusado</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA07</td><td>Isolamento entre tenants</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA08</td><td>Nenhum dado pessoal em texto livre</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">RN10</td><td>Complementar — sugestão é MASTER-only e não vaza o mapa global</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">RN09</td><td>Complementar — a sugestão nunca contém o posto Master</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">RN11</td><td>Complementar — mudar a ocupação não reprocessa o acesso</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA01">
+      <h2>CA01 — Sugestão aparece pré-marcada ao informar o CBO <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o Master está cadastrando um profissional no seu tenant e o CBO 2516-05 (Assistente social) está mapeado ao perfil "Técnico de Referência", quando o Master informa esse CBO, então o perfil "Técnico de Referência" é apresentado já marcado, junto com o posto base Operacional do Tenant, e a tela indica que a marcação veio da ocupação informada.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Autenticado como <b>Master</b> no Painel do Tenant, abrir <b>Profissionais → Novo</b> e selecionar a ocupação <code>2516-05 — Assistente social</code> no combobox <b>Ocupação (CBO)</b>. A seção <b>Acesso do profissional</b> carrega a proposta via <code>GET client/professionals/role-suggestion</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A seção exibe "Proposta a partir da ocupação 2516-05. Você pode desmarcar ou ajustar antes de salvar." — a origem da marcação fica explícita.</li><li>Grupo "Posto base": Operador vem MARCADO.</li><li>Grupo "Perfil funcional": Técnico de Referência (PAIF / PAEFI) vem MARCADO, com o selo "sugerido".</li><li>Antes de escolher a ocupação a seção orienta que sem ocupação os perfis podem ser atribuídos manualmente depois.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/00-estado-inicial-sem-ocupacao.png" alt="CA01 evidência"/><figcaption>00-estado-inicial-sem-ocupacao.png</figcaption></figure><figure><img src="screenshots/ca01-ca02-proposta-premarcada.png" alt="CA01 evidência"/><figcaption>ca01-ca02-proposta-premarcada.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA02">
+      <h2>CA02 — Add-on LGPD aparece sugerido e desmarcado <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado o mesmo cadastro do CA01, cujo perfil sugerido inclui `family_viewer` como sugestão, quando a proposta é exibida, então o add-on "Visualização de Detalhes da Família — LGPD" aparece visível e desmarcado; e quando o Master salva sem marcá-lo, então o profissional é criado sem acesso ao prontuário familiar completo.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Parte visual: conferir o grupo <b>Acessos sensíveis (LGPD)</b> na mesma tela do CA01. Parte de salvamento: cadastro concluído com o conjunto pré-marcado, sem tocar no add-on (matrícula <code>MAT-CA02</code>).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O add-on aparece VISÍVEL, com selo "LGPD" e DESMARCADO — ao contrário do posto base e do perfil funcional.</li><li>A seção traz o aviso: "Estes acessos liberam dados sensíveis de cidadãos. Vêm desmarcados de propósito."</li><li>Após salvar sem marcá-lo: papéis efetivos = operador, pf_tecnico_referencia. Prontuário familiar: NÃO.</li><li>Nenhum user_tenant_role com family_viewer foi criado no tenant ativo.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca01-ca02-proposta-premarcada.png" alt="CA02 evidência"/><figcaption>ca01-ca02-proposta-premarcada.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA03">
+      <h2>CA03 — Confirmação afirmativa do add-on registra a origem <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado o mesmo cadastro, quando o Master marca `family_viewer` e salva, então o acesso ao prontuário familiar é concedido no tenant ativo e uma entrada de auditoria é registrada com usuário que concedeu, tenant, profissional beneficiado, papel concedido, indicação de que a origem foi a sugestão da ocupação e o momento da concessão.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Cadastro concluído com o add-on <b>marcado</b> (matrícula <code>MAT-CA03</code>) e conferência da seção <b>Perfis de acesso</b> na tela do profissional, mais a trilha em <code>activity_log</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A tela do profissional lista os três perfis, incluindo "Visualização de Detalhes da Família — LGPD".</li><li>Papéis efetivos: family_viewer, operador, pf_tecnico_referencia. Prontuário familiar: SIM.</li><li>activity_log grava event=roles_granted_from_suggestion, causer="E2E Master CadÚnico", tenant_id=3, cbo_code=2516-05 e o momento.</li><li>properties trazem suggested_kept com os três papéis, suggested_removed vazio e manually_added vazio — a origem é a sugestão da ocupação.</li><li>A sugestão é recalculada no servidor a partir do CBO: uma lista de "sugeridos" forjada pelo cliente não altera o registro de origem.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca03-perfis-concedidos.png" alt="CA03 evidência"/><figcaption>ca03-perfis-concedidos.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA04">
+      <h2>CA04 — Master recusa a sugestão <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um cadastro com o perfil "Técnico de Referência" pré-marcado, quando o Master desmarca o perfil e salva, então o profissional é criado apenas com o posto base Operacional do Tenant, sem os módulos do perfil, e a auditoria registra que a sugestão da ocupação foi retirada pelo Master.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Cadastro concluído com o perfil funcional e o add-on <b>desmarcados</b>, mantendo apenas o posto base (matrícula <code>MAT-CA04</code>).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A tela do profissional mostra "1 perfil": apenas Operador.</li><li>Papéis efetivos: operador. Prontuário familiar: NÃO.</li><li>A auditoria registra suggested_removed = [family_viewer, pf_tecnico_referencia] e suggested_kept = [operador] — fica explícito o que o Master retirou.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca04-sugestao-recusada.png" alt="CA04 evidência"/><figcaption>ca04-sugestao-recusada.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA05">
+      <h2>CA05 — CBO sem entrada no mapa <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado o CBO 5153-20 (Conselheiro tutelar), que não possui entrada no mapa, quando o Master o informa no cadastro, então nenhum perfil funcional é pré-marcado, nenhum add-on é sugerido, a tela informa que a ocupação não possui perfil sugerido, e salvar cria o profissional com o posto base Operacional do Tenant e nenhum módulo operacional.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Selecionar <code>5153-20 — Conselheiro tutelar</code> — o CBO deliberadamente mantido fora do mapa pela HU #10343 (RN11 daquela HU).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A tela informa: "Esta ocupação não possui perfil sugerido. O profissional recebe apenas o posto base Operacional do Tenant."</li><li>Só o grupo "Posto base" é renderizado, com Operador marcado.</li><li>Nenhum grupo de perfil funcional e nenhum add-on é oferecido.</li><li>A resposta da API é HTTP 200 com has_mapping=false — comportamento esperado, não erro.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca05-cbo-sem-mapa.png" alt="CA05 evidência"/><figcaption>ca05-cbo-sem-mapa.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA06">
+      <h2>CA06 — Salvar somente add-on é recusado <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um cadastro em que o Master marcou `family_viewer` e removeu o posto base Operacional do Tenant, quando ele tenta salvar, então o sistema recusa com 422, nenhum vínculo é criado, e a mensagem informa que papel add-on exige posto base.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Submissão direta de <code>POST client/professionals</code> com <code>role_ids: [family_viewer]</code> — a UI mantém o posto base disponível, então o caso é provocado no contrato. A regra reusa <code>UserTenantRoleSyncService::assertResultingSetHasBasePost()</code> (GLPI #10141).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>HTTP 422 — o cadastro é recusado.</li><li>Nenhum tenant_professional criado (MAT-CA06 não existe).</li><li>Nenhum usuário criado para o CPF do cenário — a regra é avaliada ANTES da transação, então o rollback não deixa resíduo.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA07">
+      <h2>CA07 — Isolamento entre tenants <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um Master do tenant A, quando ele tenta acessar por identificador o cadastro de um profissional pertencente ao tenant B, então a API responde 404.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Com a sessão do Master do tenant "E2E CadÚnico", requisitar por uuid REAL um profissional do tenant 1.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Profissional do próprio tenant: HTTP 200.</li><li>Profissional de outro tenant: HTTP 404 — nunca 403. O Global Scope de BelongsToTenant faz o registro simplesmente não existir no escopo, sem revelar que ele existe.</li><li>O mesmo vale para a sub-rota .../roles: HTTP 404.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA08">
+      <h2>CA08 — Nenhum dado pessoal em texto livre <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um cadastro de profissional contendo CPF e telefone, quando o cadastro é salvo com sucesso ou recusado por erro de validação, então nenhum registro de acompanhamento e nenhuma mensagem apresentada ao usuário contém o CPF ou o nome completo do profissional em texto livre.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Varredura de todos os registros de <code>activity_log</code> com <code>log_name = tenant_professional</code>, buscando os CPFs e nomes completos usados nos cadastros deste dossiê.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>15 registros varridos; 0 vazamentos de CPF ou nome completo.</li><li>O CPF continua na trilha, porém MASCARADO por cpf_oculta (fail-closed): "***.000.002-**".</li><li>⚠️ A varredura também encontrou 3 registros LEGADOS com CPF em claro, gravados antes desta HU — é o RISCO-02 da spec, confirmado com dado real. Esta HU corrige daqui para frente; sanear o histórico é decisão do encarregado de LGPD.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="RN10">
+      <h2>RN10 — Complementar — sugestão é MASTER-only e não vaza o mapa global <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> A sugestão é atribuição do Master; o mapa global (#10343) permanece inalcançável pelo guard client.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Testes de permissão <code>ProfessionalRoleSuggestionMasterOnlyTest</code> (apêndice).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Master recebe professionals.role-suggestion.show; Operador do tenant NÃO recebe.</li><li>Nenhum papel do guard client recebe cbo-access-profiles.* — a HU usa recurso próprio justamente para não reabrir o que a #10343 fechou.</li><li>O ADMIN (guard manager) mantém a gestão do mapa.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="RN09">
+      <h2>RN09 — Complementar — a sugestão nunca contém o posto Master <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> A proposta apresentada contém sempre e apenas o posto Operacional do Tenant como base.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Teste que injeta uma entrada de mapa contendo (indevidamente) o posto Master e consulta a sugestão.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O posto Master não aparece na proposta: o serviço filtra por hierarquia (só papéis estritamente abaixo do Master).</li><li>Defesa em profundidade — o mapa da #10343 já recusa o Master, mas esta camada independe daquela e protege de dado legado.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="RN11">
+      <h2>RN11 — Complementar — mudar a ocupação não reprocessa o acesso <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Alterar a ocupação de um profissional já cadastrado não altera, revoga nem re-sugere acesso.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Teste que altera o cbo_id de um profissional já cadastrado e confere os vínculos.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A ocupação é gravada com o novo valor.</li><li>Os user_tenant_role permanecem exatamente como estavam — nenhuma concessão ou revogação.</li><li>Na UI a proposta também não é recarregada no modo edição.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+  
+  <h2>Anexo — Cobertura automatizada (Pest, --filter=ProfessionalRoleSuggestion) — 19 testes</h2>
+  <pre class="pest">
+   PASS  Tests\Feature\Api\Client\ProfessionalRoleSuggestionTest
+  ✓ it CA01: apresenta posto base e perfil funcional PRE-MARCADOS        0.42s  
+  ✓ it CA02: apresenta o add-on LGPD visivel porem DESMARCADO            0.03s  
+  ✓ it CA02: salvar sem marcar o add-on NAO concede acesso ao prontuari… 0.04s  
+  ✓ it CA03: marcar o add-on concede o acesso e registra a origem da su… 0.03s  
+  ✓ it CA04: recusar a sugestao cria so o posto base e audita a retirad… 0.03s  
+  ✓ it CA04: papel fora da sugestao e registrado como manually_added     0.03s  
+  ✓ it CA05: CBO sem entrada devolve 200 com o padrao minimo, nao erro   0.02s  
+  ✓ it CA05: salvar com CBO nao mapeado cria o profissional so com o po… 0.02s  
+  ✓ it CA06: recusa 422 ao salvar conjunto composto SO por add-on        0.02s  
+  ✓ it CA07: profissional de outro tenant responde 404                   0.02s  
+  ✓ it CA08: a trilha NUNCA registra o CPF em claro                      0.02s  
+  ✓ it RN10: o Operador do tenant NAO acessa a sugestao (403)            0.02s  
+  ✓ it RN13: recusa a sugestao de um CBO inativo                         0.02s  
+  ✓ it RN09: a sugestao nunca inclui o posto Master                      0.02s  
+  ✓ it RN12: cadastro sem ocupacao segue funcionando (contrato legado r… 0.02s  
+  ✓ it RN11: alterar a ocupacao grava o novo CBO sem reprocessar o aces… 0.03s  
+
+   PASS  Tests\Feature\Permissions\ProfessionalRoleSuggestionMasterOnlyTest
+  ✓ it keeps professionals.role-suggestion master-only                   0.66s  
+  ✓ it never leaks cbo-access-profiles into the client guard             0.65s  
+  ✓ it keeps permission coverage green (no authenticated route without…  0.01s  
+
+  Tests:    19 passed (97 assertions)
+  Duration: 2.43s
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

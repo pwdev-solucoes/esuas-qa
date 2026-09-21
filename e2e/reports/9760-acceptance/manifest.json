@@ -1,0 +1,74 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — Acesso Restrito ao Prontuário da Família",
+    "subtitle": "Sprint 8 · HU #9760 (+ CA06–CA09 da HU #9759) · Evidências end-to-end no frontend do tenant",
+    "rows": [
+      ["Gerado em", "02/07/2026 00:20"],
+      ["Branch", "sprint9-familias (api d953773+38fd466 · client aee4a81)"],
+      ["Spec", ".planning/specs/sprint8/9760-acesso-restrito-prontuario-familia.md"],
+      ["Ambiente", "API Sail/PostgreSQL (localhost:80) · client Vite :5174 (não-mock)"],
+      ["Organização (tenant)", "E2E CadÚnico · uuid 00000000-0000-4000-8000-0000000000c1 · IBGE 2304400 (Fortaleza)"],
+      ["Usuários", "Master E2E (bypass de papel) · Operador E2E (Profissional ativo, papel family_viewer concedido/revogado ao vivo)"],
+      ["Ferramenta", "playwright-cli (Chromium 1440×900, 2 sessões simultâneas) + Pest 4"],
+      ["Cobertura adicional", "Fecha os CAs 06–09 da HU #9759 (mesmos cenários, dossiê único — split documentado no overview do plano)"]
+    ]
+  },
+  "summary": "HU #9760: 4 Critérios de Aceite evidenciados — CA05 e CA06 integralmente no navegador (com verificação da auditoria no banco), CA07 no navegador (revogação de papel ao vivo; inativação coberta pela suíte) e CA08 automatizado (404 cross-tenant). Os cenários exercitados aqui também fecham os CAs 06–09 da HU #9759. Fluxo demonstrado ao vivo com duas sessões simultâneas de navegador: operador sem permissão bloqueado (botão desabilitado + 403 in-page), Master abre o prontuário por bypass, auditoria silenciosa gravada (1 registro por abertura, CPF mascarado), concessão do papel habilita o operador no request seguinte e a revogação bloqueia de imediato. Suíte automatizada: 21 testes, 74 assertions, 100% verdes. Resultado geral: todos os critérios atendidos.",
+  "cas": [
+    {
+      "id": "CA05",
+      "title": "Bloqueio de ação para operador comum (RN04) — também CA06 da #9759",
+      "status": "nav",
+      "gherkin": "Dado que sou Profissional SEM a permissão especial de privacidade\nE realizei uma busca por nome que listou pessoas\nQuando a tabela exibe as pessoas localizadas\nEntão o botão de visualização na coluna de Ações aparece desabilitado\nE não consigo abrir os detalhes da família daquele cidadão\nE, se eu chamar o endpoint de detalhe diretamente, recebo 403",
+      "steps_html": "Login como <b>Operador E2E</b> (sem o papel LGPD) → Pesquisa de Pessoas → busca por CPF <code>10000000108</code>. Em seguida, deep-link direto para <code>/app/cadastros/familias/{uuid}</code> (equivale a chamar o endpoint de detalhe).",
+      "results": [
+        "Botão \"Visualizar Família\" visível porém desabilitado, com tooltip: \"Acesso restrito (LGPD): requer a permissão 'Visualização de Detalhes da Família'\".",
+        "No deep-link direto, o backend responde 403 e a tela exibe o alerta \"Acesso restrito\" com orientação para solicitar acesso ao Master — nenhum dado da família é exibido.",
+        "Suíte confirma o 403 do endpoint (GET families/{uuid}/details sem permissão) e que a tentativa negada NÃO gera registro de auditoria."
+      ],
+      "images": ["screenshots/ca05-operador-botao-desabilitado.png", "screenshots/ca05-operador-403-acesso-restrito.png"]
+    },
+    {
+      "id": "CA06",
+      "title": "Acesso autorizado + auditoria silenciosa (RN04/RN05) — também CA07/CA08 da #9759",
+      "status": "parc",
+      "gherkin": "Dado que possuo a permissão especial ativa (ou sou Master)\nQuando clico em \"Visualizar\" na coluna de Ações de uma pessoa localizada\nEntão sou direcionado à tela cheia \"Visualizar Família\" daquele núcleo familiar\nE o sistema grava, em segundo plano, um log de auditoria com meu Usuário único global,\n     o nome do Profissional local, o tenant, a data/hora e o Código Familiar\nE nenhum aviso de auditoria é exibido a mim",
+      "steps_html": "Login como <b>Master E2E</b> → busca por CPF → clicar em <b>Visualizar Família</b>. Após o carregamento, consulta direta à tabela <code>activity_log</code> no PostgreSQL (saída em <code>auditoria-family-access.txt</code>).",
+      "results": [
+        "Master é direcionado à tela cheia \"Visualizar Família\": código familiar 1600000001, status Ativa, endereço, composição familiar com 4 membros (RF primeiro, nome social precede o civil).",
+        "Registro de auditoria gravado em segundo plano: log_name=family_access, event=record_opened, com tenant_id, family_code, professional_name \"E2E Master CadÚnico [Master]\", datetime e CPF do usuário global MASCARADO (***.982.247-**).",
+        "Exatamente 1 registro por abertura (verificado no banco: 1 abertura Master + 1 abertura Operador autorizado = 2 registros).",
+        "Nenhum aviso de auditoria exibido ao operador — a página não menciona a gravação além do texto estático de cabeçalho."
+      ],
+      "images": ["screenshots/ca06-master-tela-visualizar-familia.png"]
+    },
+    {
+      "id": "CA07",
+      "title": "Revogação imediata por remoção de papel ou inativação (RN06) — também CA09 da #9759",
+      "status": "parc",
+      "gherkin": "Dado que o Master remove de mim o papel com \"families.view-details\"\nOu me inativa como Profissional do município\nQuando eu tento abrir um prontuário no request seguinte\nEntão o acesso é bloqueado (botão desabilitado e endpoint 403)\nE meu Usuário global continua válido em outros tenants",
+      "steps_html": "Com o Operador logado e com o prontuário ABERTO em outra sessão de navegador, o Master desmarca o papel \"Visualização de Detalhes da Família — LGPD\" no drawer de perfis e salva. O Operador recarrega a página do prontuário (novo request), sem novo login.",
+      "results": [
+        "No request seguinte à revogação, o mesmo prontuário que estava aberto responde 403 e a tela mostra o alerta \"Acesso restrito\" — efeito em tempo real, sem depender de logout.",
+        "Ramo da inativação (Profissional inativado → 403 no próximo request) e a preservação do usuário global em outros tenants são cobertos pela suíte automatizada (cenários CA07/CA-extra-D/CA-extra-E)."
+      ],
+      "images": ["screenshots/ca07-revogacao-403.png"]
+    },
+    {
+      "id": "CA08",
+      "title": "Isolamento territorial no acesso (RN07) — também CA10 (parte 404) da #9759",
+      "status": "auto",
+      "gherkin": "Dado que estou autenticado no Tenant A\nQuando tento abrir o prontuário de uma família do Tenant B\nEntão o sistema responde 404 (recurso fora do escopo do tenant)",
+      "steps_html": "Coberto pela suíte automatizada (apêndice): usuário autenticado no Tenant A requisita <code>GET families/{uuid}/details</code> de família do Tenant B.",
+      "results": [
+        "Resposta 404 (não 403) para família de outro tenant — o recurso simplesmente não existe no escopo, sem vazar sua existência.",
+        "Guard-rail explícito no controller (binding por uuid resolve antes do middleware de tenant — mesmo padrão dos módulos existentes)."
+      ],
+      "images": []
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Pest, --filter=FamilyDetails|FamilyAccess|ClientUserPolicyStackedRoles) — 21 passed, 74 assertions · Auditoria verificada no banco em auditoria-family-access.txt",
+    "file": "pest-family-details.txt"
+  }
+}

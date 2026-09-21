@@ -1,0 +1,62 @@
+{
+    "cenario": "CA05c — entidade extinta sem data de encerramento",
+    "entidade_incompleta": {
+        "uuid": "9e4a5eb3-5e69-4d11-9e72-5f9faa85acf2",
+        "observacao": "a pendência identifica a entidade por uuid — nunca razão social, CNPJ ou e-mail (RN18)"
+    },
+    "entidade_completa_no_mesmo_tenant": "ed30a31d-20a9-4f56-b15e-3dd0be491d2e",
+    "POST client/siap-remittances": {
+        "status": 422,
+        "body": {
+            "message": "The SIAP remittance cannot be generated: 1 social entity has an incomplete record for SIAP. Check the missing data in the pre-check screen.",
+            "errors": {
+                "social_entities": [
+                    "The SIAP remittance cannot be generated: 1 social entity has an incomplete record for SIAP. Check the missing data in the pre-check screen."
+                ]
+            }
+        }
+    },
+    "remessas_criadas": 0,
+    "arquivos_gravados": [],
+    "GET client/siap-remittances/pre-check": {
+        "can_generate": false,
+        "pendencia_na_zona_de_bloqueio": {
+            "scope": "blocking",
+            "kind": "record_incomplete",
+            "field_name": "SituacaoEntidadeSocial",
+            "subject_type": "social_entity",
+            "subject_uuid": "9e4a5eb3-5e69-4d11-9e72-5f9faa85acf2",
+            "affected_count": 1,
+            "message_key": "siap_remittance.pendency.entity_incomplete",
+            "message": "This social entity is missing SituacaoEntidadeSocial, required by SIAP. Fix the entity record: until then, no remittance can be generated.",
+            "blocks_entire_remittance": true,
+            "affected_layouts": 11,
+            "resolution": {
+                "resource": "tenant-tce-parameters",
+                "requires_role": "master"
+            }
+        },
+        "pendencia_na_lista_do_leiaute": {
+            "scope": "blocking",
+            "kind": "record_incomplete",
+            "field_name": "SituacaoEntidadeSocial",
+            "subject_type": "social_entity",
+            "subject_uuid": "9e4a5eb3-5e69-4d11-9e72-5f9faa85acf2",
+            "affected_count": 1,
+            "message_key": "siap_remittance.pendency.entity_incomplete",
+            "message": "This social entity is missing SituacaoEntidadeSocial, required by SIAP. Fix the entity record: until then, no remittance can be generated.",
+            "blocks_entire_remittance": true
+        },
+        "layout_EntidadeSocial": {
+            "name": "EntidadeSocial",
+            "record_count": 1,
+            "pendency_count": null
+        },
+        "summary": {
+            "layout_count": 11,
+            "record_count": 1,
+            "blocking_pendency_count": 1,
+            "layout_pendency_count": 17
+        }
+    }
+}

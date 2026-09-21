@@ -1,0 +1,337 @@
+===================================================================
+ANEXO A — Transcript da API viva (curl, Sanctum stateful, :8090/esuas_e2e)
+===================================================================
+
+================================================================
+== LOGIN manager (Sanctum stateful, super admin E2E — CPF mascarado 449.***.***-16)
+================================================================
+login manager/auth/login => HTTP 200
+
+================================================================
+== CA38 — bloqueio por dados obrigatórios: POST /geo-layers sem nome e sem critério efetivo
+================================================================
+HTTP 422
+{
+    "message": "O campo nome \u00e9 obrigat\u00f3rio. (e mais 2 erros)",
+    "errors": {
+        "name": [
+            "O campo nome \u00e9 obrigat\u00f3rio."
+        ],
+        "criteria": [
+            "O campo criteria \u00e9 obrigat\u00f3rio.",
+            "Informe ao menos um crit\u00e9rio de busca: vulnerabilidade, situa\u00e7\u00e3o de atualiza\u00e7\u00e3o cadastral ou setor censit\u00e1rio."
+        ]
+    }
+}
+
+================================================================
+== CA37 — criação de camada válida => 201, status draft, entra no catálogo
+================================================================
+HTTP 201
+{
+    "data": {
+        "id": 1,
+        "uuid": "a08c2b8d-47b1-4722-9c8e-5a2c97da3432",
+        "name": "Fam\u00edlias benefici\u00e1rias do PBF",
+        "description": "Fam\u00edlias com recebimento ativo do Programa Bolsa Fam\u00edlia, para planejamento de busca ativa.",
+        "criteria": {
+            "vulnerabilities": [
+                "receives_pbf"
+            ],
+            "update_status": null,
+            "sector_uuid": null,
+            "traditional_group_id": null
+        },
+        "representation": "heatmap",
+        "style": {
+            "palette": "warm"
+        },
+        "status": "draft",
+        "audience": "global",
+        "tenants_count": 0,
+        "published_at": null,
+        "inactivated_at": null,
+        "created_at": "2026-07-04T19:03:53.000000Z",
+        "updated_at": "2026-07-04T19:03:53.000000Z"
+    },
+    "message": "Camada criada como rascunho."
+}
+L1=a08c2b8d-47b1-4722-9c8e-5a2c97da3432
+
+================================================================
+== CA39 — nome duplicado (case-insensitive) bloqueado
+================================================================
+HTTP 422
+{
+    "message": "J\u00e1 existe uma camada com este nome.",
+    "errors": {
+        "name": [
+            "J\u00e1 existe uma camada com este nome."
+        ]
+    }
+}
+
+================================================================
+== CA40 — preview por tenant único de referência (decisão PO: combobox de tenant)
+================================================================
+HTTP 422
+Traceback (most recent call last):
+  File "<string>", line 2, in <module>
+KeyError: 'data'
+
+================================================================
+== CA44 — trava de publicação sem bases homologadas (flip temporário de sync_status e reversão)
+================================================================
+bases des-homologadas temporariamente
+HTTP 422
+{
+    "message": "N\u00e3o \u00e9 poss\u00edvel publicar a camada: as bases geogr\u00e1ficas prim\u00e1rias (geometrias municipais e setores censit\u00e1rios) precisam estar importadas, conclu\u00eddas e sincronizadas. Homologue as duas bases em Importa\u00e7\u00f5es de Camadas Geogr\u00e1ficas.",
+    "errors": {
+        "geo_layer": [
+            "N\u00e3o \u00e9 poss\u00edvel publicar a camada: as bases geogr\u00e1ficas prim\u00e1rias (geometrias municipais e setores censit\u00e1rios) precisam estar importadas, conclu\u00eddas e sincronizadas. Homologue as duas bases em Importa\u00e7\u00f5es de Camadas Geogr\u00e1ficas."
+        ]
+    }
+}
+bases restauradas (synced)
+
+================================================================
+== CA42 — publicação global (bases homologadas)
+================================================================
+HTTP 200
+status: published | audience: global | published_at: 2026-07-04T19:03:54.000000Z
+
+================================================================
+== LOGIN client (master do tenant 1 — Organização E2E CadÚnico)
+================================================================
+login client/auth/login => HTTP 200
+
+================================================================
+== CA29 (HU-GEO-01) + CA42 — GET /client/geo-panel/layers mescla built-ins + camada custom global (desligada por padrão)
+================================================================
+HTTP 200
+- boundary | municipal-boundaries | Limites dos municípios | builtin= True
+- sectors | census-sectors | Setores censitários (IBGE) | builtin= True
+- units | social-units | CRAS e CREAS | builtin= True
+- custom | a08c2b8d-47b1-4722-9c8e-5a2c97da3432 | Famílias beneficiárias do PBF | builtin= False
+
+================================================================
+== CA43 — publicação direcionada: 2ª camada publicada SÓ para o tenant 2 (Matias e Mendes)
+================================================================
+HTTP 201
+L2=0816af1f-895d-4194-ac67-41ecfbcdedc3
+HTTP 200
+status: published | audience: selected
+-- tenant 1 NÃO deve ver a camada L2:
+L2 visível p/ tenant 1? False
+
+================================================================
+== CA45 — alteração de público com efeito imediato (inclui tenant 1, sem nenhuma outra ação)
+================================================================
+HTTP 200
+-- próximo fetch do tenant 1:
+L2 visível p/ tenant 1? True
+
+================================================================
+== CA46 — dados da camada SEMPRE sob o tenant consumidor (pontos anônimos, sem PII)
+================================================================
+HTTP 200
+total: 6 | points: 6 | chaves 1º ponto: ['count', 'lat', 'lng']
+by_sector: []
+-- camada draft NUNCA visível ao tenant => 404 (isolamento, nunca 403):
+HTTP 404
+
+================================================================
+== RN06 lado servidor — inativação/reativação com efeito imediato na listagem do tenant
+================================================================
+HTTP 200
+L1 visível após inativar? False
+HTTP 200
+L1 visível após reativar (volta ao público configurado)? True
+
+================================================================
+== RN06/P5 — DELETE ausente => 405
+================================================================
+HTTP 405
+
+================================================================
+== CA51 lado servidor — filtros do catálogo (status=published & audience=selected)
+================================================================
+HTTP 200
+- Cadastros desatualizados | published | selected
+
+================================================================
+== CA52 lado servidor — detalhe com histórico
+================================================================
+HTTP 200
+name: Famílias beneficiárias do PBF | status: published | audience: global
+  * reactivated | 2026-07-04T19:03:55.000000Z
+  * inactivated | 2026-07-04T19:03:55.000000Z
+  * published | 2026-07-04T19:03:54.000000Z
+  * created | 2026-07-04T19:03:53.000000Z
+
+================================================================
+== CA50 — trilha auditável no activity_log (banco, sem PII: causer_id numérico)
+================================================================
+created | causer=114 | 2026-07-04 19:03:53
+published | causer=114 | 2026-07-04 19:03:54
+created | causer=114 | 2026-07-04 19:03:55
+published | causer=114 | 2026-07-04 19:03:55
+audience_changed | causer=114 | 2026-07-04 19:03:55
+created | causer=114 | 2026-07-04 19:03:55
+inactivated | causer=114 | 2026-07-04 19:03:55
+reactivated | causer=114 | 2026-07-04 19:03:55
+
+================================================================
+== CA40 (adendo) — geometria de Fortaleza estava is_active=false no banco e2e
+==   (efeito replace-all da sync #9868 — a importação de AL desativou ausentes).
+==   Reativando a geometria para o cenário positivo; o 422 acima fica como
+==   evidência NEGATIVA (tenant sem município com geometria homologada).
+================================================================
+city_geometry de Fortaleza reativada
+-- preview da camada L1 com tenant de referência = tenant 1 (Fortaleza):
+HTTP 200
+city_geometry: presente (municipio Fortaleza )
+total: 6
+by_sector: []
+points: 6 | chaves do 1º ponto (anônimo, sem PII): ['count', 'lat', 'lng']
+-- trilha do preview (event=previewed, properties só com uuid do tenant):
+previewed | causer=114 | props={"tenant":"00000000-0000-4000-8000-0000000000c1"}
+
+== CA40 (adendo 2) — setores censitários de Fortaleza também estavam is_active=false (mesmo replace-all); reativados p/ massa das etapas 02/03:
+setores 230440005000001..3 reativados
+HTTP 200
+total: 6
+by_sector: [{"ibge_code_setor": "230440005000001", "name": "Setor Fixture 001 - Oeste", "families": 4}, {"ibge_code_setor": "230440005000002", "name": "Setor Fixture 002 - Centro", "families": 2}]
+points: 6
+
+===================================================================
+ANEXO B — Suíte Pest filtrada (GeoLayer|GeoPanelLayerData), host/SQLite
+===================================================================
+
+   PASS  Tests\Unit\Models\GeoLayerTest
+  ✓ it generates uuid, uses it as route key and casts criteria/style/en… 0.29s  
+  ✓ it resolves visibility to a tenant per the read contract — publishe… 0.04s  
+  ✓ it enforces the case-insensitive partial unique index on name (CA39… 0.01s  
+  ✓ it logs only the layer DEFINITION automatically, leaving lifecycle…  0.01s  
+
+   PASS  Tests\Unit\Services\Geo\GeoLayerSyncServiceTest
+  ✓ it resolves city_id by cities.ibge_code without any foreign key      0.02s  
+  ✓ it counts city_not_found as skipped without writing business rows    0.01s  
+  ✓ it computes the bounding box centroid of the loaded polygon          0.01s  
+  ✓ it assigns the IBGE address source to the synced rows                0.01s  
+  ✓ it resolves the census sector city by the 7-digit prefix of the sec… 0.01s  
+  ✓ it deactivates active rows that are absent from the current load     0.01s  
+  ✓ it deactivates the paired geometry when a census sector becomes abs… 0.01s  
+  ✓ it deduplicates repeated ibge codes within the same load keeping th… 0.01s  
+
+   PASS  Tests\Unit\Services\GeoLayerLifecycleServiceTest
+  ✓ it only reports the bases as homologated when BOTH are completed AN… 0.01s  
+  ✓ it rejects every invalid lifecycle transition (RN06)                 0.01s  
+  ✓ it walks the full valid cycle draft → published → inactive → publis… 0.01s  
+  ✓ it publish with a selected audience fills the pivot; switching to g… 0.01s  
+
+   PASS  Tests\Feature\Api\Client\GeoPanelLayerDataTest
+  ✓ it merges a globally published layer after the builtins, keeping th… 0.04s  
+  ✓ it shows a selected-audience layer only to the covered tenant (CA43… 0.02s  
+  ✓ it never lists draft or inactive layers on the tenant panel (CA48/R… 0.02s  
+  ✓ it reflects audience/status changes on the very next fetch — no cac… 0.03s  
+  ✓ it executes the layer criteria strictly under each consumer tenant…  0.04s  
+  ✓ it answers 404 (never 403) for a layer that is not visible to the t… 0.02s  
+  ✓ it serves the CURRENT definition of the layer — an admin edit refle… 0.03s  
+  ✓ it shapes the payload by representation: markers, boundaries and he… 0.03s  
+  ✓ it denies the layer data endpoint to an operator without the geo_pa… 0.02s  
+
+   PASS  Tests\Feature\Api\GeoLayerImportControllerTest
+  ✓ it lists geo layer imports                                           0.02s  
+  ✓ it filters geo layer imports by layer_type                           0.01s  
+  ✓ it filters geo layer imports by status                               0.01s  
+  ✓ it shows a geo layer import with creator                             0.01s  
+  ✓ it stores a municipal geometry import and dispatches the job on the… 0.04s  
+  ✓ it validates required fields on store                                0.01s  
+  ✓ it rejects an invalid layer_type                                     0.01s  
+  ✓ it rejects a non-geojson file                                        0.01s  
+  ✓ it rejects a new import while another is pending or processing       0.01s  
+  ✓ it blocks storing a census sector layer while the municipal geometr… 0.01s  
+  ✓ it blocks the census sector layer when the municipal geometry is co… 0.01s  
+  ✓ it accepts a census sector layer once the municipal geometry is hom… 0.01s  
+  ✓ it soft deletes a geo layer import while preserving its stored file  0.01s  
+  ✓ it blocks deleting a processing import                               0.01s  
+  ✓ it requires authentication                                           0.01s  
+  ✓ it forbids access without permissions                                0.01s  
+  ✓ it forbids destroy without the destroy permission                    0.01s  
+  ✓ it lists only trashed imports with filter[trashed]=only              0.02s  
+  ✓ it bulk destroys imports in a single soft-delete call                0.01s  
+  ✓ it rejects the whole batch when an id is processing                  0.01s  
+  ✓ it validates ids on bulk destroy                                     0.01s  
+  ✓ it restores a soft-deleted import resolving the trashed binding      0.01s  
+  ✓ it returns 422 when restoring an import that is not trashed          0.01s  
+  ✓ it force deletes a trashed import removing the record and its store… 0.01s  
+  ✓ it logs a single force_destroyed activity without a duplicate delet… 0.01s  
+  ✓ it retries a failed import requeueing the job with the stored geojs… 0.02s  
+  ✓ it returns 422 when retrying an import that is not failed            0.01s  
+  ✓ it returns 422 when retrying an import whose geojson is missing fro… 0.01s  
+  ✓ it queues the layer sync for a completed import on the geo queue     0.01s  
+  ✓ it returns 422 when syncing an import that is not completed          0.01s  
+  ✓ it returns 422 when the import is already queued or syncing with da… 0.01s  
+  ✓ it returns 422 when the import is already queued or syncing with da… 0.01s  
+  ✓ it returns 422 when another import is already queued or syncing wit… 0.01s  
+  ✓ it returns 422 when another import is already queued or syncing wit… 0.01s  
+  ✓ it forbids sync without the sync permission                          0.01s  
+  ✓ it exposes the sync state in the resource                            0.01s  
+
+   PASS  Tests\Feature\Api\Manager\GeoLayerControllerTest
+  ✓ it creates a layer as draft with normalized criteria and it shows u… 0.02s  
+  ✓ it blocks creation without name or without any criterion (CA38)      0.01s  
+  ✓ it rejects criteria outside the panel vocabulary (P3)                0.01s  
+  ✓ it blocks a duplicated name case-insensitively, but frees it after…  0.01s  
+  ✓ it filters the catalog by status and audience (CA51)                 0.02s  
+  ✓ it shows the layer detail with audience tenants and the full audit…  0.02s  
+  ✓ it updates the current definition of a published layer (CA47)        0.01s  
+  ✓ it keeps the unique name rule on update, ignoring the layer itself…  0.01s  
+  ✓ it does not expose DELETE — the missing verb answers 405 (P5/RN06)   0.01s  
+  ✓ it blocks publish while BOTH national bases are not homologated (CA… 0.01s  
+  ✓ it publishes globally: empty pivot means every active tenant, prese… 0.02s  
+  ✓ it publishes to selected tenants only (CA43/RN04)                    0.02s  
+  ✓ it requires the tenant list when publishing to a selected audience   0.01s  
+  ✓ it rejects publishing a layer that is not a draft (RN06)             0.01s  
+  ✓ it changes the audience of a published layer with immediate pivot s… 0.02s  
+  ✓ it only allows changing the audience of published layers (RN06)      0.01s  
+  ✓ it inactivates a published layer and rejects invalid transitions (C… 0.02s  
+  ✓ it reactivates an inactive layer back to the CONFIGURED audience (C… 0.01s  
+  ✓ it revalidates the RN03 gate on reactivation (CA44/CA49)             0.01s  
+  ✓ it rejects reactivating a layer that is not inactive (RN06)          0.01s  
+  ✓ it previews the layer under the single reference tenant — WYSIWYG,…  0.03s  
+  ✓ it never leaks another tenant of the same municipality into the pre… 0.02s  
+  ✓ it rejects the preview when the reference tenant has no homologated… 0.01s  
+  ✓ it requires a valid tenant_uuid on preview                           0.01s  
+  ✓ it gives the admin_operador read-only access — every write is 403 (… 0.47s  
+  ✓ it gives the ADMIN every geo-layers ability through the automatic h… 0.44s  
+
+   PASS  Tests\Feature\Jobs\ProcessGeoLayerImportJobTest
+  ✓ it processes a valid municipal geojson into staging features         0.02s  
+  ✓ it logs a processed activity with layer_type and feature_count       0.01s  
+  ✓ it replaces the staging on reprocess without duplicating features    0.01s  
+  ✓ it processes a census sector geojson with 15-digit codes into stagi… 0.01s  
+  ✓ it fails the import for structurally invalid geojson with dataset "… 0.01s  
+  ✓ it fails the import for structurally invalid geojson with dataset "… 0.01s  
+  ✓ it fails the import for structurally invalid geojson with dataset "… 0.01s  
+  ✓ it fails the import for structurally invalid geojson with dataset "… 0.01s  
+  ✓ it fails the import for structurally invalid geojson with dataset "… 0.01s  
+  ✓ it fails the import for structurally invalid geojson with dataset "… 0.01s  
+  ✓ it fails the import for structurally invalid geojson with dataset "… 0.01s  
+  ✓ it fails the import when the geojson file is missing from storage    0.01s  
+
+   PASS  Tests\Feature\Jobs\SyncGeoLayerJobTest
+  ✓ it syncs a municipal geometry import into city_geometries resolving… 0.01s  
+  ✓ it marks syncing at the start of the handle before running the pipe… 0.01s  
+  ✓ it logs a synced activity with the summary                           0.01s  
+  ✓ it resyncs idempotently updating existing geometries and deactivati… 0.02s  
+  ✓ it syncs a census sector import distributing sectors to cities by t… 0.01s  
+  ✓ it resyncs census sectors idempotently without duplicating sectors…  0.01s  
+  ✓ it deactivates the paired census_sector_geometries row when its sec… 0.01s  
+  ✓ it marks the sync as failed recording the error message with datase… 0.01s  
+  ✓ it marks the sync as failed recording the error message with datase… 0.01s  
+
+  Tests:    108 passed (544 assertions)
+  Duration: 2.97s
+

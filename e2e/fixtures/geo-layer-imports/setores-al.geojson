@@ -1,0 +1,5 @@
+{ "type": "FeatureCollection", "features": [
+  { "type": "Feature", "properties": {"id": "270010205000001", "name": "Setor 0001 - Água Branca"}, "geometry": { "type": "Polygon", "coordinates": [[[-37.92,-9.26],[-37.90,-9.26],[-37.90,-9.24],[-37.92,-9.24],[-37.92,-9.26]]] } },
+  { "type": "Feature", "properties": {"id": "270010205000002", "name": "Setor 0002 - Água Branca"}, "geometry": { "type": "Polygon", "coordinates": [[[-37.90,-9.26],[-37.88,-9.26],[-37.88,-9.24],[-37.90,-9.24],[-37.90,-9.26]]] } },
+  { "type": "Feature", "properties": {"id": "270020105000001", "name": "Setor 0001 - Anadia"}, "geometry": { "type": "Polygon", "coordinates": [[[-36.31,-9.69],[-36.29,-9.69],[-36.29,-9.67],[-36.31,-9.67],[-36.31,-9.69]]] } }
+] }

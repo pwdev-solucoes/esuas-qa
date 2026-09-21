@@ -1,0 +1,36 @@
+
+   PASS  Tests\Feature\Dashboard\GeneralSummaryTest
+  ✓ it distributes families across the 3 income bands and the sum equal… 0.47s  
+  ✓ it counts families with null per_capita_income (manual origin) as e… 0.05s  
+  ✓ it uses the registered minimum wage of the exercise to size the mid… 0.05s  
+  ✓ it counts distinct persons among active members (a person in two fa… 0.06s  
+  ✓ it returns zeroed totals and bands without error when the scope has… 0.04s  
+  ✓ it recalculates the summary for a neighborhood, covering only geoco… 0.06s  
+  ✓ it returns 422 for a neighborhood_uuid outside the tenant municipal… 0.04s  
+  ✓ it returns 422 for a malformed neighborhood_uuid                     0.04s  
+  ✓ it reports the same total_families as the strategic indicators for…  0.06s  
+  ✓ it denies the summary to the base operator without the dedicated ro… 0.04s  
+  ✓ it grants the summary to the operator once the geo_panel_viewer rol… 0.04s  
+  ✓ it grants the summary to the Master without any add-on role          0.04s  
+
+   PASS  Tests\Feature\Api\MinimumWageControllerTest
+  ✓ it lists minimum wages sorted by year desc by default                0.03s  
+  ✓ it creates a minimum wage                                            0.02s  
+  ✓ it returns 422 on duplicate year                                     0.02s  
+  ✓ it validates required fields on create                               0.02s  
+  ✓ it rejects a non-positive amount                                     0.02s  
+  ✓ it updates a minimum wage amount                                     0.02s  
+  ✓ it keeps year unique on update but allows keeping its own year       0.02s  
+  ✓ it shows a minimum wage                                              0.02s  
+  ✓ it soft deletes a minimum wage                                       0.02s  
+  ✓ it filters by is_active                                              0.02s  
+  ✓ it requires authentication                                           0.01s  
+  ✓ it forbids access without permission                                 0.02s  
+  ✓ it resolves the current amount from the latest year <= current, wit… 0.02s  
+
+   PASS  Tests\Feature\TenantIsolation\DashboardGeneralSummaryIsolationTest
+  ✓ it never counts families from another tenant in the general summary… 0.05s  
+
+  Tests:    26 passed (103 assertions)
+  Duration: 1.37s
+

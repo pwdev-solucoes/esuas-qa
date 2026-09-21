@@ -1,0 +1,15 @@
+{
+    "_leitura": "CA08c (D04) — lotacao vigente cujo usuario esta SEM CPF (users.cpf e nullable). O POST devolve 422 na mesma recusa do CA08; a conferencia identifica a lotacao e o campo CPF. O Pest cobre tambem a variante com 10 digitos (dataset \"com 10 digitos\").",
+    "lotacao_uuid": "d8da14e3-5968-4d0a-83b3-65d217ab9ee8",
+    "http_status": 422,
+    "resposta_do_post": {
+        "message": "A remessa SIAP não pode ser gerada: 1 lotação de profissional está sem matrícula ou CPF no formato exigido pelo SIAP. Corrija o cadastro de Profissionais Municipais — veja quais dados faltam na conferência prévia.",
+        "errors": {
+            "tenant_professionals": [
+                "A remessa SIAP não pode ser gerada: 1 lotação de profissional está sem matrícula ou CPF no formato exigido pelo SIAP. Corrija o cadastro de Profissionais Municipais — veja quais dados faltam na conferência prévia."
+            ]
+        }
+    },
+    "campo_na_pendencia": "CPF",
+    "remessas_no_banco": 0
+}

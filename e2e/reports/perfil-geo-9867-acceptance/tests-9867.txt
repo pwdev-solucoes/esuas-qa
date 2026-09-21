@@ -1,0 +1,19 @@
+=== Cobertura automatizada — atribuição de perfil (professionals.roles.sync) + gate geo (RN10/RN21) ===
+   PASS  Tests\Feature\Api\Client\ProfessionalRoleControllerTest
+  ✓ it lists current and assignable roles (CA01)                         0.37s  
+  ✓ it syncs roles granting and revoking in diff (CA02/CA03)             0.02s  
+  ✓ it is idempotent when the same set is resent (RN04)                  0.02s  
+  ✓ it revokes all roles when role_ids is empty (RN11)                   0.02s  
+  ✓ it rejects assigning a role equal to or above the master hierarchy…  0.02s  
+  ✓ it rejects assigning an inactive role (RN02)                         0.02s  
+  ✓ it returns 404 for a professional from another tenant                0.02s  
+  ✓ it forbids an operador from managing professional roles (MASTER-onl… 0.02s  
+  Tests:    8 passed (35 assertions)
+
+--- GeoPanel: gate por papel (geo_panel_viewer add-on) ---
+  ✓ it denies every geo-panel endpoint to the base operator without the… 0.02s  
+  ✓ it grants the full panel to the operator once the geo_panel_viewer…  0.03s  
+  ✓ it grants the full panel to the Master without any add-on role (RN2… 0.03s  
+  ✓ it does not let the geo_panel_viewer role in Tenant A open the pane… 0.03s  
+  ✓ it exposes geo_panel_viewer as an add-on role, never a hierarchy po… 0.02s  
+  Tests:    53 passed (190 assertions)

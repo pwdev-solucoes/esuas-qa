@@ -1,0 +1,44 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — Atualização de Identidade Visual e Representatividade da Persona (Maria)",
+    "subtitle": "Ticket GLPI #10009 · Evidências end-to-end no client (spec ad-hoc a partir dos CAs do ticket)",
+    "rows": [
+      ["Gerado em", "31/07/2026 01:18"],
+      ["Branch", "develop (client e admin)"],
+      ["Spec", "Ad-hoc — CAs extraídos do ticket GLPI #10009 (sem story formal em .planning/product/stories)"],
+      ["Ambiente", "API Sail/PostgreSQL · client :5174 · admin :5173"],
+      ["Organização (tenant)", "Prefeitura Municipal de Modelo - AL (seed E2ESeeder)"],
+      ["Ferramenta", "playwright-cli (Chromium)"]
+    ]
+  },
+  "summary": "2 critérios de aceite avaliados. CA02 (substituição da persona nas telas de demonstração) está PARCIALMENTE atendido: a tela de login do client (organização/tenant) já exibe a nova Maria (pele escura, cabelo crespo), mas o asset equivalente no admin (Super Admin) ainda contém a ilustração antiga (pele mais clara, cabelo ondulado) — um resquício da versão anterior, mesmo não estando ativo na tela de login atual do admin (que usa outro asset, 'sassa-manager.png'). CA01 (avatar ilustrativo da Maria na aba Resumo de 'Visualizar Família') NÃO foi atendido: a tela real não possui nenhuma ilustração — é 100% dados tabulares, mesmo quando a Referência Familiar do registro se chama literalmente 'MARIA'.",
+  "cas": [
+    {
+      "id": "CA01",
+      "title": "Visualização da nova persona no prontuário",
+      "status": "fail",
+      "gherkin": "Dado que o Master ou o profissional autorizado abre a tela cheia de \"Visualizar Família\" de exemplo, Quando a aba Resumo carrega os dados da Referência Familiar, Então o avatar ilustrativo da personagem Maria exibe as características de pele escura e cabelo crespo de forma clara e com alta qualidade gráfica.",
+      "steps_html": "Login como Master (52998224725) no client (<code>:5174</code>) → navegação para <code>/app/cadastros/familias/13d28843-bba2-4276-a53e-5a3d4a61cb7b</code> (família seed cuja Referência Familiar se chama literalmente \"MARIA\") → aba Resumo (selecionada por padrão).",
+      "results": [
+        "A aba Resumo renderiza 4 blocos 100% textuais/tabulares (Dados da Referência Familiar, Endereço e Zona de Residência, Perfis de Vulnerabilidade Ativos, Resumo de Benefícios) — ver <code>ResumoTab.vue</code>.",
+        "Não existe nenhum elemento de imagem, avatar ou ilustração nesta tela (nem no componente da aba, nem no header da página \"Visualizar Família\") — confirmado por leitura de código e por inspeção ao vivo do DOM renderizado.",
+        "Divergência: o Critério de Aceite descreve um elemento de UI (avatar ilustrativo) que não existe na implementação atual do módulo de famílias — não é possível evidenciar o critério como está descrito."
+      ],
+      "images": ["screenshots/ca01-resumo-sem-avatar.png"]
+    },
+    {
+      "id": "CA02",
+      "title": "Substituição completa nos ambientes de simulação",
+      "status": "parc",
+      "gherkin": "Dado que navego pelas telas de demonstração do MVP, Quando inspeciono os locais que utilizam a persona Maria para ilustrar o fluxo de atendimento, Então constato que a ilustração antiga foi 100% substituída pela nova versão representativa, sem deixar resquícios da imagem anterior.",
+      "steps_html": "Sessão anônima (sem login) → <code>/auth/login</code> no client (<code>:5174</code>) → inspeção da imagem hero (<code>AuthSplitLayout.vue</code>, asset <code>team-equipe.png</code>). Em paralelo, inspeção por código do asset equivalente no admin (<code>admin/src/assets/team-equipe.png</code>) e da tela de login do admin (<code>:5173</code>).",
+      "results": [
+        "Client (tenant) — tela de login: a persona Maria (crachá \"MARIA\", à direita) exibe pele escura e cabelo crespo, conforme solicitado. Ilustração 100% substituída neste local.",
+        "Admin (Super Admin) — asset de origem <code>admin/src/assets/team-equipe.png</code>: a persona Maria ainda tem pele mais clara e cabelo ondulado — a versão ANTIGA não foi substituída neste repositório/submódulo.",
+        "A tela de login do admin atualmente em execução não exibe esse asset (usa <code>sassa-manager.png</code>, uma persona diferente, via override de branding), então o resquício não é visível ao usuário final agora — mas o arquivo desatualizado permanece no código-fonte do admin como fallback, caso o override de branding seja removido.",
+        "Conclusão: a substituição está confirmada no client, mas incompleta no admin (nível de código-fonte) — recomenda-se replicar o asset atualizado em <code>admin/src/assets/team-equipe.png</code> antes de considerar o CA02 100% atendido."
+      ],
+      "images": ["screenshots/ca02-login-client-maria-nova.png", "screenshots/ca02-admin-team-equipe-desatualizado.png"]
+    }
+  ]
+}

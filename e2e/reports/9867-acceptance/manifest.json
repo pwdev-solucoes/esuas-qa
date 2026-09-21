@@ -1,0 +1,36 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — HU #9867 · Gerenciar Perfis de Acesso ao Georreferenciamento",
+    "subtitle": "Sprint 9 · Painel de Georreferenciamento do Tenant · CA10 · Evidências end-to-end no client",
+    "rows": [
+      ["Gerado em", "05/07/2026"],
+      ["Branch", "sprint9-geo-busca-setor (client f1a3ce2 — governança entregue na HU-GEO-01 #9862; nenhum código novo nesta HU)"],
+      ["Specs de origem", "hu-geo-01-painel-georreferenciamento-evolucao.md (RN10/RN21 — papel geo_panel_viewer) · molde add-on LGPD HUs #9760/#9762"],
+      ["Ambiente", "API e2e :8090 (esuas_app / esuas_e2e) · client build preview :4173"],
+      ["Organização (tenant)", "E2E CadÚnico · Fortaleza · IBGE 2304400"],
+      ["Ferramenta", "playwright-cli (Chromium) + Pest 4"]
+    ]
+  },
+  "summary": "1 critério de aceite (CA10). A governança — papel add-on dedicado \"Acesso ao Painel de Georreferenciamento\" (geo_panel_viewer, level 27), atribuível e revogável pelo Master no drawer \"Gerenciar perfis de acesso\" da tela de detalhes do Profissional — foi entregue na HU-GEO-01 (#9862), no molde dos papéis LGPD das HUs #9760/#9762; esta HU (#9867) é 100% evidência, sem código novo. O ciclo completo foi dirigido ao vivo: operador SEM o perfil (menu ausente), Master vincula o perfil no detalhe do profissional e salva (aplicação imediata), o usuário do profissional passa a ver o menu Georreferenciamento e abre o painel, e por fim o Master REVOGA o perfil (o vínculo volta ao estado original — confirmado no banco: apenas papel operador). Segurança: permissões geo-panel.* são RESTRITAS (não herdadas pelo operador comum) e o papel é isolado por tenant. Regressão: Pest geo-panel 51 testes / 186 asserções (inclui matriz de autorização 403/tenant).",
+  "cas": [
+    {
+      "id": "CA10",
+      "title": "Atribuição de perfil pelo Master com efeito imediato (PO)",
+      "status": "nav",
+      "gherkin": "Dado que sou Master e acesso a área de detalhes de um profissional do município, Quando vinculo o perfil de inteligência territorial ao seu cadastro e salvo, Então o Usuário atrelado a ele passa a visualizar o menu de Georreferenciamento de forma imediata.",
+      "steps_html": "1) Login como <b>operador</b> (sem o perfil) → menu Georreferenciamento AUSENTE. 2) Login como <b>Master</b> → Profissionais → Visualizar \"E2E Operador CadÚnico\" → card <b>Perfis de acesso</b> → Gerenciar → marcar <b>Acesso ao Painel de Georreferenciamento</b> → Salvar perfis. 3) Login como operador → menu presente → abrir o painel. 4) Master REVOGA o perfil (drawer) → banco restaurado (papel operador apenas).",
+      "results": [
+        "Antes do vínculo: sidebar do operador sem o item Georreferenciamento (estado de contraste).",
+        "Drawer \"Gerenciar perfis de acesso\" do detalhe do profissional lista o perfil \"Acesso ao Painel de Georreferenciamento\" com descrição de escopo (painel + busca + export, dados agregados sem PII); aviso na UI: \"As permissões são aplicadas imediatamente após salvar\".",
+        "Após salvar: toast \"Perfis de acesso atualizados com sucesso\", perfil listado no card do profissional, e papel geo_panel_viewer gravado em user_tenant_role (verificado no banco).",
+        "Usuário do profissional (operador) passa a ver o menu Georreferenciamento de forma imediata no acesso seguinte e abre o painel completo (/app/georreferenciamento).",
+        "Revogação pelo mesmo drawer remove o papel (banco: somente 'operador') — ciclo conceder/revogar completo, isolado por tenant (papel no Tenant A não abre o Tenant B; cobertura Pest no apêndice)."
+      ],
+      "images": ["screenshots/ca10-antes-operador-sem-menu.png", "screenshots/ca10-drawer-vinculo-perfil.png", "screenshots/ca10-perfil-salvo-detalhe.png", "screenshots/ca10-operador-menu-imediato.png", "screenshots/ca10-operador-painel-aberto.png", "screenshots/ca10-revogacao-drawer.png"]
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Pest, --filter=GeoPanel — 51 testes / 186 asserções, inclui matriz de autorização por papel e isolamento de tenant)",
+    "file": "pest-geo-panel.txt"
+  }
+}

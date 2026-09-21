@@ -1,0 +1,14 @@
+<!-- CA07 — veiculo proprio (cod 14) com Quantidade 0 e impressora (cod 6) com 2. Esperado: UMA linha, a do cod 6; o zerado nao consta e nao gera pendencia -->
+<!-- Gerado pela remessa 07/2026 do tenant de teste. Conteudo do EquipamentoUnidade.xml do pacote, sem edicao. -->
+<?xml version="1.0"?>
+<SIAP>
+    <Codigo>004821</Codigo>
+    <Exercicio>2026</Exercicio>
+    <Mes>07</Mes>
+    <EquipamentoUnidade>
+        <NumeroMDS>8068915511411</NumeroMDS>
+        <Equipamento>6</Equipamento>
+        <Quantidade>2</Quantidade>
+        <QuantidadeUso>2</QuantidadeUso>
+    </EquipamentoUnidade>
+</SIAP>

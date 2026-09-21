@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — US-ACOMP-08</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  section.note { border:1px solid var(--line); border-left:4px solid #b06a00; border-radius:6px; padding:10px 14px; margin:10px 0; background:#fffdf7; font-size:13px; }
+  section.note h3 { margin:0 0 6px; font-size:13.5px; color:#8a5200; }
+  section.note p { margin:6px 0; }
+  section.note ul { margin:6px 0 6px 18px; padding:0; }
+  section.note pre { background:var(--bg); border:1px solid var(--line); border-radius:4px; padding:8px; overflow-x:auto; font-size:11px; white-space:pre-wrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — US-ACOMP-08</h1>
+    <div class="sub">Épico HU-PRONT-ACOMP (fase F3) · GLPI #10899 · Regras de contagem do acompanhamento e vínculo serviço × tipo de unidade</div>
+    <div class="meta"><div><span>Gerado em:</span> 16/09/2026 07:07</div><div><span>História:</span> US-ACOMP-08 — Regras de contagem e vínculo serviço × tipo de unidade (GLPI #10899)</div><div><span>Spec:</span> .planning/specs/US-ACOMP-08-regras-de-contagem-e-vinculo-servico-unidade.md</div><div><span>Natureza:</span> HU de AJUSTE — testes, docblock e documentação. Nenhuma regra de produção mudou</div><div><span>Branch:</span> feature/acomp-06-07-encaminhamento-recebido</div><div><span>Commit (api):</span> 8b22e37</div><div><span>Documentos entregues:</span> .planning/specs/US-ACOMP-consulta-tce-al.md (novo) · US-ACOMP-05 ajustada em cinco pontos</div><div><span>Ambiente:</span> Stack Sail · suíte Pest no container · base de desenvolvimento</div><div><span>Ferramenta:</span> Pest 4 (sem navegador — ver observações)</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">Dez critérios, todos verificados por suíte automatizada e por inspeção de diff — nenhum por imagem, e a razão está nas observações: esta HU não criou tela nem mudou número, então um print não provaria nada. A entrega tem três naturezas: sanear dados de teste que violavam o vínculo serviço × tipo de unidade (seis pontos, todos corrigidos no dado e nenhum na expectativa), fixar por teste as regras de contagem que só existiam em prosa (seis casos novos, incluindo o PUT incoerente, que não tinha teste), e consolidar as interpretações para consulta ao Tribunal. Os números do cenário canônico — 3 e 2 — permanecem idênticos, o diff em app/ é exclusivamente comentário, a cobertura vai de 222 para 228 testes sem perder nenhum, e a suíte completa fecha com 4613 passando e zero falhas. Duas verificações ficaram pendentes por ambiente e estão declaradas como pendentes, não como aprovadas.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA01</td><td>A regra escrita corresponde ao comportamento</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA02</td><td>Dois ingressos no mesmo mês contam uma vez</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA03</td><td>Reingresso em outro mês conta de novo</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA04</td><td>CRAS não registra PAEFI (nenhum caminho HTTP)</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA05</td><td>CREAS não registra PAIF</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA06</td><td>Dois acompanhamentos vigentes na mesma unidade continuam recusados</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA07</td><td>Nenhum número apurado muda</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA08</td><td>As quatro interpretações registradas para o Tribunal</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA-extra-A</td><td>Invariante do vínculo na suíte</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA-extra-B</td><td>Dois serviços do mesmo tipo na mesma unidade contam uma família</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA01">
+      <h2>CA01 — A regra escrita corresponde ao comportamento <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado a spec US-ACOMP-05-contadores-de-acompanhamento-na-apuracao.md
+Quando eu ler a RN04 e o D07
+Então dizem "famílias distintas com ingresso no mês, por unidade", sem "soma dos ingressos"
+E o topo da spec traz nota apontando para US-ACOMP-08
+E o docblock de FollowUpReportService justifica o DISTINCT pelo reingresso no mesmo mês</p>
+      <p class="steps"><strong>Como foi testado:</strong> Critério de <b>registro</b>: o texto passa a dizer o que o sistema faz. Verificável no diff da spec da US-ACOMP-05 e no diff do docblock, ambos anexos.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A RN04 passou a declarar "a família DISTINTA que ingressou no período — nunca a soma dos ingressos", com reingresso entre meses contando e reingresso no mesmo mês contando uma vez.</li><li>O topo da spec da US-ACOMP-05 recebeu a nota de que as regras foram firmadas por esta HU, sem que comportamento, consulta ou número mudassem.</li><li>O docblock passou a justificar a contagem por famílias distintas com o caso &lt;b&gt;real&lt;/b&gt; (reingresso no mesmo mês, ou dois serviços do mesmo tipo). O exemplo anterior — a mesma família no PAIF e no PAEFI da mesma unidade — era &lt;b&gt;impossível&lt;/b&gt;: o serviço é vinculado ao tipo da unidade.</li><li>Anexo &lt;code&gt;backend/diff-app.txt&lt;/code&gt;: o diff de &lt;code&gt;app/&lt;/code&gt; contém exclusivamente linhas de comentário.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA02">
+      <h2>CA02 — Dois ingressos no mesmo mês contam uma vez <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado a família Silva com family_follow_ups no PAIF do "CRAS Centro":
+     (admitted_on 2026-08-03, discharged_on 2026-08-12) e (admitted_on 2026-08-25, ativo)
+Quando FollowUpReportService::summary for chamado para 2026-08
+Então counters.new_families.value do "CRAS Centro" = 1
+E counters.families_in_follow_up.value do "CRAS Centro" = 1</p>
+      <p class="steps"><strong>Como foi testado:</strong> Caso novo na suíte: é o cenário que <b>de fato</b> justifica contar famílias distintas, e que até agora não tinha teste.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O teste ancora a prova em duas linhas de acompanhamento existentes no banco e um único valor contado.</li><li>É a diferença prática entre contar famílias e contar processos — a pergunta I4 levada ao Tribunal.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA03">
+      <h2>CA03 — Reingresso em outro mês conta de novo <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado a família Souza desligada do PAIF do "CRAS Centro" em 2026-03-20 e readmitida em 2026-08-11
+Quando eu apurar 2026-08
+Então counters.new_families.value = 1</p>
+      <p class="steps"><strong>Como foi testado:</strong> Já coberto pela suíte antes desta HU; revalidado sem alteração.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Regra provisória I2, submetida ao Tribunal no documento de consulta.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA04">
+      <h2>CA04 — CRAS não registra PAEFI (nenhum caminho HTTP) <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou CLIENT_OPERADOR lotado no "CRAS Centro"
+Quando eu chamar GET …/follow-ups/options?social_unit_uuid={crasCentro}
+Então services contém apenas PAIF
+Quando eu chamar POST …/follow-ups com follow_up_service_uuid = {paefi}
+Então recebo 422 com error_code = "service_not_offered_by_unit_type"
+Dado um acompanhamento PAIF ativo no "CRAS Centro"
+Quando eu chamar PUT …/follow-ups/{f} com follow_up_service_uuid = {paefi}
+Então recebo 422 com error_code = "service_not_offered_by_unit_type"
+E family_follow_ups.follow_up_service_id continua sendo o PAIF</p>
+      <p class="steps"><strong>Como foi testado:</strong> A oferta e o POST já eram cobertos; o <b>PUT</b> não tinha teste e passou a ter. É a evidência de produto do vínculo serviço × tipo de unidade.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O PUT incoerente responde 422 com o código de erro previsto, e o registro &lt;b&gt;permanece intacto&lt;/b&gt; — o teste confere o estado persistido, não só a resposta.</li><li>Há controle positivo no mesmo caso (a correção coerente responde 200), para que o critério não passe por "o PUT sempre falha".</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA05">
+      <h2>CA05 — CREAS não registra PAIF <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou CLIENT_OPERADOR lotado no "CREAS"
+Quando eu chamar o options e o POST com follow_up_service_uuid = {paif}
+Então services contém apenas PAEFI
+E o POST recebe 422 service_not_offered_by_unit_type</p>
+      <p class="steps"><strong>Como foi testado:</strong> Caso novo: o espelho do CA04, que faltava.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A oferta traz apenas o PAEFI e o POST incoerente é recusado, sem gravar linha alguma.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA06">
+      <h2>CA06 — Dois acompanhamentos vigentes na mesma unidade continuam recusados <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que a Silva tem acompanhamento ativo no PAIF do "CRAS Centro"
+Quando eu chamar POST …/follow-ups para o PAIF do "CRAS Centro"
+Então recebo 409 com error_code = "follow_up_already_active"
+E meta.follow_up_uuid aponta o acompanhamento existente</p>
+      <p class="steps"><strong>Como foi testado:</strong> Já coberto antes desta HU; revalidado sem alteração.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A recusa aponta o acompanhamento existente, em vez de um erro cego.</li><li>&lt;b&gt;Precisão registrada:&lt;/b&gt; a unicidade real é por (organização, família, unidade, &lt;b&gt;serviço&lt;/b&gt;), e não apenas "mesma unidade" como dizia o texto. Com um serviço por tipo de unidade, as duas leituras coincidem na prática hoje.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA07">
+      <h2>CA07 — Nenhum número apurado muda <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado o cenário canônico reescrito com dados coerentes (§9)
+Quando eu apurar 2026-08 pelo service e por GET /api/client/attendance-reports
+Então "CRAS Centro" apresenta families_in_follow_up = 3 e new_families = 2, os mesmos números da validação da US-ACOMP-05
+E nenhum arquivo em app/ (exceto o docblock de FollowUpReportService) aparece no diff</p>
+      <p class="steps"><strong>Como foi testado:</strong> É o critério que sustenta a promessa da HU: sanear o dado de teste <b>sem</b> mexer em número nem em comportamento.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Os números 3 e 2 permanecem idênticos, nos dois níveis (serviço e HTTP), e as linhas que os asseveram aparecem como &lt;b&gt;contexto&lt;/b&gt; no diff — ou seja, não foram tocadas.</li><li>Nenhuma asserção foi removida ou afrouxada em todo o commit: o diff dos testes não tem uma única linha de expectativa apagada. O que mudou foi o dado.</li><li>O diff de &lt;code&gt;app/&lt;/code&gt; é exclusivamente docblock (anexo &lt;code&gt;backend/diff-app.txt&lt;/code&gt;).</li><li>Cobertura: 222 testes no filtro antes, 228 depois — seis casos novos, nenhum perdido (&lt;code&gt;backend/pest-followup-baseline.txt&lt;/code&gt; e &lt;code&gt;pest-followup.txt&lt;/code&gt;). Suíte completa: 4613 passando, 27 pulados, zero falhas.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA08">
+      <h2>CA08 — As quatro interpretações registradas para o Tribunal <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado o documento .planning/specs/US-ACOMP-consulta-tce-al.md
+Quando eu o consultar
+Então há quatro itens (I1 critério temporal, I2 reingresso, I3 perfis não exclusivos, I4 distintos)
+E cada um traz a pergunta, a regra provisória, a HU afetada, onde vive no código e o impacto se cair
+E o item I1 apresenta junto a sinalização de abandono (RN07)</p>
+      <p class="steps"><strong>Como foi testado:</strong> Documento novo, escrito em linguagem de negócio, para o PO levar ao Tribunal.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O documento reúne &lt;b&gt;cinco&lt;/b&gt; itens: os quatro pedidos (I1 a I4) e mais o prazo de abandono (I5), que a RN07 mandava apresentar junto do I1 e ganhou item próprio por clareza.</li><li>Cada item traz a pergunta ao Tribunal, a resposta provisória adotada e o efeito no número caso a resposta divirja — inclusive a distinção entre ajuste técnico e mudança de regra de negócio (o I3 é o único que exige decisão da área, não só alteração de consulta).</li><li>Fecha com o encaminhamento sugerido por urgência: o I4 é o mais importante antes da primeira remessa.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA-extra-A">
+      <h2>CA-extra-A — Invariante do vínculo na suíte <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado o fim da suíte de acompanhamento (FamilyFollowUpTest)
+Quando a consulta §8.1 rodar sobre o banco de teste criado pelos caminhos HTTP
+Então retorna 0 linhas</p>
+      <p class="steps"><strong>Como foi testado:</strong> O invariante roda <b>a cada caso</b>, e não "no fim da suíte": com o banco recriado por teste, um caso final veria base vazia e a prova seria vazia.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Zero violações em toda a suíte de acompanhamento e de apuração.</li><li>&lt;b&gt;O invariante tem controle negativo:&lt;/b&gt; um caso planta deliberadamente uma linha incoerente, prova que a consulta a detecta com a forma correta, e depois a remove. Sem isso, uma consulta silenciosamente quebrada passaria por "nenhuma violação".</li><li>A revisão de código verificou ainda que as duas colunas comparadas são obrigatórias no banco, de modo que a comparação não pode devolver resultado indefinido e engolir uma violação.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA-extra-B">
+      <h2>CA-extra-B — Dois serviços do mesmo tipo na mesma unidade contam uma família <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um segundo serviço "PAIF2" oferecido pelo tipo CRAS
+E a Silva ativa no PAIF e no PAIF2 do "CRAS Centro" com ingressos em agosto
+Quando eu apurar 2026-08
+Então new_families = 1 e families_in_follow_up = 1</p>
+      <p class="steps"><strong>Como foi testado:</strong> Cenário <b>futuro</b>, montado na suíte com um serviço fictício do mesmo tipo.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A família é contada uma única vez, como a regra exige.</li><li>&lt;b&gt;Ressalva honesta:&lt;/b&gt; o catálogo de produção hoje tem um serviço por tipo de unidade, então este cenário &lt;b&gt;não é reproduzível no sistema como está&lt;/b&gt;. Ele existe para que a regra continue valendo quando o catálogo crescer.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+  
+  <h2>Observações e ressalvas</h2>
+  <section class="note"><h3>Por que este dossiê não tem nenhuma imagem</h3><p>Esta é uma HU de ajuste: <b>nenhuma regra de produção mudou</b>, nenhuma tela nova foi criada e nenhum número apurado se alterou. Um print da tela de apuração mostraria hoje exatamente o que mostrava antes — seria decorativo, e decoração não é evidência: não permitiria reprovar nada.</p><p>As telas envolvidas já foram evidenciadas com imagens nos dossiês das HUs que as entregaram — a apuração na <b>US-ACOMP-05</b> e a oferta de serviços por tipo de unidade na <b>US-ACOMP-02</b>. Aqui a evidência legítima é outra: a saída da suíte com os casos numerados por critério, o diff restrito a comentário, a contagem de testes antes e depois, e os documentos.</p></section><section class="note"><h3>O que é evidência de produto e o que é infraestrutura de teste</h3><p>Dois dos casos novos asseguram os <b>auxiliares de teste</b> — eles impedem que alguém, no futuro, relaxe o auxiliar em vez de corrigir o dado. São uma trava de manutenção, e não prova de comportamento do sistema. A evidência de produto do vínculo serviço × tipo de unidade são o <b>CA04</b> (incluindo o PUT, que não tinha teste) e o <b>CA05</b>.</p></section><section class="note"><h3>Verificações que não puderam ser feitas neste ambiente</h3><p><b>Base de teste ponta a ponta:</b> a consulta do invariante não foi executada nessa base porque a pilha correspondente não está no ar. Está declarada como <b>não executada</b> — e não como "zero violações".</p><p><b>Ambiente de homologação:</b> não é alcançável a partir da máquina de desenvolvimento. A consulta fica registrada no anexo <code>backend/sql-staging-pendente.txt</code> para que a equipe de infraestrutura a rode antes da primeira remessa real. Na base de desenvolvimento, a consulta devolveu <b>zero violações</b>.</p></section><section class="note"><h3>Caminho ainda aberto, declarado como HU candidata</h3><p>O vínculo é protegido no registro e na correção do acompanhamento. Restam dois caminhos indiretos, hoje sem teste e sem trava: se o Painel Global <b>reapontar o tipo</b> de um serviço já em uso, ou se o <b>tipo de uma unidade</b> mudar, acompanhamentos já gravados passam a violar o vínculo retroativamente. Nenhum dos dois foi tocado aqui, por decisão explícita da spec — mexer neles alteraria o comportamento de exclusão no Painel Global. Fica como HU candidata, para o PO.</p></section><section class="note"><h3>Precisão registrada sobre a unicidade (§17-P4)</h3><p>O critério CA06 fala em "mesma unidade", mas a unicidade real do sistema é por (organização, família, unidade, <b>serviço</b>). Com o catálogo atual — um serviço por tipo de unidade — as duas leituras coincidem. A spec registra a precisão e o índice <b>não</b> foi alterado: mudá-lo bloquearia o caso legítimo de dois serviços do mesmo tipo.</p></section>
+  
+  <h2>Anexo — Cobertura automatizada (Pest, --filter=FollowUp|AttendanceReportFollowUp)</h2>
+  <pre class="pest">
+   PASS  Tests\Unit\FamilyFollowUpInvariantTest
+  ✓ it accepts the THREE legal state combinations (D03)                  0.93s  
+  ✓ it REFUSES an active row carrying discharge or cancellation columns… 0.06s  
+  ✓ it REFUSES an active row carrying discharge or cancellation columns… 0.08s  
+  ✓ it REFUSES an active row carrying discharge or cancellation columns… 0.07s  
+  ✓ it REFUSES an active row carrying discharge or cancellation columns… 0.07s  
+  ✓ it REFUSES a discharged row without date, without reason or carryin… 0.09s  
+  ✓ it REFUSES a discharged row without date, without reason or carryin… 0.06s  
+  ✓ it REFUSES a discharged row without date, without reason or carryin… 0.09s  
+  ✓ it REFUSES a cancelled row without timestamp, without reason or car… 0.08s  
+  ✓ it REFUSES a cancelled row without timestamp, without reason or car… 0.08s  
+  ✓ it REFUSES a cancelled row without timestamp, without reason or car… 0.08s  
+  ✓ it REFUSES a cancelled row without timestamp, without reason or car… 0.07s  
+  ✓ it is enforced by the Actions before every save (D03)                0.09s  
+  ✓ it lets the PARTIAL UNIQUE INDEX refuse a second ACTIVE row for the… 0.06s  
+  ✓ it produces ONE row when two simultaneous stores hit the same unit+… 0.09s  
+  ✓ it lets the index accept a NEW active row when the previous one is…  0.07s  
+  ✓ it scopes the unique index BY TENANT — the same family code in anot… 0.09s  
+  ✓ it refuses a FUTURE effective date inside the Update action, with a… 0.07s  
+  ✓ it refuses to EDIT a non-active follow-up inside the Update action…  0.07s  
+
+   PASS  Tests\Unit\FollowUpMonthsAndCoherenceTest
+  ✓ it derives the months in follow-up from admitted_on to evaluated_on… 0.04s  
+  ✓ it derives the months in follow-up from admitted_on to evaluated_on… 0.03s  
+  ✓ it derives the months in follow-up from admitted_on to evaluated_on… 0.02s  
+  ✓ it derives the months in follow-up from admitted_on to evaluated_on… 0.03s  
+  ✓ it derives the months in follow-up from admitted_on to evaluated_on… 0.03s  
+  ✓ it derives the months in follow-up from admitted_on to evaluated_on… 0.03s  
+  ✓ it derives the months in follow-up from admitted_on to evaluated_on… 0.03s  
+  ✓ it derives the months in follow-up from admitted_on to evaluated_on… 0.03s  
+  ✓ it returns NULL — never 0 — when there is no basis for the calculat… 0.03s  
+  ✓ it never persists months_in_follow_up — it is not a column (RN06/D0… 0.04s  
+  ✓ it makes the Resource read the SINGLE point of the calculation (RN0… 0.04s  
+  ✓ it marks ONLY significant_progress as conflicting with an exit reas… 0.03s  
+  ✓ it demands confirmation for the incoherent combination — and passes… 0.03s  
+  ✓ it does NOT demand confirmation when only ONE side of the combinati… 0.03s  
+  ✓ it does NOT demand confirmation when only ONE side of the combinati… 0.03s  
+  ✓ it does NOT demand confirmation when only ONE side of the combinati… 0.03s  
+  ✓ it does NOT demand confirmation when only ONE side of the combinati… 0.03s  
+  ✓ it does NOT demand confirmation when only ONE side of the combinati… 0.03s  
+  ✓ it reads the rule from the LOOKUP ITEM, never from the literal code… 0.04s  
+  ✓ it guards the discharge date on both ends, with stable error codes…  0.03s  
+  ✓ it lets ONLY an active follow-up be discharged or evaluated (RN01/R… 0.03s  
+  ✓ it admits not_applicable ONLY in referrals_effective (RN04)          0.03s  
+  ✓ it suggests not_applicable IF AND ONLY IF the referral list is empt… 0.03s  
+
+   PASS  Tests\Unit\FollowUpUsageServiceTest
+  ✓ it nasce sem consumidores declarados nos dois servicos (a US-ACOMP-… 0.03s  
+  ✓ it sem consumidores, nenhum servico esta em uso — a recusa sai como… 0.03s  
+  ✓ it sem consumidores, nenhuma razao esta em uso — a recusa sai como…  0.03s  
+  ✓ it reconhece o servico referenciado por um consumidor registrado     0.03s  
+  ✓ it reconhece a razao referenciada por um consumidor registrado       0.04s  
+  ✓ it ignora consumidor cuja tabela ainda nao existe, sem estourar      0.03s  
+  ✓ it devolve lista vazia quando nenhum uuid e informado                0.03s  
+
+   PASS  Tests\Feature\Client\AttendanceReportFollowUpTest
+  ✓ it reproduces the canonical scenario of §9 in the HTTP payload — 3…  0.18s  
+  ✓ it refuses, in the helper itself, a service the unit type does not…  0.09s  
+  ✓ it lights up families_in_follow_up inside counters and removes it f… 0.12s  
+  ✓ it declares the four profiles that depend on F6/F7 — never omitted,… 0.12s  
+  ✓ it keeps the four unavailable profiles declared even for a unit wit… 0.11s  
+  ✓ it exposes stale_follow_ups as a quantity and the configured thresh… 0.13s  
+  ✓ it carries the threshold from config so the cut can move without a…  0.12s  
+  ✓ it shows the operator only the units of the current assignment, wit… 0.11s  
+  ✓ it never counts follow-ups of another organization in any of the ne… 0.11s  
+  ✓ it persists absolutely nothing — identical row counts before and af… 0.11s  
+  ✓ it never leaks any citizen data through the new follow-up fields (D… 0.11s  
+  ✓ it never counts a cancelled follow-up in the HTTP payload (CA11/RN1… 0.10s  
+  ✓ it keeps the new blocks consistent when the report is narrowed to a… 0.10s  
+
+   PASS  Tests\Feature\Client\FamilyAccessFollowUpAxisTest
+  ✓ it opens the record for a unit that FOLLOWS the family, auditing vi… 0.11s  
+  ✓ it reaches the WHOLE record, not just the follow-up block, includin… 0.17s  
+  ✓ it keeps the access after the follow-up is DISCHARGED (CA03/RN02)    0.11s  
+  ✓ it does NOT grant access through a CANCELLED follow-up, denying wit… 0.14s  
+  ✓ it does NOT grant access through a soft-deleted follow-up (RN02/D05… 0.11s  
+  ✓ it denies the unit with NEITHER reference NOR follow-up, stating bo… 0.10s  
+  ✓ it does not let the follow-up replace the LGPD add-on (CA06/RN03)    0.10s  
+  ✓ it does not let the follow-up replace an ACTIVE unit assignment (CA… 0.10s  
+  ✓ it keeps the Master accessing by bypass, never by the follow-up axi… 0.10s  
+  ✓ it audits the FOUR access axes reachable without a referral (CA01/C… 0.13s  
+  ✓ it does not let following ONE family authorize reaching another one… 0.11s  
+  ✓ it keeps the organization isolation ahead of the follow-up axis (CA… 0.11s  
+  ✓ it lists the FOLLOWED family in the person search and opens it from… 0.14s  
+  ✓ it filters the follow-up axis by tenant_id, even with a numerically… 0.13s  
+  ✓ it reports the assigned units that follow the family in the decisio… 0.12s  
+
+   PASS  Tests\Feature\Client\FamilyFollowUpDischargeTest
+  ✓ it discharges the family WITH the results evaluation, in a single t… 0.12s  
+  ✓ it carimba a autoria do SERVIDOR e RECUSA estado e contexto vindos…  0.14s  
+  ✓ it REFUSES a discharge without the evaluation and leaves the follow… 0.09s  
+  ✓ it REFUSES a discharge whose descriptive record is too short — stil… 0.11s  
+  ✓ it REFUSES not_applicable in questions 1 and 3, and ACCEPTS it in q… 0.10s  
+  ✓ it derives months_in_follow_up and DISCARDS it when sent in the req… 0.10s  
+  ✓ it REFUSES a discharge date BEFORE the admission, writing nothing (… 0.09s  
+  ✓ it REFUSES a discharge date in the FUTURE (RN03)                     0.11s  
+  ✓ it REFUSES an exit reason that does not exist or is INACTIVE (RN02)  0.09s  
+  ✓ it asks for CONFIRMATION on the incoherent combination and saves it… 0.12s  
+  ✓ it does NOT ask for confirmation when only ONE side of the combinat… 0.13s  
+  ✓ it REFUSES to discharge what is already discharged or cancelled (RN… 0.12s  
+  ✓ it NEVER logs achieved_results in the activity trail (CA10/RN05/D06… 0.09s  
+  ✓ it saves a retroactive discharge in a remitted month AND returns th… 0.11s  
+  ✓ it does NOT warn when the month has no COMPLETED remittance (CA11/R… 0.10s  
+  ✓ it keeps the whole history in the record block, evaluations in crea… 0.12s  
+  ✓ it denies the discharge of a family of ANOTHER unit, without naming… 0.11s  
+  ✓ it CORRECTS the discharge date and reason WITHOUT creating a new ev… 0.12s  
+  ✓ it REFUSES to correct the discharge of a follow-up that is NOT disc… 0.09s  
+  ✓ it REFUSES to REOPEN or to rewrite the evaluation through the corre… 0.11s  
+  ✓ it REVALIDATES RN03 and RN10 when correcting the discharge (RN12)    0.12s  
+  ✓ it warns for BOTH the old and the new month when correcting into re… 0.11s  
+
+   PASS  Tests\Feature\Client\FamilyFollowUpEvaluationTest
+  ✓ it suggests not_applicable ONLY when the period has no referral (CA… 0.11s  
+  ✓ it exposes the FOUR questions with not_applicable ONLY in the secon… 0.09s  
+  ✓ it recalculates months and the remittance warning for the PROPOSED…  0.10s  
+  ✓ it lists the referrals of the period with outcome and counter-refer… 0.11s  
+  ✓ it cuts the referrals by PERIOD and by the follow-up UNIT (D11)      0.11s  
+  ✓ it ends the period at discharged_on when the follow-up is already d… 0.10s  
+  ✓ it registers a PERIODIC evaluation that ends NOTHING (CA08/RN08)     0.10s  
+  ✓ it REFUSES a periodic evaluation that tries to discharge or to forg… 0.09s  
+  ✓ it REQUIRES an evaluation date between the admission and today (RN0… 0.12s  
+  ✓ it REFUSES not_applicable in questions 1 and 3 of the periodic eval… 0.11s  
+  ✓ it REFUSES a periodic evaluation on a follow-up that is NOT active…  0.10s  
+  ✓ it has NO route to update or delete an evaluation — the URI answers… 0.10s  
+  ✓ it places a CORRECTION beside the previous evaluation, both listed…  0.12s  
+  ✓ it admits MORE THAN ONE discharge evaluation, and latestDischargeEv… 0.11s  
+  ✓ it denies the whole evaluation surface for a family of ANOTHER unit… 0.11s  
+
+   PASS  Tests\Feature\Client\FamilyFollowUpTest
+  ✓ it registers the family admission into PAIF, signed and dated (CA01… 0.11s  
+  ✓ it IGNORES authorship and state columns sent by the client (RN13/§7… 0.13s  
+  ✓ it offers ONLY the service of the unit TYPE and refuses the other o… 0.10s  
+  ✓ it refuses to SWITCH an active PAIF to PAEFI on update — the CRAS d… 0.12s  
+  ✓ it offers ONLY PAEFI to the CREAS and refuses PAIF on store — the m… 0.10s  
+  ✓ it DETECTS with the §8.1 query a violation planted by factory — con… 0.08s  
+  ✓ it lets two units follow the SAME family at the same time (CA03/RN0… 0.12s  
+  ✓ it lets the SAME unit follow the family in two DIFFERENT services (… 0.11s  
+  ✓ it refuses a SECOND active follow-up in the same unit and service,…  0.10s  
+  ✓ it accepts a NEW admission after a discharge, keeping the previous…  0.11s  
+  ✓ it refuses a FUTURE admission date on store — 422 WITHOUT error_cod… 0.12s  
+  ✓ it accepts TODAY at 23h in the app timezone — the boundary never re… 0.09s  
+  ✓ it saves a retroactive admission in a remitted month AND returns th… 0.09s  
+  ✓ it does NOT warn when the month remittance is pending or failed (CA… 0.10s  
+  ✓ it warns BEFORE the submit, in the options of a remitted month (CA0… 0.10s  
+  ✓ it blocks the registration in a unit type that offers NO service (C… 0.11s  
+  ✓ it reports family_without_unit BEFORE any other reason (RN08)        0.10s  
+  ✓ it refuses a unit where the operator has NO assignment on the admis… 0.10s  
+  ✓ it evaluates the assignment ON THE ADMISSION DATE, not today (RN02/… 0.10s  
+  ✓ it CANCELS the admission with a reason and KEEPS the row in the rec… 0.12s  
+  ✓ it frees the unit+service pair after the cancellation (RN05/RN11)    0.11s  
+  ✓ it answers 409 when cancelling an ALREADY cancelled follow-up — ide… 0.10s  
+  ✓ it refuses to CANCEL a DISCHARGED follow-up — that is corrected by…  0.10s  
+  ✓ it requires a reason to cancel (RN11)                                0.10s  
+  ✓ it NEVER logs the cancel_reason in the activity trail (D11)          0.12s  
+  ✓ it denies the WHOLE follow-up surface for a family of ANOTHER unit,… 0.13s  
+  ✓ it does not let FOLLOWING one family authorize opening a follow-up…  0.13s  
+  ✓ it EDITS an active follow-up, restamping updated_by (RN10/RN13)      0.10s  
+  ✓ it accepts the PATCH verb on the same action (§11)                   0.11s  
+  ✓ it refuses to EDIT a cancelled or discharged follow-up (RN10)        0.10s  
+  ✓ it refuses a FUTURE date on update (RN07/RN10)                       0.12s  
+  ✓ it revalidates RN05 on update, excluding the row being edited (RN10… 0.12s  
+  ✓ it returns TWO deduplicated warnings when the update crosses two re… 0.13s  
+  ✓ it keeps social_unit_id FROZEN when the family reference unit chang… 0.11s  
+  ✓ it hides cancel_reason and the action flags from a reader who canno… 0.14s  
+  ✓ it returns an EMPTY block for a family never followed, and filters…  0.13s  
+  ✓ it exposes can_edit/can_cancel on the LISTING, not only on the writ… 0.10s  
+  ✓ it shows the OTHER unit's line WITHOUT affordances, and its own WIT… 0.12s  
+
+   PASS  Tests\Feature\Client\FollowUpReportServiceTest
+  ✓ it conta as familias distintas com acompanhamento vigente em algum…  0.07s  
+  ✓ it conta o ingresso e o desligamento ocorridos no meio do mes (CA02… 0.05s  
+  ✓ it nao conta a familia desligada no mes anterior, mas conta naquele… 0.05s  
+  ✓ it conta o mes do desligamento mesmo apos a razao e o servico serem… 0.05s  
+  ✓ it conta 1 em cada unidade quando a familia e acompanhada por duas…  0.04s  
+  ✓ it conta 1 quando a familia e acompanhada em dois servicos do MESMO… 0.04s  
+  ✓ it conta uma vez a familia que ingressa, e desligada e reingressa n… 0.04s  
+  ✓ it recusa, no proprio helper, um servico que o tipo da unidade nao…  0.05s  
+  ✓ it conta as novas familias do mes (CA05)                             0.08s  
+  ✓ it conta o reingresso como nova familia (CA06/I2)                    0.06s  
+  ✓ it nao conta o acompanhamento cancelado em nenhum dos dois contador… 0.08s  
+  ✓ it nao conta o acompanhamento removido operacionalmente (deleted_at… 0.07s  
+  ✓ it reproduz o cenario canonico de conferencia do §9 (3 em acompanha… 0.05s  
+  ✓ it qualifica APENAS as novas familias, nunca todas as acompanhadas…  0.07s  
+  ✓ it conta a mesma familia em varios perfis — eles nao sao exclusivos… 0.05s  
+  ✓ it nao conta membro inativo nem removido no perfil de trabalho infa… 0.06s  
+  ✓ it conta o BPC mesmo com o programa inativado no catalogo global     0.05s  
+  ✓ it nao conta receives_pbf NULL e nao afirma que a familia nao receb… 0.05s  
+  ✓ it nao conta renda per capita nula em extrema pobreza (RN08)         0.05s  
+  ✓ it declara os quatro perfis sem fonte, com o motivo e a fase (CA09/… 0.04s  
+  ✓ it sinaliza os acompanhamentos vigentes ha mais de seis meses sem a… 0.07s  
+  ✓ it conta PROCESSOS, e nao familias, no ponto de atencao (D10)        0.05s  
+  ✓ it ignora atendimento cancelado e de outra unidade no cruzamento da… 0.06s  
+  ✓ it respeita o corte configurado em follow_up.stale_months (I5/D10)   0.05s  
+  ✓ it nao sinaliza acompanhamento desligado nem cancelado no ponto de…  0.04s  
+  ✓ it devolve zero DECLARADO para a unidade sem nenhum acompanhamento…  0.04s  
+  ✓ it curto-circuita sem tocar o banco quando o recorte de unidades e…  0.05s  
+  ✓ it nao conta acompanhamento de outro municipio (RN13/CA14)           0.05s  
+  ✓ it nao persiste absolutamente nada — a apuracao e derivada (RN09/D0… 0.05s  
+  ✓ it nao devolve nenhum identificador de familia no resultado (D11/RN… 0.06s  
+
+   PASS  Tests\Feature\Manager\FollowUpExitReasonTest
+  ✓ it lista exatamente as quatro razoes com os codigos do instrumento,… 0.07s  
+  ✓ it nunca expoe o id no payload da razao                              0.04s  
+  ✓ it marca a incoerencia com progresso significativo apenas na razao…  0.05s  
+  ✓ it nasce com requires_description inerte nas quatro razoes           0.06s  
+  ✓ it nao expoe rota de criacao de uma quinta razao                     0.04s  
+  ✓ it colhe as sete abilities das rotas da razao e nao cria store       0.09s  
+  ✓ it nao oferece escrita da razao ao guard client, mas mantem a leitu… 0.04s  
+  ✓ it recusa a exclusao de razao sem uso com o motivo de vinculo ao in… 0.05s  
+  ✓ it recusa a exclusao da razao ja usada em um desligamento            0.05s  
+  ✓ it recusa a exclusao em massa de razoes item a item, sem excluir na… 0.05s  
+  ✓ it mantem a razao inativada na leitura e no historico, tirando-a so… 0.06s  
+  ✓ it atualiza a razao e audita a alteracao com autor, valor antigo e…  0.05s  
+  ✓ it recusa renumerar uma razao para um codigo ja ocupado              0.05s  
+  ✓ it bloqueia quem nao tem a permissao de escrita da razao             0.07s  
+  ✓ it nao tem tenant_id nem BelongsToTenant na razao                    0.05s  
+  ✓ it roda o seeder de razoes duas vezes sem duplicar nem desfazer a e… 0.06s  
+
+   PASS  Tests\Feature\Manager\FollowUpServiceTest
+  ✓ it lista exatamente os dois servicos do bloco 24, com code e nome p… 0.05s  
+  ✓ it nunca expoe o id no payload do servico                            0.05s  
+  ✓ it traz o tipo de unidade que oferta cada servico, resolvido por co… 0.05s  
+  ✓ it filtra os servicos ofertados por um tipo de unidade (predicado d… 0.05s  
+  ✓ it nao expoe rota de criacao de um terceiro servico                  0.04s  
+  ✓ it colhe as sete abilities das rotas do servico e nao cria store     0.06s  
+  ✓ it nao oferece escrita ao guard client, mas mantem a leitura via sh… 0.06s  
+  ✓ it recusa a exclusao de servico sem uso com o motivo de vinculo ao…  0.06s  
+  ✓ it recusa a exclusao de servico em uso com o motivo de uso registra… 0.06s  
+  ✓ it recusa a exclusao em massa item a item, sem excluir nada          0.06s  
+  ✓ it atualiza o nome do servico sem tocar no code normativo            0.06s  
+  ✓ it recusa desvincular o servico do tipo de unidade (coluna NOT NULL… 0.05s  
+  ✓ it recusa dois servicos com o mesmo code                             0.05s  
+  ✓ it inativa e reativa servicos em massa sem removê-los da leitura     0.07s  
+  ✓ it audita a troca do tipo de unidade com autor, valor antigo e novo  0.06s  
+  ✓ it bloqueia quem nao tem a permissao de escrita do servico           0.07s  
+  ✓ it da ao ADMIN as sete permissoes e ao ADMIN_OPERADOR apenas leitur… 1.91s  
+  ✓ it nao da a nenhum papel do guard client permissao de escrita dos d… 1.95s  
+  ✓ it nao tem tenant_id nem BelongsToTenant no servico                  0.05s  
+  ✓ it roda o seeder de servicos duas vezes sem duplicar nem desfazer a… 0.05s  
+
+   PASS  Tests\Feature\TenantIsolation\FamilyFollowUpEvaluationIsolationTest
+  ✓ it answers 404 — never 403 — on ALL FIVE routes of another tenant (… 0.21s  
+  ✓ it never leaks a follow-up of ANOTHER tenant through MY family uuid… 0.09s  
+  ✓ it answers 404 when the follow-up belongs to ANOTHER family of the…  0.07s  
+  ✓ it scopes family_follow_up_evaluations by tenant_id even without th… 0.12s  
+  ✓ it blocks the request when the X-Tenant-UUID points at a tenant the… 0.09s  
+
+   PASS  Tests\Feature\TenantIsolation\FamilyFollowUpIsolationTest
+  ✓ it answers 404 — never 403 — for a family of ANOTHER tenant, on ALL… 0.12s  
+  ✓ it never leaks a follow-up of ANOTHER tenant through MY family uuid… 0.09s  
+  ✓ it answers 404 when the follow-up belongs to ANOTHER family of the…  0.10s  
+  ✓ it scopes the Model by tenant_id even without the route (BelongsToT… 0.13s  
+  ✓ it blocks the request when the X-Tenant-UUID points at a tenant the… 0.10s  
+
+  Tests:    228 passed (1376 assertions)
+  Duration: 24.21s
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

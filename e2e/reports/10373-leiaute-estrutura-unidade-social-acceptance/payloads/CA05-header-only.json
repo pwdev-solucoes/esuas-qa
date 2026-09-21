@@ -1,0 +1,12 @@
+{
+    "_leitura": "CA05 — o outcome do leiaute é header_only, com record_count 0 e nenhuma pendência.",
+    "layout": {
+        "name": "EstruturaUnidadeSocial",
+        "sort_order": 4,
+        "file_name": "EstruturaUnidadeSocial.xml",
+        "outcome": "header_only",
+        "record_count": 0,
+        "skipped_count": 0,
+        "pendencies": []
+    }
+}

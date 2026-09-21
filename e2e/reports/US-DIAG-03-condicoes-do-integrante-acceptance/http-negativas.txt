@@ -1,0 +1,57 @@
+Negativas de acesso — capturadas na sessao autenticada do Operacional do Tenant
+(CPF 111.444.777-35, add-on LGPD family_viewer, lotacao vigente em E2E CRAS Centro
+e E2E CRAS Sem MDS; a familia #2 e referenciada no E2E CREAS).
+
+CA12 — registrar condicoes de integrante de familia fora da lotacao
+-------------------------------------------------------------------
+PUT /api/client/families/00000000-0000-4000-8000-0000000f0002/members/a12bb586-.../conditions
+HTTP 403
+{
+  "message": "Esta família é referenciada e acompanhada em unidades onde você não possui lotação vigente. Procure o gestor Master do município.",
+  "error_code": "unit_not_assigned"
+}
+
+GET /api/client/families/00000000-0000-4000-8000-0000000f0002/members/a12bb586-.../conditions
+HTTP 403
+{
+  "message": "Esta família é referenciada e acompanhada em unidades onde você não possui lotação vigente. Procure o gestor Master do município.",
+  "error_code": "unit_not_assigned"
+}
+
+POST .../pregnancies (mesma familia)
+HTTP 403
+{
+  "message": "Esta família é referenciada e acompanhada em unidades onde você não possui lotação vigente. Procure o gestor Master do município.",
+  "error_code": "unit_not_assigned"
+}
+
+A mensagem declara o motivo e NAO nomeia nenhuma unidade (nem "CRAS Centro",
+nem "CREAS"). O codigo estavel `unit_not_assigned` e o unico identificador.
+
+CA06 — tipo de deficiencia para integrante SEM a marcacao (has_disability = false)
+----------------------------------------------------------------------------------
+PUT /api/client/families/...f0001/members/3bd13076-.../conditions
+body: {"disability_type_uuid": "849e751c-..." (5 — Deficiencia fisica)}
+HTTP 422
+{
+  "message": "O tipo de deficiência só pode ser informado para integrante com deficiência registrada na composição familiar.",
+  "errors": {
+    "disability_type_uuid": [
+      "O tipo de deficiência só pode ser informado para integrante com deficiência registrada na composição familiar."
+    ]
+  }
+}
+
+422 com a mensagem da chave `disability_type_not_applicable`
+(lang/pt_BR/family_member_condition.php). A marcacao de deficiencia nao e
+ligada pelo payload: ela vem da composicao familiar.
+
+CA13 — familia fora do escopo da organizacao ativa
+--------------------------------------------------
+GET /api/client/families/00000000-0000-4000-8000-0000000fbbbb/members/.../conditions
+HTTP 404
+{
+  "message": "Registro não encontrado."
+}
+
+404, nunca 403: a resposta nao confirma nem nega a existencia da familia.

@@ -1,0 +1,225 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — US-CAPAC-03",
+    "subtitle": "Apuração das ações de capacitação e divulgação (os cinco números do leiaute 15.9) · evidências end-to-end no client",
+    "rows": [
+      [
+        "Gerado em",
+        "02/09/2026"
+      ],
+      [
+        "Épico",
+        "HU-UNID-CAPAC — leiaute 15.9 do SIAP (CapacitacaoDivulgacao)"
+      ],
+      [
+        "Branch",
+        "feature/capac-leiaute-15-9 (api, admin, client)"
+      ],
+      [
+        "Spec",
+        ".planning/specs/US-CAPAC-03-apuracao-acoes-capacitacao.md"
+      ],
+      [
+        "Ambiente",
+        "Stack E2E isolada — admin :4173 · client :4174 · API :8090 · banco esuas_e2e (E2ESeeder)"
+      ],
+      [
+        "Organização (tenant)",
+        "E2E CadÚnico — unidades E2E CRAS Centro, E2E CREAS e E2E CRAS Sem MDS"
+      ],
+      [
+        "Ferramenta",
+        "Playwright (Chromium) — specs committed em e2e/ — + Pest (anexo)"
+      ]
+    ]
+  },
+  "summary": "Doze critérios. Seis com evidência no navegador (página “Apuração de Capacitação”, em /app/prestacao-contas/capacitacao) gravada pelos 4 casos de tests/client/capacitation-tallies.spec.ts, todos aprovados — CA01, CA02, CA03, CA07, CA09 e CA10 (este parcialmente) — somados a um caso extra que prova a ausência de escrita (RN03/D09). Os outros seis (CA04, CA05, CA06, CA08, CA11 e CA12) são aritmética de backend ou exigem perfil/município que a massa da stack não tem, e ficam exclusivamente com a evidência automatizada do anexo (26 testes Pest, 114 asserções, todos verdes). Nenhum critério ficou sem evidência.",
+  "cas": [
+    {
+      "id": "CA01",
+      "title": "Apuração de uma unidade em um mês (happy path)",
+      "status": "parc",
+      "gherkin": "Dado que em agosto/2026 o \"CRAS Centro\" teve um seminário (tipo 001) com 3 participantes,\n     duas reuniões internas (tipo 003) e um evento de divulgação (tipo 004) com 2 participantes\nQuando eu chamar GET /api/client/capacitation-tallies?exercise=2026&month=8&social_unit_uuid={cras-centro}\nEntão QuantidadePalestras = 3, QuantidadeReunioesInternas = 2 e QuantidadeEventos = 2\nE nenhum campo do payload é aceito em rota de escrita (não existe POST/PUT para o recurso)",
+      "steps_html": "O caso lê primeiro o <b>baseline</b> dos contadores pela API do tenant (a base é acumulada; o que se prova é o delta), registra a massa no <b>E2E CRAS Centro</b> na data de hoje — um seminário (tipo 001) com 2 participantes, <b>duas</b> reuniões internas (tipo 003) sem ninguém e um evento de divulgação (tipo 004) com 1 participante — e então recarrega a apuração pelo botão “Atualizar apuração”, lendo os números <b>na tela</b>. A segunda metade do Gherkin (“nenhum campo é aceito em rota de escrita”) tem evidência própria: o print RN03/D09, do caso que instrumenta todas as requisições da página.",
+      "results": [
+        "Delta observado na tela: QuantidadePalestras +2 (as pessoas do seminário), QuantidadeReunioesInternas +2 (os dois eventos, com zero participantes), QuantidadeEventos +1.",
+        "QuantidadeReunioes e QuantidadeCursos não se moveram (+0): a apuração não mistura os campos do leiaute.",
+        "As cinco colunas aparecem na ordem do XML (sort_order).",
+        "A página não dispara nenhuma requisição POST/PUT/PATCH/DELETE — verificado por instrumentação, não por inspeção visual (caso RN03/D09).",
+        "Pest: “apura participacoes, eventos e cursos de uma unidade no mes (CA01)” e “nao expoe nenhuma rota de escrita para o recurso (RN03/D09)”."
+      ],
+      "images": [
+        "screenshots/ca01-os-cinco-contadores-do-periodo-cada-um-com-a-sua-forma-de-co.png",
+        "screenshots/rn03-nenhum-contador-e-editavel-sem-campo-sem-salvar-sem-escrita.png"
+      ]
+    },
+    {
+      "id": "CA02",
+      "title": "Forma de contagem visível",
+      "status": "parc",
+      "gherkin": "Dado que estou consultando a apuração\nQuando eu olhar cada contador\nEntão ele traz counting_mode (\"participation\", \"event\" ou \"professional\") e o label do tipo",
+      "steps_html": "No mesmo caso: conferir, coluna a coluna, o rótulo do tipo e a forma de contagem exibida no cabeçalho, e a legenda que explica as três formas.",
+      "results": [
+        "QuantidadePalestras, QuantidadeReunioes e QuantidadeEventos exibem “Conta participações”; QuantidadeReunioesInternas exibe “Conta eventos”; QuantidadeCursos exibe “Conta profissionais”.",
+        "Cada coluna traz também o nome do tipo e o selo “Obrigatório no leiaute” quando é o caso.",
+        "A legenda explica as três formas — sem ela, “2” em palestras (duas pessoas) e “2” em reuniões internas (duas reuniões) seriam indistinguíveis na conferência antes da remessa.",
+        "Pest: “devolve sempre os cinco contadores, na ordem do leiaute e com a forma de contagem”."
+      ],
+      "images": [
+        "screenshots/ca02-os-cinco-contadores-do-periodo-cada-um-com-a-sua-forma-de-co.png"
+      ]
+    },
+    {
+      "id": "CA03",
+      "title": "Contagem por evento independe de participantes",
+      "status": "parc",
+      "gherkin": "Dado que uma reunião interna foi registrada com 5 participantes e outra sem participantes\nQuando eu consultar a apuração\nEntão QuantidadeReunioesInternas = 2",
+      "steps_html": "Coberto pelo mesmo caso do CA01 — e é por isso que ele registra <b>duas</b> reuniões internas <b>sem participante nenhum</b>: o print é o mesmo instante, referenciado aqui porque a asserção existe. (O critério não é citado no título do caso, então não há arquivo com prefixo <code>ca03-</code>; a imagem abaixo é a do CA01.)",
+      "results": [
+        "Duas reuniões internas sem participante nenhum elevam QuantidadeReunioesInternas em 2 — o contador soma eventos, não pessoas.",
+        "Pest: “conta reuniao interna por EVENTO, ignorando quantos participaram (CA03)”."
+      ],
+      "images": [
+        "screenshots/ca01-os-cinco-contadores-do-periodo-cada-um-com-a-sua-forma-de-co.png"
+      ]
+    },
+    {
+      "id": "CA04",
+      "title": "Curso conta nos meses em andamento",
+      "status": "auto",
+      "gherkin": "Dado um curso de 10/06/2026 a 30/09/2026 com a profissional Ana\nQuando eu consultar a apuração de agosto/2026\nEntão Ana está contada em QuantidadeCursos\nE o mesmo vale para junho, julho e setembro de 2026\nE não vale para maio nem outubro",
+      "steps_html": "<b>Sem print.</b> O critério atravessa cinco meses (maio a outubro/2026) e a tela mostra um mês por consulta; provar “conta em junho, julho, agosto e setembro e não conta em maio nem outubro” exigiria massa histórica e seis navegações, com a asserção real acontecendo fora da tela. Verificado no Pest: <code>CapacitationTallyServiceTest</code> → “conta o curso em TODOS os meses em que esteve em andamento (CA04)”.",
+      "results": [
+        "Curso de 10/06/2026 a 30/09/2026 conta a profissional em QuantidadeCursos de junho a setembro.",
+        "Não conta em maio nem em outubro."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA05",
+      "title": "Curso sem data de fim",
+      "status": "auto",
+      "gherkin": "Dado um curso iniciado em 10/06/2026 sem ended_on\nQuando eu consultar a apuração de agosto/2026 e a de qualquer mês posterior\nEntão o profissional continua contado enquanto ended_on for nulo",
+      "steps_html": "<b>Sem print</b> (mesmo motivo do CA04: o critério é sobre meses futuros sucessivos). Verificado no Pest: “conta o curso sem data de fim do inicio em diante (CA05)”.",
+      "results": [
+        "Enquanto ended_on for nulo, o profissional segue contado em QuantidadeCursos do mês de início em diante."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA06",
+      "title": "Profissional em dois cursos conta uma vez",
+      "status": "auto",
+      "gherkin": "Dado que Ana está em dois cursos simultâneos em agosto/2026\nQuando eu consultar a apuração\nEntão QuantidadeCursos a conta uma única vez",
+      "steps_html": "<b>Sem print.</b> A distinção “um profissional em dois cursos” não é observável na célula (o número seria 1 nos dois casos); a prova é a comparação com o cenário de dois profissionais, que só o teste unitário faz. Pest: “conta uma vez a profissional que esta em dois cursos simultaneos (CA06)”.",
+      "results": [
+        "Dois cursos simultâneos da mesma profissional em agosto/2026 resultam em QuantidadeCursos = 1 para ela."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA07",
+      "title": "Ação cancelada não conta",
+      "status": "parc",
+      "gherkin": "Dado que o seminário com 3 participantes foi cancelado\nQuando eu consultar a apuração novamente\nEntão QuantidadePalestras deixa de somar esses 3\nE a ação continua visível na listagem da unidade, marcada como cancelada",
+      "steps_html": "O caso lê o valor na tela (baseline), cria uma reunião interna (contagem por evento, para que a única causa possível de variação seja a ação em si), recarrega e confere <code>baseline + 1</code>; cancela com motivo, recarrega e confere que voltou ao <code>baseline</code>. Ao final, consulta a ação pela API para provar que ela não sumiu.",
+      "results": [
+        "Depois do registro, o contador exibido sobe exatamente 1.",
+        "Depois do cancelamento com motivo, o contador exibido volta ao valor anterior — a ação cancelada deixou de somar.",
+        "A ação continua existindo com status \"cancelled\": some da apuração, não da história (RN09).",
+        "Pest: “nao conta acao cancelada, e a unidade fica sem registro no periodo”."
+      ],
+      "images": [
+        "screenshots/ca07-acao-cancelada-deixa-de-somar-o-contador-cai-na-consulta-seg.png"
+      ]
+    },
+    {
+      "id": "CA08",
+      "title": "Retroativo conta no mês da ação",
+      "status": "auto",
+      "gherkin": "Dado que em 20/08/2026 foi registrada uma ação ocorrida em 22/07/2026\nQuando eu consultar a apuração de julho/2026\nEntão a ação está contada em julho\nE não aparece na apuração de agosto/2026",
+      "steps_html": "<b>Sem print.</b> O caso de navegador trabalha no mês corrente de propósito (é o período padrão da tela); provar “conta em julho e não em agosto” exige duas consultas sobre massa retroativa. Verificado no Pest: “conta a acao retroativa no mes em que ela OCORREU, nao no do lancamento (CA08)”.",
+      "results": [
+        "Ação lançada em 20/08 e ocorrida em 22/07 é contada na apuração de julho/2026.",
+        "Ela não aparece na apuração de agosto/2026."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA09",
+      "title": "Unidade sem registro é sinalizada",
+      "status": "parc",
+      "gherkin": "Dado que o \"CRAS Rural\" não registrou nenhuma ação em agosto/2026\nQuando eu consultar a apuração do período\nEntão a unidade aparece com os cinco contadores em 0\nE has_no_records = true\nE o payload indica quais desses campos são obrigatórios no leiaute (is_required_in_layout)",
+      "steps_html": "A unidade <b>E2E CRAS Sem MDS</b> é reservada a este critério — nenhum spec registra ação nela. O caso confirma pela API que ela está sem registro no período e então assevera o que a tela mostra.",
+      "results": [
+        "A faixa “Atenção antes da remessa — 1 unidade não registrou nenhuma ação em 09 — Setembro/2026 e declarará zero nos campos obrigatórios do leiaute” aparece acima da matriz.",
+        "A linha da unidade vem marcada (data-no-records=\"true\") com o selo “Sem registro no período”.",
+        "Os cinco contadores da unidade exibem 0, e o cabeçalho identifica quais campos são obrigatórios no leiaute.",
+        "Pest: “sinaliza a unidade sem nenhum registro com os cinco contadores zerados” e “distingue 'nao registrou nada' de 'registrou algo que conta zero'”."
+      ],
+      "images": [
+        "screenshots/ca09-unidade-sem-nenhum-registro-no-periodo-aparece-sinalizada-co.png"
+      ]
+    },
+    {
+      "id": "CA10",
+      "title": "Operacional vê apenas as suas unidades",
+      "status": "parc",
+      "gherkin": "Dado que sou Operacional lotado apenas no \"CRAS Centro\"\nQuando eu consultar a apuração sem filtro de unidade\nEntão recebo somente o \"CRAS Centro\"\nE, ao filtrar por uma unidade fora da minha lotação, recebo 404",
+      "steps_html": "<b>Metade na tela, metade no Pest — e o dossiê separa as duas.</b> Todos os casos do navegador rodam como Operacional, e a apuração sem filtro de unidade mostra exatamente as duas unidades da lotação dele (“2 unidades”: E2E CRAS Centro e E2E CRAS Sem MDS), embora o município tenha três. A segunda metade — 404 ao filtrar por unidade fora da lotação — não tem print: é status HTTP, verificado no Pest (“devolve 404 ao Operacional que filtra unidade fora da sua lotacao”).",
+      "results": [
+        "Na tela, sem filtro, aparecem apenas as unidades de lotação vigente do operador (2 de 3 do município) — o E2E CREAS não é listado.",
+        "Pest: 404 ao filtrar unidade fora da lotação; 200 com lista vazia para operador sem lotação nenhuma."
+      ],
+      "images": [
+        "screenshots/ca01-os-cinco-contadores-do-periodo-cada-um-com-a-sua-forma-de-co.png"
+      ]
+    },
+    {
+      "id": "CA11",
+      "title": "Master vê todas as unidades",
+      "status": "auto",
+      "gherkin": "Dado que sou Master do município\nQuando eu consultar a apuração sem filtro de unidade\nEntão recebo todas as unidades socioassistenciais do tenant, cada uma com seus cinco contadores",
+      "steps_html": "<b>Sem print.</b> A sessão do harness de e2e é a do Operacional; abrir uma segunda sessão de Master só para o print exigiria refazer o login dentro do caso, o que esbarra no <code>throttle:6,1</code> da rota de login do client. Verificado no Pest: “devolve ao Master todas as unidades do municipio, ordenadas por nome”.",
+      "results": [
+        "O Master recebe todas as unidades socioassistenciais do tenant, cada uma com os cinco contadores."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA12",
+      "title": "Isolamento entre municípios",
+      "status": "auto",
+      "gherkin": "Dado que sou usuário do município A\nQuando eu consultar a apuração (com ou sem filtro de unidade do município B)\nEntão vejo apenas unidades do município A; a unidade de B responde 404",
+      "steps_html": "<b>Sem print, por impossibilidade de massa</b> (a stack de evidências tem um único tenant). Verificado em <code>Tests\\Feature\\TenantIsolation\\CapacitationTallyIsolationTest</code>, 3 casos no anexo.",
+      "results": [
+        "404 quando o Master de A filtra a apuração por unidade de B.",
+        "A apuração de A não soma ações de B.",
+        "A unidade de B não vaza nem quando o usuário é Master dos dois municípios."
+      ],
+      "images": []
+    }
+  ],
+  "notes": [
+    {
+      "title": "Como estas evidências foram produzidas (e por que isso importa)",
+      "html": "<p>Nenhum print foi tirado à mão. Cada imagem deste dossiê foi gravada pelo <b>mesmo caso Playwright que verifica o critério</b>, executado com <code>CAPTURE_EVIDENCE=1</code> (<code>e2e/helpers/evidence.ts</code>): a foto só é salva quando o caso <b>passa</b>. Se uma asserção cai, não existe imagem — logo, a presença do arquivo é ela própria parte da prova. Sem essa variável de ambiente a suíte roda exatamente como antes, sem gravar nada.</p><p>Quando um caso cobre mais de um critério, o mesmo instante é salvo com um nome por critério (ex.: <code>ca02-…</code>, <code>ca03-…</code> e <code>ca04-…</code> são a mesma tela).</p>"
+    },
+    {
+      "title": "A apuração é página própria, não aba da unidade",
+      "html": "<p>A spec técnica supunha uma aba dentro da unidade; a implementação a colocou em <code>/app/prestacao-contas/capacitação</code> — página própria, com a unidade como <b>filtro opcional</b>. Faz sentido: a consulta padrão é a do município inteiro, o inverso da US-CAPAC-02, onde a unidade é dona do registro. Divergência de forma, não de conteúdo: todos os CAs continuam verificáveis.</p>"
+    },
+    {
+      "title": "RN03/D09 — a ausência de escrita é evidência instrumentada",
+      "html": "<p>Um caso extra (print <code>rn03-…</code> / <code>d09-…</code>) prova o que nenhuma inspeção visual provaria: além de não haver campo digitável nem botão de salvar na matriz, <b>nenhuma</b> requisição POST/PUT/PATCH/DELETE parte da página — todas as requisições foram interceptadas e a lista ficou vazia. A tela também <i>diz</i> o motivo, em vez de apenas não oferecer: “Nenhum destes números é digitável: todos vêm dos registros da aba Capacitação e divulgação de cada unidade.”</p>"
+    },
+    {
+      "title": "Onde o anexo automatizado foi executado",
+      "html": "<p>O anexo Pest foi rodado no <b>host</b>, em <code>api/</code>, com <code>DB_CONNECTION=sqlite DB_DATABASE=:memory:</code>. Rodar a mesma suíte dentro do contêiner da stack E2E <b>não é seguro</b>: as variáveis de ambiente do contêiner vencem os <code>&lt;env&gt;</code> do <code>phpunit.xml</code>, e o <code>RefreshDatabase</code> recria o banco <code>esuas_e2e</code> — isto é, apaga a massa da própria stack de evidências.</p>"
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Pest, --filter='CapacitationTally') — 26 testes, 114 asserções",
+    "file": "pest.txt"
+  }
+}

@@ -1,0 +1,31 @@
+
+   PASS  Tests\Feature\Api\Client\ProfessionalRoleControllerTest
+  ✓ it lists current and assignable roles (CA01)                         0.58s  
+  ✓ it syncs roles granting and revoking in diff (CA02/CA03)             0.04s  
+  ✓ it is idempotent when the same set is resent (RN04)                  0.03s  
+  ✓ it revokes all roles when role_ids is empty (RN11)                   0.03s  
+  ✓ it rejects assigning a role equal to or above the master hierarchy…  0.03s  
+  ✓ it rejects assigning an inactive role (RN02)                         0.03s  
+  ✓ it returns 404 for a professional from another tenant                0.03s  
+  ✓ it forbids an operador from managing professional roles (MASTER-onl… 0.03s  
+
+   PASS  Tests\Feature\Api\Client\CadunicoImportControllerTest
+  ✓ it validates a well-formed CSV and returns an upload token (CA01)    0.07s  
+  ✓ it rejects a CSV from a different município (RN01)                   0.03s  
+  ✓ it rejects validation when the tenant has no município configured    0.03s  
+  ✓ it rejects a CSV with a divergent header (CA02)                      0.03s  
+  ✓ it blocks validation when an import is already active (RN11/CA07)    0.03s  
+  ✓ it confirms the import and queues stage 1 (HU02)                     0.03s  
+  ✓ it records the executor label with [Master] suffix when not a profe… 0.03s  
+  ✓ it rejects store with an unknown upload token                        0.03s  
+  ✓ it does not sync an import that is not completed                     0.03s  
+  ✓ it queues stage 2 when the import is completed (Etapa 2 manual)      0.03s  
+  ✓ it blocks sync when another batch is active in the tenant (RN11)     0.03s  
+  ✓ it lists only the tenant own history (CA12)                          0.04s  
+  ✓ it returns 404 for a cross-tenant import (CA12/RN10)                 0.03s  
+  ✓ it hides the module from an operador without the permission (CA03)   0.03s  
+  ✓ it stores a generic failure message without leaking exception detai… 0.03s  
+
+  Tests:    23 passed (77 assertions)
+  Duration: 1.46s
+

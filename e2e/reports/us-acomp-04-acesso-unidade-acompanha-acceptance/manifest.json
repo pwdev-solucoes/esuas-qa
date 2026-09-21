@@ -1,0 +1,117 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — US-ACOMP-04",
+    "subtitle": "Épico HU-PRONT-ACOMP (fase F3) · Acesso ao prontuário pela unidade que acompanha a família",
+    "rows": [
+      [
+        "Gerado em",
+        "09/09/2026 (revisado após a US-ACOMP-03)"
+      ],
+      [
+        "História",
+        "US-ACOMP-04 — Acesso ao prontuário pela unidade que acompanha"
+      ],
+      [
+        "Spec",
+        ".planning/specs/US-ACOMP-04-acesso-pela-unidade-que-acompanha.md"
+      ],
+      [
+        "Branch",
+        "feature/acomp-prontuario-bloco-24 (api/ e client/), a partir de develop"
+      ],
+      [
+        "Commits (api/)",
+        "62ddb1e (eixo de acesso) · 8d60959 (tabela) · f29a9b6 (correção das afordâncias)"
+      ],
+      [
+        "Commits (e2e/)",
+        "4d088b8"
+      ],
+      [
+        "Ambiente",
+        "Stack E2E Docker · API em :8090 · client (vite preview) em :4174 · base esuas_e2e semeada por E2ESeeder"
+      ],
+      [
+        "Perfil usado",
+        "Operacional do tenant (guard client) com add-on LGPD e lotação vigente no “E2E CRAS Centro”; Master apenas para semear"
+      ],
+      [
+        "Ferramenta",
+        "Playwright (Chromium, project chromium-tenant) + Pest 4"
+      ]
+    ]
+  },
+  "summary": "Dez critérios de aceite. Cinco evidenciados no navegador (CA01, CA02, CA03, CA04 e CA05, com quatro prints) e cinco cobertos pela suíte automatizada (CA06, CA07, CA08, CA09 e CA10). A suíte Pest fecha com 34 testes e 179 asserções no filtro FamilyAccess, em arquivo dedicado, e a suíte pré-existente da HU #10617 permanece verde sem alteração de expectativa — o eixo é aditivo. Nenhum critério em falha. A asserção central da história — a negativa não nomeia unidade alguma — é verificada em todos os cenários de recusa.",
+  "criteria": [
+    {
+      "id": "CA01",
+      "title": "Unidade que acompanha acessa (happy path)",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "acomp04-a-acesso-concedido.png"
+      ]
+    },
+    {
+      "id": "CA02",
+      "title": "Prontuário inteiro, não só o acompanhamento",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "acomp04-b-prontuario-inteiro.png"
+      ]
+    },
+    {
+      "id": "CA03",
+      "title": "Acompanhamento encerrado mantém o acesso",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "acomp04-d-desligado-mantem-acesso.png"
+      ]
+    },
+    {
+      "id": "CA04",
+      "title": "Acompanhamento cancelado NÃO dá acesso",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "acomp04-c-cancelado-fecha-acesso.png"
+      ]
+    },
+    {
+      "id": "CA05",
+      "title": "Sem referência e sem acompanhamento: negativa com motivo",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "acomp04-c-cancelado-fecha-acesso.png"
+      ]
+    },
+    {
+      "id": "CA06",
+      "title": "Add-on LGPD continua obrigatório",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "CA07",
+      "title": "Sem lotação vigente não acessa",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "CA08",
+      "title": "Master continua acessando por bypass",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "CA09",
+      "title": "Acompanhar não autoriza iniciar acompanhamento alheio",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "CA10",
+      "title": "Isolamento entre municípios inalterado",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    }
+  ]
+}

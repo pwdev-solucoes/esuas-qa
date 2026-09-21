@@ -1,0 +1,27 @@
+[id 3216] evento=created causer_id=null em 2026-09-15 22:40:07
+  old  = []
+  novo = {
+    "tenant_id": 5,
+    "family_id": 14,
+    "social_unit_id": 4,
+    "referral_code_id": 9,
+    "family_member_id": null,
+    "person_id": null,
+    "destination_organization": "E2E CREAS (texto legado)",
+    "destination_social_unit_id": null,
+    "referred_on": "2026-07-15",
+    "responsible_professional_id": 5,
+    "status": "registered",
+    "outcome": "awaiting_return",
+    "cancelled_at": null,
+    "cancelled_by": null
+}
+[id 3222] evento=updated causer_id=12 em 2026-09-15 22:54:38
+  old  = {
+    "destination_organization": "E2E CREAS (texto legado)",
+    "destination_social_unit_id": null
+}
+  novo = {
+    "destination_organization": "E2E CREAS",
+    "destination_social_unit_id": 5
+}

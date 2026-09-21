@@ -1,0 +1,26 @@
+
+   PASS  Tests\Unit\Dashboard\DashboardIndicatorServiceTest
+  ✓ it computes the cadastral update rate from the 24-month window (KPI… 0.48s  
+  ✓ it computes valid registrations crossing persons.cpf and family_mem… 0.04s  
+  ✓ it counts distinct PBF families as an absolute total (KPI 3)         0.03s  
+  ✓ it computes the single-person rate as families with exactly one act… 0.04s  
+  ✓ it computes the extreme poverty rate against the configured thresho… 0.03s  
+  ✓ it returns zero percentages without dividing by zero when the scope… 0.01s  
+  ✓ it reads the extreme poverty threshold from config, not a hard-code… 0.02s  
+
+   PASS  Tests\Feature\Dashboard\StrategicIndicatorsTest
+  ✓ it returns the 5 KPIs with numerator/denominator/percentage (and to… 0.09s  
+  ✓ it returns zeroed percentages without error when the scope has no f… 0.04s  
+  ✓ it recalculates KPIs for a neighborhood, covering only geocoded fam… 0.06s  
+  ✓ it returns 422 for a neighborhood_uuid outside the tenant municipal… 0.06s  
+  ✓ it returns 422 for a malformed neighborhood_uuid                     0.04s  
+  ✓ it denies the indicators to the base operator without the dedicated… 0.04s  
+  ✓ it grants the indicators to the operator once the geo_panel_viewer…  0.04s  
+  ✓ it grants the indicators to the Master without any add-on role (RN0… 0.04s  
+
+   PASS  Tests\Feature\TenantIsolation\DashboardIndicatorsIsolationTest
+  ✓ it never counts families from another tenant in the aggregates (RN0… 0.05s  
+
+  Tests:    16 passed (64 assertions)
+  Duration: 1.53s
+

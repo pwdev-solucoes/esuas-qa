@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — US-DIAG-05</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  section.note { border:1px solid var(--line); border-left:4px solid #b06a00; border-radius:6px; padding:10px 14px; margin:10px 0; background:#fffdf7; font-size:13px; }
+  section.note h3 { margin:0 0 6px; font-size:13.5px; color:#8a5200; }
+  section.note p { margin:6px 0; }
+  section.note ul { margin:6px 0 6px 18px; padding:0; }
+  section.note pre { background:var(--bg); border:1px solid var(--line); border-radius:4px; padding:8px; overflow-x:auto; font-size:11px; white-space:pre-wrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — US-DIAG-05</h1>
+    <div class="sub">Épico HU-PRONT-DIAG (fase F6) · GLPI #10896 · Leiautes analíticos e perfis do 15.7 na apuração</div>
+    <div class="meta"><div><span>Gerado em:</span> 18/09/2026</div><div><span>História:</span> US-DIAG-05 — Completar os leiautes analíticos e acender os perfis na apuração (GLPI #10896)</div><div><span>Spec:</span> .planning/specs/US-DIAG-05-leiautes-analiticos-e-perfis-na-apuracao.md</div><div><span>Branch:</span> feature/diag-prontuario-blocos-4-6-8-10 (api c2fa1ca · client bebf1c0)</div><div><span>Ambiente:</span> API Laravel/Sail (container api-laravel.test-1, porta 80) + PostgreSQL · client (Vite dev) em :5175</div><div><span>Organização (tenant):</span> E2E CadÚnico · unidade E2E CRAS Centro · período 09/2026</div><div><span>Perfil usado:</span> Master do município (CPF 529.982.247-25) — a tela exige attendance-reports.view</div><div><span>Ferramenta:</span> playwright-cli (Chromium headless) + Pest 4</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">Os 14 critérios de aceite da US-DIAG-05 foram verificados. Oito têm evidência na tela da apuração, combinada com a suíte automatizada (CA01, CA02, CA07, CA08, CA09, CA10, CA11 e CA12), e seis são provados pela suíte, que tem um teste dedicado a cada um (CA03 a CA06, CA13 e CA14). Nenhum critério ficou em falta. Antes da captura foi corrigido um teste unitário desatualizado da faixa escolar (commit c2fa1ca), que falhava por chamar um método removido na correção da borda dos 4 anos. O comportamento já estava coberto pelos testes de feature, e agora os dois níveis estão verdes: 111 testes / 400 asserções nos arquivos da HU e 4934 testes, zero falhas, na suíte completa da API.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA01</td><td>Três perfis acesos (happy path)</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA02</td><td>Resta um perfil indisponível</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA03</td><td>Família conta uma vez no descumprimento</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA04</td><td>Evasão derivada da situação escolar</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA05</td><td>Situação escolar não informada não conta como evasão</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA06</td><td>Gestante adulta não conta</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA07</td><td>Conferência de completude do leiaute 15.10</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA08</td><td>Conferência de completude do leiaute 15.11</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA09</td><td>Nome da mãe também é conferido</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA10</td><td>Grau de instrução sem de-para aponta o Painel Global</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA11</td><td>Sem dado de cidadão na tela</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA12</td><td>Correção reflete na consulta seguinte</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA13</td><td>Operacional vê apenas as suas unidades</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA14</td><td>Isolamento entre municípios</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA01">
+      <h2>CA01 — Três perfis acesos (happy path) <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que no mês o "CRAS Centro" teve novas famílias em acompanhamento, com descumprimento no período, integrante em evasão escolar e gestante adolescente
+Quando eu consultar a apuração do "CRAS Centro"
+Então os três perfis apresentam os números apurados
+E deixam de aparecer como indisponíveis</p>
+      <p class="steps"><strong>Como foi testado:</strong> Massa declarada (ver Observações): uma família nova em acompanhamento no PAIF do <b>E2E CRAS Centro</b> em 09/2026, com uma ocorrência de descumprimento em 09/2026, um integrante de 16 anos com situação escolar “não, já frequentou” e a gestação desse integrante anotada. Apuração de 09/2026 filtrada pela unidade.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Os três perfis aparecem com número — descumprimento de condicionalidades 1, fora da escola 1, adolescentes grávidas 1 —, nenhum como indisponível.</li><li>Os demais perfis continuam com o valor apurado (0) e a tela declara que os perfis não são exclusivos.</li><li>Pest (AttendanceReportDiagnosisTest): “acende os tres perfis do 15.7 sobre as novas familias do mes (CA01)”, com a aritmética do cenário da spec.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca01-ca02-perfis-15-7.png" alt="CA01 evidência"/><figcaption>ca01-ca02-perfis-15-7.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA02">
+      <h2>CA02 — Resta um perfil indisponível <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Quando eu olhar os perfis do leiaute 15.7
+Então apenas o perfil de acolhimento aparece como ainda não disponível
+E a tela indica que ele depende da etapa seguinte do prontuário</p>
+      <p class="steps"><strong>Como foi testado:</strong> Mesma captura do CA01.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Só “Famílias com membros em serviço de acolhimento” aparece com “—”, o selo “ainda não apurado” e o texto “Ainda não disponível: depende de etapa seguinte do prontuário.”, com a indicação “Depende da fase F7”.</li><li>Pest (AttendanceReportDiagnosisTest): “deixa apenas o acolhimento declarado indisponivel, apontando a F7 (CA02)”.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca01-ca02-perfis-15-7.png" alt="CA02 evidência"/><figcaption>ca01-ca02-perfis-15-7.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA03">
+      <h2>CA03 — Família conta uma vez no descumprimento <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que uma família nova teve três ocorrências de descumprimento no mês, de dois integrantes diferentes
+Quando eu consultar a apuração
+Então ela é contada uma vez no perfil de descumprimento</p>
+      <p class="steps"><strong>Como foi testado:</strong> Critério de backend: exige massa com várias ocorrências de integrantes distintos no mesmo mês.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Pest (AttendanceReportDiagnosisTest): “conta a familia UMA vez no descumprimento, por mais ocorrencias que tenha (CA03/RN03)”.</li><li>Pest (AttendanceReportDiagnosisTest): “nao conta ocorrencia cancelada, de outro mes nem soft-deletada no perfil”. Na captura do CA01 a família tem ocorrências em 07, 08 e 09/2026 e conta 1 no mês apurado.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA04">
+      <h2>CA04 — Evasão derivada da situação escolar <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que uma família nova tem um adolescente de 15 anos com situação escolar "não, já frequentou"
+Quando eu consultar a apuração
+Então ela é contada no perfil de evasão escolar
+E não houve nenhum campo perguntando se ela está em evasão</p>
+      <p class="steps"><strong>Como foi testado:</strong> Critério de backend. Na captura do CA01, o perfil “fora da escola” = 1 vem justamente de um integrante de 16 anos com “não, já frequentou”.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Pest (AttendanceReportDiagnosisTest): “deriva a evasao escolar da situacao escolar declarada — nao existe campo de evasao (CA04/RN04)”.</li><li>Pest (AttendanceReportDiagnosisTest): “conta as bordas da faixa escolar como a spec manda: 4 anos entra, 18 nao”.</li><li>Teste unitário da faixa (reescrito em c2fa1ca): as quatro bordas 3/4/17/18, a faixa resolvida no último dia do mês e a data com hora como o SQLite a grava — conferido por mutação.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA05">
+      <h2>CA05 — Situação escolar não informada não conta como evasão <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que uma família nova tem uma criança de 9 anos sem situação escolar informada
+Quando eu consultar a apuração
+Então ela não é contada no perfil de evasão escolar
+E isso não significa que a criança frequenta escola</p>
+      <p class="steps"><strong>Como foi testado:</strong> Critério de backend.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Pest (AttendanceReportDiagnosisTest): “nao conta como evasao a situacao escolar nao informada, o "nao sei" nem quem esta fora da faixa (CA05)”.</li><li>O payload não tem nenhum campo afirmando que a criança frequenta escola (ver CA11).</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA06">
+      <h2>CA06 — Gestante adulta não conta <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que uma família nova tem uma gestante de 24 anos
+Quando eu consultar a apuração
+Então ela não é contada no perfil de gravidez na adolescência</p>
+      <p class="steps"><strong>Como foi testado:</strong> Critério de backend.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Pest (AttendanceReportDiagnosisTest): “nao conta gestante adulta e conta a adolescente, pela idade NA DATA DA ANOTACAO (CA06/RN05)”.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA07">
+      <h2>CA07 — Conferência de completude do leiaute 15.10 <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que pessoas foram atendidas pelo "CRAS Centro" no mês
+E que parte delas está sem escolaridade ou sem renda informada
+Quando eu consultar a apuração
+Então a tela informa quantas pessoas entrariam no leiaute e quantas estão incompletas
+E indica quais campos estão em falta</p>
+      <p class="steps"><strong>Como foi testado:</strong> Bloco “Leiautes analíticos (15.10 e 15.11)” da apuração de 09/2026, unidade E2E CRAS Centro.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>15.10 · Usuários da rede: “Linhas que entrariam 1”, “Linhas recusadas 1” e os campos em falta, cada um com a quantidade: Renda própria, Alfabetizado, Escolaridade e Doença grave.</li><li>A tela avisa que cada linha incompleta é um registro que o SIAP recusa e que a soma dos campos pode ser maior que o total de linhas recusadas.</li><li>Pest (AttendanceReportDiagnosisTest): “confere a completude do 15.10 e mantem incomplete DIFERENTE da soma de missing_fields (CA07)” e “nao conta no 15.10 o atendimento cancelado, o de outro mes nem a pessoa desvinculada”.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca07-ca08-completude-antes.png" alt="CA07 evidência"/><figcaption>ca07-ca08-completude-antes.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA08">
+      <h2>CA08 — Conferência de completude do leiaute 15.11 <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que famílias foram atendidas no mês e parte está sem as condições habitacionais informadas
+Quando eu consultar a apuração
+Então a tela informa quantas famílias entrariam incompletas no leiaute 15.11
+E indica os campos em falta</p>
+      <p class="steps"><strong>Como foi testado:</strong> Mesmo bloco do CA07.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>15.11 · Famílias: “Linhas que entrariam 1”, “Linhas recusadas 1” e os campos Tipo de residência, Domicílio em área de risco e Vulnerabilidade do domicílio.</li><li>Unidade sem movimento no mês aparece com zero declarado, nunca com o bloco omitido.</li><li>Pest (AttendanceReportDiagnosisTest): “confere a completude do 15.11 sobre as familias atendidas no mes (CA08)”.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca07-ca08-completude-antes.png" alt="CA08 evidência"/><figcaption>ca07-ca08-completude-antes.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA09">
+      <h2>CA09 — Nome da mãe também é conferido <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que pessoas atendidas estão sem o nome da mãe no cadastro
+Quando eu consultar a conferência de completude do leiaute 15.10
+Então elas constam entre as incompletas
+E o campo apontado é o nome da mãe</p>
+      <p class="steps"><strong>Como foi testado:</strong> Massa declarada: um atendimento em 09/2026 no E2E CRAS Centro para o integrante <b>E2E Integrante Sem Nascimento</b>, que não tem nome da mãe no cadastro.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O 15.10 passa a 2 linhas que entrariam e 2 recusadas, e a lista de campos ganha “Nome da mãe (NomeMae) 1”.</li><li>Pest (AttendanceReportDiagnosisTest): “conta o nome da mae ausente ou em branco entre as incompletas (CA09)”.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca09-ca10-nome-mae-e-pendencia-painel-global.png" alt="CA09 evidência"/><figcaption>ca09-ca10-nome-mae-e-pendencia-painel-global.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA10">
+      <h2>CA10 — Grau de instrução sem de-para aponta o Painel Global <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que existe grau de instrução do CadÚnico sem correspondência definida e integrantes classificados nele
+Quando eu consultar a conferência de completude
+Então a pendência aponta o cadastro de graus de instrução no Painel de Administração Global
+E não aponta a família como responsável pela correção</p>
+      <p class="steps"><strong>Como foi testado:</strong> Massa declarada e revertida: o de-para do grau “Superior incompleto ou mais” foi retirado e um integrante ativo foi classificado nele.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Aparece o bloco “Pendência de configuração da plataforma”: a correção é feita no Painel de Administração Global, no cadastro de graus de instrução, e não no prontuário da família; “1 integrantes ativos do município estão classificados em grau de instrução sem de-para”.</li><li>A tela diz explicitamente que nenhuma família é responsável pela pendência.</li><li>Com o de-para restaurado, a pendência some na consulta seguinte.</li><li>Pest (AttendanceReportDiagnosisTest): “aponta o Painel Global quando o grau de instrucao nao tem de-para” e “nao inventa pendencia de configuracao quando todo grau tem de-para”.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca09-ca10-nome-mae-e-pendencia-painel-global.png" alt="CA10 evidência"/><figcaption>ca09-ca10-nome-mae-e-pendencia-painel-global.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA11">
+      <h2>CA11 — Sem dado de cidadão na tela <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que estou consultando a conferência de completude
+Quando eu olhar os resultados
+Então vejo quantidades e campos em falta
+E nenhum nome, CPF ou identificação de família</p>
+      <p class="steps"><strong>Como foi testado:</strong> Resposta real da API da apuração salva em <code>payload-apuracao-09-2026.json</code> e varrida em busca de dados de cidadão.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O único identificador e o único nome no payload são os da &lt;b&gt;unidade&lt;/b&gt; (E2E CRAS Centro). Não há CPF, NIS, nome de pessoa, family_id nem person_id.</li><li>O bloco analytic_layouts traz só eligible, incomplete e missing_fields (nome do campo e quantidade), e configuration_pendencies só o tipo, o campo, o destino e a quantidade.</li><li>As capturas dos CA07 a CA10 mostram só quantidades e nomes de campo.</li><li>Pest (AttendanceReportDiagnosisTest): “nao leva nome, CPF, NIS nem identificador de cidadao no payload (CA11/RN10/D06)”.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA12">
+      <h2>CA12 — Correção reflete na consulta seguinte <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que registrei os campos em falta das pessoas incompletas
+Quando eu consultar a apuração novamente
+Então elas não constam mais como incompletas</p>
+      <p class="steps"><strong>Como foi testado:</strong> Com o estado do CA09 na tela (2 recusadas), foram preenchidos renda, alfabetização, escolaridade e doença grave do <b>E2E Integrante Local</b> e a tela foi recarregada.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O 15.10 passou de 2 para 1 linha recusada, e cada campo caiu de 2 para 1. O que resta é só a pessoa sem nome da mãe.</li><li>A consulta seguinte já reflete a correção, sem nenhuma ação de recalcular: nada é guardado.</li><li>Pest (AttendanceReportDiagnosisTest): “reflete a correcao na consulta seguinte, sem cache a invalidar (CA12/D01/RN09)”.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca12-correcao-reflete.png" alt="CA12 evidência"/><figcaption>ca12-correcao-reflete.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA13">
+      <h2>CA13 — Operacional vê apenas as suas unidades <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Operacional do Tenant lotado apenas no "CRAS Centro"
+Quando eu consultar a apuração
+Então vejo apenas o "CRAS Centro"</p>
+      <p class="steps"><strong>Como foi testado:</strong> Critério de backend: o Operacional semeado não tem a permissão restrita da apuração, que só chega por concessão manual.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Pest (AttendanceReportDiagnosisTest): “mostra ao Operacional apenas as unidades em que ele tem lotacao vigente (CA13)”.</li><li>Pest (AttendanceReportTest): o recorte do Operacional é pelas lotações vigentes hoje, e uma unidade fora do escopo é recusada com 422 nomeado, nunca com resultado vazio.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA14">
+      <h2>CA14 — Isolamento entre municípios <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou usuário do município A
+Quando eu consultar a apuração
+Então vejo apenas unidades do município A</p>
+      <p class="steps"><strong>Como foi testado:</strong> Critério de backend: exige um segundo município.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Pest (AttendanceReportDiagnosisTest): “nao deixa a conferencia de um municipio enxergar o outro (CA14/RN12)”.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+  
+  <h2>Observações e ressalvas</h2>
+  <section class="note"><h3>Teste unitário corrigido antes da captura (commit c2fa1ca)</h3><p>O <code>FollowUpProfileRangesTest</code> falhava em 6 casos com “Call to undefined method”. O commit 1b6eee9 havia trocado <code>schoolAgeBirthDateRange()</code> por <code>isSchoolAge()</code>/<code>ageOn()</code> para não perder a borda dos 4 anos no SQLite, mas o teste não foi atualizado. O comportamento estava coberto e verde nos testes de feature. O teste foi reescrito contra o predicado novo, mantendo as quatro bordas e o último dia do mês, e ganhou dois casos: a data com hora e o nascimento ausente ou no futuro. Foi conferido por mutação (trocar o <code>&lt;=</code> por <code>&lt;</code> reprova 3 casos). O docblock que ainda citava o método removido também foi corrigido. Nenhuma regra de produção mudou.</p></section><section class="note"><h3>Massa criada para a captura, e removida depois</h3><p>A base não tinha família nova em acompanhamento no período. Para exercer os critérios na tela, foram gravados por script, fora da interface: um ingresso no PAIF da família E2E Família No CRAS em 02/09/2026, uma ocorrência de descumprimento em 09/2026, a situação escolar “não, já frequentou” e a gestação do integrante E2E Integrante Local (16 anos), e um atendimento em 05/09/2026 para o E2E Integrante Sem Nascimento. O de-para do grau “Superior incompleto ou mais” foi retirado e um integrante foi classificado nele. <b>Tudo foi removido ou restaurado ao fim da captura</b>, e a pendência de configuração desapareceu da tela depois da restauração. Como a gravação foi direta, esses registros não passaram pela trilha de auditoria.</p></section><section class="note"><h3>Por que CA03 a CA06, CA13 e CA14 não têm captura</h3><p>Os cenários exatos de CA03 a CA06 (várias ocorrências de integrantes distintos, bordas de idade, situação não informada, gestante adulta) exigem massas que a base de evidência não tem, e cada um tem teste dedicado na suíte. O CA01 mostra na tela a mesma regra funcionando. O CA13 depende de um Operacional com a permissão restrita da apuração, que só chega por concessão manual (regra de uma HU anterior), e o CA14 exige um segundo município.</p></section><section class="note"><h3>Suíte automatizada</h3><p>O anexo reúne os arquivos da HU: 111 testes, 400 asserções, todos verdes. A suíte completa da API, rodada no container depois da correção do teste, fechou com 4934 testes passando, 27 pulados e nenhuma falha.</p></section>
+  
+  <h2>Anexo — Cobertura automatizada (Pest, arquivos da US-DIAG-05)</h2>
+  <pre class="pest">
+   PASS  Tests\Feature\Client\AttendanceReportDiagnosisTest
+  ✓ it acende os tres perfis do 15.7 sobre as novas familias do mes (CA… 0.75s  
+  ✓ it deixa apenas o acolhimento declarado indisponivel, apontando a F… 0.09s  
+  ✓ it conta a familia UMA vez no descumprimento, por mais ocorrencias…  0.09s  
+  ✓ it nao conta ocorrencia cancelada, de outro mes nem soft-deletada n… 0.10s  
+  ✓ it deriva a evasao escolar da situacao escolar declarada — nao exis… 0.10s  
+  ✓ it nao conta como evasao a situacao escolar nao informada, o "nao s… 0.11s  
+  ✓ it conta as bordas da faixa escolar como a spec manda: 4 anos entra… 0.10s  
+  ✓ it nao conta gestante adulta e conta a adolescente, pela idade NA D… 0.11s  
+  ✓ it confere a completude do 15.10 e mantem incomplete DIFERENTE da s… 0.12s  
+  ✓ it nao conta no 15.10 o atendimento cancelado, o de outro mes nem a… 0.10s  
+  ✓ it confere a completude do 15.11 sobre as familias atendidas no mes… 0.10s  
+  ✓ it declara ZERO para a unidade sem movimento, nunca omite o bloco (… 0.09s  
+  ✓ it conta o nome da mae ausente ou em branco entre as incompletas (C… 0.10s  
+  ✓ it aponta o Painel Global quando o grau de instrucao nao tem de-par… 0.11s  
+  ✓ it nao inventa pendencia de configuracao quando todo grau tem de-pa… 0.11s  
+  ✓ it nao leva nome, CPF, NIS nem identificador de cidadao no payload…  0.09s  
+  ✓ it reflete a correcao na consulta seguinte, sem cache a invalidar (… 0.10s  
+  ✓ it mostra ao Operacional apenas as unidades em que ele tem lotacao…  0.11s  
+  ✓ it nao deixa a conferencia de um municipio enxergar o outro (CA14/R… 0.09s  
+
+   PASS  Tests\Unit\Enums\SiapNewFamilyProfileTest
+  ✓ it conta SETE perfis acesos e UM apagado depois da F6 (CA01/CA02/D0… 0.01s  
+  ✓ it acende os TRES perfis da F6 e apaga o depends_on deles (D02) with dataset "descumprimento de condicionalidades"
+  ✓ it acende os TRES perfis da F6 e apaga o depends_on deles (D02) with dataset "evasao escolar"
+  ✓ it acende os TRES perfis da F6 e apaga o depends_on deles (D02) with dataset "gravidez na adolescencia"
+  ✓ it mantem o acolhimento DECLARADO indisponivel, apontando a F7 (CA02)
+  ✓ it mantem o VALOR do case como chave do payload — sem mapa intermediario
+
+   PASS  Tests\Unit\Services\FollowUp\FollowUpProfileRangesTest
+  ✓ it fixa as tres constantes do D12 num lugar so
+  ✓ it deriva as bordas DAS constantes, nunca de literais
+  ✓ it inclui e exclui exatamente nas quatro bordas da faixa escolar (§8.2) with dataset "tres anos: pequeno demais, NAO conta"
+  ✓ it inclui e exclui exatamente nas quatro bordas da faixa escolar (§8.2) with dataset "quatro anos EM PONTO: conta"
+  ✓ it inclui e exclui exatamente nas quatro bordas da faixa escolar (§8.2) with dataset "dezessete anos: conta"
+  ✓ it inclui e exclui exatamente nas quatro bordas da faixa escolar (§8.2) with dataset "dezoito anos EM PONTO: NAO conta"
+  ✓ it anda com o periodo apurado — a faixa e resolvida no ULTIMO DIA do mes, nunca hoje
+  ✓ it nao perde a borda dos 4 anos quando a data vem com hora, como o SQLite a grava (regressao do 1b6eee9)
+  ✓ it nao inventa faixa sem data de nascimento nem com nascimento no futuro
+
+   PASS  Tests\Feature\Client\FollowUpReportServiceTest
+  ✓ it conta as familias distintas com acompanhamento vigente em algum…  0.04s  
+  ✓ it conta o ingresso e o desligamento ocorridos no meio do mes (CA02… 0.03s  
+  ✓ it nao conta a familia desligada no mes anterior, mas conta naquele… 0.03s  
+  ✓ it conta o mes do desligamento mesmo apos a razao e o servico serem… 0.03s  
+  ✓ it conta 1 em cada unidade quando a familia e acompanhada por duas…  0.03s  
+  ✓ it conta 1 quando a familia e acompanhada em dois servicos da MESMA… 0.03s  
+  ✓ it conta as novas familias do mes (CA05)                             0.06s  
+  ✓ it conta o reingresso como nova familia (CA06/I2)                    0.03s  
+  ✓ it nao conta o acompanhamento cancelado em nenhum dos dois contador… 0.05s  
+  ✓ it nao conta o acompanhamento removido operacionalmente (deleted_at… 0.03s  
+  ✓ it reproduz o cenario canonico de conferencia do §9 (3 em acompanha… 0.05s  
+  ✓ it qualifica APENAS as novas familias, nunca todas as acompanhadas…  0.06s  
+  ✓ it conta a mesma familia em varios perfis — eles nao sao exclusivos… 0.04s  
+  ✓ it nao conta membro inativo nem removido no perfil de trabalho infa… 0.04s  
+  ✓ it conta o BPC mesmo com o programa inativado no catalogo global     0.04s  
+  ✓ it nao conta receives_pbf NULL e nao afirma que a familia nao receb… 0.03s  
+  ✓ it nao conta renda per capita nula em extrema pobreza (RN08)         0.04s  
+  ✓ it declara o unico perfil sem fonte, com o motivo e a fase (CA09/D0… 0.03s  
+  ✓ it sinaliza os acompanhamentos vigentes ha mais de seis meses sem a… 0.06s  
+  ✓ it conta PROCESSOS, e nao familias, no ponto de atencao (D10)        0.03s  
+  ✓ it ignora atendimento cancelado e de outra unidade no cruzamento da… 0.04s  
+  ✓ it respeita o corte configurado em follow_up.stale_months (I5/D10)   0.03s  
+  ✓ it nao sinaliza acompanhamento desligado nem cancelado no ponto de…  0.03s  
+  ✓ it devolve zero DECLARADO para a unidade sem nenhum acompanhamento…  0.03s  
+  ✓ it curto-circuita sem tocar o banco quando o recorte de unidades e…  0.03s  
+  ✓ it nao conta acompanhamento de outro municipio (RN13/CA14)           0.03s  
+  ✓ it nao persiste absolutamente nada — a apuracao e derivada (RN09/D0… 0.04s  
+  ✓ it nao devolve nenhum identificador de familia no resultado (D11/RN… 0.03s  
+
+   PASS  Tests\Feature\Client\AttendanceReportFollowUpTest
+  ✓ it reproduces the canonical scenario of §9 in the HTTP payload — 3…  0.10s  
+  ✓ it lights up families_in_follow_up inside counters and removes it f… 0.09s  
+  ✓ it declares the four profiles that depend on F6/F7 — never omitted,… 0.09s  
+  ✓ it keeps the single unavailable profile declared even for a unit wi… 0.08s  
+  ✓ it exposes stale_follow_ups as a quantity and the configured thresh… 0.09s  
+  ✓ it carries the threshold from config so the cut can move without a…  0.09s  
+  ✓ it shows the operator only the units of the current assignment, wit… 0.09s  
+  ✓ it never counts follow-ups of another organization in any of the ne… 0.09s  
+  ✓ it persists absolutely nothing — identical row counts before and af… 0.09s  
+  ✓ it never leaks any citizen data through the new follow-up fields (D… 0.09s  
+  ✓ it never counts a cancelled follow-up in the HTTP payload (CA11/RN1… 0.09s  
+  ✓ it keeps the new blocks consistent when the report is narrowed to a… 0.09s  
+
+   PASS  Tests\Feature\Api\Client\AttendanceReportTest
+  ✓ it derives the four counters per unit and the total includes types…  0.10s  
+  ✓ it declares an empty unavailable_counters list — F5 lit the last re… 0.09s  
+  ✓ it excludes cancelled attendances from the report while they remain… 0.12s  
+  ✓ it counts a retroactive attendance in the month it happened, not th… 0.10s  
+  ✓ it reflects a type correction on the next query and stores nothing…  0.10s  
+  ✓ it reports attendances without an identified person separately, via… 0.10s  
+  ✓ it scopes the Operacional to units with an assignment in force TODA… 0.11s  
+  ✓ it shows the master every unit of the tenant, and a unit without mo… 0.09s  
+  ✓ it never leaks citizen data in the serialized payload — no name, no… 0.10s  
+  ✓ it keeps counting past attendances of a type inactivated in the Glo… 0.10s  
+  ✓ it narrows the report to a single unit when social_unit_uuid is giv… 0.09s  
+  ✓ it keeps unit_count at the Operacional full scope when filtering on… 0.10s  
+  ✓ it rejects with a named 422 a unit outside the user scope — never a… 0.10s  
+  ✓ it rejects an out-of-range reference month with the SIAP named mess… 0.09s  
+  ✓ it denies the Operacional without the manual grant — the restricted… 0.09s  
+  ✓ it denies a granted user without an ACTIVE professional bond in the… 0.10s  
+  ✓ it lights the three referral counters with distinct families and pe… 0.11s  
+  ✓ it counts the same family ONCE with two inclusion referrals in the…  0.10s  
+  ✓ it counts two distinct people of the SAME family in the BPC counter… 0.10s  
+  ✓ it counts the family once in EACH counter — distinct per counter, n… 0.09s  
+  ✓ it drops a cancelled referral from the counters while it stays visi… 0.11s  
+  ✓ it keeps counting a referral whose outcome became not_attended — th… 0.10s  
+  ✓ it counts a retroactive referral in the month it was made, not the…  0.10s  
+  ✓ it keeps counting past referrals of a code inactivated in the Globa… 0.09s  
+  ✓ it keeps counting past referrals of a code SOFT-DELETED in the Glob… 0.10s  
+  ✓ it declares zero on the three referral counters for a unit without…  0.09s  
+  ✓ it never feeds the BPC counter from a referral row without a person… 0.09s  
+
+   PASS  Tests\Unit\Siap\FamiliaLayoutTest
+  ✓ it converts the zero-padded code to the Manual numbering (15.11) wi… 0.01s  
+  ✓ it converts the zero-padded code to the Manual numbering (15.11) with dataset "Outros 000 -&gt; 0"
+  ✓ it converts the zero-padded code to the Manual numbering (15.11) with dataset "Situação de rua 001"
+  ✓ it converts the zero-padded code to the Manual numbering (15.11) with dataset "Sem especificidades"
+  ✓ it converts the zero-padded code to the Manual numbering (15.11) with dataset "já sem padding"
+  ✓ it converts the zero-padded code to the Manual numbering (15.11) with dataset "nulo continua nulo"
+  ✓ it converts the zero-padded code to the Manual numbering (15.11) with dataset "vazio continua nulo"
+  ✓ it returns an INTEGER zero for 000 — never an empty string nor null
+  ✓ it no longer lists any field without source (HU #10621 + US-DIAG-05)
+  ✓ it declares pending COMPOSITION — never no_data_source — now that every field has a source (§7.4)
+
+  Tests:    111 passed (400 assertions)
+  Duration: 7.55s
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

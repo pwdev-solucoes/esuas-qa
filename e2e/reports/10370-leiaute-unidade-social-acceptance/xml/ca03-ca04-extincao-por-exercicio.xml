@@ -1,0 +1,40 @@
+<!--
+  HU #10370 (US-SIAP-03) — dossiê de aceite
+  CA03 + CA04 (+ D04)
+  Cenário: encerramento em 03/2026 → 3; em 11/2024 → 4; código "003" com data de 2024 → 4 (a data vence o lookup). Referência 08/2026
+  Gerado em: 2026-08-13 13:55:50 por tests/Feature/Api/Siap10370EvidenceDumpTest.php (temporário)
+  Origem: UnidadeSocial.xml extraído do zip da remessa realmente gerada pelo POST client/siap-remittances
+-->
+<?xml version="1.0"?>
+<SIAP>
+    <Codigo>004821</Codigo>
+    <Exercicio>2026</Exercicio>
+    <Mes>08</Mes>
+    <UnidadeSocial>
+        <NumeroMDS>2704302000333</NumeroMDS>
+        <NomeUnidadeSocial>CRAS Vergel (extinto em marco/2026)</NomeUnidadeSocial>
+        <TipoLocalizacao>1</TipoLocalizacao>
+        <EnderecoUnidadeSocial>Rua, das Flores, 123, Centro, Maceió</EnderecoUnidadeSocial>
+        <CEP>57000000</CEP>
+        <SituacaoUnidadeSocial>3</SituacaoUnidadeSocial>
+        <ClassificacaoUnidadeSocial>1</ClassificacaoUnidadeSocial>
+    </UnidadeSocial>
+    <UnidadeSocial>
+        <NumeroMDS>2704302000444</NumeroMDS>
+        <NomeUnidadeSocial>CRAS Poço (extinto em novembro/2024)</NomeUnidadeSocial>
+        <TipoLocalizacao>1</TipoLocalizacao>
+        <EnderecoUnidadeSocial>Rua, do Ouro, 77, Poço, Maceió</EnderecoUnidadeSocial>
+        <CEP>57000000</CEP>
+        <SituacaoUnidadeSocial>4</SituacaoUnidadeSocial>
+        <ClassificacaoUnidadeSocial>1</ClassificacaoUnidadeSocial>
+    </UnidadeSocial>
+    <UnidadeSocial>
+        <NumeroMDS>2704302000555</NumeroMDS>
+        <NomeUnidadeSocial>CRAS Trapiche (lookup 003, data de 2024 — D04)</NomeUnidadeSocial>
+        <TipoLocalizacao>1</TipoLocalizacao>
+        <EnderecoUnidadeSocial>Rua, da Paz, 15, Trapiche, Maceió</EnderecoUnidadeSocial>
+        <CEP>57000000</CEP>
+        <SituacaoUnidadeSocial>4</SituacaoUnidadeSocial>
+        <ClassificacaoUnidadeSocial>1</ClassificacaoUnidadeSocial>
+    </UnidadeSocial>
+</SIAP>

@@ -1,0 +1,42 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — Aba Composição Familiar",
+    "subtitle": "HU #9910 · CA02 · Prontuário familiar (client) · Evidências end-to-end",
+    "rows": [
+      ["Gerado em", "14/07/2026"],
+      ["História", "HU #9910 — Aba Composição Familiar"],
+      ["Rota verificada", "/app/cadastros/familias/9fb588c6-...-78561d32ed3e?tab=composicao"],
+      ["Submódulo", "client (esuas-frontend-client) · commit 1bf93ce"],
+      ["Ambiente", "API Sail/PostgreSQL 18 · client :5174 (não-mock) · API :8000"],
+      ["Organização (tenant)", "PMM — Prefeitura Municipal de Maceió (Ativo)"],
+      ["Perfil", "coordenador (Master/CLIENT_ADMIN, family_viewer) · CPF 15543849079"],
+      ["Ferramenta", "playwright-cli (Chromium) + Vitest + Pest"]
+    ]
+  },
+  "summary": "1 Critério de Aceite (CA02) verificado como PARCIAL (◑): evidência de UI ao vivo (navegador) somada à cobertura automatizada de backend. A aba Composição Familiar exibe uma tabela read-only com uma linha por integrante ATIVO — Referência Familiar na primeira linha (ordenada no backend) — com as colunas exigidas pela RN04: Nome Completo, Parentesco com a Referência, Data de Nascimento (idade derivada no backend), CPF ABERTO e formatado (RN01), Grau de Instrução e Deficiência (Sim/Não). Suítes automatizadas: Vitest 3/3 (ComposicaoFamiliarTab) e Pest 14/14 (FamilyDetailsTest, inclui a composição completa e o shape esparso). Resultado geral: ATENDIDO.",
+  "cas": [
+    {
+      "id": "CA02",
+      "title": "Leitura de integrantes cadastrados (tabela de membros: nome, parentesco, CPF, nascimento, grau de instrução e deficiência Sim/Não, em formato de leitura)",
+      "status": "parc",
+      "gherkin": "Dado que estou na tela de detalhes da família, Quando clico na aba \"Composição Familiar\", Então o sistema exibe a tabela de membros listando o nome de cada dependente da família, o grau de parentesco com a referência, CPF, nascimento, grau de instrução e se possui deficiência (Sim ou Não) em formato de leitura.",
+      "steps_html": "1) Login como <code>coordenador</code> (Master, CPF 15543849079) → organização <b>PMM</b>. 2) Abrir a rota da HU: <code>/app/cadastros/familias/9fb588c6-…?tab=composicao</code>. 3) Abrir uma família com integrante com deficiência (<code>baedf637-…</code>) para evidenciar o marcador <b>Sim</b>. O acesso dispara a auditoria silenciosa LGPD no backend (RN05).",
+      "results": [
+        "Tabela read-only com uma linha por integrante ATIVO (4 membros na família da rota) e o contador \"(4)\" no cabeçalho.",
+        "Colunas exigidas presentes: Nome Completo, Parentesco com a Referência, Data de Nascimento (com idade derivada — ex.: \"12/03/1988 (38 anos)\"), CPF, Grau de Instrução e Deficiência.",
+        "Referência Familiar na PRIMEIRA linha (MARIA) com o badge \"Responsável Familiar\" — ordenação garantida pelo backend; o parentesco é rotulado em pt-BR (Cônjuge/companheiro(a), Filho(a)).",
+        "CPF exibido ABERTO e apenas formatado (100.000.001-08), NUNCA mascarado com asteriscos (RN01); campos nulos exibem \"—\".",
+        "Coluna Deficiência exibe explicitamente \"Não\" (família da rota) e \"Sim\" (família baedf637-…) em formato de leitura.",
+        "Auditoria LGPD (RN05) confirmada: acesso ao prontuário gera registro family_access/record_opened no backend, sem PII."
+      ],
+      "images": [
+        "screenshots/ca02-rota-solicitada.png",
+        "screenshots/ca02-deficiencia-sim.png"
+      ]
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada de backend (Pest — FamilyDetailsTest): 14 testes, 101 asserções",
+    "file": "pest-composicao.txt"
+  }
+}

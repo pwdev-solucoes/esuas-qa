@@ -1,0 +1,274 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — Contra-referência e Desfecho",
+    "subtitle": "Épico Prontuário SUAS · fase F2 · HU #10714 — o que voltou do órgão de destino, o desfecho e a fila de pendentes",
+    "rows": [
+      [
+        "Gerado em",
+        "03/09/2026 20:35 · complementado em 04/09/2026 16:15"
+      ],
+      [
+        "HU",
+        "GLPI #10714 — Registrar contra-referência e desfecho"
+      ],
+      [
+        "Spec (contrato)",
+        ".planning/specs/10714-contra-referencia-desfecho.md"
+      ],
+      [
+        "Branch",
+        "feature/10712-encaminhamentos"
+      ],
+      [
+        "Commits api/",
+        "f37d63b (registro+PDF) · df02a6e (fix soft delete) · 3d9bf0b (contra-referência) · 1abcac7 (fix updated_by)"
+      ],
+      [
+        "Commits client/",
+        "8c76ca4 (aba) · 5b70357 (fix da revisão)"
+      ],
+      [
+        "Ambiente",
+        "API Sail/PostgreSQL em localhost · client :5174 · dados reais (não-mock) · tenant E2E CadÚnico"
+      ],
+      [
+        "Ferramenta",
+        "playwright-cli (Chromium) + Pest 4"
+      ]
+    ]
+  },
+  "summary": "Os 11 critérios de aceite do chamado, mais 5 derivados na spec. Os critérios estruturais da HU — anotação irretratável, ordem cronológica, desfecho, fila de pendentes e o gate de acesso restrito — foram evidenciados no navegador com dados reais. A irretratabilidade é estrutural, não apenas visual: o painel de anotações não renderiza nenhum botão, link ou input, e a ausência das rotas de edição e exclusão é travada por teste. Complemento de 04/09/2026: o critério que a geração original havia deferido — a contra-referência não alterar o contador da remessa — foi fechado na tela, porque a apuração de encaminhamentos já foi entregue pela HU #10715.",
+  "cas": [
+    {
+      "id": "CA01",
+      "title": "Registrar o retorno do órgão de destino",
+      "status": "nav",
+      "gherkin": "Dado um encaminhamento aguardando retorno\nQuando eu registrar o que voltou do órgão de destino\nEntão a anotação consta do encaminhamento, com autor e data",
+      "steps_html": "Expandir o encaminhamento → <b>Registrar retorno</b> → anotação (e, opcionalmente, a situação no mesmo envio).",
+      "results": [
+        "O diálogo avisa ANTES de salvar: 'A anotação não pode ser editada nem excluída depois de salva. Correções se fazem registrando uma nova anotação.' — irretratabilidade anunciada, não descoberta depois.",
+        "Salvo: toast 'Contra-referência registrada no encaminhamento.' e a anotação aparece com autor e data.",
+        "A situação pode ser atualizada no mesmo envio."
+      ],
+      "images": [
+        "screenshots/ca01-ca03-ca04-contra-referencia.png"
+      ]
+    },
+    {
+      "id": "CA02",
+      "status": "auto",
+      "title": "Encaminhamento nasce aguardando retorno",
+      "gherkin": "Dado que acabei de registrar um encaminhamento\nQuando eu consultar o prontuário\nEntão ele consta com a situação aguardando retorno.",
+      "steps_html": "Coberto pela suíte automatizada, no mesmo teste que verifica o registro assinado e datado — o estado inicial é parte do ato de registrar, não um passo separado.",
+      "results": [
+        "<code>✓ it registers a referral signed and dated, born awaiting_return (CA01/RN13 + CA02 da #10714)</code> — o encaminhamento nasce com a situação de aguardando retorno, sem que ninguém precise informá-la.",
+        "Na tela, isso é visível na própria linha do histórico: a coluna <b>Desfecho</b> exibe “Aguardando retorno” assim que o encaminhamento é registrado, ao lado da situação do registro “Registrado” — os dois eixos são independentes desde o início.",
+        "É o estado que alimenta a relação de encaminhamentos pendentes do CA08: um encaminhamento recém-criado entra nela automaticamente."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA03",
+      "title": "Anotações em ordem cronológica",
+      "status": "nav",
+      "gherkin": "Dado que registrei duas anotações\nQuando eu consultar o encaminhamento\nEntão elas aparecem em ordem cronológica",
+      "steps_html": "Duas anotações foram registradas em sequência e a posição de cada uma foi medida no HTML renderizado.",
+      "results": [
+        "A primeira anotação aparece antes da segunda (posições 20 e 136 no texto do painel) — ordem crescente, não invertida.",
+        "Cada anotação carrega autor e data próprios."
+      ],
+      "images": [
+        "screenshots/ca01-ca03-ca04-contra-referencia.png"
+      ]
+    },
+    {
+      "id": "CA04",
+      "title": "Anotação não pode ser editada nem excluída",
+      "status": "nav",
+      "gherkin": "Dado uma anotação registrada\nQuando eu procurar como alterá-la ou removê-la\nEntão a ação não existe",
+      "steps_html": "Inspeção do painel de anotações no DOM renderizado, mais verificação das rotas no backend.",
+      "results": [
+        "<b>Zero</b> botões, links ou inputs dentro do painel de anotações — nem desabilitados.",
+        "A tela explica o caminho correto: 'a correção se faz registrando uma nova anotação'.",
+        "No backend não existem rotas de edição ou exclusão: as tentativas respondem 405 na coleção e 404 no endereço do item, com a linha intacta.",
+        "A ausência é decisão de arquitetura e está protegida por teste: acrescentar a trait de auditoria ao modelo derruba 17 testes. A tabela não tem exclusão lógica, não tem campo de editor e não emite log próprio — a linha, com autor e data, É o registro."
+      ],
+      "images": [
+        "screenshots/ca01-ca03-ca04-contra-referencia.png"
+      ]
+    },
+    {
+      "id": "CA05",
+      "title": "Atualizar a situação do encaminhamento",
+      "status": "nav",
+      "gherkin": "Dado um encaminhamento aguardando retorno\nQuando eu atualizar a situação\nEntão o desfecho passa a constar",
+      "steps_html": "Seletor 'Situação do encaminhamento', no detalhe do encaminhamento.",
+      "results": [
+        "Os quatro estados são oferecidos: Aguardando retorno, Atendido, Não atendido e Encerrado sem resposta (mais 'Manter a situação atual', quando junto da anotação).",
+        "Após a mudança, a coluna 'Desfecho' da linha passa a exibir 'Atendido'.",
+        "Situação e status do registro são eixos ortogonais: mudar o desfecho não altera 'Registrado', e cancelar não altera o desfecho."
+      ],
+      "images": [
+        "screenshots/ca01-ca03-ca04-contra-referencia.png"
+      ]
+    },
+    {
+      "id": "CA05b",
+      "title": "A mudança de desfecho fica auditada (compõe o CA05 do chamado)",
+      "status": "auto",
+      "gherkin": "Dado que alterei o desfecho\nQuando eu consultar a trilha\nEntão a mudança consta, com autor e data",
+      "steps_html": "O desfecho é campo estruturado e entra na trilha; a anotação, não.",
+      "results": [
+        "Contraprova executada: trocar a escrita por query builder derruba o teste de auditoria.",
+        "A transição também passou a registrar o editor do registro, para que a tela não atribua a última edição a quem editou antes."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA06",
+      "title": "Contra-referência não muda contador da remessa",
+      "status": "parc",
+      "gherkin": "Dado um encaminhamento sem desfecho\nQuando eu consultar a apuração do período\nEntão ele continua sendo contado",
+      "steps_html": "Complemento de 04/09/2026, agora que a apuração conta encaminhamentos (#10715): ler o contador na tela de <b>Apuração de Atendimentos</b>, registrar no encaminhamento de atualização cadastral no CadÚnico uma contra-referência com a situação <b>Não atendido</b>, e reler o mesmo contador.",
+      "results": [
+        "<b>Antes</b> — no recorte 09/2026, o E2E CRAS Centro apresenta <b>Famílias encaminhadas para atualização no CadÚnico = 1</b>.",
+        "O encaminhamento do código 07 recebe a contra-referência e passa a <code>outcome = not_attended</code>, confirmado no banco.",
+        "<b>Depois</b> — o mesmo contador continua em <b>1</b>. A leitura é idêntica à anterior, que é exatamente o que o critério exige: o leiaute conta “famílias encaminhadas”, não “famílias atendidas”.",
+        "O código 07 foi escolhido de propósito por ter um único encaminhamento no período — assim o contador não poderia ser sustentado por outro registro e a prova fica conclusiva.",
+        "<code>✓ it keeps counting a referral whose outcome became not_attended</code> — a suíte trava o mesmo comportamento.",
+        "Ao final, o desfecho foi devolvido a aguardando retorno e a anotação criada para a evidência foi removida."
+      ],
+      "images": [
+        "screenshots/ca06-apuracao-depois-nao-atendido.png"
+      ]
+    },
+    {
+      "id": "CA07",
+      "title": "Cancelado não recebe contra-referência",
+      "status": "auto",
+      "gherkin": "Dado um encaminhamento cancelado\nQuando eu tentar registrar retorno\nEntão a ação é recusada",
+      "steps_html": "Defesa em duas camadas: a tela não oferece a ação num cancelado, e o backend responde 409 com código próprio.",
+      "results": [
+        "As cinco ações (Corrigir, Cancelar, Emitir, Registrar retorno e Desfecho) ficam ausentes no cancelado, com o motivo da inércia visível.",
+        "O 409 tem código estável e é tratado no front — sem tratamento explícito ele falharia em silêncio, porque o utilitário de erro do projeto não notifica 422."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA07b",
+      "title": "Cancelado também não muda de situação (derivado do CA07)",
+      "status": "auto",
+      "gherkin": "Dado um encaminhamento cancelado\nQuando eu tentar alterar a situação\nEntão a ação é recusada",
+      "steps_html": "Mesmo desenho do CA02, com código de erro distinto.",
+      "results": [
+        "Teste assere que o cancelado mantém o desfecho anterior e continua cancelado — os dois eixos não se contaminam."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA08",
+      "title": "Relação de encaminhamentos aguardando retorno",
+      "status": "nav",
+      "gherkin": "Dado encaminhamentos sem desfecho\nQuando eu consultar a relação de pendentes\nEntão vejo os casos em aberto, do mais antigo para o mais novo",
+      "steps_html": "Menu <b>Busca → Encaminhamentos Pendentes</b>.",
+      "results": [
+        "Dois casos listados, de 25/07/2026 e 22/08/2026 — do mais antigo para o mais novo, que é a ordem útil para uma fila de cobrança.",
+        "A tela explica a consequência: 'caso em aberto não conta como concluído'.",
+        "O encaminhamento que recebeu desfecho sai da relação automaticamente — antes da massa de teste, a página exibia 'Todos os encaminhamentos das suas unidades já têm desfecho registrado'.",
+        "Cada linha oferece 'Abrir prontuário', que leva à aba correta."
+      ],
+      "images": [
+        "screenshots/ca08-pendentes-mais-antigo-primeiro.png"
+      ]
+    },
+    {
+      "id": "CA08b",
+      "title": "A relação de pendentes exige o acesso restrito (LGPD) — derivado do CA08",
+      "status": "nav",
+      "gherkin": "Dado que não tenho o acesso restrito ao prontuário\nQuando eu abrir a relação de pendentes\nEntão o acesso é negado",
+      "steps_html": "Segunda sessão de navegador, autenticada como Operacional <b>sem</b> o add-on LGPD, acessando a mesma URL diretamente.",
+      "results": [
+        "A página exibe 'Acesso restrito — Acesso negado. Solicite o acesso ao gestor Master da sua organização.'",
+        "<b>Nenhum dado de cidadão é renderizado</b>: nenhum número de prontuário, nenhum destino, nenhuma unidade.",
+        "O gate é distinto do da apuração da HU #10715 — esta relação lista famílias e por isso exige o add-on; a apuração é anônima e não exige. Os dois gates não foram unificados, deliberadamente."
+      ],
+      "images": [
+        "screenshots/ca10-ca12-sem-addon-lgpd.png"
+      ]
+    },
+    {
+      "id": "CA08c",
+      "title": "A negativa da relação não revela dados de outra unidade (derivado do CA08)",
+      "status": "nav",
+      "gherkin": "Dado que meu acesso é restrito\nQuando o acesso for negado\nEntão a mensagem não revela informação da família ou da unidade",
+      "steps_html": "Mesma captura do CA10.",
+      "results": [
+        "A mensagem orienta a solicitar acesso ao gestor Master, sem nomear família, unidade ou quantidade de registros existentes."
+      ],
+      "images": [
+        "screenshots/ca10-ca12-sem-addon-lgpd.png"
+      ]
+    },
+    {
+      "id": "CA09",
+      "title": "O conteúdo da anotação fica fora da trilha",
+      "status": "auto",
+      "gherkin": "Dado que registrei uma anotação\nQuando eu consultar a trilha de auditoria\nEntão o conteúdo não aparece",
+      "steps_html": "A tabela deliberadamente não emite log próprio — acrescentar auditoria duplicaria a linha COM o texto sensível junto, que é o que a regra proíbe.",
+      "results": [
+        "Registrar uma anotação deixa a contagem da trilha inalterada.",
+        "Nenhum registro de auditoria tem a anotação como sujeito.",
+        "O dump cru de todas as linhas de auditoria não contém fragmento do texto nem a chave do campo."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA10",
+      "status": "auto",
+      "title": "Negativa por unidade declara o motivo, sem nomear a unidade",
+      "gherkin": "Dado que sou Operacional lotado apenas no \"CRAS Centro\"\nE que o encaminhamento pertence a família referenciada no \"CREAS\"\nQuando eu tentar registrar contra-referência\nEntão não é permitido\nE a tela informa o motivo, sem nomear a unidade que atende a família.",
+      "steps_html": "Coberto por teste de feature dedicado, que exercita a negativa e inspeciona a mensagem devolvida. Reusa o mesmo ponto único de decisão de acesso do prontuário, já vigente desde a fase F0.",
+      "results": [
+        "<code>✓ it denies the counter-reference for a family of another unit, naming the reason but never the unit (CA10/RN10)</code> — o teste verifica as duas metades: que o motivo é declarado e que a unidade não é nomeada.",
+        "Nomear a unidade seria vazamento indireto: diria a um profissional sem acesso onde a família é atendida.",
+        "A negativa por unidade é 403 com motivo, distinta da negativa por organização, que é 404 e não confirma sequer a existência do registro (CA11)."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA11",
+      "title": "Isolamento entre organizações",
+      "status": "auto",
+      "gherkin": "Dado um encaminhamento de outra organização\nQuando eu tentar acessá-lo\nEntão o sistema responde como se não existisse",
+      "steps_html": "Escopo por organização em duas camadas (modelo e middleware).",
+      "results": [
+        "Responde 404, não 403, com corpo idêntico ao de identificador inexistente — não confirma a existência do registro."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA14",
+      "title": "Histórico de encaminhamentos da família",
+      "status": "auto",
+      "gherkin": "Dado que a família tem encaminhamentos\nQuando eu consultar o histórico\nEntão vejo todos, em ordem estável",
+      "steps_html": "Esta rota não tinha dono declarado nas especificações — a HU #10713 a deferiu para esta HU, que não a declarou. Foi criada aqui, com o registro da divergência.",
+      "results": [
+        "Ordem fixa com desempate triplo — sem os desempates, a paginação repetiria e pularia linhas quando houvesse vários encaminhamentos no mesmo dia.",
+        "O parâmetro de ordenação enviado pelo cliente é recusado, para que a ordem não possa ser quebrada de fora.",
+        "A consulta não gera auditoria própria: a abertura do prontuário já é auditada.",
+        "Cancelados continuam aparecendo, marcados."
+      ],
+      "images": []
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Pest 4, --filter=Referral) — 152 testes, 880 asserções, todos verdes",
+    "file": "pest-referral.txt"
+  },
+  "notes": [
+    {
+      "title": "Complemento de 04/09/2026 — apêndice completo, numeração alinhada e o deferimento fechado",
+      "html": "Três ajustes, nenhum de implementação. O apêndice guardava apenas o trecho final da execução, embora sete critérios se apoiassem nele; a suíte foi reexecutada e o apêndice agora traz os 152 testes. A numeração seguia a especificação técnica e não a do chamado, de modo que CA02, CA07, CA10 e CA11 do chamado caíam sobre outros assuntos; as entradas foram realinhadas, as derivadas passaram a CA05b, CA07b, CA08b e CA08c indicando a que critério pertencem, e CA02 e CA10 ganharam entrada própria.<br><br>Por fim, o CA06 estava registrado como deferido, sob o argumento de que asseri-lo produziria um teste tautológico contra um contador que ainda não contava. <b>Esse contador passou a existir</b> com a entrega da HU #10715, da mesma fase, e o critério foi então exercido de ponta a ponta na interface."
+    }
+  ]
+}

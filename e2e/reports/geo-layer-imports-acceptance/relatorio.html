@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — HU #9868</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:980px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-wrap:wrap; gap:14px; margin-top:12px; }
+  figure { margin:0; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:300px; background:#fff; }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:11px; color:var(--muted); padding:6px 8px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { .evid, section.ca { break-inside:avoid; } figure { width:280px; } }
+</style><style>
+/* Override: screenshots em formato grande (pedido do usuário) */
+.wrap { max-width: 1180px !important; }
+.evid { display:block !important; }
+figure { width:100% !important; max-width:1100px !important; margin:16px auto !important; }
+figure img { width:100% !important; height:auto !important; }
+@media print { figure { width:100% !important; max-width:100% !important; break-inside:avoid; } }
+</style>
+</head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — HU #9868</h1>
+    <div class="sub">Cadastramento Administrativo de Camadas Geográficas Globais (Painel Global) · Evidências end-to-end no admin</div>
+    <div class="meta"><div><span>Gerado em:</span> 07/07/2026</div><div><span>História:</span> #9868 — Camadas Geográficas Globais (Painel Global)</div><div><span>Recurso:</span> /geo-layer-imports (frontend admin / Super Admin)</div><div><span>Branch:</span> api: fix/geo-sync-nao-destrutivo · admin: sprint9-revisao</div><div><span>Ambiente:</span> API Sail/PostgreSQL(PostGIS) · fila geo · admin :5174</div><div><span>Base municipal:</span> geojs-27-mun.json — 102 municípios de Alagoas (IBGE)</div><div><span>Setores censitários:</span> maceio_2704302_setores_CD2022.json — 1620 setores de Maceió (IBGE)</div><div><span>Usuário:</span> Super Admin (manager) — CPF 44983702016</div><div><span>Ferramenta:</span> playwright-cli (Chromium) + Pest</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">5 critérios de aceite (CA11, CA12, CA14, CA15, CA16) evidenciados dirigindo o frontend admin no navegador, do slate limpo à base nacional homologada. Fluxo real: bloqueio de setores sem base municipal (CA11) → rejeição de GeoJSON inválido (CA16) → importação e sincronização da geometria municipal de Alagoas, 102 municípios vinculados por código IBGE (CA14) → visualização do polígono de Maceió no mapa (CA15) → importação e sincronização dos 1620 setores censitários de Maceió, vinculados ao município e disponibilizados para consumo (CA12). 4 CAs com dupla evidência (UI + suíte Pest de 87 testes / 345 asserções, no anexo); CA15 por navegador.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA11</td><td>Bloqueio de setores censitários sem base municipal homologada</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA12</td><td>Carga de setores censitários após base homologada, vinculados aos municípios</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA14</td><td>Importação da geometria municipal (GeoJSON) vinculada por código IBGE</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA15</td><td>Visualização da geometria municipal no mapa (validação visual)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA16</td><td>Rejeição de GeoJSON inválido com status de falha e mensagem explicativa</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA11">
+      <h2>CA11 — Bloqueio de setores censitários sem base municipal homologada <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que a base nacional de geometrias municipais ainda NÃO foi cadastrada e homologada, quando o Administrador tenta processar o arquivo de malha de setores censitários, então o sistema o impede de continuar e apresenta a mensagem “Operação não permitida. A camada primária de geometrias municipais do Brasil deve ser cadastrada primeiro.”</p>
+      <p class="steps"><strong>Como foi testado:</strong> Com o banco de camadas vazio (nenhuma geometria municipal homologada), abrir <b>Nova importação</b>, selecionar <b>Setores Censitários</b>, enviar <code>maceio_2704302_setores_CD2022.json</code> e clicar em <b>Importar</b>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O envio é bloqueado antes de qualquer processamento (guard no StoreGeoLayerImportRequest).</li><li>Mensagem exibida exatamente como especificada: “Operação não permitida. A camada primária de geometrias municipais do Brasil deve ser cadastrada primeiro.”</li><li>Nenhuma importação de setores é criada.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca11-bloqueio-setores.png" alt="CA11 evidência"/><figcaption>ca11-bloqueio-setores.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA12">
+      <h2>CA12 — Carga de setores censitários após base homologada, vinculados aos municípios <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que a base nacional de geometrias municipais está homologada (completed + synced), quando o Administrador importa o arquivo GeoJSON de setores censitários do IBGE e conclui o processamento global, então o sistema vincula as divisões geográficas aos respectivos municípios e disponibiliza as camadas para consumo na Área do Cliente.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Com a base municipal homologada, importar <code>maceio_2704302_setores_CD2022.json</code> como <b>Setores Censitários</b> (GeoJSON); aguardar <b>Concluída</b> e acionar <b>Sincronizar</b>. Depois, no visualizador, ligar a <b>Camada de setores censitários</b> de Maceió.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Importação processada: 1620 setores (feature_count = 1620), status Concluída.</li><li>Sincronização: created = 1620, matched = 1620, city_not_found = 0 — todos os setores vinculados a Maceió (IBGE 2704302, prefixo de 7 dígitos).</li><li>Camada disponível para consumo: os 1620 setores renderizam sobre o município no mapa.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca12-setores-concluida-sincronizada.png" alt="CA12 evidência"/><figcaption>ca12-setores-concluida-sincronizada.png</figcaption></figure><figure><img src="screenshots/ca12b-camada-setores-maceio.png" alt="CA12 evidência"/><figcaption>ca12b-camada-setores-maceio.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA14">
+      <h2>CA14 — Importação da geometria municipal (GeoJSON) vinculada por código IBGE <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado o Painel Global, quando o Administrador envia um arquivo GeoJSON com as geometrias dos municípios e o processamento conclui com sucesso, então as geometrias municipais válidas são registradas e vinculadas aos respectivos municípios por meio do código IBGE.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Abrir <b>Nova importação</b>, selecionar <b>Geometrias Municipais</b>, enviar <code>geojs-27-mun.json</code> (102 municípios de Alagoas); aguardar <b>Concluída</b> e acionar <b>Sincronizar</b>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Processamento concluído: 102 features válidas.</li><li>Sincronização: created = 102, matched = 102, city_not_found = 0 — vínculo por cities.ibge_code (sem FK).</li><li>Base municipal homologada (Concluída + Sincronizada), habilitando a carga dos setores.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca14-municipal-concluida-sincronizada.png" alt="CA14 evidência"/><figcaption>ca14-municipal-concluida-sincronizada.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA15">
+      <h2>CA15 — Visualização da geometria municipal no mapa (validação visual) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um município com geometria importada, quando o usuário abre a tela de visualização em mapa, então consegue consultar a representação geográfica do município e validar visualmente se a geometria foi carregada corretamente e corresponde ao município esperado.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Acessar <b>Visualizar geometrias</b>, buscar e selecionar <b>Maceió</b>; o mapa desenha o polígono municipal com enquadramento automático.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Polígono de Maceió renderizado sobre o mapa base, com contorno fiel ao território do município.</li><li>Rodapé confirma o registro: Código IBGE 2704302 · Tipo Polygon · Centróide -9.5415688, -35.6868617.</li><li>Validação visual rápida atendida.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca15-mapa-municipio-maceio.png" alt="CA15 evidência"/><figcaption>ca15-mapa-municipio-maceio.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA16">
+      <h2>CA16 — Rejeição de GeoJSON inválido com status de falha e mensagem explicativa <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um arquivo GeoJSON inválido ou sem as informações necessárias, quando o Administrador tenta importá-lo, então a importação é rejeitada, o status indica falha, uma mensagem explicativa é apresentada e nenhuma geometria inválida é registrada.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Importar <code>invalido.geojson</code> (FeatureCollection com Feature sem <code>properties.id</code> e geometria Point) como <b>Geometrias Municipais</b> e abrir os detalhes do lote.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Status da importação: Falhou.</li><li>Mensagem explicativa: “A Feature de índice 0 não possui properties.id (código IBGE).”</li><li>Nenhuma geometria registrada (city_geometries permanece em 0) — rejeição sem efeito colateral.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca16-importacao-falha.png" alt="CA16 evidência"/><figcaption>ca16-importacao-falha.png</figcaption></figure></div>
+    </section>
+  
+  <h2>Anexo — Cobertura automatizada (Pest — GeoLayerImport, GeoJsonValidation, SyncGeoLayer, ProcessGeoLayer, CensusSector): 87 testes / 345 asserções</h2>
+  <pre class="pest">
+   PASS  Tests\Unit\Services\Geo\GeoJsonValidationServiceTest
+  ✓ it returns normalized features for a valid municipal feature collec… 0.31s  
+  ✓ it accepts a 15-digit code and MultiPolygon for the census sector l… 0.03s  
+  ✓ it reads the feature name case-insensitively (Name/NAME) with datas… 0.01s  
+  ✓ it reads the feature name case-insensitively (Name/NAME) with datas… 0.03s  
+  ✓ it reads the feature name case-insensitively (Name/NAME) with datas… 0.01s  
+  ✓ it reads the feature name case-insensitively (Name/NAME) with datas… 0.01s  
+  ✓ it strips the elevation (Z) from polygon coordinates                 0.02s  
+  ✓ it drops KML residual properties (tessellate/extrude/visibility) ke… 0.02s  
+  ✓ it accepts a numeric properties.id normalizing it to string          0.02s  
+  ✓ it processes a large feature collection without loading the whole d… 0.04s  
+  ✓ it rejects content that is not valid json                            0.02s  
+  ✓ it rejects a document whose type is not FeatureCollection            0.01s  
+  ✓ it rejects a feature collection without features with dataset "empt… 0.01s  
+  ✓ it rejects a feature collection without features with dataset "miss… 0.01s  
+  ✓ it rejects a feature collection without features with dataset "wron… 0.01s  
+  ✓ it rejects a feature without properties.id                           0.03s  
+  ✓ it rejects an ibge code outside the digit pattern of the layer with… 0.01s  
+  ✓ it rejects an ibge code outside the digit pattern of the layer with… 0.01s  
+  ✓ it rejects an ibge code outside the digit pattern of the layer with… 0.01s  
+  ✓ it rejects an ibge code outside the digit pattern of the layer with… 0.01s  
+  ✓ it rejects a missing or unsupported geometry with dataset "missing…  0.01s  
+  ✓ it rejects a missing or unsupported geometry with dataset "null geo… 0.01s  
+  ✓ it rejects a missing or unsupported geometry with dataset "point ge… 0.01s  
+  ✓ it rejects a missing or unsupported geometry with dataset "linestri… 0.03s  
+  ✓ it rejects a missing or unsupported geometry with dataset "empty co… 0.01s  
+
+   PASS  Tests\Feature\Api\GeoLayerImportControllerTest
+  ✓ it lists geo layer imports                                           0.51s  
+  ✓ it filters geo layer imports by layer_type                           0.03s  
+  ✓ it filters geo layer imports by status                               0.03s  
+  ✓ it shows a geo layer import with creator                             0.02s  
+  ✓ it stores a municipal geometry import and dispatches the job on the… 0.06s  
+  ✓ it validates required fields on store                                0.02s  
+  ✓ it rejects an invalid layer_type                                     0.02s  
+  ✓ it rejects a non-geojson file                                        0.03s  
+  ✓ it rejects a new import while another is pending or processing       0.02s  
+  ✓ it blocks storing a census sector layer while the municipal geometr… 0.02s  
+  ✓ it blocks the census sector layer when the municipal geometry is co… 0.02s  
+  ✓ it accepts a census sector layer once the municipal geometry is hom… 0.03s  
+  ✓ it soft deletes a geo layer import while preserving its stored file  0.03s  
+  ✓ it blocks deleting a processing import                               0.02s  
+  ✓ it requires authentication                                           0.02s  
+  ✓ it forbids access without permissions                                0.03s  
+  ✓ it forbids destroy without the destroy permission                    0.02s  
+  ✓ it lists only trashed imports with filter[trashed]=only              0.03s  
+  ✓ it bulk destroys imports in a single soft-delete call                0.03s  
+  ✓ it rejects the whole batch when an id is processing                  0.03s  
+  ✓ it validates ids on bulk destroy                                     0.02s  
+  ✓ it restores a soft-deleted import resolving the trashed binding      0.02s  
+  ✓ it returns 422 when restoring an import that is not trashed          0.02s  
+  ✓ it force deletes a trashed import removing the record and its store… 0.03s  
+  ✓ it logs a single force_destroyed activity without a duplicate delet… 0.03s  
+  ✓ it retries a failed import requeueing the job with the stored geojs… 0.04s  
+  ✓ it returns 422 when retrying an import that is not failed            0.03s  
+  ✓ it returns 422 when retrying an import whose geojson is missing fro… 0.03s  
+  ✓ it queues the layer sync for a completed import on the geo queue     0.03s  
+  ✓ it returns 422 when syncing an import that is not completed          0.04s  
+  ✓ it returns 422 when the import is already queued or syncing with da… 0.02s  
+  ✓ it returns 422 when the import is already queued or syncing with da… 0.02s  
+  ✓ it returns 422 when another import is already queued or syncing wit… 0.03s  
+  ✓ it returns 422 when another import is already queued or syncing wit… 0.02s  
+  ✓ it forbids sync without the sync permission                          0.02s  
+  ✓ it exposes the sync state in the resource                            0.03s  
+
+   PASS  Tests\Feature\Api\Manager\CensusSectorControllerTest
+  ✓ it returns a FeatureCollection of the active sectors of the municip… 0.04s  
+  ✓ it returns an empty FeatureCollection (200) when the municipality h… 0.02s  
+  ✓ it does not leak sectors from other municipalities nor inactive sec… 0.02s  
+  ✓ it forbids access without the census-sectors.index permission        0.02s  
+
+   PASS  Tests\Feature\Jobs\ProcessGeoLayerImportJobTest
+  ✓ it processes a valid municipal geojson into staging features         0.02s  
+  ✓ it logs a processed activity with layer_type and feature_count       0.02s  
+  ✓ it replaces the staging on reprocess without duplicating features    0.02s  
+  ✓ it processes a census sector geojson with 15-digit codes into stagi… 0.02s  
+  ✓ it fails the import for structurally invalid geojson with dataset "… 0.02s  
+  ✓ it fails the import for structurally invalid geojson with dataset "… 0.02s  
+  ✓ it fails the import for structurally invalid geojson with dataset "… 0.02s  
+  ✓ it fails the import for structurally invalid geojson with dataset "… 0.02s  
+  ✓ it fails the import for structurally invalid geojson with dataset "… 0.02s  
+  ✓ it fails the import for structurally invalid geojson with dataset "… 0.02s  
+  ✓ it fails the import for structurally invalid geojson with dataset "… 0.02s  
+  ✓ it fails the import when the geojson file is missing from storage    0.02s  
+
+   PASS  Tests\Feature\Jobs\SyncGeoLayerJobTest
+  ✓ it syncs a municipal geometry import into city_geometries resolving… 0.03s  
+  ✓ it marks syncing at the start of the handle before running the pipe… 0.02s  
+  ✓ it logs a synced activity with the summary                           0.02s  
+  ✓ it resyncs idempotently updating the present municipality while pre… 0.02s  
+  ✓ it keeps a previously imported city sectors active when syncing ano… 0.02s  
+  ✓ it syncs a census sector import distributing sectors to cities by t… 0.02s  
+  ✓ it resyncs census sectors idempotently without duplicating sectors…  0.02s  
+  ✓ it deactivates the paired census_sector_geometries row when its sec… 0.02s  
+  ✓ it marks the sync as failed recording the error message with datase… 0.02s  
+  ✓ it marks the sync as failed recording the error message with datase… 0.02s  
+
+  Tests:    87 passed (345 assertions)
+  Duration: 3.43s
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

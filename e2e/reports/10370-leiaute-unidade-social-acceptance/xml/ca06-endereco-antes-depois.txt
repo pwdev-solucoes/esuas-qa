@@ -1,0 +1,39 @@
+HU #10370 — CA06: endereço longo abreviado sem perder o essencial (RN09 / D06)
+====================================================================================================
+
+CENÁRIO A — ponto de referência de 300 caracteres
+
+ANTES  (346 caracteres, composição completa da RN09)
+  Rua, das Flores, 123, Sala 4, PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP, Centro, Maceió
+
+DEPOIS (44 caracteres, valor de EnderecoUnidadeSocial no XML)
+  Rua, das Flores, 123, Sala 4, Centro, Maceió
+
+  ✓ cabe em 255                     : sim
+  ✓ ponto de referência suprimido   : sim
+  ✓ complemento preservado (coube)  : sim
+  ✓ logradouro preservado           : sim
+  ✓ número preservado               : sim
+  ✓ bairro preservado               : sim
+  ✓ município preservado            : sim
+
+----------------------------------------------------------------------------------------------------
+
+CENÁRIO B — ponto de referência de 100 + complemento de 250 caracteres
+
+ANTES  (384 caracteres, composição completa da RN09)
+  Rua, do Ouro, 77, CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC, PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP, Poço, Maceió
+
+DEPOIS (30 caracteres, valor de EnderecoUnidadeSocial no XML)
+  Rua, do Ouro, 77, Poço, Maceió
+
+  ✓ cabe em 255                     : sim
+  ✓ ponto de referência suprimido   : sim
+  ✓ complemento suprimido (não coube): sim
+  ✓ logradouro preservado           : sim
+  ✓ número preservado               : sim
+  ✓ bairro preservado               : sim
+  ✓ município preservado            : sim
+
+----------------------------------------------------------------------------------------------------
+

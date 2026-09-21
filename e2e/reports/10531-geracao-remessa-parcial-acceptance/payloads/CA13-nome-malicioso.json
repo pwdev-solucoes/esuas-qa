@@ -1,0 +1,21 @@
+{
+    "_cenario": "CA13/R2 — ../../etc/passwd vira passwd.zip e entrega O PACOTE; CRLF não alcança o Content-Disposition; 300 chars são capados; array não derruba",
+    "traversal": {
+        "file_name_pedido": "../../etc/passwd",
+        "content_disposition": "attachment; filename=passwd.zip",
+        "conteudo_entregue": "o pacote correto (não um arquivo alcançado pela travessia)",
+        "storage_inalterado": true
+    },
+    "header_injection": {
+        "file_name_pedido": "remessa\\r\\nX-Evil: 1",
+        "content_disposition": "attachment; filename=remessa-X-Evil-1.zip",
+        "header_x_evil_existe": false
+    },
+    "oversized_300_chars": {
+        "filename_entregue": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.zip",
+        "tamanho": 120
+    },
+    "file_name_array": {
+        "filename_entregue": "remessa-assistencia-social-maceio-2026-08.zip"
+    }
+}

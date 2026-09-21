@@ -1,0 +1,4 @@
+GET  /api/cbo-access-profiles           ->  HTTP 200  (leitura permitida — RN10)
+PATCH /api/cbo-access-profiles/{uuid}   ->  HTTP 403  "Acesso negado."
+DELETE /api/cbo-access-profiles/{uuid}  ->  HTTP 403
+POST /api/cbo-access-profiles           ->  HTTP 403

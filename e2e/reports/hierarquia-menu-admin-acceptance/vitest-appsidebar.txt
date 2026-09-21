@@ -1,0 +1,17 @@
+
+ RUN  v2.1.9 /Users/binho/Projetos/esuas-all/admin
+
+ ✓ src/components/app/AppSidebar.test.ts > AppSidebar > renderiza todos os macro-grupos
+ ✓ src/components/app/AppSidebar.test.ts > AppSidebar > inicia com todos os grupos collapsible abertos
+ ✓ src/components/app/AppSidebar.test.ts > AppSidebar > fecha um grupo de forma independente sem afetar os demais
+ ✓ src/components/app/AppSidebar.test.ts > AppSidebar > auto-expande o grupo que contém a rota ativa
+ ✓ src/components/app/AppSidebar.test.ts > AppSidebar > renderiza os subgrupos nomeados de ENDEREÇO e PESSOAS
+ ✓ src/components/app/AppSidebar.test.ts > AppSidebar > nenhum subgrupo do modelo de menu tem mais de 8 itens
+ ✓ src/components/app/AppSidebar.test.ts > AppSidebar > destaca o item ativo dentro de um subgrupo e mantém o grupo pai ativo
+ ✓ src/components/app/AppSidebar.test.ts > AppSidebar > não renderiza o título de um subgrupo sem itens visíveis por permissão
+
+ Test Files  1 passed (1)
+      Tests  8 passed (8)
+   Start at  17:50:32
+   Duration  1.16s (transform 289ms, setup 12ms, collect 579ms, tests 127ms, environment 220ms, prepare 54ms)
+

@@ -1,0 +1,24 @@
+{
+    "_leitura": "CA12 (D06/RN13) — 3 profissionais com lotacao vigente existem SO em social_professionals (INV-050, que nao guarda matricula) e por isso NAO serao informados. A conferencia diz QUANTOS sao (affected_count 3, o numero na mensagem), nunca QUEM sao: o payload inteiro nao contem nenhum dos 3 CPFs nem nomes. O paralelo do municipio vizinho nao infla a contagem (RN14). A geracao permanece disponivel.",
+    "pendencia_informativa": {
+        "scope": "informative",
+        "kind": "inconsistent_data",
+        "field_name": null,
+        "subject_type": null,
+        "subject_uuid": null,
+        "affected_count": 3,
+        "message_key": "siap_remittance.pendency.parallel_professional_registry",
+        "message": "Profissionais com lotação vigente no período que existem apenas no cadastro de Profissionais do prontuário: 3. Esse cadastro não guarda matrícula, então eles não serão informados neste leiaute — para entrarem na remessa, cadastre-os em Profissionais Municipais. A geração da remessa permanece disponível.",
+        "blocks_entire_remittance": false
+    },
+    "zona_bloqueio": {
+        "can_generate": true,
+        "pendencies": []
+    },
+    "verificacao_lgpd_no_payload": {
+        "cpf_389.***.***-12_presente": false,
+        "cpf_743.***.***-01_presente": false,
+        "cpf_806.***.***-92_presente": false,
+        "nomes_presentes": false
+    }
+}

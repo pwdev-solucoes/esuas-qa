@@ -1,0 +1,32 @@
+
+   PASS  Tests\Unit\Family\OpenFamilyRecordActionTest
+  ✓ it writes unit, opening date and author, defaulting the date to tod… 0.34s  
+  ✓ it honours an informed opening date (§10)                            0.03s  
+  ✓ it flags only a unit without an MDS number (RN05/CA05)               0.01s  
+  ✓ it swaps the reference unit without reopening the record (RN01/RN02… 0.01s  
+
+   PASS  Tests\Feature\Family\OpenFamilyRecordTest
+  ✓ it opens the record assigning the reference unit, the opening date…  0.06s  
+  ✓ it accepts an informed opening date and refuses a future one (§10)   0.03s  
+  ✓ it lists every family without a reference unit, by the name of the…  0.03s  
+  ✓ it drops the family from the pending list as soon as it gets a unit… 0.04s  
+  ✓ it never assigns a unit by itself — the payload must carry the choi… 0.04s  
+  ✓ it opens normally in a unit without an MDS number, warning without…  0.03s  
+  ✓ it warns about the previous team losing access before saving the ch… 0.04s  
+  ✓ it refuses a change on a record that was never opened, and a change… 0.03s  
+  ✓ it offers only the units where the professional is assigned, and re… 0.03s  
+  ✓ it offers every active unit of the municipality to the Master (RN10… 0.03s  
+  ✓ it keeps a unit that is not active out of the offer and out of the…  0.03s  
+  ✓ it does not let the {family:uuid} binding swallow the literal witho… 0.03s  
+  ✓ it blocks whoever cannot open records: no add-on, no active assignm… 0.03s  
+  ✓ it ships the record cover in the family details payload, so CA01 ho… 0.03s  
+
+   PASS  Tests\Feature\TenantIsolation\FamilyReferenceUnitIsolationTest
+  ✓ it offers only social assistance units of the acting municipality (… 0.03s  
+  ✓ it refuses a unit of another municipality even when it comes in the… 0.03s  
+  ✓ it treats a family of another municipality as a nonexistent record…  0.03s  
+  ✓ it never lists families of another municipality as pending (CA09/RN… 0.03s  
+
+  Tests:    22 passed (120 assertions)
+  Duration: 1.38s
+

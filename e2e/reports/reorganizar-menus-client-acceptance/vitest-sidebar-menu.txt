@@ -1,0 +1,19 @@
+
+ RUN  v2.1.9 /Users/binho/Projetos/esuas-all/client
+
+ ✓ src/components/app/sidebar-menu.test.ts > sidebar-menu (estrutura — CA01/CA02) > reproduz a ordem exata de grupos da proposta aprovada
+ ✓ src/components/app/sidebar-menu.test.ts > sidebar-menu (estrutura — CA01/CA02) > apenas PRINCIPAL é flat; demais grupos são collapsible
+ ✓ src/components/app/sidebar-menu.test.ts > sidebar-menu (estrutura — CA01/CA02) > reproduz itens, ordem, rótulos e rotas item-a-item (CA01)
+ ✓ src/components/app/sidebar-menu.test.ts > sidebar-menu (estrutura — CA01/CA02) > aplica os renames aprovados: "Organização" e "Pessoas" (rotas inalteradas)
+ ✓ src/components/app/sidebar-menu.test.ts > sidebar-menu × router (CA03) > toda rota do menu existe no router
+ ✓ src/components/app/sidebar-menu.test.ts > sidebar-menu × router (CA03) > não há rota órfã: toda rota nomeada está no menu ou na allowlist
+ ✓ src/components/app/sidebar-menu.test.ts > sidebar-menu × router (CA03) > a allowlist não contém rota morta (todas existem no router)
+ ✓ src/components/app/sidebar-menu.test.ts > AppSidebar gating por permissão (CA04) > com todas as permissões, renderiza todos os grupos e itens
+ ✓ src/components/app/sidebar-menu.test.ts > AppSidebar gating por permissão (CA04) > sem permissões, oculta itens gated e omite grupos que ficam vazios
+ ✓ src/components/app/sidebar-menu.test.ts > AppSidebar gating por permissão (CA04) > permissão pontual reexibe o item e o grupo correspondente
+
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+   Start at  16:47:34
+   Duration  764ms (transform 143ms, setup 9ms, collect 272ms, tests 25ms, environment 246ms, prepare 39ms)
+

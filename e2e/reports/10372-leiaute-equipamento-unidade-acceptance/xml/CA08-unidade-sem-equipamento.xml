@@ -1,0 +1,14 @@
+<!-- CA08 — o "CRAS Rural" (NumeroMDS 4249043827598) nao tem equipamento registrado. Esperado: nenhuma linha dele e nenhuma pendencia; so a linha da unidade com inventario (8542245192487) -->
+<!-- Gerado pela remessa 07/2026 do tenant de teste. Conteudo do EquipamentoUnidade.xml do pacote, sem edicao. -->
+<?xml version="1.0"?>
+<SIAP>
+    <Codigo>004821</Codigo>
+    <Exercicio>2026</Exercicio>
+    <Mes>07</Mes>
+    <EquipamentoUnidade>
+        <NumeroMDS>8542245192487</NumeroMDS>
+        <Equipamento>2</Equipamento>
+        <Quantidade>3</Quantidade>
+        <QuantidadeUso>3</QuantidadeUso>
+    </EquipamentoUnidade>
+</SIAP>

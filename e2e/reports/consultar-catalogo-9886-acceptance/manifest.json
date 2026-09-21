@@ -1,0 +1,58 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — HU #9886 Consultar o catálogo de camadas",
+    "subtitle": "Construtor de Camadas (rota admin /geo-layers) · persona Operacional Global (consulta) · Evidências end-to-end no app real",
+    "rows": [
+      ["Gerado em", "10/07/2026"],
+      ["História", "HU #9886 — Consultar o catálogo de camadas (Operacional Global)"],
+      ["Critérios", "CA51 e CA52 (2 critérios)"],
+      ["Submódulos", "admin (branch develop) · api develop"],
+      ["Ambiente", "API Sail/PostgreSQL · admin Vite :5173 (Sanctum-stateful, não-mock) → http://localhost/api"],
+      ["Persona", "Operacional Global (CPF 99887766593, papel admin_operador — somente geo-layers.index/show)"],
+      ["Catálogo de trabalho", "4 camadas: Rascunho/Global, Inativa/Global, Publicada/Global e Publicada/Direcionada"],
+      ["Ferramenta", "playwright-cli (Chromium, viewport 1680×1050) + Pest"]
+    ]
+  },
+  "summary": "Os 2 critérios de aceite da HU #9886 sobre a consulta do catálogo de camadas do Construtor de Camadas (rota admin /geo-layers), na persona Operacional Global (acesso somente de consulta — geo-layers.index/show), foram verificados dirigindo o app admin real no navegador e reforçados pela suíte automatizada — ambos ATENDIDOS. CA51: no catálogo (que já exibe Status e Público de cada camada), aplicando o filtro por status \"Publicada\" a lista passa a mostrar somente as 2 camadas publicadas (rascunho e inativa somem); aplicando o filtro por público \"Direcionada\", mostra somente a camada de público direcionado. CA52: abrindo uma camada, o detalhe apresenta nome, descrição, critérios de busca, forma de representação, público de publicação, status e o histórico de alterações (evento, autor e data/hora). A persona é read-only: o botão \"Nova camada\" e os comandos de escrita ficam ocultos (display:none via v-can). Cobertura automatizada: Pest GeoLayerControllerTest (26 testes/150 asserções) cobre a filtragem do catálogo por status e público (CA51) e o detalhe com os tenants do público e a trilha de auditoria completa (CA52).",
+  "cas": [
+    {
+      "id": "CA51",
+      "title": "Catálogo com filtros de consulta (status e público)",
+      "status": "nav",
+      "gherkin": "Dado que acesso o catálogo de camadas, Quando aplico filtros por status (rascunho, publicada, inativa) ou por público, Então a lista exibe somente as camadas que atendem aos filtros.",
+      "steps_html": "Como <b>Operacional Global</b> (99887766593), aberto o Construtor de Camadas (catálogo com as colunas <b>Status</b> e <b>Público</b>). Em <b>Filtros</b>: (1) status = <b>Publicada</b>; depois (2) público = <b>Direcionada</b>.",
+      "results": [
+        "O catálogo lista as 4 camadas com Status (Rascunho / Publicada / Inativa) e Público (Global / Direcionada) de cada uma.",
+        "Filtro por status <b>Publicada</b> → a lista exibe somente as 2 camadas publicadas (as em Rascunho e Inativa somem).",
+        "Filtro por público <b>Direcionada</b> → a lista exibe somente a camada de público direcionado (\"Programa Bolsa Família — Cobertura\").",
+        "Persona read-only: o botão \"Nova camada\" e os comandos de escrita ficam ocultos (display:none via v-can)."
+      ],
+      "images": [
+        "screenshots/ca51-catalogo-completo.png",
+        "screenshots/ca51-filtro-status-publicada.png",
+        "screenshots/ca51-filtro-publico-direcionada.png"
+      ]
+    },
+    {
+      "id": "CA52",
+      "title": "Detalhe da camada (definição completa + histórico)",
+      "status": "nav",
+      "gherkin": "Dado que estou no catálogo, Quando abro uma camada, Então visualizo nome, descrição, critérios de busca, forma de representação, público de publicação, status e histórico de alterações.",
+      "steps_html": "Como Operacional Global, aberta a camada \"Famílias em Extrema Pobreza\" (Ver detalhes).",
+      "results": [
+        "O detalhe exibe <b>nome</b> (\"Famílias em Extrema Pobreza\"), <b>status</b> (Publicada) e <b>público</b> (Global) no cabeçalho.",
+        "Seção <b>Definição da camada</b>: <b>descrição</b>, <b>critérios de busca</b> (Extrema pobreza) e <b>forma de representação</b> (Manchas / mapa de calor).",
+        "Seção <b>Publicação</b>: público, data de publicação e autores.",
+        "Seção <b>Histórico de alterações</b>: cada evento (Criação, Pré-visualização, Publicação, Inativação, Reativação) com <b>autor</b> (Administrador eSUAS) e <b>data/hora</b>."
+      ],
+      "images": [
+        "screenshots/ca52-detalhe-definicao.png",
+        "screenshots/ca52-detalhe-historico.png"
+      ]
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada — Pest GeoLayerControllerTest (CA51–CA52)",
+    "file": "tests-9886.txt"
+  }
+}

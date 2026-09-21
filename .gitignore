@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+package-lock.json
+npm-debug.log
+
+# Environment
+.env.e2e
+.env.e2e.local
+.env.test
+
+# Test results & artifacts
+test-results/
+playwright-report/
+.auth/
+trace/
+
+# Build output
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Playwright
+.playwright/
+
+# Coverage
+coverage/
+
+# Logs
+*.log
+logs/

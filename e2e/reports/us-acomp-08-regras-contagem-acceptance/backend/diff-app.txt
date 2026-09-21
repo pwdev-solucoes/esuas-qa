@@ -1,0 +1,47 @@
+$ git diff --stat 998138e..HEAD -- app  (HEAD = 998138e, alteracoes ainda no working tree -> diff 998138e -- app)
+ app/Services/FollowUp/FollowUpReportService.php | 26 ++++++++++++++++++-------
+ 1 file changed, 19 insertions(+), 7 deletions(-)
+
+$ git diff 998138e -- app/Services/FollowUp/FollowUpReportService.php
+diff --git a/app/Services/FollowUp/FollowUpReportService.php b/app/Services/FollowUp/FollowUpReportService.php
+index fb47374..3b241f4 100644
+--- a/app/Services/FollowUp/FollowUpReportService.php
++++ b/app/Services/FollowUp/FollowUpReportService.php
+@@ -50,15 +50,27 @@
+  * ═══════════════════════════════════════════════════════════════════════════
+  *
+  * `families_in_follow_up` e `new_families` contam FAMÍLIAS DISTINTAS dentro
+- * da unidade (D07/I4) — nunca linhas de `family_follow_ups`. Uma família
+- * acompanhada no PAIF **e** no PAEFI da mesma unidade é UMA família em
+- * acompanhamento; `COUNT(*)` inflaria a declaração ao TCE-AL em silêncio.
+- * Mesma disciplina anti-inflação da Q4 da F2 (#10715). É DIVERGÊNCIA
+- * DECLARADA do texto literal da RN04 do PO ("soma os ingressos").
++ * da unidade (D07/I4) — nunca linhas de `family_follow_ups`. O caso REAL que
++ * o `DISTINCT` protege hoje é o REINGRESSO NO MESMO MÊS (US-ACOMP-08 ·
++ * D03/RN02): a família que ingressa, é desligada e reingressa na MESMA
++ * unidade e no MESMO serviço dentro do mês tem duas linhas e é UMA família,
++ * nos dois contadores. O caso FUTURO são dois serviços do MESMO tipo de
++ * unidade (a RN09 da US-ACOMP-01 permite; o catálogo de hoje não tem —
++ * US-ACOMP-08 D04). Nos dois, `COUNT(*)` inflaria a declaração ao TCE-AL em
++ * silêncio. Mesma disciplina anti-inflação da Q4 da F2 (#10715). É
++ * DIVERGÊNCIA DECLARADA do texto literal da RN04 do PO ("soma os ingressos").
++ *
++ * PAIF e PAEFI NUNCA coexistem na mesma unidade pelo registro: a RN03 da
++ * US-ACOMP-02 amarra o serviço ao TIPO da unidade (Rule no `store`, guard
++ * nas Actions do `store` e do `update`). Retipagem retroativa do serviço ou
++ * da unidade (US-ACOMP-08 §17-P1 — HU candidata) é o único caminho até lá, e
++ * a apuração conta o que estiver GRAVADO, sem conferir o vínculo (V8).
+  *
+  * A Q8 é a exceção e o `COUNT(*)` dela é deliberado: o que se conta ali são
+- * PROCESSOS a encerrar, não famílias — uma família abandonada no PAIF e no
+- * PAEFI da mesma unidade são dois desligamentos a registrar.
++ * PROCESSOS a encerrar, não famílias — uma família abandonada em dois
++ * processos vigentes da mesma unidade (dois serviços do mesmo tipo; o índice
++ * único parcial impede dois vigentes no mesmo serviço) são dois
++ * desligamentos a registrar.
+  *
+  * E a RN03 completa o par: família acompanhada por DUAS unidades conta 1 em
+  * CADA. O `GROUP BY` é por `social_unit_id`; não há dedução nem rateio.
+
+--- linhas +/- que NAO comecam por ' *' (esperado: nenhuma alem dos cabecalhos +++/---):
+(fim)

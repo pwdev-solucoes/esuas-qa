@@ -1,0 +1,15 @@
+<!-- CA02 — duas aquisicoes de computador (5/5 de 10/03/2024 e 3/2 de 20/05/2026). Esperado: UMA linha, Quantidade 8, QuantidadeUso 7, DataUltimaCompra 2026-05-20 -->
+<!-- Gerado pela remessa 07/2026 do tenant de teste. Conteudo do EquipamentoUnidade.xml do pacote, sem edicao. -->
+<?xml version="1.0"?>
+<SIAP>
+    <Codigo>004821</Codigo>
+    <Exercicio>2026</Exercicio>
+    <Mes>07</Mes>
+    <EquipamentoUnidade>
+        <NumeroMDS>1807859885653</NumeroMDS>
+        <Equipamento>2</Equipamento>
+        <Quantidade>8</Quantidade>
+        <QuantidadeUso>7</QuantidadeUso>
+        <DataUltimaCompra>2026-05-20</DataUltimaCompra>
+    </EquipamentoUnidade>
+</SIAP>

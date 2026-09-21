@@ -1,0 +1,15 @@
+{
+    "_cenario": "CA12/D04/RN09 — sem nome vale a sugestão do sistema; com nome vale a escolha (.zip forçado); o file_path armazenado não muda (D06)",
+    "suggested_file_name_no_resource": "remessa-assistencia-social-maceio-2026-08.zip",
+    "download_sem_nome": {
+        "content_disposition": "attachment; filename=remessa-assistencia-social-maceio-2026-08.zip"
+    },
+    "download_remessa_agosto": {
+        "content_disposition": "attachment; filename=remessa-agosto.zip"
+    },
+    "file_path_inalterado": {
+        "antes": "siap/remittances/1/pacote/remessa-assistencia-social-2026-08.zip",
+        "depois": "siap/remittances/1/pacote/remessa-assistencia-social-2026-08.zip",
+        "igual": true
+    }
+}

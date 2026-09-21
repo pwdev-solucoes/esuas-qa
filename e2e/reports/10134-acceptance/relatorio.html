@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — HU #10134</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — HU #10134</h1>
+    <div class="sub">Paridade de tokens semânticos entre Admin e Client · Design tokens cross-cutting (admin/ + client/ + gate de CI no meta-repo) · Evidências automatizadas (scripts)</div>
+    <div class="meta"><div><span>Gerado em:</span> 31/07/2026 02:35</div><div><span>Ticket:</span> GLPI #10134 — Paridade de tokens semânticos entre Admin e Client</div><div><span>Story:</span> .planning/product/stories/US-01-paridade-tokens-admin-client.md</div><div><span>Commits:</span> admin 85c3525 (PR #74, merged) · client 6078ba9 (PR #64, merged) · meta-repo 0414011/ef34953 (script + workflow + bump)</div><div><span>Ambiente:</span> Sem UI navegável — feature é puramente de custom properties CSS; evidência 100% por script determinístico (Node, sem dependências)</div><div><span>Ferramenta:</span> scripts/check-design-tokens-parity.mjs (paridade de nomes) + cálculo de contraste OKLCH→sRGB→WCAG (fórmula CSS Color 4, sem libs externas)</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">4 critérios de aceite (CA01–CA04), todos automatizados — a feature não introduz nenhuma tela nova, só expõe/alinha custom properties CSS entre os dois frontends. CA01 e CA02 evidenciados pelo mesmo script de paridade (roda contra o conteúdo real dos commits mesclados via 'git show', sem alterar os checkouts locais dos submódulos): zero divergências nos três blocos (:root, .dark, @theme inline). CA03 evidenciado por cálculo real de contraste WCAG nos 4 cenários pedidos (success/warning × claro/escuro) — todos ≥4,5:1, sem necessidade de inventar tom novo, já que o .dark implementado espelha exatamente os valores do :root. CA04 evidenciado injetando propositalmente um token só num dos lados e confirmando que o script detecta e reporta — arquivo/token temporário revertido em seguida. Resultado geral: todos os 4 CAs atendidos.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA01</td><td>Conjuntos idênticos</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA02</td><td>Paridade no modo escuro</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA03</td><td>Contraste AA nos tokens novos</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA04</td><td>Regressão bloqueada (caminho de erro)</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA01">
+      <h2>CA01 — Conjuntos idênticos <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado os arquivos `admin/src/style.css` e `client/src/style.css`
+Quando extraio a lista de custom properties declaradas em cada um
+Então os conjuntos de nomes são idênticos (diff vazio)
+E `--color-success`, `--color-success-foreground`, `--color-warning` e `--color-warning-foreground` existem nos dois</p>
+      <p class="steps"><strong>Como foi testado:</strong> Rodado <code>scripts/check-design-tokens-parity.mjs</code> contra o conteúdo real dos commits mesclados (<code>git show origin/develop:src/style.css</code> de cada submódulo, extraído para arquivos temporários — os checkouts locais reais de <code>admin/</code> e <code>client/</code> não foram tocados). O script extrai os nomes de custom property dos três blocos (<code>:root</code>, <code>.dark</code>, <code>@theme inline</code>) e compara os conjuntos.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Saída completa em &lt;code&gt;parity-check-pos-merge.txt&lt;/code&gt;: 67 tokens em &lt;code&gt;:root&lt;/code&gt;, 55 em &lt;code&gt;.dark&lt;/code&gt;, 74 em &lt;code&gt;@theme inline&lt;/code&gt; — contagens idênticas nos dois arquivos.</li><li>&lt;code&gt;OK: paridade de nomes de token confirmada nos três blocos&lt;/code&gt; — zero divergências, exit code 0.</li><li>Confirmado especificamente que &lt;code&gt;--color-success&lt;/code&gt;, &lt;code&gt;--color-success-foreground&lt;/code&gt;, &lt;code&gt;--color-warning&lt;/code&gt; e &lt;code&gt;--color-warning-foreground&lt;/code&gt; estão presentes no conjunto de 74 nomes de &lt;code&gt;@theme inline&lt;/code&gt; de ambos os arquivos (antes do fix, só existiam no client — 10 divergências reais detectadas na varredura pré-fix, ver seção CA04 para o mecanismo de detecção).</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA02">
+      <h2>CA02 — Paridade no modo escuro <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado o bloco `.dark` de cada frontend
+Quando comparo os nomes declarados
+Então todo token do tema claro tem contraparte no escuro, nos dois frontends</p>
+      <p class="steps"><strong>Como foi testado:</strong> Mesma execução do CA01 — o bloco <code>.dark</code> é um dos três blocos comparados pelo script (não é uma checagem separada).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Bloco &lt;code&gt;.dark&lt;/code&gt;: 55 tokens em ambos os arquivos, zero divergência de nomes.</li><li>Antes do fix, nenhum dos dois frontends declarava &lt;code&gt;--success&lt;/code&gt;/&lt;code&gt;--success-foreground&lt;/code&gt;/&lt;code&gt;--warning&lt;/code&gt;/&lt;code&gt;--warning-foreground&lt;/code&gt; explicitamente no &lt;code&gt;.dark&lt;/code&gt; (caíam por herança do &lt;code&gt;:root&lt;/code&gt;) — após o fix, os dois declaram explicitamente, com os mesmos valores oklch do &lt;code&gt;:root&lt;/code&gt; (ver CA03 para a validação de que isso não compromete o contraste).</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA03">
+      <h2>CA03 — Contraste AA nos tokens novos <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um alerta de sucesso e um de aviso renderizados no Admin
+Quando meço o contraste texto/fundo em claro e escuro
+Então a razão é ≥ 4,5:1 nos quatro cenários</p>
+      <p class="steps"><strong>Como foi testado:</strong> Cálculo real de contraste WCAG (conversão OKLCH→sRGB linear→luminância relativa→razão de contraste, fórmulas da especificação CSS Color 4 — sem biblioteca externa, script <code>contrast-final.mjs</code> ad-hoc) para os 4 cenários pedidos, usando os valores oklch efetivamente implementados (o <code>.dark</code> espelha exatamente o <code>:root</code>, então os cenários claro/escuro usam os mesmos números — validação intencional de que a decisão de não inventar tom novo para o modo escuro não compromete o contraste).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>success, tema claro: 6.99:1 (≥4,5:1)</li><li>success, tema escuro: 6.99:1 (≥4,5:1) — mesmo valor do claro, porque o `.dark` espelha o `:root` (decisão registrada no overview da feature)</li><li>warning, tema claro: 7.38:1 (≥4,5:1)</li><li>warning, tema escuro: 7.38:1 (≥4,5:1)</li><li>Os 4 cenários passam com folga — não foi necessário ajustar nenhum valor de cor além dos já existentes no arquivo (RN da story: não alterar valores).</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA04">
+      <h2>CA04 — Regressão bloqueada (caminho de erro) <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um PR que adiciona um token em apenas um dos frontends
+Quando o CI executa a checagem de paridade
+Então o job falha e a saída nomeia o token ausente e o frontend em que falta</p>
+      <p class="steps"><strong>Como foi testado:</strong> Demonstração do caminho de erro: criada uma cópia temporária do <code>admin/src/style.css</code> (pós-merge) com um token de teste injetado só nesse lado (<code>--color-demo-only-admin-10134: #123456;</code>, dentro do bloco <code>@theme inline</code>). Rodado o script de paridade contra essa cópia + o <code>client/src/style.css</code> real. Cópia temporária removida em seguida — nada do arquivo de demonstração foi commitado.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Saída (&lt;code&gt;ca04-deteccao-demo.txt&lt;/code&gt;): &lt;code&gt;FALHA: 1 divergência(s) de paridade de token&lt;/code&gt;, listando exatamente &lt;code&gt;@theme inline: --color-demo-only-admin-10134 ausente em client (presente em admin)&lt;/code&gt; — nomeia o token e o frontend, conforme pedido.</li><li>Exit code real do processo Node: 1 (confirmado separadamente, sem o `tee` mascarar o código de saída) — o gate é efetivamente bloqueante, não apenas informativo.</li><li>Nota operacional registrada na revisão de código e no commit do workflow: como `admin/` e `client/` são repositórios com CI próprio e o meta-repo historicamente recebe bumps por commit direto (não por PR), o gate roda no meta-repo (único ponto com os dois submódulos simultaneamente) mas não bloqueia a PR de origem antes do merge — decisão consciente do usuário, documentada no commit `feat(ci): adiciona gate de paridade...`.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+  
+  <h2>Anexo — Saída completa dos scripts (paridade pós-merge, contraste, demonstração de detecção)</h2>
+  <pre class="pest">=== CA01/CA02 — paridade de nomes pós-merge (parity-check-pos-merge.txt) ===
+Guarda de paridade de tokens semânticos (GLPI #10134)
+admin/src/style.css: 67 (:root) / 55 (.dark) / 74 (@theme inline)
+client/src/style.css: 67 (:root) / 55 (.dark) / 74 (@theme inline)
+
+OK: paridade de nomes de token confirmada nos três blocos (:root, .dark, @theme inline).
+
+=== CA03 — contraste WCAG dos 4 cenários (contrast-check.txt) ===
+CA03 cenário 1 — success, tema claro: 6.99:1 (PASS &gt;= 4.5:1)
+CA03 cenário 2 — success, tema escuro (.dark, valor espelhado): 6.99:1 (PASS &gt;= 4.5:1)
+CA03 cenário 3 — warning, tema claro: 7.38:1 (PASS &gt;= 4.5:1)
+CA03 cenário 4 — warning, tema escuro (.dark, valor espelhado): 7.38:1 (PASS &gt;= 4.5:1)
+
+OK: os 4 cenários atendem AA (&gt;=4.5:1).
+
+=== CA04 — demonstração do caminho de erro, exit code 1 (ca04-deteccao-demo.txt) ===
+Guarda de paridade de tokens semânticos (GLPI #10134)
+admin/src/style.css: 67 (:root) / 55 (.dark) / 75 (@theme inline)
+client/src/style.css: 67 (:root) / 55 (.dark) / 74 (@theme inline)
+
+FALHA: 1 divergência(s) de paridade de token:
+  - @theme inline: --color-demo-only-admin-10134 ausente em client (presente em admin)
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

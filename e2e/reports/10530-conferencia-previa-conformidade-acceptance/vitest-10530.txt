@@ -1,0 +1,437 @@
+
+> esuas-client@0.1.0 test:run
+> vitest run
+
+
+ RUN  v2.1.9 /Users/binho/Projetos/esuas-all/client
+
+ ✓ src/modules/geo-panel/composables/useGeoPanelExport.test.ts (11 tests) 14ms
+ ✓ src/modules/cadunico-imports/composables/useCadunicoImports.test.ts (19 tests) 16ms
+ ✓ src/modules/geo-panel/composables/useGeoPanel.test.ts (28 tests) 12ms
+ ✓ src/modules/geo-panel/composables/useGeoPanelSearch.test.ts (18 tests) 16ms
+ ✓ src/modules/geo-panel/components/GeoPanelSummaryBar.test.ts (16 tests) 111ms
+ ✓ src/modules/siap-remittances/components/SiapPreflightPanel.test.ts (26 tests) 114ms
+ ✓ src/modules/social-units/components/detail/tabs/HistoryTab.test.ts (9 tests) 58ms
+ ✓ src/modules/siap-remittances/components/SiapPendencyLink.test.ts (12 tests) 56ms
+ ✓ src/stores/me.test.ts (21 tests) 8ms
+ ✓ src/modules/social-entities/schemas/SocialEntitySchema.test.ts (29 tests) 7ms
+ ✓ src/modules/geo-panel/components/GeoPanelSectorCombobox.test.ts (16 tests) 82ms
+ ✓ src/pages/auth/LoginPage.test.ts (28 tests) 192ms
+ ✓ src/modules/users/composables/useUsers.test.ts (12 tests) 6ms
+ ✓ src/modules/address-inconsistencies/composables/useAddressInconsistencies.test.ts (14 tests) 20ms
+ ✓ src/modules/siap-remittances/components/SiapBlockingIssueCallout.test.ts (11 tests) 63ms
+ ✓ src/pages/app/ProfissionalMunicipalFormPage.test.ts (10 tests) 381ms
+ ✓ src/pages/app/GeoPanelPage.test.ts (5 tests) 148ms
+ ✓ src/router/guards.test.ts (20 tests) 5ms
+ ✓ src/modules/geo-panel/components/GeoPanelNeighborhoodCombobox.test.ts (13 tests) 109ms
+ ✓ src/modules/social-professionals/composables/useSocialProfessionals.test.ts (12 tests) 4ms
+ ✓ src/modules/social-entities/components/SocialEntityHistoryTab.test.ts (9 tests) 60ms
+ ✓ src/modules/geo-panel/composables/useMapProvider.test.ts (7 tests) 8ms
+ ✓ src/modules/legal-documents/composables/useTenantLegalDocuments.test.ts (15 tests) 9ms
+ ✓ src/modules/professionals/composables/useProfessionals.test.ts (13 tests) 4ms
+ ✓ src/pages/app/DashboardPage.spec.ts (25 tests) 847ms
+ ✓ src/modules/platform-updates/stores/platformUpdates.test.ts (11 tests) 9ms
+ ✓ src/components/app/sidebar-menu.test.ts (10 tests) 36ms
+ ✓ src/modules/social-units/composables/useSocialUnitAddress.test.ts (11 tests) 4ms
+ ✓ src/services/http/tenantAccess.test.ts (15 tests) 4ms
+ ✓ src/composables/useBranding.test.ts (15 tests) 5ms
+ ✓ src/modules/geo-panel/components/GeoPanelSearchModal.radius.test.ts (6 tests) 192ms
+ ✓ src/modules/social-entities/components/InfoTab.test.ts (14 tests) 661ms
+ ✓ src/components/auth/SupportContactDialog.test.ts (11 tests) 242ms
+ ✓ src/modules/social-entities/components/SocialEntitiesListPage.test.ts (2 tests) 40ms
+stderr | src/pages/app/ConfiguracoesPage.test.ts > ConfiguracoesPage — CA08 da HU #10367 > CA08: com remessa gerada, alterar o identificador NÃO salva e abre o aviso
+[Vue warn]: Invalid prop: type check failed for prop "resolveCep". Expected Function, got Undefined  
+  at <SocialUnitAddressDrawer open=false address=null is-saving=false  ... > 
+  at <ConfiguracoesPage ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | src/pages/app/ConfiguracoesPage.test.ts > ConfiguracoesPage — CA08 da HU #10367 > CA08: ao confirmar, salva com confirm_identifier_change
+[Vue warn]: Invalid prop: type check failed for prop "resolveCep". Expected Function, got Undefined  
+  at <SocialUnitAddressDrawer open=false address=null is-saving=false  ... > 
+  at <ConfiguracoesPage ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | src/pages/app/ConfiguracoesPage.test.ts > ConfiguracoesPage — CA08 da HU #10367 > CA08: ao cancelar, nada é salvo
+[Vue warn]: Invalid prop: type check failed for prop "resolveCep". Expected Function, got Undefined  
+  at <SocialUnitAddressDrawer open=false address=null is-saving=false  ... > 
+  at <ConfiguracoesPage ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | src/pages/app/ConfiguracoesPage.test.ts > ConfiguracoesPage — CA08 da HU #10367 > CA08: sem remessa gerada, salva direto sem incomodar o Master
+[Vue warn]: Invalid prop: type check failed for prop "resolveCep". Expected Function, got Undefined  
+  at <SocialUnitAddressDrawer open=false address=null is-saving=false  ... > 
+  at <ConfiguracoesPage ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | src/pages/app/ConfiguracoesPage.test.ts > ConfiguracoesPage — CA08 da HU #10367 > CA08: editar outro campo com remessa gerada não pede confirmação
+[Vue warn]: Invalid prop: type check failed for prop "resolveCep". Expected Function, got Undefined  
+  at <SocialUnitAddressDrawer open=false address=null is-saving=false  ... > 
+  at <ConfiguracoesPage ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | src/pages/app/ConfiguracoesPage.test.ts > ConfiguracoesPage — deep-link das abas (D-CA06-2) > abre a aba de parâmetros TCE/AL quando a URL traz ?tab=tce
+[Vue warn]: Invalid prop: type check failed for prop "resolveCep". Expected Function, got Undefined  
+  at <SocialUnitAddressDrawer open=false address=null is-saving=false  ... > 
+  at <ConfiguracoesPage ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | src/pages/app/ConfiguracoesPage.test.ts > ConfiguracoesPage — deep-link das abas (D-CA06-2) > cai na aba padrão quando a aba da URL não existe
+[Vue warn]: Invalid prop: type check failed for prop "resolveCep". Expected Function, got Undefined  
+  at <SocialUnitAddressDrawer open=false address=null is-saving=false  ... > 
+  at <ConfiguracoesPage ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ ✓ src/pages/app/ConfiguracoesPage.test.ts (7 tests) 166ms
+ ✓ src/modules/families/components/detail/tabs/VulnerabilidadesTab.test.ts (10 tests) 58ms
+ ✓ src/pages/auth/ResetPasswordPage.test.ts (8 tests) 90ms
+ ✓ src/modules/person-search/composables/usePersonSearch.test.ts (11 tests) 9ms
+ ✓ src/modules/social-entities/composables/useSocialEntityForm.test.ts (6 tests) 4ms
+ ✓ src/modules/professionals/components/ProfessionalActionsMenu.test.ts (12 tests) 140ms
+ ✓ src/modules/social-entities/components/SocialEntitiesFilters.test.ts (12 tests) 121ms
+ ✓ src/modules/social-entities/composables/useSocialEntities.test.ts (12 tests) 4ms
+ ✓ src/modules/professionals/components/ManageProfessionalRolesDrawer.test.ts (5 tests) 61ms
+ ✓ src/pages/auth/ForgotPasswordPage.test.ts (6 tests) 91ms
+ ✓ src/components/map/MapPointPicker.spec.ts (9 tests) 72ms
+ ✓ src/components/address/AddressDrawer.test.ts (6 tests) 115ms
+ ✓ src/modules/families/components/detail/tabs/ResumoTab.test.ts (10 tests) 74ms
+ ✓ src/modules/legal-documents/components/PersonalizeLegalDocumentSheet.test.ts (7 tests) 96ms
+ ✓ src/modules/professionals/composables/useProfessionalAccessReview.test.ts (9 tests) 8ms
+ ✓ src/modules/tenant-settings/composables/useTenantResponsibles.test.ts (9 tests) 15ms
+ ✓ src/modules/social-professionals/composables/useSocialProfessionalAssignments.test.ts (7 tests) 3ms
+ ✓ src/modules/dashboard/resources/insights.test.ts (10 tests) 4ms
+ ✓ src/modules/social-professionals/composables/useSocialProfessionalCpfLookup.test.ts (9 tests) 16ms
+ ✓ src/modules/social-units/components/detail/SocialUnitAddressDrawer.test.ts (4 tests) 104ms
+ ✓ src/composables/useRememberedCpf.test.ts (17 tests) 7ms
+ ✓ src/modules/tenant-settings/components/OrganizationLogoHeader.test.ts (7 tests) 63ms
+ ✓ src/modules/platform-updates/components/PlatformUpdateNotice.test.ts (7 tests) 253ms
+ ✓ src/modules/professionals/resources/ProfessionalHttp.test.ts (14 tests) 7ms
+ ✓ src/modules/geo-panel/composables/useNeighborhoodsLayer.test.ts (6 tests) 4ms
+ ✓ src/modules/social-entities/composables/useSocialEntityLegalRepresentative.test.ts (8 tests) 8ms
+ ✓ src/modules/tenant-settings/resources/TenantSettingsHttp.test.ts (11 tests) 6ms
+ ✓ src/modules/users/resources/UserLookupHttp.test.ts (9 tests) 5ms
+ ✓ src/modules/social-units/composables/useSocialUnits.test.ts (8 tests) 5ms
+ ✓ src/modules/professionals/composables/useProfessionalRoleSuggestion.test.ts (7 tests) 5ms
+ ✓ src/modules/professionals/composables/useProfessionalUnits.test.ts (6 tests) 6ms
+ ✓ src/components/app/dashboard/StrategicIndicatorsBar.test.ts (6 tests) 85ms
+ ✓ src/modules/geo-panel/heat-palettes.test.ts (12 tests) 3ms
+ ✓ src/pages/app/ProfissionaisMunicipaisListPage.test.ts (6 tests) 83ms
+ ✓ src/composables/usePersonCpfLookup.test.ts (9 tests) 12ms
+ ✓ src/pages/app/RemessasSiapPage.test.ts (3 tests) 29ms
+ ✓ src/stores/auth.test.ts (14 tests) 4015ms
+   ✓ useAuthStore.login (modo mock) > user mock com 1 tenant → auto-seleciona e redireciona para dashboard 801ms
+   ✓ useAuthStore.login (modo mock) > user mock com N tenants → tela de selecao sem ativar 801ms
+   ✓ useAuthStore.login (modo mock) > user mock sem tenants vinculados → erro amigavel 801ms
+   ✓ useAuthStore.login (modo mock) > senha "erro" → falha sem persistir 802ms
+   ✓ useAuthStore.login (modo mock) > CPF não cadastrado em mockUsers → falha 802ms
+ ✓ src/modules/tenant-settings/composables/useTenantSettings.test.ts (8 tests) 5ms
+ ✓ src/modules/dashboard/composables/useStrategicIndicators.test.ts (6 tests) 7ms
+ ✓ src/composables/useValidCnpj.test.ts (23 tests) 2ms
+ ✓ src/components/app/dashboard/TerritorialPanel.test.ts (5 tests) 87ms
+ ✓ src/modules/social-entities/composables/useSocialEntitiesView.test.ts (12 tests) 5ms
+ ✓ src/modules/dashboard/composables/useCadastralUpdate.test.ts (5 tests) 3ms
+ ✓ src/directives/can.test.ts (6 tests) 24ms
+ ✓ src/modules/siap-remittances/composables/useSiapRemittances.test.ts (6 tests) 4ms
+ ✓ src/modules/professionals/components/ProfessionalAddressField.test.ts (6 tests) 83ms
+ ✓ src/modules/social-entities/components/AssignLegalRepresentativeDialog.test.ts (7 tests) 145ms
+ ✓ src/modules/dashboard/composables/useTerritorial.test.ts (5 tests) 3ms
+ ✓ src/modules/social-professionals/resources/SocialProfessionalHttp.test.ts (8 tests) 4ms
+ ✓ src/modules/tenant-settings/components/drawers/TceParametersDrawer.test.ts (8 tests) 75ms
+ ✓ src/modules/professionals/composables/useProfessionalLookup.test.ts (7 tests) 9ms
+ ✓ src/pages/app/PlatformVersionsHistoryPage.test.ts (4 tests) 122ms
+ ✓ src/components/ui/input/Input.test.ts (11 tests) 31ms
+ ✓ src/composables/useMeProfile.test.ts (5 tests) 6ms
+ ✓ src/modules/dashboard/composables/useGeneralSummary.test.ts (5 tests) 4ms
+ ✓ src/modules/dashboard/composables/usePriorityGroups.test.ts (5 tests) 3ms
+ ✓ src/modules/social-entities/components/SocialEntityActionsMenu.test.ts (4 tests) 60ms
+ ✓ src/modules/dashboard/composables/useBolsaFamilia.test.ts (5 tests) 9ms
+ ✓ src/modules/professionals/components/ProfessionalsCardGrid.test.ts (7 tests) 74ms
+ ✓ src/components/app/dashboard/PriorityGroupsPanel.test.ts (5 tests) 63ms
+ ✓ src/modules/tenant-settings/components/ResponsibleCard.test.ts (6 tests) 59ms
+ ✓ src/modules/families/composables/useFamilyDetail.test.ts (5 tests) 5ms
+ ✓ src/modules/geo-panel/components/GeoPanelHeatLegend.test.ts (4 tests) 64ms
+ ✓ src/modules/dashboard/composables/useRegistrationQuality.test.ts (5 tests) 2ms
+ ✓ src/modules/social-entities/composables/useSocialEntitiesLookups.test.ts (5 tests) 6ms
+ ✓ src/components/app/dashboard/CadastralUpdatePanel.test.ts (4 tests) 66ms
+ ✓ src/components/app/dashboard/GeneralSummaryPanel.test.ts (5 tests) 90ms
+ ✓ src/modules/geo-panel/providers/openlayers.test.ts (6 tests) 4ms
+ ✓ src/modules/social-units/composables/useSocialUnitsLookups.test.ts (5 tests) 3ms
+ ✓ src/modules/social-units/composables/useSocialUnitsView.test.ts (10 tests) 3ms
+ ✓ src/components/app/dashboard/BolsaFamiliaPanel.test.ts (5 tests) 78ms
+ ✓ src/modules/social-professionals/components/OtherAssignmentsList.test.ts (5 tests) 65ms
+ ✓ src/modules/dashboard/composables/useAttendance.test.ts (5 tests) 2ms
+ ✓ src/modules/tenant-settings/components/TceParametersCard.test.ts (7 tests) 41ms
+ ✓ src/modules/tenant-settings/composables/useTenantOfficialAddress.test.ts (4 tests) 15ms
+ ✓ src/modules/cadunico-imports/resources/CadunicoImportHttp.test.ts (6 tests) 6ms
+ ✓ src/modules/social-entities/resources/SocialEntityHttp.test.ts (9 tests) 12ms
+ ✓ src/modules/social-units/composables/useSocialUnitEquipmentAssignments.test.ts (5 tests) 3ms
+ ✓ src/pages/app/EntidadeFormPage.test.ts (5 tests) 404ms
+ ✓ src/modules/users/components/UserAvatar.test.ts (11 tests) 62ms
+ ✓ src/services/http/ResourceHttp.test.ts (9 tests) 5ms
+ ✓ src/modules/dashboard/resources/cadastralUpdate.test.ts (3 tests) 4ms
+ ✓ src/modules/tenant-settings/composables/useTenantSettingsLookups.test.ts (4 tests) 8ms
+ ✓ src/modules/geo-panel/composables/useMapMeasurement.test.ts (8 tests) 6ms
+ ✓ src/components/app/dashboard/RegistrationQualityPanel.test.ts (4 tests) 253ms
+ ✓ src/composables/useSupportChannels.test.ts (9 tests) 4ms
+ ✓ src/composables/useErrorHandler.test.ts (4 tests) 3ms
+stderr | src/modules/legal-acceptance/stores/legalAcceptance.test.ts > useLegalAcceptanceStore > fail open: erro no fetch resolve como sem pendência
+[legal-acceptance] falha ao consultar pendência de aceite
+
+ ✓ src/modules/legal-acceptance/stores/legalAcceptance.test.ts (6 tests) 19ms
+ ✓ src/modules/legal-acceptance/components/LegalAcceptanceDocCard.test.ts (5 tests) 131ms
+ ✓ src/modules/social-professionals/components/dialogs/AttachUnitDrawer.test.ts (5 tests) 264ms
+ ✓ src/modules/families/components/detail/tabs/ComposicaoFamiliarTab.test.ts (3 tests) 108ms
+ ✓ src/modules/social-professionals/components/SocialProfessionalUnitFormSheet.test.ts (3 tests) 288ms
+ ✓ src/components/app/dashboard/AttendancePanel.test.ts (4 tests) 90ms
+ ✓ src/modules/dashboard/resources/territorial.test.ts (3 tests) 20ms
+ ✓ src/components/app/dashboard/MetricCard.test.ts (4 tests) 20ms
+ ✓ src/modules/legal-acceptance/composables/useReadingProgress.test.ts (5 tests) 4ms
+ ✓ src/composables/useCpfMask.test.ts (21 tests) 3ms
+ ✓ src/modules/social-entities/components/LegalRepresentativeCard.test.ts (6 tests) 31ms
+ ✓ src/modules/professionals/components/ProfessionalStatusBadge.test.ts (5 tests) 28ms
+ ✓ src/modules/social-units/resources/GeocodeHttp.test.ts (4 tests) 4ms
+ ✓ src/services/http/RelationalHttp.test.ts (4 tests) 5ms
+ ✓ src/modules/tenant-settings/components/OfficialAddressCard.test.ts (4 tests) 53ms
+ ✓ src/modules/users/resources/UserHttp.test.ts (4 tests) 5ms
+ ✓ src/components/app/DatePicker.test.ts (5 tests) 57ms
+ ✓ src/modules/dashboard/resources/generalSummary.test.ts (4 tests) 4ms
+ ✓ src/modules/dashboard/resources/bolsaFamilia.test.ts (3 tests) 3ms
+ ✓ src/modules/platform-updates/components/AppVersionFooter.test.ts (3 tests) 33ms
+ ✓ src/modules/address-inconsistencies/resources/AddressInconsistencyHttp.test.ts (4 tests) 2ms
+stderr | src/modules/platform-updates/platform-updates.gate.test.ts > client — histórico de versões (consumo) e ausência de gestão de versões > rota platform-updates-history existe e NÃO tem meta.permission (RN10)
+[Vue Router warn]: uncaught error during route navigation:
+TypeError: meStore.ensureHydrated is not a function
+    at redirectIfAuthenticated (/Users/binho/Projetos/esuas-all/client/src/router/guards.ts:31:17)
+    at file:///Users/binho/Projetos/esuas-all/client/node_modules/vue-router/dist/devtools-DCoWQoU_.js:555:50
+    at runWithContext (file:///Users/binho/Projetos/esuas-all/client/node_modules/vue-router/dist/devtools-DCoWQoU_.js:537:83)
+    at file:///Users/binho/Projetos/esuas-all/client/node_modules/vue-router/dist/devtools-DCoWQoU_.js:555:23
+    at new Promise (<anonymous>)
+    at file:///Users/binho/Projetos/esuas-all/client/node_modules/vue-router/dist/devtools-DCoWQoU_.js:539:15
+    at Object.runWithContext (/Users/binho/Projetos/esuas-all/client/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:4294:18)
+    at runWithContext (file:///Users/binho/Projetos/esuas-all/client/node_modules/vue-router/dist/vue-router.js:1292:64)
+    at file:///Users/binho/Projetos/esuas-all/client/node_modules/vue-router/dist/vue-router.js:1494:63
+    at processTicksAndRejections (node:internal/process/task_queues:104:5)
+[Vue Router warn]: Unexpected error when starting the router: TypeError: meStore.ensureHydrated is not a function
+    at redirectIfAuthenticated (/Users/binho/Projetos/esuas-all/client/src/router/guards.ts:31:17)
+    at file:///Users/binho/Projetos/esuas-all/client/node_modules/vue-router/dist/devtools-DCoWQoU_.js:555:50
+    at runWithContext (file:///Users/binho/Projetos/esuas-all/client/node_modules/vue-router/dist/devtools-DCoWQoU_.js:537:83)
+    at file:///Users/binho/Projetos/esuas-all/client/node_modules/vue-router/dist/devtools-DCoWQoU_.js:555:23
+    at new Promise (<anonymous>)
+    at file:///Users/binho/Projetos/esuas-all/client/node_modules/vue-router/dist/devtools-DCoWQoU_.js:539:15
+    at Object.runWithContext (/Users/binho/Projetos/esuas-all/client/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:4294:18)
+    at runWithContext (file:///Users/binho/Projetos/esuas-all/client/node_modules/vue-router/dist/vue-router.js:1292:64)
+    at file:///Users/binho/Projetos/esuas-all/client/node_modules/vue-router/dist/vue-router.js:1494:63
+    at processTicksAndRejections (node:internal/process/task_queues:104:5)
+
+ ✓ src/modules/platform-updates/platform-updates.gate.test.ts (3 tests) 26ms
+ ✓ src/modules/dashboard/resources/dashboard.test.ts (4 tests) 2ms
+ ✓ src/modules/dashboard/resources/registrationQuality.test.ts (2 tests) 2ms
+ ✓ src/components/app/RichTextEditor.test.ts (4 tests) 146ms
+ ✓ src/composables/useCnpjMask.test.ts (17 tests) 5ms
+stderr | src/modules/tenant-settings/components/drawers/TceIdentifierChangeDialog.test.ts > TceIdentifierChangeDialog — CA08 da HU #10367 > avisa que as remessas anteriores mantêm o código antigo
+aria-hidden HTMLDivElement {
+  Symbol(SameObject caches): [Object: null prototype] {
+    style: CSSStyleDeclaration {},
+    classList: DOMTokenList {}
+  },
+  Symbol(_vei): {
+    onFocusCapture: [Function: invoker] {
+      value: [Function: onFocusCapture],
+      attached: 1786975000867
+    },
+    onBlurCapture: [Function: invoker] {
+      value: [Function: onBlurCapture],
+      attached: 1786975000867
+    },
+    onPointerdownCapture: [Function: invoker] {
+      value: [Function: onPointerDownCapture],
+      attached: 1786975000867
+    },
+    onKeydown: [Function: invoker] {
+      value: [Function: handleKeyDown],
+      attached: 1786975000867
+    }
+  }
+} in not contained inside HTMLBodyElement {
+  Symbol(SameObject caches): [Object: null prototype] {
+    style: CSSStyleDeclaration {
+      '0': 'padding-right',
+      '1': 'margin-right',
+      '2': 'overflow'
+    }
+  }
+} . Doing nothing
+Warning: `DialogContent` requires a `DialogTitle` for the component to be accessible for screen reader users.
+
+If you want to hide the `DialogTitle`, you can wrap it with our VisuallyHidden component.
+
+For more information, see https://www.reka-ui.com/docs/components/dialog.html#title
+Warning: Missing `Description` or `aria-describedby="undefined"` for DialogContent.
+
+stderr | src/modules/tenant-settings/components/drawers/TceIdentifierChangeDialog.test.ts > TceIdentifierChangeDialog — CA08 da HU #10367 > mostra o identificador anterior e o novo
+aria-hidden HTMLDivElement {
+  Symbol(SameObject caches): [Object: null prototype] {
+    style: CSSStyleDeclaration { '0': 'pointer-events' },
+    classList: DOMTokenList {}
+  },
+  Symbol(_vei): {
+    onFocusCapture: [Function: invoker] {
+      value: [Function: onFocusCapture],
+      attached: 1786975000937
+    },
+    onBlurCapture: [Function: invoker] {
+      value: [Function: onBlurCapture],
+      attached: 1786975000937
+    },
+    onPointerdownCapture: [Function: invoker] {
+      value: [Function: onPointerDownCapture],
+      attached: 1786975000937
+    },
+    onKeydown: [Function: invoker] {
+      value: [Function: handleKeyDown],
+      attached: 1786975000937
+    }
+  }
+} in not contained inside HTMLBodyElement {
+  Symbol(SameObject caches): [Object: null prototype] {
+    style: CSSStyleDeclaration {
+      '0': 'padding-right',
+      '1': 'margin-right',
+      '2': 'overflow',
+      '3': 'pointer-events'
+    },
+    children: HTMLCollection {}
+  }
+} . Doing nothing
+Warning: `DialogContent` requires a `DialogTitle` for the component to be accessible for screen reader users.
+
+If you want to hide the `DialogTitle`, you can wrap it with our VisuallyHidden component.
+
+For more information, see https://www.reka-ui.com/docs/components/dialog.html#title
+Warning: Missing `Description` or `aria-describedby="undefined"` for DialogContent.
+
+stderr | src/modules/tenant-settings/components/drawers/TceIdentifierChangeDialog.test.ts > TceIdentifierChangeDialog — CA08 da HU #10367 > emite confirm ao confirmar
+aria-hidden HTMLDivElement {
+  Symbol(SameObject caches): [Object: null prototype] {
+    style: CSSStyleDeclaration { '0': 'pointer-events' },
+    classList: DOMTokenList {}
+  },
+  Symbol(_vei): {
+    onFocusCapture: [Function: invoker] {
+      value: [Function: onFocusCapture],
+      attached: 1786975000948
+    },
+    onBlurCapture: [Function: invoker] {
+      value: [Function: onBlurCapture],
+      attached: 1786975000948
+    },
+    onPointerdownCapture: [Function: invoker] {
+      value: [Function: onPointerDownCapture],
+      attached: 1786975000948
+    },
+    onKeydown: [Function: invoker] {
+      value: [Function: handleKeyDown],
+      attached: 1786975000948
+    }
+  }
+} in not contained inside HTMLBodyElement {
+  Symbol(SameObject caches): [Object: null prototype] {
+    style: CSSStyleDeclaration {
+      '0': 'padding-right',
+      '1': 'margin-right',
+      '2': 'overflow',
+      '3': 'pointer-events'
+    },
+    children: HTMLCollection {}
+  }
+} . Doing nothing
+Warning: `DialogContent` requires a `DialogTitle` for the component to be accessible for screen reader users.
+
+If you want to hide the `DialogTitle`, you can wrap it with our VisuallyHidden component.
+
+For more information, see https://www.reka-ui.com/docs/components/dialog.html#title
+Warning: Missing `Description` or `aria-describedby="undefined"` for DialogContent.
+
+stderr | src/modules/tenant-settings/components/drawers/TceIdentifierChangeDialog.test.ts > TceIdentifierChangeDialog — CA08 da HU #10367 > cancelar fecha sem confirmar
+aria-hidden HTMLDivElement {
+  Symbol(SameObject caches): [Object: null prototype] {
+    style: CSSStyleDeclaration { '0': 'pointer-events' },
+    classList: DOMTokenList {}
+  },
+  Symbol(_vei): {
+    onFocusCapture: [Function: invoker] {
+      value: [Function: onFocusCapture],
+      attached: 1786975000963
+    },
+    onBlurCapture: [Function: invoker] {
+      value: [Function: onBlurCapture],
+      attached: 1786975000963
+    },
+    onPointerdownCapture: [Function: invoker] {
+      value: [Function: onPointerDownCapture],
+      attached: 1786975000963
+    },
+    onKeydown: [Function: invoker] {
+      value: [Function: handleKeyDown],
+      attached: 1786975000963
+    }
+  }
+} in not contained inside HTMLBodyElement {
+  Symbol(SameObject caches): [Object: null prototype] {
+    style: CSSStyleDeclaration {
+      '0': 'padding-right',
+      '1': 'margin-right',
+      '2': 'overflow',
+      '3': 'pointer-events'
+    },
+    children: HTMLCollection {}
+  }
+} . Doing nothing
+Warning: `DialogContent` requires a `DialogTitle` for the component to be accessible for screen reader users.
+
+If you want to hide the `DialogTitle`, you can wrap it with our VisuallyHidden component.
+
+For more information, see https://www.reka-ui.com/docs/components/dialog.html#title
+Warning: Missing `Description` or `aria-describedby="undefined"` for DialogContent.
+
+ ✓ src/modules/tenant-settings/components/drawers/TceIdentifierChangeDialog.test.ts (4 tests) 156ms
+ ✓ src/modules/social-entities/components/SocialEntitiesTable.test.ts (4 tests) 35ms
+ ✓ src/modules/social-units/components/SocialUnitsTable.test.ts (4 tests) 47ms
+ ✓ src/modules/social-professionals/components/SocialProfessionalsTable.test.ts (4 tests) 21ms
+ ✓ src/composables/useMoneyMask.test.ts (9 tests) 16ms
+ ✓ src/modules/cadunico-imports/components/CadunicoImportsTable.test.ts (4 tests) 42ms
+ ✓ src/modules/social-professionals/components/SocialProfessionalsCardGrid.test.ts (4 tests) 53ms
+ ✓ src/modules/social-entities/components/SocialEntitiesCardGrid.test.ts (4 tests) 50ms
+ ✓ src/modules/legal-documents/components/LegalDocumentsTable.test.ts (4 tests) 49ms
+ ✓ src/modules/person-search/resources/PersonSearchHttp.test.ts (3 tests) 4ms
+ ✓ src/modules/dashboard/resources/priorityGroups.test.ts (2 tests) 15ms
+ ✓ src/components/ui/table/TableStatusMessage.test.ts (4 tests) 34ms
+ ✓ src/services/http/csrf.test.ts (3 tests) 12ms
+ ✓ src/modules/legal-documents/components/LegalDocumentsCardGrid.test.ts (4 tests) 43ms
+ ✓ src/modules/legal-documents/resources/LegalDocumentHttp.test.ts (5 tests) 7ms
+ ✓ src/modules/legal-acceptance/composables/legalAcceptanceMeta.test.ts (8 tests) 2ms
+ ✓ src/modules/social-units/components/SocialUnitsCardGrid.test.ts (4 tests) 75ms
+ ✓ src/modules/dashboard/resources/attendance.test.ts (2 tests) 15ms
+ ✓ src/modules/social-entities/resources/SocialEntityLegalRepresentativeHttp.test.ts (3 tests) 3ms
+ ✓ src/modules/address-inconsistencies/components/AddressInconsistenciesTable.test.ts (4 tests) 43ms
+ ✓ src/modules/cadunico-imports/components/CadunicoImportsCardGrid.test.ts (4 tests) 43ms
+ ✓ src/modules/professionals/components/ProfessionalsTable.test.ts (4 tests) 56ms
+ ✓ src/composables/usePhoneMask.test.ts (14 tests) 14ms
+ ✓ src/stores/app.test.ts (6 tests) 5ms
+ ✓ src/services/http/interceptors.test.ts (4 tests) 2ms
+ ✓ src/lib/date.test.ts (5 tests) 2ms
+ ✓ src/modules/social-units/resources/SocialUnitHttp.test.ts (6 tests) 3ms
+ ✓ src/modules/families/resources/FamilyHttp.test.ts (2 tests) 3ms
+ ✓ src/components/app/dashboard/InsightStrip.test.ts (3 tests) 29ms
+ ✓ src/components/auth/AuthInput.test.ts (4 tests) 49ms
+ ✓ src/composables/useCepMask.test.ts (10 tests) 3ms
+ ✓ src/modules/legal-acceptance/resources/LegalAcceptanceHttp.test.ts (3 tests) 2ms
+ ✓ src/modules/person-search/components/PersonSearchTable.test.ts (4 tests) 24ms
+ ✓ src/services/http/axios.test.ts (2 tests) 22ms
+ ✓ src/lib/utils.test.ts (4 tests) 4ms
+ ✓ src/modules/legal-acceptance/components/LogoutConfirmDialog.test.ts (2 tests) 73ms
+
+ Test Files  183 passed (183)
+      Tests  1429 passed (1429)
+   Start at  10:56:28
+   Duration  14.31s (transform 4.88s, setup 502ms, collect 37.67s, tests 13.90s, environment 43.83s, prepare 6.76s)
+

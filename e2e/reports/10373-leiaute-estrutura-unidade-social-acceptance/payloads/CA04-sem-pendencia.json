@@ -1,0 +1,17 @@
+{
+    "_leitura": "CA04 — unidade sem estrutura não gera linha E não gera pendência. O leiaute EstruturaUnidadeSocial abaixo tem record_count = 1 (só a unidade que tem estrutura), skipped_count = 0 e pendencies = [].",
+    "unidade_sem_estrutura_mds": "7170415681848",
+    "blocking": {
+        "can_generate": true,
+        "pendencies": []
+    },
+    "layout": {
+        "name": "EstruturaUnidadeSocial",
+        "sort_order": 4,
+        "file_name": "EstruturaUnidadeSocial.xml",
+        "outcome": "complete",
+        "record_count": 1,
+        "skipped_count": 0,
+        "pendencies": []
+    }
+}

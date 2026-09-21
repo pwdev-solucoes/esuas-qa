@@ -1,0 +1,13 @@
+<!--
+  HU #10370 (US-SIAP-03) — dossiê de aceite
+  CA10
+  Cenário: município sem nenhuma unidade cadastrada — só Codigo, Exercicio e Mes
+  Gerado em: 2026-08-13 13:55:50 por tests/Feature/Api/Siap10370EvidenceDumpTest.php (temporário)
+  Origem: UnidadeSocial.xml extraído do zip da remessa realmente gerada pelo POST client/siap-remittances
+-->
+<?xml version="1.0"?>
+<SIAP>
+    <Codigo>004821</Codigo>
+    <Exercicio>2026</Exercicio>
+    <Mes>08</Mes>
+</SIAP>

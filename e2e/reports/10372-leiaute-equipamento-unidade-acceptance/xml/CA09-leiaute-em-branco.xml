@@ -1,0 +1,8 @@
+<!-- CA09 — nenhuma unidade do municipio tem equipamento. Esperado: o arquivo e entregue mesmo assim, com Codigo, Exercicio e Mes e nenhuma tag <EquipamentoUnidade> -->
+<!-- Gerado pela remessa 07/2026 do tenant de teste. Conteudo do EquipamentoUnidade.xml do pacote, sem edicao. -->
+<?xml version="1.0"?>
+<SIAP>
+    <Codigo>004821</Codigo>
+    <Exercicio>2026</Exercicio>
+    <Mes>07</Mes>
+</SIAP>

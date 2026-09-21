@@ -1,0 +1,287 @@
+{
+ "meta": {
+  "title": "Relatório de Critérios de Aceite — US-DIAG-03 · Condições do integrante: educação, renda e saúde",
+  "subtitle": "Épico HU-PRONT-DIAG (fase F6) · blocos 6, 8 e 10 do instrumento / leiaute 15.10 e dois perfis do 15.7 · evidências end-to-end no Painel do Tenant",
+  "rows": [
+   [
+    "Gerado em",
+    "17/09/2026 18:55"
+   ],
+   [
+    "Spec",
+    ".planning/specs/US-DIAG-03-condicoes-do-integrante.md"
+   ],
+   [
+    "Branch",
+    "feature/diag-prontuario-blocos-4-6-8-10 (api be790f7 · client bebf1c0)"
+   ],
+   [
+    "Ambiente",
+    "API Laravel/Sail (container api-laravel.test-1, porta 80) + PostgreSQL 'esuas_e2e' · client build de produção servido em :4174"
+   ],
+   [
+    "Organização (tenant)",
+    "E2E CadÚnico (uuid 00000000-…-c1) · 3 unidades · 12 famílias · 9 integrantes ativos"
+   ],
+   [
+    "Perfil usado",
+    "Operacional do Tenant — CPF 111.444.777-35, papel operador + add-on LGPD family_viewer, lotação vigente em E2E CRAS Centro e E2E CRAS Sem MDS"
+   ],
+   [
+    "Ferramenta",
+    "playwright-cli (Chromium headless) + Pest 4 (FamilyMemberCondition, SuggestSchoolingLevelResolver, TenantIsolation)"
+   ]
+  ]
+ },
+ "summary": "Os 13 critérios de aceite da US-DIAG-03 foram verificados: 1 exclusivamente no navegador, 11 de forma combinada (navegador + payload real da API / trilha de auditoria / suíte Pest / varredura de schema) e 1 exclusivamente automatizado (isolamento entre organizações, que a massa de dados não permite encenar — todas as famílias do ambiente pertencem a uma só organização). Nenhum critério ficou em falta e nenhum defeito foi encontrado. Os quatro pontos mais sensíveis da história foram provados com dado real do banco: a escolaridade sugerida pelo CadÚnico apareceu como DERIVADA sem nada ter sido gravado (payload com data: null e is_derived: true) e só virou valor depois do ato humano de confirmar, com schooling_source = derived_cadunico (CA02); a correção posterior mudou a origem para manual e a trilha guardou os valores antes/depois (CA11); renda 0,00 foi salva como valor e saiu da pendência, enquanto o campo esvaziado voltou a pendência (CA05); e o integrante com os seis campos vazios recebeu atendimento E encaminhamento sem qualquer bloqueio (CA10). A gestação anotada para a adolescente de 16 anos entrou no predicado real do PerfilGravidez do leiaute 15.7 (CA07). A suíte automatizada fechou 66 testes verdes / 434 asserções.",
+ "cas": [
+  {
+   "id": "CA01",
+   "title": "Registrar as condições de um integrante (happy path)",
+   "status": "parc",
+   "gherkin": "Dado que sou Operacional do Tenant com o add-on LGPD e a família Silva tem cinco integrantes\nQuando eu registrar, para a integrante Maria, own_income = 1200.00, is_literate = true,\n  escolaridade \"ensino médio\", situação escolar \"não, já frequentou\" e has_serious_illness = false\nEntão os valores são salvos\nE constam na composição familiar com meu nome e a data",
+   "steps_html": "Prontuário da família <b>E2E Família No CRAS</b> → aba <b>Composição Familiar</b> → botão <code>Condições</code> na linha do responsável familiar. No drawer: renda <code>1.200,00</code>, <b>Alfabetizado = Sim</b>, <b>Escolaridade = 4 — Ensino médio</b>, <b>Situação escolar = 3 — Não, já frequentou</b>, <b>Doença grave = Não</b> → <code>Salvar condições</code>. Os dois selects foram abertos para conferir que as listas são as do Manual do SIAP (9 níveis de escolaridade, 5 situações escolares) e não vêm do frontend.",
+   "results": [
+    "Os seis campos foram salvos: payload devolve own_income \"1200.00\", is_literate true, schooling_level 4 — Ensino médio, school_situation 3 — Não, já frequentou, has_serious_illness false.",
+    "O aviso de pendência do leiaute 15.10 desapareceu — missing_fields: [] e is_pending: false.",
+    "O drawer passa a exibir a assinatura \"Registrado por E2E Operador Prontuário em 17/09/2026\"; o payload traz created_by e updated_by com o usuário da sessão e os respectivos timestamps.",
+    "A escolaridade informada à mão registrou schooling_source = manual (não derivado) e schooling_confirmed_at preenchido."
+   ],
+   "images": [
+    "screenshots/ca00-composicao-familiar.png",
+    "screenshots/ca01-escolaridade-nove-opcoes.png",
+    "screenshots/ca01-situacao-escolar-cinco-opcoes.png",
+    "screenshots/ca01-antes-de-salvar.png",
+    "screenshots/ca01-condicoes-registradas.png"
+   ]
+  },
+  {
+   "id": "CA02",
+   "title": "Escolaridade sugerida pelo CadÚnico",
+   "status": "parc",
+   "gherkin": "Dado que o integrante Pedro foi importado com education_level_id preenchido\nE que esse grau tem schooling_level_id definido no Painel Global\nQuando eu abrir as condições dele\nEntão o payload traz schooling_level_suggested com is_derived = true e schooling_level_id = null\nE ao confirmar, schooling_level_id recebe o sugerido, schooling_source = derived_cadunico\n  e schooling_confirmed_at é preenchido",
+   "steps_html": "O integrante <b>E2E Integrante Local</b> foi posto com grau de instrução do CadÚnico <code>2 — Fundamental incompleto</code>, cujo de-para no Painel Global aponta para a escolaridade <code>2 — Alfabetizado</code> (ver o preparo de massa nas observações). Abri as condições dele, li o payload ANTES de qualquer clique, e só então usei <code>Confirmar escolaridade</code>.",
+   "results": [
+    "Antes de qualquer ato humano o payload traz data: null — nenhuma linha nasceu por dedução — e schooling_level_suggested com is_derived: true.",
+    "A tela mostra \"Escolaridade sugerida: Alfabetizado\" com o selo \"Derivado do CadÚnico\" e o texto \"Ela ainda não está registrada: confirme ou corrija para que passe a valer\"; o select permanece em \"Sem informação\" e \"Escolaridade\" segue na lista de pendências.",
+    "Depois de confirmar: schooling_level = 2 — Alfabetizado, schooling_source = \"derived_cadunico\", schooling_confirmed_at = 2026-09-17T21:38:39Z; o selo dá lugar a \"Confirmada a partir do CadÚnico em 17/09/2026\".",
+    "A confirmação usou o MESMO PUT das condições — não existe endpoint separado de confirmação."
+   ],
+   "images": [
+    "screenshots/ca02-escolaridade-sugerida-derivada.png",
+    "screenshots/ca02-escolaridade-confirmada.png"
+   ]
+  },
+  {
+   "id": "CA03",
+   "title": "Grau sem correspondência não sugere nada",
+   "status": "parc",
+   "gherkin": "Dado que o grau de instrução do integrante tem schooling_level_id NULL\nQuando eu abrir as condições dele\nEntão schooling_level_suggested vem null\nE nenhum nível foi atribuído por suposição",
+   "steps_html": "O grau <code>6 — Superior incompleto ou mais</code> teve o de-para zerado (<code>schooling_level_id = NULL</code>) e foi atribuído ao integrante <b>E2E Integrante Sem Nascimento</b>. Abri as condições dele e li o payload.",
+   "results": [
+    "schooling_level_suggested vem null: nenhum painel de sugestão, nenhum selo, nenhum valor no select.",
+    "A tela declara o motivo — \"O grau de instrução deste integrante ainda não tem correspondência com a escolaridade do leiaute. Informe a escolaridade manualmente.\" — em vez de oferecer \"o mais próximo\".",
+    "Nenhuma linha foi criada ao abrir a tela; a escolaridade continuou contando como em falta no 15.10.",
+    "A suíte Unit do resolver cobre as três formas de ausência (grau órfão, grau sem de-para e grau inexistente) e prova que os níveis 6 a 9 são inalcançáveis pelo de-para atual (achado A1)."
+   ],
+   "images": [
+    "screenshots/ca03-grau-sem-de-para.png"
+   ]
+  },
+  {
+   "id": "CA04",
+   "title": "Renda exclui programas sociais",
+   "status": "nav",
+   "gherkin": "Dado que estou registrando a renda de um integrante que recebe Bolsa Família\nQuando eu abrir o campo de renda\nEntão a tela indica que valores recebidos de programas sociais não entram nesse campo",
+   "steps_html": "Abri o campo <b>Renda própria</b> de um integrante e li o texto de apoio exibido logo abaixo dele.",
+   "results": [
+    "A tela diz, literalmente: \"Informe apenas a renda da própria pessoa. Valores recebidos de programas sociais — como o Bolsa Família e o BPC — não entram neste campo.\"",
+    "O texto é de apoio à declaração: o sistema não tem como verificar a origem do valor e não impõe validação nenhuma sobre isso (D12) — se o entendimento do TCE-AL for outro, muda o texto, não o schema."
+   ],
+   "images": [
+    "screenshots/ca04-renda-exclui-programas-sociais.png"
+   ]
+  },
+  {
+   "id": "CA05",
+   "title": "Renda zero é diferente de renda vazia",
+   "status": "parc",
+   "gherkin": "Dado que o integrante Pedro não tem renda própria\nQuando eu registrar own_income = 0\nEntão o valor é salvo como 0.00\nE a US-DIAG-05 NÃO o conta como incompleto\nE deixar o campo vazio (NULL) continua gerando pendência",
+   "steps_html": "No mesmo integrante: registrei <code>0,00</code> e salvei; depois <b>apaguei</b> o campo e salvei outra vez. Li o payload nas duas situações.",
+   "results": [
+    "Com zero: own_income = \"0.00\" (valor declarado) e o campo sai da lista de pendências — missing_fields traz apenas is_literate, schooling_level e has_serious_illness. A tela marca \"Renda declarada\".",
+    "Com o campo apagado: own_income = null e own_income VOLTA para missing_fields; a tela marca \"Sem informação\" e o aviso do leiaute lista \"Renda própria\" de novo.",
+    "A própria tela explica a diferença: \"Renda zero é uma resposta: registre 0,00 quando a pessoa não tem renda própria. Deixar o campo vazio significa que ninguém perguntou.\"",
+    "Nenhum '?? 0' no caminho: a suíte de isolamento assere que NULL permanece NULL e ZERO permanece ZERO atravessando o escopo de tenant."
+   ],
+   "images": [
+    "screenshots/ca05-renda-zero-declarada.png",
+    "screenshots/ca05-renda-vazia-volta-a-pendencia.png"
+   ]
+  },
+  {
+   "id": "CA06",
+   "title": "Tipo de deficiência só quando há deficiência",
+   "status": "parc",
+   "gherkin": "Dado que o integrante Pedro tem has_disability = true\nQuando eu abrir as condições dele\nEntão o campo de tipo de deficiência é oferecido, com as dez opções\nE para integrante com has_disability = false o campo não aparece\nE enviar disability_type_uuid para ele responde 422 (disability_type_not_applicable)",
+   "steps_html": "Comparei dois integrantes da mesma família: um com a marcação de deficiência na composição (<b>E2E Integrante Sem Nascimento</b>) e outro sem ela (<b>E2E Integrante Local</b>). Depois enviei <code>disability_type_uuid</code> (5 — Deficiência física) por PUT para o integrante <b>sem</b> a marcação, na sessão autenticada do navegador.",
+   "results": [
+    "Com a marcação: o select \"Tipo de deficiência\" aparece com as dez opções literais do Manual — 1 Cegueira, 2 Baixa visão, 3 Surdez severa ou profunda, 4 Surdez leve ou moderada, 5 Deficiência física, 6 Deficiência mental ou intelectual, 7 Síndrome de Down, 8 Deficiência múltipla, 9 Transtorno do espectro autista, 10 Outros.",
+    "Sem a marcação: o select NÃO EXISTE na tela — no lugar dele a explicação \"Este integrante não tem deficiência registrada na composição familiar. A marcação é mantida no cadastro do integrante.\"",
+    "O PUT com disability_type_uuid para esse integrante respondeu 422 com a mensagem da chave disability_type_not_applicable: \"O tipo de deficiência só pode ser informado para integrante com deficiência registrada na composição familiar.\"",
+    "A marcação de deficiência nunca é ligada por este payload — ela continua vindo da composição familiar / CadÚnico."
+   ],
+   "images": [
+    "screenshots/ca06-tipo-deficiencia-dez-opcoes.png",
+    "screenshots/ca06-sem-deficiencia-campo-ausente.png"
+   ]
+  },
+  {
+   "id": "CA07",
+   "title": "Registrar gestação",
+   "status": "parc",
+   "gherkin": "Dado que a integrante Ana, de 16 anos, está gestante\nQuando eu registrar a gestação\nEntão uma linha em family_member_pregnancies é criada com recorded_on\nE ela passa a compor o perfil de gravidez na adolescência do leiaute 15.7",
+   "steps_html": "A integrante <b>E2E Integrante Local</b> nasceu em 22/04/2010 — <b>16 anos</b> na data da anotação. No bloco <b>Gestação</b> do drawer registrei a anotação de 17/09/2026 com observação. Depois rodei o predicado real do perfil do 15.7 (<code>FollowUpReportService::teenPregnancyFamilyIds</code>, consulta Q7g) sobre setembro/2026.",
+   "results": [
+    "Uma linha foi criada em family_member_pregnancies com recorded_on = 2026-09-17, autor user #14 e deleted_at NULL.",
+    "O histórico passa a listar \"17/09/2026 por E2E Operador Prontuário\" com a observação; existe \"Remover\", e NÃO existe \"Editar\" — corrigir a data é remover e anotar de novo, e a tela diz isso.",
+    "O predicado do PerfilGravidez devolveu a família #1: idade na data da anotação = 16 anos, menor de 18 — a anotação entra no perfil do leiaute 15.7.",
+    "Do bloco 10 entrou apenas a existência da gestação: a tela declara que meses de gestação, início do pré-natal e unidade básica de referência não são coletados."
+   ],
+   "images": [
+    "screenshots/ca07-gestacao-registrada.png"
+   ]
+  },
+  {
+   "id": "CA08",
+   "title": "Evasão não é perguntada",
+   "status": "parc",
+   "gherkin": "Quando eu percorrer os campos das condições de um adolescente\nEntão não existe campo perguntando se ele está em evasão escolar\nE nenhuma coluna, enum ou chave de payload com esse nome existe no sistema",
+   "steps_html": "Este critério se prova pela <b>ausência</b>. Percorri o drawer inteiro do integrante e, no backend, listei as colunas das duas tabelas da HU, varri <code>app/</code>, <code>database/</code> e <code>routes/</code> por \"evasão\"/\"dropout\" e contei as rotas com esse nome.",
+   "results": [
+    "O drawer tem sete campos — renda própria, alfabetizado, escolaridade, situação escolar, doença grave, tipo de deficiência e gestação — e nenhum pergunta sobre evasão escolar.",
+    "family_member_conditions e family_member_pregnancies não têm coluna alguma de evasão.",
+    "Zero rotas com evasão/dropout. Os únicos acertos da varredura são o perfil DERIVADO do leiaute 15.7 (calculado na apuração da US-DIAG-05 a partir dos códigos 3 e 4 de school_situations) e comentários que declaram justamente que o campo não existe.",
+    "A situação escolar é coletada porque o leiaute 15.10 a pede; a evasão é conclusão do sistema, nunca pergunta ao profissional."
+   ],
+   "images": [
+    "screenshots/ca08-drawer-sem-campo-de-evasao.png"
+   ]
+  },
+  {
+   "id": "CA09",
+   "title": "Ausência não vira negativa",
+   "status": "parc",
+   "gherkin": "Dado que o integrante João nunca teve as condições registradas\nQuando eu consultar a composição familiar\nEntão os seis campos vêm null\nE nenhum é apresentado como \"não\"",
+   "steps_html": "Abri as condições de um integrante <b>sem nenhum registro</b> e conferi o estado dos dois campos de sim/não, dos selects e do campo de renda. Depois li o payload da composição inteira (<code>GET /families/{uuid}/conditions</code>), que devolve uma entrada por integrante.",
+   "results": [
+    "Os dois campos de três estados (Alfabetizado e Doença grave) vêm com \"Sem informação\" marcado — \"Não\" fica explicitamente desmarcado.",
+    "Renda aparece vazia com o rótulo \"Sem informação\" (não 0,00); os três selects vêm em \"Sem informação\".",
+    "No payload da composição, integrante sem registro devolve data: null e is_pending: true — nada é inventado como false.",
+    "Onde há linha com os seis campos em branco, todos vêm null (own_income, is_literate, schooling_level, school_situation, has_serious_illness e disability_type) e os quatro obrigatórios do 15.10 saem em missing_fields."
+   ],
+   "images": [
+    "screenshots/ca09-seis-campos-sem-informacao.png"
+   ]
+  },
+  {
+   "id": "CA10",
+   "title": "Campos vazios não impedem atendimento",
+   "status": "parc",
+   "gherkin": "Dado que o integrante João está com os seis campos vazios\nQuando eu registrar um atendimento ou um encaminhamento para ele\nEntão a ação é permitida normalmente — nenhuma verificação nova foi acrescentada",
+   "steps_html": "Com o integrante <b>E2E Integrante Sem Nascimento</b> de fato com os seis campos NULL (conferido no banco), registrei para ele um <b>atendimento</b> (aba Atendimentos → Registrar atendimento, tipo 1 — Atendimento socioassistencial individualizado) e um <b>encaminhamento</b> (aba Encaminhamentos → código 40 — Educação).",
+   "results": [
+    "O atendimento foi registrado normalmente e aparece no histórico: 17/09/2026 · Atendimento socioassistencial individualizado · E2E Integrante Sem Nascimento · E2E CRAS Centro · Registrado.",
+    "O encaminhamento também: 17/09/2026 · 40 — Educação · Escola Municipal E2E · Registrado · Aguardando retorno.",
+    "Nenhum aviso, nenhuma confirmação extra, nenhum bloqueio — as condições em branco não foram sequer mencionadas pelos dois fluxos.",
+    "A própria tela das condições declara a regra: \"Estes campos não impedem registrar atendimento, encaminhamento ou acompanhamento para o integrante.\"",
+    "No banco: integrante #3 com os seis campos NULL, 1 atendimento e 1 encaminhamento na família. A suíte cobre o mesmo par de ações, e nenhum arquivo das Actions de atendimento/encaminhamento foi tocado por esta HU."
+   ],
+   "images": [
+    "screenshots/ca10-atendimento-registrado-com-campos-vazios.png",
+    "screenshots/ca10-encaminhamento-registrado-com-campos-vazios.png"
+   ]
+  },
+  {
+   "id": "CA11",
+   "title": "Correção auditada",
+   "status": "parc",
+   "gherkin": "Dado que registrei a escolaridade errada\nQuando eu corrigi-la\nEntão a correção é salva com schooling_source = manual\nE o activity_log registra autor, data e os valores antes/depois",
+   "steps_html": "Peguei o caso mais forte: a escolaridade que estava <b>confirmada a partir do CadÚnico</b> (schooling_source = derived_cadunico) no integrante <b>E2E Integrante Local</b> e a corrigi para <code>3 — Fundamental</code>. Depois li a trilha de auditoria das duas tabelas da HU.",
+   "results": [
+    "A tela deixa de dizer \"Confirmada a partir do CadÚnico\" e passa a dizer \"Informada pelo profissional em 17/09/2026\".",
+    "A activity #3161 (evento updated) registra autor E2E Operador Prontuário (user #14), data 2026-09-17 21:43:09 e os valores antes/depois: schooling_level_id 2 → 3 e schooling_source derived_cadunico → manual.",
+    "A trilha guarda também a criação das duas linhas e a atualização do CA01, sempre com autor e timestamp; a anotação de gestação também é logada (log_name family_member_pregnancy).",
+    "Não existe cancelamento nem status nesta tabela: o estado vigente se corrige, e a versão anterior vive no activity_log."
+   ],
+   "images": [
+    "screenshots/ca11-antes-da-correcao.png",
+    "screenshots/ca11-depois-da-correcao-manual.png"
+   ]
+  },
+  {
+   "id": "CA12",
+   "title": "Negativa declara o motivo",
+   "status": "parc",
+   "gherkin": "Dado que sou Operacional lotado apenas no \"CRAS Rural\"\nE que a família Silva é referenciada no \"CRAS Centro\" e acompanhada pelo \"CREAS\"\nQuando eu tentar registrar as condições de um integrante dela\nEntão recebo 403 com reason = unit_not_assigned, sem nomear as unidades",
+   "steps_html": "O Operacional da sessão tem lotação vigente em <b>E2E CRAS Centro</b> e <b>E2E CRAS Sem MDS</b>. A família #2 é referenciada no <b>E2E CREAS</b> — fora da lotação dele. Abri o prontuário dela na tela e, em seguida, exercitei os três verbos das condições e da gestação na sessão autenticada.",
+   "results": [
+    "A tela devolve o painel \"Acesso restrito\" com a mensagem do backend e o convite a procurar o gestor Master.",
+    "PUT das condições, GET das condições e POST da gestação responderam 403 com error_code = \"unit_not_assigned\" — o código estável é o único identificador do motivo.",
+    "A mensagem NÃO nomeia nenhuma unidade: não diz \"CRAS Centro\" nem \"CREAS\". Ela declara o motivo sem revelar onde a família é atendida.",
+    "O gate é o ponto único FamilyAccessService::familyAccessOutcome() — os três eixos (add-on LGPD, profissional ativo com lotação vigente, unidade de referência ou de acompanhamento); nenhuma permissão nova foi criada por esta HU."
+   ],
+   "images": [
+    "screenshots/ca12-acesso-restrito-sem-nomear-unidade.png"
+   ]
+  },
+  {
+   "id": "CA13",
+   "title": "Isolamento entre municípios",
+   "status": "auto",
+   "gherkin": "Dado que sou usuário do município A\nQuando eu acessar condições de integrante de família do município B\nEntão recebo 404",
+   "steps_html": "Este critério é regra de backend e a massa disponível não permite encenar na tela: <b>todas as 12 famílias do ambiente pertencem a uma única organização</b>, então não existe família \"do município B\" para abrir. Na sessão do navegador registrei a resposta a um uuid fora do escopo da organização ativa, e a prova do cruzamento real está na suíte <code>tests/Feature/TenantIsolation/FamilyMemberConditionIsolationTest.php</code>.",
+   "results": [
+    "Família fora do escopo da organização ativa responde 404 \"Registro não encontrado\" — nunca 403: a resposta não confirma nem nega a existência da família.",
+    "A suíte de isolamento (8 testes) prova o cruzamento de verdade: as duas tabelas usam a trait BelongsToTenant, a condição e a gestação de outra organização são inalcançáveis pelos três verbos, e nem as Actions chegam à linha alheia.",
+    "Ela cobre ainda dois pontos que o navegador não alcança: a gestação de outro município fica fora do perfil do 15.7, e o escopo é no-op fora do ciclo HTTP — que é exatamente por que a trait, e não o middleware, é o que protege a linha.",
+    "Os três lookups do 15.10 (escolaridade, situação escolar, tipo de deficiência) permanecem GLOBAIS, sem tenant_id — e há teste assegurando isso."
+   ],
+   "images": []
+  }
+ ],
+ "notes": [
+  {
+   "title": "Preparo de massa declarado — e o que foi desfeito depois",
+   "html": "<p>A base semeada não tinha nenhum integrante com grau de instrução do CadÚnico, nem marcação de deficiência, nem integrante em família de outra unidade. Quatro ajustes foram feitos <b>diretamente no banco, por SQL, sem passar pela aplicação</b> (portanto fora da trilha de auditoria da HU) para que os critérios pudessem ser exercidos:</p><ul><li><b>CA02</b> — o integrante <i>E2E Integrante Local</i> recebeu <code>education_level_id = 2</code> (Fundamental incompleto), grau cujo de-para aponta para a escolaridade <code>2 — Alfabetizado</code>.</li><li><b>CA03</b> — o de-para do grau <code>6 — Superior incompleto ou mais</code> foi zerado (<code>schooling_level_id = NULL</code>) e atribuído ao integrante <i>E2E Integrante Sem Nascimento</i>. <b>O de-para foi restaurado ao fim da captura</b> — os seis graus voltaram ao estado que o dossiê da US-DIAG-01 fotografou.</li><li><b>CA06</b> — o mesmo integrante recebeu <code>has_disability = true</code> na composição, porque nenhum integrante do ambiente tinha a marcação.</li><li><b>CA12</b> — a família #2 (referenciada no <i>E2E CREAS</i>) não tinha integrante nenhum, e sem um deles a rota de escrita não chega ao gate de acesso (o binding aninhado resolve antes e devolve 404). Um integrante foi criado nela só para que o 403 pudesse ser exercido no verbo de escrita, como o critério pede.</li></ul><p>Nada mais foi alterado: os registros de condições, gestação, atendimento e encaminhamento deste dossiê foram todos criados <b>pela aplicação</b>, na sessão do Operacional.</p>"
+  },
+  {
+   "title": "Onde moram os valores antes/depois na trilha de auditoria",
+   "html": "<p>No <code>spatie/laravel-activitylog 5.0.0</code> — a versão instalada — os valores antes/depois de um modelo com <code>LogsActivity</code> são gravados na coluna <b><code>activity_log.attribute_changes</code></b>. A coluna <code>properties</code> guarda apenas o que é gravado manualmente; nas linhas desta HU ela traz só o <code>tenant_id</code> que o Model <code>App\\Models\\Activity</code> injeta para escopar a trilha.</p><p>Isso vale para <b>todos</b> os 57 <code>log_name</code> do ambiente, não só para esta HU. Fica registrado aqui porque quem for conferir a trilha olhando somente <code>properties</code> vai concluir, erradamente, que a auditoria não guarda os valores — ela guarda, e o arquivo <code>activity-log-ca11.txt</code> mostra as duas colunas lado a lado.</p>"
+  },
+  {
+   "title": "§8.4 da spec — o volume de confirmação pendente foi medido, mas não neste ambiente é que ele importa",
+   "html": "<p>A Definição de Pronto exige rodar a consulta da §8.4 (achado A2) antes do merge: quantos integrantes ativos têm grau de instrução do CadÚnico e ainda estão sem escolaridade confirmada. A consulta foi executada contra o PostgreSQL real do ambiente, organização por organização, e está em <code>consulta-8-4-volume-pendente.txt</code>.</p><p><b>Resultado: 1 integrante</b> — e esse número não diz nada sobre a operação. O ambiente inteiro tem 9 integrantes ativos, dos quais 2 com grau de instrução importado. <b>A medição precisa ser repetida contra a base de um município real antes do merge</b>, porque é dela que depende a decisão de negócio por trás do achado A2: se a confirmação integrante por integrante de toda a base importada é exequível, ou se o PO precisa de outro caminho.</p>"
+  },
+  {
+   "title": "Limites da massa — o perfil do 15.7 e a conferência agregada não puderam ser exercidos na tela",
+   "html": "<p>O CA07 diz que a gestação \"passa a compor o perfil de gravidez na adolescência do leiaute 15.7\". Esse perfil é contado <b>por unidade e mês, sobre as famílias que ingressaram em acompanhamento no período</b> — e a base semeada não tem <b>nenhum</b> acompanhamento (<code>family_follow_ups</code> vazia em todas as organizações). A tela de apuração sairia com zeros, o que não provaria nada; além disso ela exige a permissão <code>attendance-reports.view</code>, que o Operacional usado neste dossiê não tem.</p><p>No lugar dela rodei o <b>predicado real</b> que alimenta o perfil — <code>FollowUpReportService::teenPregnancyFamilyIds()</code>, a consulta Q7g da §8.3 — sobre setembro/2026, e ele devolveu a família da anotação. É a prova de que a anotação satisfaz a regra; a contagem agregada por unidade é evidência da US-DIAG-05.</p>"
+  },
+  {
+   "title": "Divergências de redação a levar ao PO",
+   "html": "<ul><li><b>CA06 — \"responde 422 (disability_type_not_applicable)\".</b> A resposta é 422 e a mensagem vem da chave <code>disability_type_not_applicable</code>, mas o corpo é o de erro de validação do Laravel (<code>message</code> + <code>errors.disability_type_uuid</code>) e <b>não</b> traz um campo <code>error_code</code> — diferente do 403 do CA12, que traz. Se o critério espera um código estável no payload também no 422, isso é mudança de contrato a decidir.</li><li><b>CA01/CA09 nomeiam pessoas (\"Maria\", \"João\", \"Pedro\", \"Ana\") e uma família com cinco integrantes.</b> O ambiente de evidência tem outros nomes e três integrantes vigentes na família usada; a substância de cada critério foi exercida integralmente, com o papel correspondente.</li></ul>"
+  },
+  {
+   "title": "Achado de tela: \"sem grau de instrução\" e \"grau sem de-para\" dizem a mesma coisa",
+   "html": "<p>Observado ao vivo durante a captura, no integrante <i>E2E Família No CRAS</i>, que <b>não tem grau de instrução nenhum</b> no CadÚnico: a tela exibe o mesmo texto do outro caso — \"O grau de instrução deste integrante ainda não tem correspondência com a escolaridade do leiaute\". O payload devolve <code>schooling_level_suggested: null</code> nas duas situações, e não há como a tela distingui-las.</p><p>É fiel ao CA03 (nada é sugerido, nada é atribuído por suposição) e não bloqueia nada — mas o texto pode soar impreciso para quem nunca teve grau importado. Separar os dois casos exigiria um campo novo no Resource, ou seja, mudança de contrato: fica registrado como achado, não como defeito desta HU.</p>"
+  },
+  {
+   "title": "Ambiente: a porta da API divergia da configuração do frontend",
+   "html": "<p>Mesma condição já registrada no dossiê da US-DIAG-02. A API do Sail responde em <code>http://localhost</code> (porta 80), mas o <code>client/</code> está configurado para <code>http://localhost:8000</code> — porta sem nada escutando; o sintoma é o login responder 200 e a chamada seguinte falhar. Como a instrução veda alterar a configuração do projeto, encaminhei a porta 8000 para a 80 com um proxy TCP temporário, encerrado no fim da captura.</p><p>A captura usou o <b>build de produção</b> do client servido em <code>:4174</code>, e não o dev server, porque <code>SANCTUM_STATEFUL_DOMAINS</code> no ambiente lista apenas <code>localhost:4173</code> e <code>localhost:4174</code> — em qualquer outra porta o Sanctum recusa a sessão. O build foi refeito a partir do commit <code>bebf1c0</code> antes da captura.</p>"
+  }
+ ],
+ "appendix": {
+  "label": "Cobertura automatizada (Pest 4) — FamilyMemberConditionTest + SuggestSchoolingLevelResolverTest + FamilyMemberConditionIsolationTest",
+  "file": "pest-familymembercondition.txt"
+ }
+}

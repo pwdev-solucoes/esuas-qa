@@ -1,0 +1,237 @@
+{
+ "meta": {
+  "title": "Relatório de Critérios de Aceite — HU #10898",
+  "subtitle": "Prontuário SUAS — fase F7 · GLPI #10898 (US-PSE-02) · Perfil de acolhimento e fechamento do leiaute 15.7",
+  "rows": [
+   [
+    "Gerado em",
+    "18/09/2026"
+   ],
+   [
+    "História",
+    "HU #10898 — Acender o perfil de acolhimento e fechar o leiaute 15.7"
+   ],
+   [
+    "Spec",
+    ".planning/specs/10898-perfil-acolhimento-leiaute-15-7.md"
+   ],
+   [
+    "Branch",
+    "feature/10897-historico-acolhimento (api 149ffa4 · client 94c5597), mesma da HU #10897, não pushada"
+   ],
+   [
+    "Ambiente",
+    "API Laravel/Sail (container api-laravel.test-1, porta 80) + PostgreSQL · client (Vite dev) em :5174"
+   ],
+   [
+    "Organização (tenant)",
+    "E2E CadÚnico · unidade E2E CREAS · referência 09/2026"
+   ],
+   [
+    "Perfil usado",
+    "Master do tenant (CPF 529.***.***-25)"
+   ],
+   [
+    "Ferramenta",
+    "playwright-cli (Chromium headless) + Pest 4 (23 testes: AttendanceReportSheltering + SiapNewFamilyProfile)"
+   ]
+  ]
+ },
+ "summary": "Os 13 critérios de aceite da HU #10898 foram verificados: 8 na tela, combinados com a suíte automatizada, e 5 só pela suíte (CA05, CA06 e CA08, que exigem massas específicas de datas e modalidade; CA12, que exige um Operacional com a permissão da apuração lotado só no CREAS; e CA13, que exige um segundo município). Nenhum critério ficou em falta e nenhum defeito funcional foi encontrado. Com esta HU, nenhum campo da apuração aparece como indisponível. A suíte teve 23 testes aprovados.",
+ "cas": [
+  {
+   "id": "CA01",
+   "title": "Perfil aceso (happy path)",
+   "status": "parc",
+   "steps_html": "Login como <b>Master</b> (CLIENT_ADMIN) da organização E2E CadÚnico. A família <b>E2E Família No CRAS</b> recebeu, pela tela, acompanhamento <b>PAEFI no E2E CREAS</b> com ingresso em <b>01/09/2026</b> (o que a torna família nova de 09/2026 no CREAS). Ela já tinha o acolhimento em curso de <b>E2E Integrante Local</b> (16 anos) desde 10/09/2026, e recebeu um acolhimento de <b>E2E Integrante Sem Nascimento</b> iniciado em <b>01/03/2024</b>, sem fim. Apuração de Atendimentos → 2026 · 09 — Setembro · <b>E2E CREAS</b>.",
+   "results": [
+    "No bloco “Perfil das novas famílias (leiaute 15.7)” do E2E CREAS, “Famílias com membros em serviço de acolhimento” apresenta <b>1</b> — a única nova família do mês, com criança em acolhimento vigente.",
+    "O campo aparece com número, sem selo de indisponível.",
+    "Pest: “acende o perfil de acolhimento sobre as novas familias do mes” (7 novas famílias, 2 com acolhimento → 2)."
+   ],
+   "images": [
+    "screenshots/ca01-novas-familias-creas.png",
+    "screenshots/ca01-perfil-aceso-creas.png"
+   ],
+   "gherkin": "Dado que em agosto de 2026 o \"CREAS\" teve 7 novas famílias em acompanhamento, das quais 2 com\n  criança em acolhimento vigente\nQuando eu consultar a apuração do \"CREAS\" para agosto de 2026\nEntão o perfil de acolhimento apresenta 2\nE deixa de aparecer como indisponível."
+  },
+  {
+   "id": "CA02",
+   "title": "Leiaute 15.7 sem indisponíveis",
+   "status": "parc",
+   "steps_html": "Mesma tela do CA01.",
+   "results": [
+    "Os nove campos do 15.7 (novas famílias e os oito perfis) aparecem com número.",
+    "Não há painel nem selo de indisponível no leiaute.",
+    "Pest: “conta OITO perfis acesos e NENHUM apagado depois da F7” e “nenhum case aponta fase de dependencia depois da F7”."
+   ],
+   "images": [
+    "screenshots/ca01-perfil-aceso-creas.png"
+   ],
+   "gherkin": "Dado que estou consultando a apuração\nQuando eu olhar o leiaute 15.7\nEntão todos os seus nove campos apresentam número\nE não existe mais painel de indisponíveis para esse leiaute."
+  },
+  {
+   "id": "CA03",
+   "title": "Nenhum leiaute com campo indisponível",
+   "status": "parc",
+   "steps_html": "Varredura do texto da página inteira da apuração (todos os leiautes) por “indisponível”, “ainda não apurado”, “sem fonte” e “depende da fase”.",
+   "results": [
+    "Nenhuma ocorrência na página.",
+    "Pest: “nao declara NENHUM campo indisponivel em leiaute nenhum, em unidade nenhuma” — percorre todos os perfis e contadores e confirma a lista de indisponíveis vazia."
+   ],
+   "images": [],
+   "gherkin": "Dado que estou consultando a apuração de qualquer unidade e período\nQuando eu percorrer os seis leiautes de execução\nEntão nenhum deles apresenta campo declarado como indisponível."
+  },
+  {
+   "id": "CA04",
+   "title": "Acolhimento encerrado antes do período não conta",
+   "status": "parc",
+   "steps_html": "A família do CA01 tem também o acolhimento de 01/03/2022 a 30/11/2023, encerrado antes de setembro/2026.",
+   "results": [
+    "Ele não entra no perfil: o 1 do CA01 vem só do acolhimento em curso, e cai para 0 quando esse é cancelado (CA09) — o histórico de 2022–2023 não sustenta o perfil.",
+    "O registro continua visível no prontuário como “Encerrado”.",
+    "Pest: “nao conta acolhimento encerrado antes do mes, e o registro continua no prontuario”."
+   ],
+   "images": [
+    "screenshots/ca09-acolhimento-cancelado-prontuario.png",
+    "screenshots/ca09-perfil-apos-cancelamento.png"
+   ],
+   "gherkin": "Dado que uma família nova teve uma criança acolhida entre 03/2022 e 11/2023\nQuando eu consultar a apuração de agosto de 2026\nEntão ela não é contada no perfil de acolhimento\nE o registro continua visível no prontuário como histórico."
+  },
+  {
+   "id": "CA05",
+   "title": "Acolhimento encerrado durante o mês conta",
+   "status": "auto",
+   "steps_html": "Coberto pela suíte automatizada.",
+   "results": [
+    "Pest: “conta acolhimento encerrado DENTRO do mes e respeita as bordas do periodo” — fim no mês conta; fim no último dia do mês anterior não conta; fim no dia 1 conta."
+   ],
+   "images": [],
+   "gherkin": "Dado que uma criança teve o acolhimento encerrado em 05/08/2026\nQuando eu consultar a apuração de agosto de 2026\nEntão a família é contada no perfil."
+  },
+  {
+   "id": "CA06",
+   "title": "Família com dois acolhidos conta uma vez",
+   "status": "auto",
+   "steps_html": "Coberto pela suíte automatizada.",
+   "results": [
+    "Pest: “conta a familia UMA vez mesmo com dois filhos acolhidos”."
+   ],
+   "images": [],
+   "gherkin": "Dado que uma família nova tem dois filhos em acolhimento vigente\nQuando eu consultar a apuração\nEntão ela é contada uma vez no perfil."
+  },
+  {
+   "id": "CA07",
+   "title": "Acolhido maior de idade não conta",
+   "status": "parc",
+   "steps_html": "Na massa, o acolhimento de <b>E2E Integrante Sem Nascimento</b> (sem data de nascimento) estava em curso em setembro/2026.",
+   "results": [
+    "Ele não sustentou o perfil: após o cancelamento do acolhimento da criança, o perfil foi a 0 mesmo com esse acolhimento em curso — sem data de nascimento não há como afirmar que é criança ou adolescente.",
+    "Pest: “conta so menores de 18 no ULTIMO dia do mes, com as bordas da idade” — 19 anos não conta; 17 anos no último dia conta; 18 completos no último dia não conta; sem data de nascimento não conta."
+   ],
+   "images": [
+    "screenshots/ca09-perfil-apos-cancelamento.png"
+   ],
+   "gherkin": "Dado que uma família nova tem um jovem de 19 anos em acolhimento vigente, e nenhuma criança ou\n  adolescente acolhido\nQuando eu consultar a apuração\nEntão ela não é contada no perfil."
+  },
+  {
+   "id": "CA08",
+   "title": "Institucional e familiar contam juntos",
+   "status": "auto",
+   "steps_html": "Coberto pela suíte automatizada.",
+   "results": [
+    "Pest: “conta acolhimento institucional e familiar juntos, sem filtro de modalidade”."
+   ],
+   "images": [],
+   "gherkin": "Dado que uma família nova tem criança em família acolhedora e outra tem criança em abrigo\n  institucional\nQuando eu consultar a apuração\nEntão as duas são contadas no perfil."
+  },
+  {
+   "id": "CA09",
+   "title": "Acolhimento cancelado não conta",
+   "status": "parc",
+   "steps_html": "No prontuário, <b>Cancelar registro</b> do acolhimento de 10/09/2026, com motivo. Nova consulta da apuração de 09/2026 do E2E CREAS.",
+   "results": [
+    "O perfil de acolhimento passou de <b>1</b> para <b>0</b>.",
+    "Pest: “reduz o perfil em um ao cancelar um acolhimento, e nao conta o soft-deletado”."
+   ],
+   "images": [
+    "screenshots/ca09-acolhimento-cancelado-prontuario.png",
+    "screenshots/ca09-perfil-apos-cancelamento.png"
+   ],
+   "gherkin": "Dado que um dos acolhimentos que compunham o perfil foi cancelado\nQuando eu consultar a apuração novamente\nEntão o perfil diminuiu em um."
+  },
+  {
+   "id": "CA10",
+   "title": "Acolhimento longo é sinalizado",
+   "status": "parc",
+   "steps_html": "Mesma consulta do CA01. O acolhimento iniciado em 01/03/2024, sem fim, pertence a uma família com acompanhamento vigente no E2E CREAS.",
+   "results": [
+    "O bloco mostra o ponto de atenção: “1 acolhimentos de famílias acompanhadas por esta unidade estão em curso há mais de 24 meses sem data de fim — podem ser registros que deixaram de ser encerrados. O número conta acolhimentos, não famílias.”",
+    "Só a quantidade aparece, sem lista.",
+    "Pest: “sinaliza so a QUANTIDADE de acolhimentos em curso ha mais de 24 meses” e “atribui o acolhimento longo a unidade com acompanhamento VIGENTE”."
+   ],
+   "images": [
+    "screenshots/ca10-aviso-acolhimento-longo.png"
+   ],
+   "gherkin": "Dado que 3 acolhimentos do \"CREAS\" estão em curso há mais de vinte e quatro meses sem data de fim\nQuando eu consultar a apuração\nEntão eles são sinalizados como ponto de atenção\nE a tela indica que podem ser registros que deixaram de ser encerrados."
+  },
+  {
+   "id": "CA11",
+   "title": "Sem dado de cidadão na tela",
+   "status": "parc",
+   "steps_html": "Mesma tela do CA01.",
+   "results": [
+    "O perfil e o ponto de atenção mostram apenas quantidades; nenhum nome, idade ou identificação de criança.",
+    "Pest: “nao expoe familia, nome, idade nem instituicao — so quantidades” (inspeção do payload inteiro)."
+   ],
+   "images": [
+    "screenshots/ca01-perfil-aceso-creas.png"
+   ],
+   "gherkin": "Dado que estou consultando a apuração\nQuando eu olhar o perfil de acolhimento\nEntão vejo apenas a quantidade de famílias\nE nenhum nome ou identificação de criança."
+  },
+  {
+   "id": "CA12",
+   "title": "Operacional vê apenas as suas unidades",
+   "status": "auto",
+   "steps_html": "Coberto pela suíte automatizada: a massa semeada não tem Operacional com a permissão da apuração lotado só no CREAS.",
+   "results": [
+    "Pest: “mostra ao Operacional apenas as unidades em que ele tem lotacao”."
+   ],
+   "images": [],
+   "gherkin": "Dado que sou Operacional do Tenant lotado apenas no \"CREAS\"\nQuando eu consultar a apuração\nEntão vejo apenas o \"CREAS\"."
+  },
+  {
+   "id": "CA13",
+   "title": "Isolamento entre municípios",
+   "status": "auto",
+   "steps_html": "Coberto pela suíte automatizada: exige um segundo município.",
+   "results": [
+    "Pest: “nao deixa a apuracao de um municipio enxergar o acolhimento de outro”."
+   ],
+   "images": [],
+   "gherkin": "Dado que sou usuário do município A\nQuando eu consultar a apuração\nEntão vejo apenas unidades do município A."
+  }
+ ],
+ "notes": [
+  {
+   "title": "Regras inferidas e decisões a confirmar com o PO",
+   "html": "<ul><li><b>Vigente × histórico (RN02)</b>, <b>idade no último dia do mês (RN04)</b> e <b>corte de 24 meses (RN09)</b> são inferências declaradas no ticket; cada uma está num ponto único do sistema, e o corte é configurável sem nova versão.</li><li><b>Integrante desvinculado conta no perfil</b> — decidido em 18/09/2026: desvincular a criança pelo acolhimento não pode tirá-la do perfil.</li><li><b>Aviso de acolhimento longo aparece na unidade que acompanha a família no mês</b> — decidido em 18/09/2026. Família sem acompanhamento vigente não é sinalizada em nenhuma unidade.</li></ul>"
+  },
+  {
+   "title": "Observação de texto",
+   "html": "<p>O aviso de acolhimento longo usa plural fixo: com uma ocorrência aparece “1 acolhimentos … estão”. Não afeta o critério; vale ajustar a concordância.</p>"
+  },
+  {
+   "title": "Fora do escopo",
+   "html": "<p>A composição do leiaute 15.7 no arquivo da remessa e a conferência prévia correspondente continuam na HU da etapa de geração.</p>"
+  },
+  {
+   "title": "Marcas deixadas na base",
+   "html": "<p>A família E2E Família No CRAS ganhou acompanhamento PAEFI no E2E CREAS desde 01/09/2026 e um acolhimento em curso desde 01/03/2024 (E2E Integrante Sem Nascimento). O acolhimento de 10/09/2026 de E2E Integrante Local foi cancelado para o CA09.</p>"
+  }
+ ],
+ "appendix": {
+  "label": "Cobertura automatizada (Pest, AttendanceReportSheltering + SiapNewFamilyProfile)",
+  "file": "pest-perfil-acolhimento.txt"
+ }
+}

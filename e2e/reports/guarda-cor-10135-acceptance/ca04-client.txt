@@ -1,0 +1,30 @@
+=== CA04: diff da allowlist adicionando a exceção justificada ===
+diff --git a/scripts/check-color-tokens.mjs b/scripts/check-color-tokens.mjs
+index ba48408..e4420a7 100644
+--- a/scripts/check-color-tokens.mjs
++++ b/scripts/check-color-tokens.mjs
+@@ -39,6 +39,10 @@ const SRC = join(ROOT, 'src')
+  *   - `match` — trecho que a linha precisa conter (mais estavel que `line`).
+  */
+ const ALLOWLIST = [
++  {
++    file: 'src/components/__proof10135__.vue',
++    reason: 'CA04 (GLPI #10135) — entrada de prova temporaria, removida ao final da evidencia.',
++  },
+   {
+     file: 'src/components/map/MapPointPicker.vue',
+     reason:
+
+=== CA04: CI volta a passar ===
+
+> esuas-client@0.1.0 check:colors
+> node scripts/check-color-tokens.mjs
+
+Guarda de cor fora do token (GLPI #10135) — 299 arquivos .vue em src/ (inclui src/components/ui/**)
+
+Excecoes declaradas (visiveis por RN03/RN05): 2
+  src/components/__proof10135__.vue — CA04 (GLPI #10135) — entrada de prova temporaria, removida ao final da evidencia.
+  src/components/map/MapPointPicker.vue — Marcador SVG do OpenLayers: a lib exige um data-URI de SVG com stroke/fill literais no icone; a cor de marca ja vem de brand-tokens.ts e so o branco do traco/miolo do pin e literal — nao ha token semantico consumivel dentro do SVG.
+
+OK: zero cor literal fora do token (3 ocorrencia(s) allowlistada(s)).
+exit=0

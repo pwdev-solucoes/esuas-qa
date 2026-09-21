@@ -1,0 +1,144 @@
+======================================================================
+1) npm run audit:ui — admin/ (worktree feature/10136-campos-readonly-botoes-previsiveis, commit adee37b)
+======================================================================
+
+> sigsuas-frontend-admin@0.1.0 audit:ui
+> node scripts/audit-ui-consistency.mjs
+
+Auditoria de conformidade de UI — HU #10136
+Arquivos .vue varridos: 586
+
+Exceções explícitas (RN07 — listadas, nunca silenciadas):
+
+  [RN05-nativo] em src/components/ui/ — 0 ocorrência(s)
+  Motivo: É o próprio design system: `components/ui/` é onde a aparência dos botões é definida (Button.vue/cva) e onde as primitivas reka-ui renderizam `<button>` nativo.
+
+  [RN05-nativo-condicional] — 82 ocorrência(s)
+  Motivo: Controle segmentado com estado (toggle de visualização, seletor de modo, barra do editor): a "variante" alterna com o estado e a versão ativa usa tokens que não correspondem a uma variante única do `Button` (ex.: `bg-primary/10` + `border-primary`). Migração avaliada como evolução — está listada aqui, item a item, e não é silenciada.
+    src/components/app/AppSidebar.vue:188 — replica a variante "default" por estado
+    src/components/app/AppSidebar.vue:296 — replica a variante "default" por estado
+    src/components/app/RichTextEditor.vue:209 — replica a variante "secondary" por estado
+    src/modules/address-sources/components/AddressSourcesFilters.vue:111 — replica a variante "secondary" por estado
+    src/modules/address-sources/components/AddressSourcesFilters.vue:126 — replica a variante "secondary" por estado
+    src/modules/address-zone-types/components/AddressZoneTypesFilters.vue:115 — replica a variante "secondary" por estado
+    src/modules/address-zone-types/components/AddressZoneTypesFilters.vue:130 — replica a variante "secondary" por estado
+    src/modules/cbos/components/CbosFilters.vue:125 — replica a variante "secondary" por estado
+    src/modules/cbos/components/CbosFilters.vue:140 — replica a variante "secondary" por estado
+    src/modules/cities/components/CitiesFilters.vue:128 — replica a variante "secondary" por estado
+    src/modules/cities/components/CitiesFilters.vue:143 — replica a variante "secondary" por estado
+    src/modules/contract-modalities/components/ContractModalitiesFilters.vue:115 — replica a variante "secondary" por estado
+    src/modules/contract-modalities/components/ContractModalitiesFilters.vue:130 — replica a variante "secondary" por estado
+    src/modules/countries/components/CountriesFilters.vue:109 — replica a variante "secondary" por estado
+    src/modules/countries/components/CountriesFilters.vue:124 — replica a variante "secondary" por estado
+    src/modules/dne-imports/components/DneImportsFilters.vue:117 — replica a variante "secondary" por estado
+    src/modules/dne-imports/components/DneImportsFilters.vue:130 — replica a variante "secondary" por estado
+    src/modules/dne-imports/components/DneImportsFilters.vue:175 — replica a variante "secondary" por estado
+    src/modules/dne-imports/components/DneImportsFilters.vue:190 — replica a variante "secondary" por estado
+    src/modules/education-levels/components/EducationLevelsFilters.vue:111 — replica a variante "secondary" por estado
+    src/modules/education-levels/components/EducationLevelsFilters.vue:126 — replica a variante "secondary" por estado
+    src/modules/geo-layer-imports/components/GeoLayerImportsFilters.vue:132 — replica a variante "secondary" por estado
+    src/modules/geo-layer-imports/components/GeoLayerImportsFilters.vue:145 — replica a variante "secondary" por estado
+    src/modules/geo-layer-imports/components/GeoLayerImportsFilters.vue:190 — replica a variante "secondary" por estado
+    src/modules/geo-layer-imports/components/GeoLayerImportsFilters.vue:205 — replica a variante "secondary" por estado
+    src/modules/geo-layers/components/GeoLayerCriteriaBuilder.vue:105 — replica a variante "default" por estado
+    src/modules/legal-document-types/components/LegalDocumentTypesFilters.vue:133 — replica a variante "secondary" por estado
+    src/modules/legal-document-types/components/LegalDocumentTypesFilters.vue:148 — replica a variante "secondary" por estado
+    src/modules/legal-documents/components/LegalDocumentsFilters.vue:127 — replica a variante "secondary" por estado
+    src/modules/legal-documents/components/LegalDocumentsFilters.vue:142 — replica a variante "secondary" por estado
+    src/modules/legal-documents/components/dialogs/VersionHistoryDrawer.vue:94 — replica a variante "default" por estado
+    src/modules/location-types/components/LocationTypesFilters.vue:109 — replica a variante "secondary" por estado
+    src/modules/location-types/components/LocationTypesFilters.vue:124 — replica a variante "secondary" por estado
+    src/modules/nationalities/components/NationalitiesFilters.vue:111 — replica a variante "secondary" por estado
+    src/modules/nationalities/components/NationalitiesFilters.vue:126 — replica a variante "secondary" por estado
+    src/modules/persons/components/PersonsSearchBar.vue:53 — replica a variante "secondary" por estado
+    src/modules/persons/components/PersonsSearchBar.vue:67 — replica a variante "secondary" por estado
+    src/modules/persons/components/PersonsSearchBar.vue:81 — replica a variante "secondary" por estado
+    src/modules/phone-types/components/PhoneTypesFilters.vue:111 — replica a variante "secondary" por estado
+    src/modules/phone-types/components/PhoneTypesFilters.vue:126 — replica a variante "secondary" por estado
+    src/modules/postal-codes/components/PostalCodesFilters.vue:150 — replica a variante "secondary" por estado
+    src/modules/postal-codes/components/PostalCodesFilters.vue:165 — replica a variante "secondary" por estado
+    src/modules/race-colors/components/RaceColorsFilters.vue:111 — replica a variante "secondary" por estado
+    src/modules/race-colors/components/RaceColorsFilters.vue:126 — replica a variante "secondary" por estado
+    src/modules/roles/components/RolesFilters.vue:120 — replica a variante "secondary" por estado
+    src/modules/roles/components/RolesFilters.vue:135 — replica a variante "secondary" por estado
+    src/modules/sexes/components/SexesFilters.vue:111 — replica a variante "secondary" por estado
+    src/modules/sexes/components/SexesFilters.vue:126 — replica a variante "secondary" por estado
+    src/modules/social-entity-statuses/components/SocialEntityStatusesFilters.vue:117 — replica a variante "secondary" por estado
+    src/modules/social-entity-statuses/components/SocialEntityStatusesFilters.vue:132 — replica a variante "secondary" por estado
+    src/modules/social-specificities/components/SocialSpecificitiesFilters.vue:117 — replica a variante "secondary" por estado
+    src/modules/social-specificities/components/SocialSpecificitiesFilters.vue:132 — replica a variante "secondary" por estado
+    src/modules/social-unit-equipments/components/SocialUnitEquipmentsFilters.vue:117 — replica a variante "secondary" por estado
+    src/modules/social-unit-equipments/components/SocialUnitEquipmentsFilters.vue:132 — replica a variante "secondary" por estado
+    src/modules/social-unit-statuses/components/SocialUnitStatusesFilters.vue:117 — replica a variante "secondary" por estado
+    src/modules/social-unit-statuses/components/SocialUnitStatusesFilters.vue:132 — replica a variante "secondary" por estado
+    src/modules/social-unit-structures/components/SocialUnitStructuresFilters.vue:117 — replica a variante "secondary" por estado
+    src/modules/social-unit-structures/components/SocialUnitStructuresFilters.vue:132 — replica a variante "secondary" por estado
+    src/modules/social-unit-types/components/SocialUnitTypesFilters.vue:113 — replica a variante "secondary" por estado
+    src/modules/social-unit-types/components/SocialUnitTypesFilters.vue:128 — replica a variante "secondary" por estado
+    src/modules/states/components/StatesFilters.vue:126 — replica a variante "secondary" por estado
+    src/modules/states/components/StatesFilters.vue:141 — replica a variante "secondary" por estado
+    src/modules/street-types/components/StreetTypesFilters.vue:129 — replica a variante "secondary" por estado
+    src/modules/street-types/components/StreetTypesFilters.vue:144 — replica a variante "secondary" por estado
+    src/modules/streets/components/StreetsFilters.vue:142 — replica a variante "secondary" por estado
+    src/modules/streets/components/StreetsFilters.vue:157 — replica a variante "secondary" por estado
+    src/modules/suas-participation-types/components/SuasParticipationTypesFilters.vue:117 — replica a variante "secondary" por estado
+    src/modules/suas-participation-types/components/SuasParticipationTypesFilters.vue:132 — replica a variante "secondary" por estado
+    src/modules/tenant-statuses/components/TenantStatusesFilters.vue:111 — replica a variante "secondary" por estado
+    src/modules/tenant-statuses/components/TenantStatusesFilters.vue:126 — replica a variante "secondary" por estado
+    src/modules/tenants/components/TenantsFilters.vue:121 — replica a variante "secondary" por estado
+    src/modules/tenants/components/TenantsFilters.vue:136 — replica a variante "secondary" por estado
+    src/modules/territorial-unit-types/components/TerritorialUnitTypesFilters.vue:119 — replica a variante "secondary" por estado
+    src/modules/territorial-unit-types/components/TerritorialUnitTypesFilters.vue:134 — replica a variante "secondary" por estado
+    src/modules/territorial-units/components/TerritorialUnitsFilters.vue:167 — replica a variante "secondary" por estado
+    src/modules/territorial-units/components/TerritorialUnitsFilters.vue:182 — replica a variante "secondary" por estado
+    src/modules/traditional-population-groups/components/TraditionalPopulationGroupsFilters.vue:119 — replica a variante "secondary" por estado
+    src/modules/traditional-population-groups/components/TraditionalPopulationGroupsFilters.vue:134 — replica a variante "secondary" por estado
+    src/modules/users/components/UsersFilters.vue:133 — replica a variante "secondary" por estado
+    src/modules/users/components/UsersFilters.vue:148 — replica a variante "secondary" por estado
+    src/pages/app/GeoLayerFormPage.vue:363 — replica a variante "default" por estado
+    src/pages/app/PersonFormPage.vue:164 — replica a variante "default" por estado
+
+Resultado: ZERO desvios.
+
+======================================================================
+2) npm run audit:ui — client/ (branch feature/10136-campos-readonly-botoes-previsiveis, commit eb7ef17)
+======================================================================
+
+> esuas-client@0.1.0 audit:ui
+> node scripts/audit-ui-consistency.mjs
+
+Auditoria de conformidade de UI (HU #10136) — 279 arquivos .vue em src/
+
+[R1] RN05 — <Button> com override de variante: 0 desvio(s)
+[R2] RN05 — <button> nativo replicando o design system: 0 desvio(s)
+[R3] RN01 — :disabled usado como "modo visualizacao": 0 desvio(s)
+[R4] RN02 — classe de readonly colada na tela: 0 desvio(s)
+Excecoes declaradas (visiveis por RN07): 2
+  src/components/app/DatePicker.vue:56 [R2] — Gatilho de Popover do campo de data (PopoverTrigger as-child): e controle de formulario com aparencia de Input, nao acao do design system.
+  src/modules/tenant-settings/components/OrganizationLogoHeader.vue:84 [R2] — Tile clicavel do logo da organizacao (60x60, avatar com upload): nao e botao de acao — nenhuma variante/size do Button descreve esse elemento.
+
+OK: zero desvios de conformidade de UI.
+
+======================================================================
+3) CA06 — demonstração de detecção: arquivo temporário injetado com desvio proposital
+   (client/src/pages/app/__audit-ui-demo-temp.vue — REMOVIDO logo após a captura,
+    confirmado via 'git status' limpo; não commitado, não faz parte do código real)
+======================================================================
+
+> esuas-client@0.1.0 audit:ui
+> node scripts/audit-ui-consistency.mjs
+
+Auditoria de conformidade de UI (HU #10136) — 280 arquivos .vue em src/
+
+[R1] RN05 — <Button> com override de variante: 0 desvio(s)
+[R2] RN05 — <button> nativo replicando o design system: 1 desvio(s)
+  src/pages/app/__audit-ui-demo-temp.vue:11 — <button> nativo reimplementa a aparencia do componente Button (use <Button variant=... size=...>)
+      bg-destructive h-10 px-5
+
+[R3] RN01 — :disabled usado como "modo visualizacao": 0 desvio(s)
+[R4] RN02 — classe de readonly colada na tela: 0 desvio(s)
+Excecoes declaradas (visiveis por RN07): 2
+  src/components/app/DatePicker.vue:56 [R2] — Gatilho de Popover do campo de data (PopoverTrigger as-child): e controle de formulario com aparencia de Input, nao acao do design system.
+  src/modules/tenant-settings/components/OrganizationLogoHeader.vue:84 [R2] — Tile clicavel do logo da organizacao (60x60, avatar com upload): nao e botao de acao — nenhuma variante/size do Button descreve esse elemento.
+
+FALHA: 1 desvio(s) de conformidade de UI.

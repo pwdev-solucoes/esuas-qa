@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — Reorganização dos Menus do Client</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — Reorganização dos Menus do Client</h1>
+    <div class="sub">US-05 · HU-10008 · Evidências end-to-end no client (:5174)</div>
+    <div class="meta"><div><span>Gerado em:</span> 22/07/2026</div><div><span>História:</span> US-05 — Reorganizar os menus do Client conforme a proposta aprovada</div><div><span>Branch:</span> feature/reorganizar-menus-client (submódulo client/)</div><div><span>Commit:</span> 5274854</div><div><span>Spec:</span> .planning/product/stories/US-05-reorganizar-menus-do-client.md</div><div><span>Ambiente:</span> API Sail/PostgreSQL (:8000) · client Vite :5174 (não-mock)</div><div><span>Organização (tenant):</span> E2E · Master (52998224725)</div><div><span>Ferramenta:</span> playwright-cli (Chromium) + Vitest</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">5 critérios de aceite verificados. CA01 evidenciado ao vivo no navegador (menu lateral renderizado com a nova estrutura de 6 grupos, batendo item-a-item com a proposta aprovada). CA02, CA03, CA04 e CA05 cobertos pela suíte Vitest de sidebar-menu (10 testes, todos verdes) — apêndice. Resultado geral: todos os critérios atendidos.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA01</td><td>Estrutura bate com a proposta</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA02</td><td>Menu extraído do componente</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA03</td><td>Nenhuma rota fica órfã</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA04</td><td>Permissões preservadas</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA05</td><td>Código morto resolvido</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA01">
+      <h2>CA01 — Estrutura bate com a proposta <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado a proposta aprovada como referência, quando comparo o menu renderizado no Client, então a ordem dos grupos, a ordem dos itens dentro de cada grupo e os rótulos correspondem exatamente ao documento, item a item.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Login como Master (<code>52998224725</code>) → aceite dos documentos legais → chegada ao <code>/app</code>. Menu lateral capturado isolado e na página completa. Estrutura observada: <b>PRINCIPAL</b> (Início, Georreferenciamento) · <b>Busca</b> (Pessoas, Qualificação Territorial) · <b>Cadastros</b> (Profissionais, Unidades Socioassistenciais, Entidades Socioassistenciais) · <b>Importações</b> (Cadastro Único (MDS)) · <b>Configurações</b> (Organização, Documentos Legais) · <b>Sobre</b> (Histórico de versões).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A ordem dos 6 grupos corresponde à proposta: PRINCIPAL → Busca → Cadastros → Importações → Configurações → Sobre.</li><li>Os renames aprovados aparecem renderizados: 'Pesquisa de Pessoas' → 'Pessoas' e 'Configurações' → 'Organização'.</li><li>O item 'SiGSUAS' (sem rota) foi omitido conforme decisão de escopo; 'Sobre' exibe apenas 'Histórico de versões'.</li><li>Rótulos em grafia correta pt-BR (a imagem-proposta continha typos que não foram reproduzidos).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca01-sidebar-menu.png" alt="CA01 evidência"/><figcaption>ca01-sidebar-menu.png</figcaption></figure><figure><img src="screenshots/ca01-app-dashboard.png" alt="CA01 evidência"/><figcaption>ca01-app-dashboard.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA02">
+      <h2>CA02 — Menu extraído do componente <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado o código do Client, quando procuro a definição do menu, então ela vive em client/src/components/app/sidebar-menu.ts, no mesmo formato do Admin (MenuGroup → MenuSubgroup → MenuItem) e client/src/types/menu.ts reflete essa estrutura ou é removido.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Definição extraída para <code>client/src/components/app/sidebar-menu.ts</code> (formato do Admin: <code>MenuGroup → MenuSubgroup → MenuItem</code> + helpers <code>groupItems()</code>/<code>collapsibleGroupIds</code>). <code>types/menu.ts</code> (tipo achatado obsoleto, sem imports) removido. Suíte de estrutura valida os grupos, o flag collapsible e os renames.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>sidebar-menu.ts criado no formato do Admin; nenhum menu inline restante em AppSidebar.vue.</li><li>types/menu.ts removido (confirmado sem imports no projeto).</li><li>Testes 'estrutura — CA01/CA02' verdes.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA03">
+      <h2>CA03 — Nenhuma rota fica órfã <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado a reorganização aplicada, quando cruzo os itens do menu com as rotas registradas no router do Client, então toda rota navegável tem entrada no menu ou está declarada como intencionalmente fora dele.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Teste cruza os <code>routeName</code> do menu com os nomes de rota do router. Rotas de detalhe/CRUD/auth/erro declaradas na allowlist de 'intencionalmente fora' (inclui <code>usuarios</code>). Falha se surgir rota órfã fora da allowlist.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Toda rota do menu existe no router.</li><li>Nenhuma rota nomeada fica órfã: está no menu ou na allowlist.</li><li>A allowlist não contém rota morta (todas existem no router).</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA04">
+      <h2>CA04 — Permissões preservadas <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um profissional sem a permissão de um item movido, quando ele abre o menu, então o item continua oculto após a reorganização — mover item não pode vazar acesso.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Testes de gating montam o AppSidebar com um me-store mockado e variam <code>hasPermission</code>: (1) com todas as permissões, todos os grupos/itens; (2) sem permissões, itens gated ocultos e grupos vazios omitidos; (3) permissão pontual reexibe item e grupo. No print do CA01 (Master com as 6 permissões) todos os itens gated aparecem — comportamento esperado.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Sem permissão, o item gated permanece oculto e o grupo vazio some.</li><li>Conceder uma permissão reexibe exatamente o item correspondente.</li><li>Nenhum item teve a permissão removida ou afrouxada na reorganização.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA05">
+      <h2>CA05 — Código morto resolvido <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado o bloco 'Gestão de Usuário' hoje comentado, quando a reorganização é entregue, então ele foi promovido a item real ou removido do arquivo — não permanece comentado.</p>
+      <p class="steps"><strong>Como foi testado:</strong> O bloco comentado 'Gestão de Usuário' foi <b>removido</b> do AppSidebar.vue (decisão de escopo: a proposta não lista gestão de usuários; a rota <code>usuarios</code> segue navegável fora do menu, registrada na allowlist do CA03).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Nenhum bloco de menu comentado remanescente em AppSidebar.vue.</li><li>Rota 'usuarios' documentada como intencionalmente fora do menu (allowlist CA03).</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+  
+  <h2>Anexo — Cobertura automatizada (Vitest — src/components/app/sidebar-menu.test.ts)</h2>
+  <pre class="pest">
+ RUN  v2.1.9 /Users/binho/Projetos/esuas-all/client
+
+ ✓ src/components/app/sidebar-menu.test.ts &gt; sidebar-menu (estrutura — CA01/CA02) &gt; reproduz a ordem exata de grupos da proposta aprovada
+ ✓ src/components/app/sidebar-menu.test.ts &gt; sidebar-menu (estrutura — CA01/CA02) &gt; apenas PRINCIPAL é flat; demais grupos são collapsible
+ ✓ src/components/app/sidebar-menu.test.ts &gt; sidebar-menu (estrutura — CA01/CA02) &gt; reproduz itens, ordem, rótulos e rotas item-a-item (CA01)
+ ✓ src/components/app/sidebar-menu.test.ts &gt; sidebar-menu (estrutura — CA01/CA02) &gt; aplica os renames aprovados: "Organização" e "Pessoas" (rotas inalteradas)
+ ✓ src/components/app/sidebar-menu.test.ts &gt; sidebar-menu × router (CA03) &gt; toda rota do menu existe no router
+ ✓ src/components/app/sidebar-menu.test.ts &gt; sidebar-menu × router (CA03) &gt; não há rota órfã: toda rota nomeada está no menu ou na allowlist
+ ✓ src/components/app/sidebar-menu.test.ts &gt; sidebar-menu × router (CA03) &gt; a allowlist não contém rota morta (todas existem no router)
+ ✓ src/components/app/sidebar-menu.test.ts &gt; AppSidebar gating por permissão (CA04) &gt; com todas as permissões, renderiza todos os grupos e itens
+ ✓ src/components/app/sidebar-menu.test.ts &gt; AppSidebar gating por permissão (CA04) &gt; sem permissões, oculta itens gated e omite grupos que ficam vazios
+ ✓ src/components/app/sidebar-menu.test.ts &gt; AppSidebar gating por permissão (CA04) &gt; permissão pontual reexibe o item e o grupo correspondente
+
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+   Start at  16:47:34
+   Duration  764ms (transform 143ms, setup 9ms, collect 272ms, tests 25ms, environment 246ms, prepare 39ms)
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

@@ -1,0 +1,43 @@
+{
+  "name": "@pwdev-solucoes/esuas-qa",
+  "version": "1.0.0",
+  "description": "QA & E2E testing suite for SigSUAS multi-tenant platform",
+  "type": "module",
+  "scripts": {
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "test:debug": "playwright test --debug",
+    "test:headed": "playwright test --headed",
+    "test:e2e": "playwright test tests/e2e",
+    "test:acceptance": "playwright test tests/acceptance",
+    "test:auth": "playwright test tests/e2e/auth",
+    "test:admin": "playwright test tests/e2e/admin",
+    "test:client": "playwright test tests/e2e/client",
+    "test:report": "playwright show-report",
+    "install:browsers": "playwright install chromium firefox webkit",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "stack:up": "bash scripts/start-stack.sh",
+    "stack:down": "bash scripts/stop-stack.sh",
+    "e2e:local": "npm run stack:up && npm run test:e2e && npm run stack:down",
+    "e2e:running": "npm run test:e2e"
+  },
+  "keywords": [
+    "e2e",
+    "testing",
+    "qa",
+    "playwright",
+    "sigsuas"
+  ],
+  "author": "Paulo Soares",
+  "license": "LGPL-3.0-or-later",
+  "devDependencies": {
+    "@playwright/test": "^1.45.0",
+    "@types/node": "^20.0.0",
+    "axios": "^1.7.0",
+    "dotenv": "^16.4.0",
+    "eslint": "^8.57.0",
+    "prettier": "^3.3.0",
+    "typescript": "^5.4.0"
+  }
+}

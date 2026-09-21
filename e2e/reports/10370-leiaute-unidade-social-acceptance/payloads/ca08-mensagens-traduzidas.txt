@@ -1,0 +1,9 @@
+HU #10370 — CA08: mensagem da pendência, nas duas línguas do sistema
+==========================================================================================
+
+pt_BR: A classificação desta unidade (:field) não corresponde a nenhum tipo previsto pelo SIAP. O ajuste é feito no cadastro de apoio de tipos de unidade, no Painel de Administração Global. Enquanto isso, nenhuma remessa pode ser gerada.
+
+en   : The classification of this unit (:field) has no counterpart in the SIAP table. The fix is made in the social unit types support register, in the Global Administration Panel. Until then, no remittance can be generated.
+
+Tipo cadastrado que provoca a pendência: code='777' name='Unidade Móvel de Abordagem'
+Escala aceita pelo Manual (item 15.1): 001 CRAS, 002 CREAS, 003 Centro POP, 004 Centro-Dia, 005 Unidades de Acolhimento, 099 Outros

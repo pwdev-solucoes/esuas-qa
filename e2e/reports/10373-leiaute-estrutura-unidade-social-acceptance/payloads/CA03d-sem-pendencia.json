@@ -1,0 +1,28 @@
+{
+    "_leitura": "CA03d — o pre-check LIMPO é a evidência: can_generate = true e blocking.pendencies = []. Não há código filtrando estrutura sem vínculo; a avaliação parte das UNIDADES do tenant (D08), então uma estrutura órfã nunca é alcançada. Três códigos fora da Tabela 36 existem no cadastro global neste cenário (\"099\", \"EST\" e \"077\") e nenhum deles gera pendência.",
+    "codigos_fora_da_tabela_no_cadastro_global": [
+        "099",
+        "EST",
+        "077 (vinculada em OUTRO município)"
+    ],
+    "blocking": {
+        "can_generate": true,
+        "pendencies": []
+    },
+    "layout": {
+        "name": "EstruturaUnidadeSocial",
+        "sort_order": 4,
+        "file_name": "EstruturaUnidadeSocial.xml",
+        "outcome": "complete",
+        "record_count": 2,
+        "skipped_count": 0,
+        "pendencies": []
+    },
+    "summary": {
+        "layout_count": 11,
+        "record_count": 3,
+        "blocking_pendency_count": 0,
+        "informative_pendency_count": 0,
+        "layout_pendency_count": 17
+    }
+}

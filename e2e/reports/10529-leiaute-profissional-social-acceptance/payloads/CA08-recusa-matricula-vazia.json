@@ -1,0 +1,16 @@
+{
+    "_leitura": "CA08 — lotacao vigente com matricula vazia. O POST devolve 422 em tenant_professionals, siap_remittances fica em 0 linhas, nenhum job e despachado e nenhum arquivo e escrito: \"a remessa nao e gerada\", literalmente. A conferencia previa identifica a lotacao (subject_uuid) e o campo Matricula — ver CA13.",
+    "lotacao_uuid": "3ab11920-2c8a-401b-a238-3b2902af3948",
+    "http_status": 422,
+    "resposta_do_post": {
+        "message": "A remessa SIAP não pode ser gerada: 1 lotação de profissional está sem matrícula ou CPF no formato exigido pelo SIAP. Corrija o cadastro de Profissionais Municipais — veja quais dados faltam na conferência prévia.",
+        "errors": {
+            "tenant_professionals": [
+                "A remessa SIAP não pode ser gerada: 1 lotação de profissional está sem matrícula ou CPF no formato exigido pelo SIAP. Corrija o cadastro de Profissionais Municipais — veja quais dados faltam na conferência prévia."
+            ]
+        }
+    },
+    "remessas_no_banco": 0,
+    "jobs_despachados": 0,
+    "arquivos_no_storage": 0
+}

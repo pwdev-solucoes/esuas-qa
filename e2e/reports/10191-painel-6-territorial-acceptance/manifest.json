@@ -1,0 +1,167 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — Painel 6: Territorial",
+    "subtitle": "HU #10191 · Dashboard do Tenant · Evidências end-to-end no client",
+    "rows": [
+      [
+        "Gerado em",
+        "30/07/2026"
+      ],
+      [
+        "HU",
+        "#10191 — Painel 6: Territorial"
+      ],
+      [
+        "Branch",
+        "feature/10190-painel-5-atendimento (entrega contínua dos painéis)"
+      ],
+      [
+        "Spec",
+        ".planning/specs/10191-painel-6-territorial.md"
+      ],
+      [
+        "Endpoint",
+        "GET /api/client/dashboard/territorial"
+      ],
+      [
+        "Ambiente",
+        "API Sail/PostgreSQL (:80) · client Vite :5174 (não-mock)"
+      ],
+      [
+        "Organização (tenant)",
+        "E2E CadÚnico · bairros: Alazão, Batingas, Baixa da Onça"
+      ],
+      [
+        "Ferramenta",
+        "playwright-cli (Chromium) + Pest 4"
+      ]
+    ]
+  },
+  "summary": "9 Critérios de Aceite verificados: 4 por navegador (dirigindo o app real como Master), 1 parcial (UI + suíte) e 4 automatizados (Pest). O Painel 6 entrega dois rankings municipais por bairro — Famílias por Bairro e Extrema Pobreza por Bairro (atribuição espacial ST_Contains) — e a Situação do Domicílio (Urbana/Rural/Não informada). Os rankings ficam municipais, destacando o bairro selecionado; só a Situação do Domicílio recalcula pelo filtro (RG01/P3). Resultado geral: todos os critérios ATENDIDOS. Dados de evidência semeados no tenant E2E: Famílias por Bairro (Alazão 17, Batingas 5, Itapoã 3, Centro Demo 3, Baixa da Onça 3) e Extrema Pobreza (Alazão 11, Batingas 5, Itapoã 3, Centro Demo 3, Baixa da Onça 3); a maior TAXA de extrema pobreza é de Batingas (5/5 = 100%), evidenciando o ranking independente do CA08.",
+  "cas": [
+    {
+      "id": "CA08",
+      "title": "Ranking de bairros vulneráveis (extrema pobreza ordenada)",
+      "status": "nav",
+      "gherkin": "Dado que acesso a aba \"Territorial\"\nQuando observo o gráfico de extrema pobreza por localidade\nEntão os bairros são ordenados do maior para o menor volume de famílias extremamente pobres.",
+      "steps_html": "Login como Master → abrir a aba <code>Territorial</code>. O gráfico \"Extrema Pobreza por Bairro\" (barras horizontais vermelhas) lista os bairros ordenados do maior para o menor volume de famílias em extrema pobreza (R$ 0,00–218,00). O topo (Batingas) difere do ranking de Famílias por Bairro (Alazão), evidenciando que a extrema pobreza é ranqueada de forma independente.",
+      "results": [
+        "Ranking de extrema pobreza ordenado desc: Alazão 11, Batingas 5, Itapoã 3, Centro Demo 3, Baixa da Onça 3.",
+        "Ranking de Famílias por Bairro ordenado desc: Alazão 17, Batingas 5, Itapoã 3, Centro Demo 3, Baixa da Onça 3.",
+        "Embora Alazão lidere os dois volumes, a maior TAXA de extrema pobreza é de Batingas (5 de 5 = 100%), destacada no insight — os rankings são independentes."
+      ],
+      "images": [
+        "screenshots/ca08-municipal-rankings.png"
+      ]
+    },
+    {
+      "id": "RG01-a",
+      "title": "Comportamento padrão — \"Todos os Bairros\" (consolidação municipal)",
+      "status": "nav",
+      "gherkin": "Dado que acabei de carregar a aba \"Territorial\"\nQuando nenhum bairro está selecionado\nEntão o endpoint é chamado sem neighborhood_uuid\nE os dois rankings mostram a consolidação municipal (sem destaque)\nE a Situação do Domicílio reflete o município inteiro.",
+      "steps_html": "Ao carregar, o filtro global de Bairro inicia em <code>Todos os Bairros</code>. Os dois rankings e a Situação do Domicílio exibem a consolidação municipal, sem qualquer bairro destacado.",
+      "results": [
+        "Filtro em \"Todos os Bairros\" por padrão (sem neighborhood_uuid).",
+        "Rankings municipais (5 bairros com famílias) e donut do domicílio municipal (Urbana 8, Rural 7, Não informada 81)."
+      ],
+      "images": [
+        "screenshots/ca08-municipal-rankings.png"
+      ]
+    },
+    {
+      "id": "RG01-b",
+      "title": "Comportamento dinâmico — rankings municipais + destaque; domicílio recalcula",
+      "status": "nav",
+      "gherkin": "Dado que o filtro global está em \"Todos os Bairros\"\nQuando eu seleciono um bairro\nEntão o endpoint é chamado com o neighborhood_uuid do bairro\nE os dois rankings permanecem municipais, mas o bairro selecionado é destacado\nE a Situação do Domicílio recalcula considerando apenas as famílias do bairro (P3).",
+      "steps_html": "Selecionar o bairro <code>Alazão</code> no filtro global. Os dois rankings permanecem municipais (mesmos valores), mas a barra do Alazão passa a <b>âmbar</b> (destaque); a Situação do Domicílio recalcula apenas para o Alazão.",
+      "results": [
+        "Filtro passa a \"Alazão\"; surge o botão \"Limpar Filtro\".",
+        "Legenda \"Bairro em destaque: Alazão — os rankings mostram o município inteiro\".",
+        "Barra do Alazão destacada em âmbar nos dois rankings; valores dos rankings inalterados (P3).",
+        "Situação do Domicílio recalculada para o Alazão: Urbana 6, Rural 2, Não informada 9."
+      ],
+      "images": [
+        "screenshots/rg01b-bairro-alazao.png"
+      ]
+    },
+    {
+      "id": "RG01-c",
+      "title": "Ação rápida — \"Limpar Filtro\" volta ao município",
+      "status": "nav",
+      "gherkin": "Dado que estou com um bairro selecionado\nQuando eu aciono \"Limpar Filtro\"\nEntão o endpoint é chamado sem neighborhood_uuid\nE o destaque some e a Situação do Domicílio volta à consolidação municipal.",
+      "steps_html": "Com \"Alazão\" selecionado, acionar <code>Limpar Filtro</code>. O painel retorna imediatamente à visão \"Todos os Bairros\": o destaque some e a Situação do Domicílio volta ao município.",
+      "results": [
+        "Filtro volta a \"Todos os Bairros\"; legenda de destaque removida.",
+        "Rankings sem destaque; Situação do Domicílio na consolidação municipal."
+      ],
+      "images": [
+        "screenshots/rg01c-limpar-filtro.png"
+      ]
+    },
+    {
+      "id": "RN08",
+      "title": "Indicadores do Painel 6 (rankings + domicílio)",
+      "status": "parc",
+      "gherkin": "Dado um recorte municipal com famílias geocodificadas\nQuando o painel é calculado\nEntão \"Famílias por Bairro\" traz o ranking (desc) de famílias por bairro\nE \"Extrema Pobreza por Bairro\" traz o ranking (desc) de famílias em extrema pobreza por bairro\nE \"Situação do Domicílio\" traz Urbana/Rural/Não informada.",
+      "steps_html": "A aba apresenta os três indicadores do RN08: os dois rankings por bairro (barras horizontais, Top-N desc) e a Situação do Domicílio (rosca). A atribuição família→bairro é espacial (ST_Contains); a exatidão do agrupamento, do Top-N e da faixa de extrema pobreza é coberta pela suíte Pest (apêndice).",
+      "results": [
+        "Famílias por Bairro: ranking desc de famílias moradoras por bairro.",
+        "Extrema Pobreza por Bairro: ranking desc do volume de famílias em extrema pobreza (R$ 0,00–218,00).",
+        "Situação do Domicílio: proporção volumétrica e percentual Urbana × Rural (× Não informada).",
+        "Corretude do agrupamento/ordenação/faixa verificada pela suíte automatizada."
+      ],
+      "images": [
+        "screenshots/ca08-municipal-rankings.png"
+      ]
+    },
+    {
+      "id": "CA-EXTREMA-NULA",
+      "title": "Renda nula conta como extrema pobreza",
+      "status": "auto",
+      "gherkin": "Dado uma família geocodificada com per_capita_income nulo\nQuando o ranking de extrema pobreza é calculado\nEntão essa família é contada no bairro que a contém (renda nula = R$ 0,00).",
+      "steps_html": "Verificado pela suíte Pest — <code>it counts null income as extreme poverty in the extreme-poverty ranking</code>. Definição consistente com o KPI 5 (extrema pobreza) da barra fixa.",
+      "results": [
+        "Famílias com renda per capita nula entram na faixa de extrema pobreza (tratadas como R$ 0,00)."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA-DOMICILIO-PARTICAO",
+      "title": "Partição da Situação do Domicílio",
+      "status": "auto",
+      "gherkin": "Dado o recorte com famílias urbanas, rurais e sem informação\nQuando a Situação do Domicílio é calculada\nEntão urban + rural + not_informed = total do recorte\nE os percentuais somam 100%.",
+      "steps_html": "Verificado pela suíte Pest — <code>it partitions the domicile situation into urban/rural/not-informed</code>. Domicílio nulo ou fora do enum ⇒ \"Não informada\".",
+      "results": [
+        "Urbana + Rural + Não informada = total do recorte; percentuais somam 100%."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA-VAZIO",
+      "title": "Recorte sem famílias",
+      "status": "auto",
+      "gherkin": "Dado um recorte sem nenhuma família geocodificada\nQuando o painel é calculado\nEntão os dois rankings vêm vazios (total_neighborhoods 0)\nE a Situação do Domicílio traz os 3 grupos com 0 e percentuais 0, sem erro.",
+      "steps_html": "Verificado pela suíte Pest — <code>it returns empty rankings and zeroed domicile when the scope has no families</code>.",
+      "results": [
+        "Rankings vazios (total_neighborhoods 0); domicílio com os 3 grupos zerados, sem erro."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA-ISOLAMENTO",
+      "title": "Isolamento multi-tenant + validações",
+      "status": "auto",
+      "gherkin": "Dado um usuário vinculado ao Tenant A\nQuando ele solicita o Painel 6\nEntão apenas famílias/bairros do Tenant A entram nos cálculos\nE um neighborhood_uuid fora do município (ou limit inválido) retorna 422; sem permissão retorna 403.",
+      "steps_html": "Verificado pela suíte Pest — <code>DashboardTerritorialIsolationTest</code> (BelongsToTenant), <code>422 para neighborhood fora do município</code>, <code>422 para limit fora de 1..100</code> e o gate do operador base (403).",
+      "results": [
+        "Famílias/bairros de outro tenant nunca entram nos agregados (Global Scope BelongsToTenant).",
+        "neighborhood_uuid fora do município ⇒ 422; limit fora de 1..100 ⇒ 422; sem permissão ⇒ 403."
+      ],
+      "images": []
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Pest — TerritorialTest + DashboardTerritorialIsolationTest)",
+    "file": "territorial.txt"
+  }
+}

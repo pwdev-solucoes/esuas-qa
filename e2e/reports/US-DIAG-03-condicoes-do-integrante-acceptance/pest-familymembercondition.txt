@@ -1,0 +1,76 @@
+
+   PASS  Tests\Feature\Api\Client\FamilyMemberConditionTest
+  ✓ it records income, literacy, schooling, school situation and seriou… 0.65s  
+  ✓ it suggests the schooling level derived from the CadUnico grade WIT… 0.09s  
+  ✓ it turns the suggestion into a value only when a human confirms it,… 0.09s  
+  ✓ it marks the schooling as manual when the professional corrects the… 0.09s  
+  ✓ it records as manual a level that the lossy de-para could never sug… 0.09s  
+  ✓ it suggests nothing when the CadUnico grade has no schooling level…  0.09s  
+  ✓ it suggests nothing for a member with no CadUnico grade at all (CA0… 0.09s  
+  ✓ it keeps the schooling as MANUAL when there is no suggestion to con… 0.09s  
+  ✓ it states in the lang that social program benefits do not count as…  0.08s  
+  ✓ it accepts the income of a PBF beneficiary without any cross-check…  0.09s  
+  ✓ it saves own_income = 0 as 0.00 and does NOT count it as missing (C… 0.09s  
+  ✓ it keeps an empty income as a pending field, never as zero (CA05/D0… 0.09s  
+  ✓ it restores an income to "no information" when null is sent explici… 0.10s  
+  ✓ it refuses a negative income and an income with three decimals (§10… 0.10s  
+  ✓ it offers the ten disability types to a member with has_disability…  0.10s  
+  ✓ it answers 422 disability_type_not_applicable for a member without…  0.09s  
+  ✓ it never turns has_disability on because a type was informed (D06)   0.09s  
+  ✓ it records a pregnancy with the annotation date (CA07/RN08)          0.09s  
+  ✓ it keeps every annotation — the second NEVER overwrites the first (… 0.10s  
+  ✓ it refuses an annotation dated in the future (§10)                   0.09s  
+  ✓ it removes a wrong annotation with soft delete, recording who remov… 0.10s  
+  ✓ it keeps a removed annotation OUT of the history and of the 15.7 ap… 0.11s  
+  ✓ it keeps a removed condition row OUT of the family listing (regress… 0.11s  
+  ✓ it answers 404 for an annotation of another member — scoped binding… 0.09s  
+  ✓ it has NO column, NO enum and NO payload key for school dropout (CA… 0.10s  
+  ✓ it returns data null and is_pending true for a member never recorde… 0.09s  
+  ✓ it returns the six fields as null — never as false — in the payload… 0.09s  
+  ✓ it reads the string "false" as false, not as true (§10)              0.09s  
+  ✓ it refuses an unrecognizable answer instead of silently erasing the… 0.09s  
+  ✓ it registers an attendance and a referral for a member with the six… 0.13s  
+  ✓ it corrects the record in place and audits the change with author a… 0.10s  
+  ✓ it audits the eight value fields — own_income included — and nothin… 0.09s  
+  ✓ it audits the pregnancy annotation WITHOUT its notes (§14)           0.09s  
+  ✓ it answers 403 with unit_not_assigned, naming no unit, to an operat… 0.10s  
+  ✓ it answers 403 to an operator without the LGPD add-on (CA12)         0.09s  
+  ✓ it answers 404 — never 403 — for a member of a family from another…  0.10s  
+  ✓ it answers 404 for a member of ANOTHER family of the same municipal… 0.09s  
+  ✓ it answers 405 to POST and DELETE on conditions, and to PUT on a pr… 0.09s  
+  ✓ it leaves out-of-payload fields untouched and clears one only when…  0.10s  
+  ✓ it keeps ONE row per member however many times it is saved (RN01)    0.10s  
+  ✓ it refuses a lookup value outside the Manual domains (§10)           0.09s  
+  ✓ it refuses authorship sent by the client (RN11)                      0.09s  
+  ✓ it lists the conditions of the whole family in one call, with the p… 0.10s  
+
+   PASS  Tests\Unit\Family\SuggestSchoolingLevelResolverTest
+  ✓ it traduz o grau do CadUnico no nivel do 15.10, linha a linha do de… 0.04s  
+  ✓ it traduz o grau do CadUnico no nivel do 15.10, linha a linha do de… 0.02s  
+  ✓ it traduz o grau do CadUnico no nivel do 15.10, linha a linha do de… 0.02s  
+  ✓ it traduz o grau do CadUnico no nivel do 15.10, linha a linha do de… 0.02s  
+  ✓ it traduz o grau do CadUnico no nivel do 15.10, linha a linha do de… 0.02s  
+  ✓ it traduz o grau do CadUnico no nivel do 15.10, linha a linha do de… 0.02s  
+  ✓ it cobre os seis graus do CadUnico e nenhum a mais (§8.1 — sanidade… 0.02s  
+  ✓ it nao sugere NADA quando o grau nao tem de-para — jamais "o mais p… 0.03s  
+  ✓ it nao sugere nada para o integrante que nao tem grau de instrucao…  0.02s  
+  ✓ it nao sugere nada quando o grau referenciado nem existe mais (CA03… 0.02s  
+  ✓ it nunca sugere pos-graduacao, mestrado, doutorado ou pos-doutorado… 0.02s  
+  ✓ it nao grava nada ao sugerir — nem uma linha vazia (D02)             0.02s  
+  ✓ it resolve o lote com a MESMA resposta do individual, e sem N+1 (§7… 0.02s  
+  ✓ it resolve o lote vazio sem consultar grau nenhum (§7.1)             0.02s  
+  ✓ it continua traduzindo o grau que foi excluido do cadastro depois d… 0.02s  
+
+   PASS  Tests\Feature\TenantIsolation\FamilyMemberConditionIsolationTest
+  ✓ it applies BelongsToTenant to FamilyMemberCondition and FamilyMembe… 0.04s  
+  ✓ it makes the condition and the pregnancy of another municipality un… 0.04s  
+  ✓ it keeps NULL as NULL and ZERO as ZERO across the tenant scope (RN0… 0.04s  
+  ✓ it keeps the pregnancy of another municipality out of the 15.7 prof… 0.04s  
+  ✓ it keeps the scope a NO-OP outside the HTTP cycle — which is why th… 0.04s  
+  ✓ it never lets the Actions reach the row of another municipality (RN… 0.04s  
+  ✓ it keeps the soft delete alive when the Action drops the tenant sco… 0.04s  
+  ✓ it keeps the three 15.10 lookups GLOBAL — without BelongsToTenant,…  0.04s  
+
+  Tests:    66 passed (434 assertions)
+  Duration: 5.38s
+

@@ -1,0 +1,154 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — Painel 7: Público Prioritário",
+    "subtitle": "HU #10192 · Dashboard do Tenant · Evidências end-to-end no client",
+    "rows": [
+      [
+        "Gerado em",
+        "30/07/2026"
+      ],
+      [
+        "HU",
+        "#10192 — Painel 7: Público Prioritário"
+      ],
+      [
+        "Branch",
+        "feature/10190-painel-5-atendimento (entrega contínua dos painéis)"
+      ],
+      [
+        "Spec",
+        ".planning/specs/10192-painel-7-publico-prioritario.md"
+      ],
+      [
+        "Endpoint",
+        "GET /api/client/dashboard/priority-groups"
+      ],
+      [
+        "Ambiente",
+        "API Sail/PostgreSQL (:80) · client Vite :5174 (não-mock)"
+      ],
+      [
+        "Organização (tenant)",
+        "E2E CadÚnico · bairro de recorte: Alazão"
+      ],
+      [
+        "Ferramenta",
+        "playwright-cli (Chromium) + Pest 4"
+      ]
+    ]
+  },
+  "summary": "8 Critérios de Aceite verificados: 4 por navegador (dirigindo o app real como Master), 1 parcial (UI + suíte) e 3 automatizados (Pest). O Painel 7 entrega cinco indicadores de público prioritário — Famílias Indígenas, Famílias Quilombolas, População em Situação de Rua, Pessoas com Deficiência (PcD) e GPTE detalhado por grupo tradicional —, recalculados sob o filtro global por Bairro (RG01). Resultado geral: todos os critérios ATENDIDOS. Dados de evidência semeados no tenant E2E: municipal (Indígenas 5, Quilombolas 3, Situação de Rua 4, PcD 6, GPTE 9 = Pescadores 4 + Cigana 3 + Ribeirinha 2) e bairro Alazão (2 / 1 / 2 / 2 / 2).",
+  "cas": [
+    {
+      "id": "CA09",
+      "title": "Mapeamento de públicos prioritários",
+      "status": "nav",
+      "gherkin": "Dado que consulto a aba \"Público Prioritário\"\nQuando o painel renderiza os dados\nEntão visualizo os quantitativos específicos de cada grupo étnico, tradicional ou de proteção especial no município ou no bairro selecionado.",
+      "steps_html": "Login como Master → abrir a aba <code>Público Prioritário</code>. O painel apresenta os quantitativos de cada público: quatro cartões (Famílias Indígenas, Famílias Quilombolas, População em Situação de Rua, PcD) e o gráfico do GPTE detalhado por grupo tradicional (Pescadores, Cigana, Ribeirinha).",
+      "results": [
+        "Famílias Indígenas = 5; Famílias Quilombolas = 3.",
+        "População em Situação de Rua = 4 cidadãos; PcD = 6 cidadãos.",
+        "GPTE = 9 famílias, detalhado por grupo (Família de Pescadores Artesanais 4, Família Cigana 3, Família Ribeirinha 2)."
+      ],
+      "images": [
+        "screenshots/ca09-municipal.png"
+      ]
+    },
+    {
+      "id": "RG01-a",
+      "title": "Comportamento padrão — \"Todos os Bairros\" (consolidação municipal)",
+      "status": "nav",
+      "gherkin": "Dado que acabei de carregar a aba \"Público Prioritário\"\nQuando nenhum bairro está selecionado\nEntão o endpoint é chamado sem neighborhood_uuid\nE todos os indicadores refletem a consolidação municipal.",
+      "steps_html": "Ao carregar, o filtro global de Bairro inicia em <code>Todos os Bairros</code>. Os cinco indicadores exibem a consolidação municipal.",
+      "results": [
+        "Filtro em \"Todos os Bairros\" por padrão (sem neighborhood_uuid).",
+        "Indicadores no nível municipal (5 / 3 / 4 / 6 / GPTE 9)."
+      ],
+      "images": [
+        "screenshots/ca09-municipal.png"
+      ]
+    },
+    {
+      "id": "RG01-b",
+      "title": "Comportamento dinâmico — seleção de bairro recalcula",
+      "status": "nav",
+      "gherkin": "Dado que o filtro global está em \"Todos os Bairros\"\nQuando eu seleciono um bairro\nEntão o endpoint é chamado com o neighborhood_uuid do bairro\nE os cinco indicadores recalculam considerando apenas as famílias geocodificadas dentro do bairro (e seus integrantes ativos).",
+      "steps_html": "Selecionar o bairro <code>Alazão</code> no filtro global. A barra fixa e os cinco indicadores recalculam instantaneamente, restringindo-se às famílias geocodificadas dentro do bairro.",
+      "results": [
+        "Filtro passa a \"Alazão\"; surge o botão \"Limpar Filtro\"; legenda \"Recalculado por bairro: Alazão\".",
+        "Cartões recalculados: Indígenas 2, Quilombolas 1, Situação de Rua 2, PcD 2.",
+        "GPTE recalculado para o bairro: Família Cigana 1, Família de Pescadores Artesanais 1 (total 2)."
+      ],
+      "images": [
+        "screenshots/rg01b-bairro-alazao.png"
+      ]
+    },
+    {
+      "id": "RG01-c",
+      "title": "Ação rápida — \"Limpar Filtro\" volta ao município",
+      "status": "nav",
+      "gherkin": "Dado que estou com um bairro selecionado\nQuando eu aciono \"Limpar Filtro\"\nEntão o endpoint é chamado sem neighborhood_uuid\nE o painel volta à consolidação municipal completa.",
+      "steps_html": "Com \"Alazão\" selecionado, acionar <code>Limpar Filtro</code>. O painel retorna imediatamente à visão \"Todos os Bairros\".",
+      "results": [
+        "Filtro volta a \"Todos os Bairros\"; legenda de bairro removida.",
+        "Indicadores voltam à consolidação municipal (5 / 3 / 4 / 6 / GPTE 9)."
+      ],
+      "images": [
+        "screenshots/rg01c-limpar-filtro.png"
+      ]
+    },
+    {
+      "id": "RN09",
+      "title": "Indicadores do Painel 7",
+      "status": "parc",
+      "gherkin": "Dado um recorte com famílias e integrantes ativos\nQuando o painel é calculado\nEntão \"Famílias Indígenas\" e \"Famílias Quilombolas\" trazem contagens de famílias\nE \"População em Situação de Rua\" e \"PcD\" trazem contagens de cidadãos ativos\nE \"GPTE\" traz a contagem de famílias por grupo tradicional (desc) + total.",
+      "steps_html": "A UI evidencia os cinco indicadores; a corretude das contagens (famílias vs cidadãos distintos), o GPTE por grupo (desc, sem \"Nenhuma\", soma = total) e a exclusão do sentinela são cobertos pela suíte Pest (apêndice).",
+      "results": [
+        "Indígenas/Quilombolas contam famílias; Situação de Rua/PcD contam cidadãos ativos distintos.",
+        "GPTE detalhado por grupo, ordenado desc, com total e percentual de contexto.",
+        "Corretude verificada pela suíte automatizada."
+      ],
+      "images": [
+        "screenshots/ca09-municipal.png"
+      ]
+    },
+    {
+      "id": "CA-GPTE-DETALHE",
+      "title": "GPTE por grupo (desc), exclui \"Nenhuma\", soma = total",
+      "status": "auto",
+      "gherkin": "Dado famílias em grupos tradicionais distintos\nQuando o GPTE é calculado\nEntão cada grupo presente aparece com sua contagem, ordenado desc\nE o grupo \"Nenhuma\" (code 0) nunca é contado\nE a soma dos grupos é igual ao gpte.total.",
+      "steps_html": "Verificado pela suíte Pest — <code>it breaks GPTE down by group (desc), excludes \"Nenhuma\", and sums to the total</code>.",
+      "results": [
+        "GPTE detalhado por grupo, ordenado desc; \"Nenhuma\" (CODE_NONE) excluído; soma dos grupos = total."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA-PESSOA-DISTINTA",
+      "title": "Cidadão contado uma única vez",
+      "status": "auto",
+      "gherkin": "Dado um cidadão PcD vinculado a duas famílias do recorte\nQuando o indicador PcD é calculado\nEntão esse cidadão é contado uma única vez (distinct por pessoa).",
+      "steps_html": "Verificado pela suíte Pest — <code>it counts a citizen once even when linked to two families of the scope</code>.",
+      "results": [
+        "Cidadão vinculado a duas famílias do recorte conta uma vez (distinct por persons.id)."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA-ISOLAMENTO",
+      "title": "Isolamento multi-tenant + validações + gate",
+      "status": "auto",
+      "gherkin": "Dado um usuário vinculado ao Tenant A\nQuando ele solicita o Painel 7\nEntão apenas famílias/integrantes/GPTE do Tenant A entram nos cálculos\nE um neighborhood_uuid fora do município retorna 422; sem permissão retorna 403.",
+      "steps_html": "Verificado pela suíte Pest — <code>DashboardPriorityGroupsIsolationTest</code> (BelongsToTenant), <code>422 para neighborhood fora do município</code>, recorte vazio e o gate do operador base (403).",
+      "results": [
+        "Famílias/integrantes/GPTE de outro tenant nunca entram nos agregados (Global Scope BelongsToTenant).",
+        "neighborhood_uuid fora do município ⇒ 422; sem permissão ⇒ 403; recorte vazio ⇒ zeros sem erro."
+      ],
+      "images": []
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Pest — PriorityGroupsTest + DashboardPriorityGroupsIsolationTest)",
+    "file": "priority-groups.txt"
+  }
+}

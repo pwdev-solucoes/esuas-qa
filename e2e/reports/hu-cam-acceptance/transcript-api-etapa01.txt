@@ -1,0 +1,202 @@
+
+================================================================
+== LOGIN manager (Sanctum stateful, super admin E2E — CPF mascarado 449.***.***-16)
+================================================================
+login manager/auth/login => HTTP 200
+
+================================================================
+== CA38 — bloqueio por dados obrigatórios: POST /geo-layers sem nome e sem critério efetivo
+================================================================
+HTTP 422
+{
+    "message": "O campo nome \u00e9 obrigat\u00f3rio. (e mais 2 erros)",
+    "errors": {
+        "name": [
+            "O campo nome \u00e9 obrigat\u00f3rio."
+        ],
+        "criteria": [
+            "O campo criteria \u00e9 obrigat\u00f3rio.",
+            "Informe ao menos um crit\u00e9rio de busca: vulnerabilidade, situa\u00e7\u00e3o de atualiza\u00e7\u00e3o cadastral ou setor censit\u00e1rio."
+        ]
+    }
+}
+
+================================================================
+== CA37 — criação de camada válida => 201, status draft, entra no catálogo
+================================================================
+HTTP 201
+{
+    "data": {
+        "id": 1,
+        "uuid": "a08c2b8d-47b1-4722-9c8e-5a2c97da3432",
+        "name": "Fam\u00edlias benefici\u00e1rias do PBF",
+        "description": "Fam\u00edlias com recebimento ativo do Programa Bolsa Fam\u00edlia, para planejamento de busca ativa.",
+        "criteria": {
+            "vulnerabilities": [
+                "receives_pbf"
+            ],
+            "update_status": null,
+            "sector_uuid": null,
+            "traditional_group_id": null
+        },
+        "representation": "heatmap",
+        "style": {
+            "palette": "warm"
+        },
+        "status": "draft",
+        "audience": "global",
+        "tenants_count": 0,
+        "published_at": null,
+        "inactivated_at": null,
+        "created_at": "2026-07-04T19:03:53.000000Z",
+        "updated_at": "2026-07-04T19:03:53.000000Z"
+    },
+    "message": "Camada criada como rascunho."
+}
+L1=a08c2b8d-47b1-4722-9c8e-5a2c97da3432
+
+================================================================
+== CA39 — nome duplicado (case-insensitive) bloqueado
+================================================================
+HTTP 422
+{
+    "message": "J\u00e1 existe uma camada com este nome.",
+    "errors": {
+        "name": [
+            "J\u00e1 existe uma camada com este nome."
+        ]
+    }
+}
+
+================================================================
+== CA40 — preview por tenant único de referência (decisão PO: combobox de tenant)
+================================================================
+HTTP 422
+Traceback (most recent call last):
+  File "<string>", line 2, in <module>
+KeyError: 'data'
+
+================================================================
+== CA44 — trava de publicação sem bases homologadas (flip temporário de sync_status e reversão)
+================================================================
+bases des-homologadas temporariamente
+HTTP 422
+{
+    "message": "N\u00e3o \u00e9 poss\u00edvel publicar a camada: as bases geogr\u00e1ficas prim\u00e1rias (geometrias municipais e setores censit\u00e1rios) precisam estar importadas, conclu\u00eddas e sincronizadas. Homologue as duas bases em Importa\u00e7\u00f5es de Camadas Geogr\u00e1ficas.",
+    "errors": {
+        "geo_layer": [
+            "N\u00e3o \u00e9 poss\u00edvel publicar a camada: as bases geogr\u00e1ficas prim\u00e1rias (geometrias municipais e setores censit\u00e1rios) precisam estar importadas, conclu\u00eddas e sincronizadas. Homologue as duas bases em Importa\u00e7\u00f5es de Camadas Geogr\u00e1ficas."
+        ]
+    }
+}
+bases restauradas (synced)
+
+================================================================
+== CA42 — publicação global (bases homologadas)
+================================================================
+HTTP 200
+status: published | audience: global | published_at: 2026-07-04T19:03:54.000000Z
+
+================================================================
+== LOGIN client (master do tenant 1 — Organização E2E CadÚnico)
+================================================================
+login client/auth/login => HTTP 200
+
+================================================================
+== CA29 (HU-GEO-01) + CA42 — GET /client/geo-panel/layers mescla built-ins + camada custom global (desligada por padrão)
+================================================================
+HTTP 200
+- boundary | municipal-boundaries | Limites dos municípios | builtin= True
+- sectors | census-sectors | Setores censitários (IBGE) | builtin= True
+- units | social-units | CRAS e CREAS | builtin= True
+- custom | a08c2b8d-47b1-4722-9c8e-5a2c97da3432 | Famílias beneficiárias do PBF | builtin= False
+
+================================================================
+== CA43 — publicação direcionada: 2ª camada publicada SÓ para o tenant 2 (Matias e Mendes)
+================================================================
+HTTP 201
+L2=0816af1f-895d-4194-ac67-41ecfbcdedc3
+HTTP 200
+status: published | audience: selected
+-- tenant 1 NÃO deve ver a camada L2:
+L2 visível p/ tenant 1? False
+
+================================================================
+== CA45 — alteração de público com efeito imediato (inclui tenant 1, sem nenhuma outra ação)
+================================================================
+HTTP 200
+-- próximo fetch do tenant 1:
+L2 visível p/ tenant 1? True
+
+================================================================
+== CA46 — dados da camada SEMPRE sob o tenant consumidor (pontos anônimos, sem PII)
+================================================================
+HTTP 200
+total: 6 | points: 6 | chaves 1º ponto: ['count', 'lat', 'lng']
+by_sector: []
+-- camada draft NUNCA visível ao tenant => 404 (isolamento, nunca 403):
+HTTP 404
+
+================================================================
+== RN06 lado servidor — inativação/reativação com efeito imediato na listagem do tenant
+================================================================
+HTTP 200
+L1 visível após inativar? False
+HTTP 200
+L1 visível após reativar (volta ao público configurado)? True
+
+================================================================
+== RN06/P5 — DELETE ausente => 405
+================================================================
+HTTP 405
+
+================================================================
+== CA51 lado servidor — filtros do catálogo (status=published & audience=selected)
+================================================================
+HTTP 200
+- Cadastros desatualizados | published | selected
+
+================================================================
+== CA52 lado servidor — detalhe com histórico
+================================================================
+HTTP 200
+name: Famílias beneficiárias do PBF | status: published | audience: global
+  * reactivated | 2026-07-04T19:03:55.000000Z
+  * inactivated | 2026-07-04T19:03:55.000000Z
+  * published | 2026-07-04T19:03:54.000000Z
+  * created | 2026-07-04T19:03:53.000000Z
+
+================================================================
+== CA50 — trilha auditável no activity_log (banco, sem PII: causer_id numérico)
+================================================================
+created | causer=114 | 2026-07-04 19:03:53
+published | causer=114 | 2026-07-04 19:03:54
+created | causer=114 | 2026-07-04 19:03:55
+published | causer=114 | 2026-07-04 19:03:55
+audience_changed | causer=114 | 2026-07-04 19:03:55
+created | causer=114 | 2026-07-04 19:03:55
+inactivated | causer=114 | 2026-07-04 19:03:55
+reactivated | causer=114 | 2026-07-04 19:03:55
+
+================================================================
+== CA40 (adendo) — geometria de Fortaleza estava is_active=false no banco e2e
+==   (efeito replace-all da sync #9868 — a importação de AL desativou ausentes).
+==   Reativando a geometria para o cenário positivo; o 422 acima fica como
+==   evidência NEGATIVA (tenant sem município com geometria homologada).
+================================================================
+city_geometry de Fortaleza reativada
+-- preview da camada L1 com tenant de referência = tenant 1 (Fortaleza):
+HTTP 200
+city_geometry: presente (municipio Fortaleza )
+total: 6
+by_sector: []
+points: 6 | chaves do 1º ponto (anônimo, sem PII): ['count', 'lat', 'lng']
+-- trilha do preview (event=previewed, properties só com uuid do tenant):
+previewed | causer=114 | props={"tenant":"00000000-0000-4000-8000-0000000000c1"}
+
+== CA40 (adendo 2) — setores censitários de Fortaleza também estavam is_active=false (mesmo replace-all); reativados p/ massa das etapas 02/03:
+setores 230440005000001..3 reativados
+HTTP 200
+total: 6
+by_sector: [{"ibge_code_setor": "230440005000001", "name": "Setor Fixture 001 - Oeste", "families": 4}, {"ibge_code_setor": "230440005000002", "name": "Setor Fixture 002 - Centro", "families": 2}]
+points: 6

@@ -1,0 +1,352 @@
+{
+  "hu": "#10372",
+  "user_story": "US-SIAP-05",
+  "epico": "HU-SIAP-AS",
+  "titulo": "Leiaute EquipamentoUnidade — Tabela 35, consolidação, quantidade zerada e pendência informativa",
+  "spec": ".planning/specs/10372-leiaute-equipamento-unidade.md",
+  "gerado_em": "2026-08-13T16:52:58",
+  "branch": "feature/10372-leiaute-equipamento-unidade",
+  "commits": {
+    "api": [
+      "df53d39",
+      "7b20da5"
+    ],
+    "client": [
+      "3fa7f7e"
+    ],
+    "admin": "nao tocado (D10)"
+  },
+  "lgpd": "Leiaute sem dado pessoal. subject_uuid das pendencias e de UNIDADE, nao de pessoa. Nenhum PII em qualquer artefato.",
+  "suites": {
+    "api": "php -d memory_limit=1G vendor/bin/pest --filter=Siap — 168 testes, 824 assercoes, verdes",
+    "client": "npm run lint + npm run test:run (180 arquivos, 1391 testes) + npm run build — verdes"
+  },
+  "criterios": [
+    {
+      "id": "CA01",
+      "titulo": "Inventário das unidades no leiaute (happy path)",
+      "evidencias": [
+        {
+          "arquivo": "xml/CA01-inventario-tres-linhas.xml",
+          "presente": true
+        },
+        {
+          "arquivo": "pest-10372.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "CA02",
+      "titulo": "Consolidação de aquisições distintas do mesmo equipamento (RN02 — D02)",
+      "evidencias": [
+        {
+          "arquivo": "xml/CA02-consolidacao-aquisicoes.xml",
+          "presente": true
+        },
+        {
+          "arquivo": "pest-10372.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "CA03",
+      "titulo": "Data da última aquisição ausente (RN05)",
+      "evidencias": [
+        {
+          "arquivo": "xml/CA03-sem-data-de-aquisicao.xml",
+          "presente": true
+        },
+        {
+          "arquivo": "payloads/CA03-sem-pendencia.json",
+          "presente": true
+        },
+        {
+          "arquivo": "pest-10372.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "CA04",
+      "titulo": "Consolidação quando só uma das aquisições tem data",
+      "evidencias": [
+        {
+          "arquivo": "xml/CA04-consolidacao-data-parcial.xml",
+          "presente": true
+        },
+        {
+          "arquivo": "pest-10372.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "CA05",
+      "titulo": "Bloqueio por código fora da Tabela 35 (RN04 — D03/D04)",
+      "evidencias": [
+        {
+          "arquivo": "payloads/CA05-bloqueio-codigo-fora-tabela35.json",
+          "presente": true
+        },
+        {
+          "arquivo": "payloads/mensagens-pt-br.json",
+          "presente": true
+        },
+        {
+          "arquivo": "screenshots/CA05-bloqueio-equipamento.png",
+          "presente": true
+        },
+        {
+          "arquivo": "pest-10372.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "CA05b",
+      "titulo": "Código não numérico cai na mesma pendência",
+      "evidencias": [
+        {
+          "arquivo": "payloads/CA05b-codigo-nao-numerico.json",
+          "presente": true
+        },
+        {
+          "arquivo": "pest-10372.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "CA06",
+      "titulo": "Quantidade em uso maior que a total — pendência informativa (RN06 — D05/D06)",
+      "evidencias": [
+        {
+          "arquivo": "payloads/CA06-informativa-e-CA06c-outcome.json",
+          "presente": true
+        },
+        {
+          "arquivo": "xml/CA06-linha-permanece-no-arquivo.xml",
+          "presente": true
+        },
+        {
+          "arquivo": "screenshots/CA06-zona-informativa.png",
+          "presente": true
+        },
+        {
+          "arquivo": "pest-10372.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "CA06b",
+      "titulo": "A inconsistência é avaliada após a consolidação",
+      "evidencias": [
+        {
+          "arquivo": "payloads/CA06b-avaliada-apos-consolidacao.json",
+          "presente": true
+        },
+        {
+          "arquivo": "xml/CA06b-consolidado-inconsistente.xml",
+          "presente": true
+        },
+        {
+          "arquivo": "pest-10372.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "CA06c",
+      "titulo": "Informativa não deixa o leiaute &quot;Parcial&quot; (D07 / RN11 / RN13)",
+      "evidencias": [
+        {
+          "arquivo": "payloads/CA06-informativa-e-CA06c-outcome.json",
+          "presente": true
+        },
+        {
+          "arquivo": "screenshots/CA06c-leiaute-completo.png",
+          "presente": true
+        },
+        {
+          "arquivo": "pest-10372.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "CA07",
+      "titulo": "Equipamento com quantidade zerada é omitido (RN07 — D08)",
+      "evidencias": [
+        {
+          "arquivo": "xml/CA07-zerado-omitido.xml",
+          "presente": true
+        },
+        {
+          "arquivo": "payloads/CA07-zerado-sem-pendencia.json",
+          "presente": true
+        },
+        {
+          "arquivo": "pest-10372.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "CA07b",
+      "titulo": "Zerado no total mas com quantidade em uso — as duas regras convivem",
+      "evidencias": [
+        {
+          "arquivo": "xml/CA07b-zerado-com-uso.xml",
+          "presente": true
+        },
+        {
+          "arquivo": "payloads/CA07b-zerado-com-uso.json",
+          "presente": true
+        },
+        {
+          "arquivo": "pest-10372.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "CA08",
+      "titulo": "Unidade sem equipamento não gera linha",
+      "evidencias": [
+        {
+          "arquivo": "xml/CA08-unidade-sem-equipamento.xml",
+          "presente": true
+        },
+        {
+          "arquivo": "pest-10372.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "CA09",
+      "titulo": "Município sem nenhum equipamento registrado — leiaute em branco (RN10)",
+      "evidencias": [
+        {
+          "arquivo": "xml/CA09-leiaute-em-branco.xml",
+          "presente": true
+        },
+        {
+          "arquivo": "pest-10372.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "CA10",
+      "titulo": "Isolamento entre municípios (RN12)",
+      "evidencias": [
+        {
+          "arquivo": "xml/CA10-isolamento-entre-municipios.xml",
+          "presente": true
+        },
+        {
+          "arquivo": "pest-10372.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "RN08",
+      "titulo": "Tipo de equipamento inativado no Painel Global continua saindo",
+      "evidencias": [
+        {
+          "arquivo": "xml/RN08-tipo-inativado-continua-saindo.xml",
+          "presente": true
+        },
+        {
+          "arquivo": "pest-10372.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "CLIENT",
+      "titulo": "Zona informativa na conferência prévia (client/) — a novidade visual da HU",
+      "evidencias": [
+        {
+          "arquivo": "payloads/pre-check-completo.json",
+          "presente": true
+        },
+        {
+          "arquivo": "screenshots/CLIENT-tres-zonas.png",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "§8",
+      "titulo": "Dimensionamento do impacto — consultas §8.1 a §8.4",
+      "evidencias": [
+        {
+          "arquivo": "consultas-8.1-8.4.txt",
+          "presente": true
+        }
+      ]
+    }
+  ],
+  "achados_reportados_nao_corrigidos": [
+    {
+      "id": "ACHADO 1",
+      "titulo": "O cartao de impedimento manda o municipio aos Parametros TCE/AL, contradizendo a D04",
+      "onde": [
+        "client/src/locales/pt-br/siap-remittances.json:39-40",
+        "api/app/Http/Controllers/Api/Client/SiapRemittancePreCheckController.php::blockingPayload()"
+      ],
+      "severidade": "alta",
+      "encaminhamento": "HU propria, sob decisao do usuario",
+      "situacao": "CORRIGIDO — confirmado na recaptura de 18/08/2026; o cartao traz o texto do proprio leiaute, identifica a unidade pelo nome e nao oferece atalho indevido"
+    },
+    {
+      "id": "ACHADO 2",
+      "titulo": "As duas duvidas de formato CONFIRMADAS pelo Manual — implementacao ja estava correta",
+      "onde": [
+        "api/app/Services/Siap/SiapValueFormatter.php",
+        "api/app/Services/Siap/SiapXmlWriter.php"
+      ],
+      "severidade": "-",
+      "encaminhamento": "confirmar com o Manual do SIAP / TCE-AL",
+      "situacao": "RESOLVIDO em 18/08/2026 pela consulta ao Manual do SIAP. (a) Data: o Manual determina formato ISO (YYYY-MM-DD) na secao de tipos de dados; a implementacao ja emitia ISO. (b) Campo opcional vazio: a ausencia da tag e o recomendado para informacao vazia; o SiapXmlWriter ja omite a tag. Nada a corrigir nos 11 leiautes."
+    },
+    {
+      "id": "ACHADO 3",
+      "titulo": "SocialUnitEquipment (lookup global) nao usa LogsActivity",
+      "onde": [
+        "api/app/Models/SocialUnitEquipment.php"
+      ],
+      "severidade": "media",
+      "encaminhamento": "decisao do PO; D10 proibe tocar admin/ e o seeder nesta HU"
+    },
+    {
+      "id": "ACHADO 4",
+      "titulo": "A pendencia informativa nao nomeava a unidade na tela",
+      "situacao": "RESOLVIDO — confirmado na recaptura de 18/08/2026: a mensagem nomeia a unidade",
+      "severidade": "-"
+    }
+  ],
+  "duvidas_abertas_do_artefato_do_po": [
+    "RN02 — consolidacao nao confirmada com o TCE-AL",
+    "RN06 — pode virar impeditiva se o TCE-AL recusar uso > total",
+    "RN08 — tipo inativado continuar saindo nao foi confirmado com a area de negocio",
+    "Conferencia dos 14 codigos — FEITA (§3.1 da spec + §8.1); o seed esta correto"
+  ],
+  "atualizado_em": "2026-08-18T05:18:00",
+  "recaptura": {
+    "motivo": "A conferencia previa passou a identificar o registro pelo nome e o cartao de impedimento passou a exibir o texto de consequencia do proprio leiaute, depois da entrega original.",
+    "telas_refeitas": [
+      "screenshots/CA05-bloqueio-equipamento.png",
+      "screenshots/CA06-zona-informativa.png",
+      "screenshots/CA06c-leiaute-completo.png",
+      "screenshots/CLIENT-tres-zonas.png"
+    ],
+    "branch_verificada": "staging (api 22fa09a · client 9dde38c)"
+  }
+}

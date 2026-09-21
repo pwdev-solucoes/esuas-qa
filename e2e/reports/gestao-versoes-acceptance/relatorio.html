@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — Gerenciamento de Versões e Comunicação de Novidades da Plataforma</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:980px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-wrap:wrap; gap:14px; margin-top:12px; }
+  figure { margin:0; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:300px; background:#fff; }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:11px; color:var(--muted); padding:6px 8px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { .evid, section.ca { break-inside:avoid; } figure { width:280px; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — Gerenciamento de Versões e Comunicação de Novidades da Plataforma</h1>
+    <div class="sub">Sprint 9 · Épico full-stack (api + admin + client) · HU01–HU07 · Evidências end-to-end</div>
+    <div class="meta"><div><span>Gerado em:</span> 05/07/2026</div><div><span>Branch:</span> sprint9-gestao-versoes (base develop) — api b2d5577 · admin 6b2d4ae · client 665ebf2</div><div><span>Spec:</span> .planning/specs/sprint9/gestao-versoes-comunicacao-novidades.md</div><div><span>Ambiente:</span> API e2e :8090 (esuas_app / esuas_e2e) · admin e client build+preview :4173</div><div><span>Escopo:</span> Global (guard manager, gestão só ADMIN) + consumo compartilhado nos dois ambientes</div><div><span>Ferramenta:</span> playwright-cli (Chromium) + Pest 4 + curls Sanctum</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">Épico full-stack de 7 HUs e 13 RNs entregue em 3 etapas (backend api, gestão admin, consumo compartilhado nos dois frontends), com ciclo exec → review → correções → gates → evidências. 2 tabelas globais novas: platform_versions (modelo plano/editável — RN12 edita sem resetar leituras) e platform_version_reads (registro imutável, por usuário e global — sem tenant_id). Governança RN02: gestão restrita ao ADMIN (guard manager); ADMIN_OPERADOR e papéis client só consomem. Render de content_html sempre seguro (RichTextEditor/TipTap readonly, nunca v-html). Correções do ciclo de revisão: fechamento do vazamento de permissão do guard client (RN02) na Etapa 01. Resultado: todos os CAs atendidos. Gates: Pest 2574 passed (única falha MinioConnectivityTest pré-existente; 39 testes da feature) · admin ESLint 0/build ok/Vitest 1147 · client ESLint 0/build ok/Vitest 842.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">HU01-CA01</td><td>Administrador lista versões com número, data e estado (rascunho/publicada)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">HU01-CA02/CA03</td><td>Editar novidades no editor de texto rico; rascunho de origem com conteúdo</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">HU01-CA04</td><td>Master/operacional não acessam a gestão de versões (RN02)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">HU02-CA02</td><td>Publicação bloqueada sem conteúdo mínimo (RN05)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">HU02-CA01/CA04</td><td>Publicar versão completa; edição pós-publicação sem resetar leituras (RN12)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">HU07-CA01/CA02</td><td>Administrador acompanha a adesão de leitura por versão</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">HU03-CA01/CA02/CA04</td><td>Aviso de novidades ao acessar (não-bloqueante), com atalho ao histórico</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">HU04-CA02</td><td>Fechar sem confirmar → o aviso volta (RN08)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">HU04-CA01/CA03</td><td>Confirmar leitura → não reaparece; nova versão → volta a avisar</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">HU05-CA01/CA02/CA03</td><td>Histórico de versões na sidebar (todos os papéis, só publicadas)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">HU06-CA01/CA02</td><td>Número da versão vigente no rodapé dos dois ambientes</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">RN02/RN05/RN06/RN07/RN09/RN10/RN11 (backend)</td><td>Contrato de backend verificado por curls + Pest (apêndice)</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="HU01-CA01">
+      <h2>HU01-CA01 — Administrador lista versões com número, data e estado (rascunho/publicada) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Administrador no admin/, Quando acesso o gerenciamento de versões, Então vejo a lista com número, data, estado (rascunho|publicada) e abro cada uma para editar.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Login ADMIN (manager 449…) → sidebar <b>PLATAFORMA → Gerenciar versões</b> → <code>/app/platform-versions</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Lista com Versão/Título/Data de lançamento/Estado/Publicada em: 1.3.0-draft e 1.2.0 (badge âmbar Rascunho), 1.1.0 e 1.0.0 (badge verde Publicada), ordem por data desc.</li><li>Cada linha abre a edição (ação Editar).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/hu01-ca01-lista-estados.png" alt="HU01-CA01 evidência"/><figcaption>hu01-ca01-lista-estados.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="HU01-CA02/CA03">
+      <h2>HU01-CA02/CA03 — Editar novidades no editor de texto rico; rascunho de origem com conteúdo <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> CA02: Dado que edito o texto no editor rico e salvo, Então o conteúdo é preservado com a formatação. CA03: Dado versão vinda do processo de desenvolvimento, Quando a vejo, Então está em rascunho com o conteúdo original disponível para revisão.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Abrir a minuta <b>1.2.0</b> (Rascunho) → página dedicada de edição (form complexo → PAGE) com <b>RichTextEditor</b>, campos número/data/título e abas Conteúdo/Adesão.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Editor rico exibe o conteúdo original formatado (H2, negrito, listas) da minuta em rascunho.</li><li>Botões Salvar/Publicar; estado Rascunho no cabeçalho.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/hu01-ca02-03-editor-rico-rascunho.png" alt="HU01-CA02/CA03 evidência"/><figcaption>hu01-ca02-03-editor-rico-rascunho.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="HU01-CA04">
+      <h2>HU01-CA04 — Master/operacional não acessam a gestão de versões (RN02) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Master ou usuário operacional, Quando navego, Então não tenho acesso a nenhuma função de gestão de versões.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Logout → login <b>ADMIN_OPERADOR</b> (manager 123…) → conferir sidebar → acesso direto a <code>/app/platform-versions</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Sidebar do ADMIN_OPERADOR sem o grupo PLATAFORMA / item Gerenciar versões (gate por permissão platform-versions.index).</li><li>Acesso direto à rota redireciona para /403 (gate real de rota, não só ocultação visual).</li><li>Backend: ADMIN_OPERADOR recebe 403 em index/show/store/update/publish/reads (transcript curl no apêndice).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/hu01-ca04-operador-sem-menu.png" alt="HU01-CA04 evidência"/><figcaption>hu01-ca04-operador-sem-menu.png</figcaption></figure><figure><img src="screenshots/hu01-ca04-operador-403.png" alt="HU01-CA04 evidência"/><figcaption>hu01-ca04-operador-403.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="HU02-CA02">
+      <h2>HU02-CA02 — Publicação bloqueada sem conteúdo mínimo (RN05) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado rascunho sem texto (ou sem número/data), Quando tento publicar, Então é impedido (422) com indicação do que falta.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Abrir a minuta <b>1.3.0-draft</b> (sem novidades) → Publicar → confirmar no dialog.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Alerta vermelho na própria página: "Não é possível publicar esta versão: falta preencher o texto das novidades." (chave errors.platform_version do backend).</li><li>A versão continua em Rascunho — publicação impedida.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/hu02-ca02-publish-incompleto-422.png" alt="HU02-CA02 evidência"/><figcaption>hu02-ca02-publish-incompleto-422.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="HU02-CA01/CA04">
+      <h2>HU02-CA01/CA04 — Publicar versão completa; edição pós-publicação sem resetar leituras (RN12) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> CA01: Dado rascunho com número+data+texto, Quando publico, Então vira publicada e fica visível (aviso, histórico, rodapé). CA04: Dado versão publicada com texto corrigido, Quando um usuário consulta o histórico, Então vê o texto corrigido e quem já confirmou não volta a receber o aviso.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Abrir a minuta <b>1.2.0</b> (completa) → Publicar → confirmar.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Estado passa a Publicada; banner RN12: "Esta versão já foi publicada. Você pode corrigir o conteúdo — a alteração vale para todos —, mas quem já confirmou a leitura não volta a receber o aviso."</li><li>Backend (apêndice): editar publicada não reseta leituras (platform_version_reads referencia a versão); confirmado por Pest.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/hu02-ca01-publicada.png" alt="HU02-CA01/CA04 evidência"/><figcaption>hu02-ca01-publicada.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="HU07-CA01/CA02">
+      <h2>HU07-CA01/CA02 — Administrador acompanha a adesão de leitura por versão <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> CA01: Dado que sou Administrador, Quando consulto uma versão publicada, Então vejo quem confirmou e quando. CA02: Quando vejo o resumo, Então vejo total de confirmações vs total de usuários ativos.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Na versão publicada <b>1.1.0</b> → aba <b>Adesão de leitura</b>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Cards: 1 Confirmações de leitura vs 10 Usuários ativos na plataforma; frase "1 de 10 usuários ativos confirmaram a leitura desta versão".</li><li>Tabela quem/quando: "E2E Master CadÚnico — 05/07/2026, 07:55".</li><li>Restrito ao ADMIN (permissão platform-versions.reads); PII full_name só nesta tela restrita.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/hu07-adesao-leitura.png" alt="HU07-CA01/CA02 evidência"/><figcaption>hu07-adesao-leitura.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="HU03-CA01/CA02/CA04">
+      <h2>HU03-CA01/CA02/CA04 — Aviso de novidades ao acessar (não-bloqueante), com atalho ao histórico <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> CA01: Dado versão publicada não confirmada, Quando acesso, Então vejo aviso com número, data e resumo. CA02: Quando há várias, Então o aviso mostra só a mais recente e oferece atalho ao Histórico. CA04: Quando decido trabalhar, Então fecho e uso o sistema sem bloqueio (RN13).</p>
+      <p class="steps"><strong>Como foi testado:</strong> Login (admin manager e client operador) → o aviso da versão publicada mais recente não confirmada (1.2.0) aparece pós-autenticação.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Dialog com título, "Versão 1.2.0 · lançada em 10/07/2026" e novidades formatadas (render seguro TipTap readonly — sem v-html).</li><li>Botões: "Ver histórico de versões" (atalho HU03-CA02), "Depois" e "Confirmar leitura"; X para fechar (RN13 não-bloqueante).</li><li>Idêntico nos dois ambientes (módulo de consumo byte-idêntico admin×client).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/hu03-aviso-novidades-admin.png" alt="HU03-CA01/CA02/CA04 evidência"/><figcaption>hu03-aviso-novidades-admin.png</figcaption></figure><figure><img src="screenshots/hu03-aviso-client-operador.png" alt="HU03-CA01/CA02/CA04 evidência"/><figcaption>hu03-aviso-client-operador.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="HU04-CA02">
+      <h2>HU04-CA02 — Fechar sem confirmar → o aviso volta (RN08) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que fechei o aviso sem confirmar, Quando acesso novamente, Então o aviso volta a ser exibido.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Client operador → aviso → botão <b>Depois</b> → recarregar a página (F5).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Após "Depois" o dialog fecha; ao recarregar, o aviso REAPARECE.</li><li>Nenhuma persistência de dispensa: zero chaves de version/update/dismiss no localStorage (RN08 = ausência de escrita).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/hu03-aviso-client-operador.png" alt="HU04-CA02 evidência"/><figcaption>hu03-aviso-client-operador.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="HU04-CA01/CA03">
+      <h2>HU04-CA01/CA03 — Confirmar leitura → não reaparece; nova versão → volta a avisar <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> CA01: Dado aviso exibido, Quando confirmo, Então fecha e não reaparece naquela versão, em nenhum acesso/dispositivo. CA03: Quando nova versão é publicada, Então volto a receber o aviso com o novo conteúdo.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Client operador → aviso → <b>Confirmar leitura</b> → recarregar. Backend (apêndice): publicar 1.2.0 faz o aviso voltar a quem lera a 1.1.0.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Após confirmar, o aviso some e NÃO reaparece ao recarregar; banco registra o operador (111…) lendo a 1.2.0.</li><li>Confirmação é por usuário e global, sem tenant_id (P2) — provado por Pest cruzando guards (apêndice).</li><li>CA03: transcript backend mostra current e latest-unread mudando ao publicar a 1.2.0 (aviso volta ao master que lera a 1.1.0).</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="HU05-CA01/CA02/CA03">
+      <h2>HU05-CA01/CA02/CA03 — Histórico de versões na sidebar (todos os papéis, só publicadas) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> CA01: Dado qualquer papel/ambiente, Quando abro Histórico de versões, Então vejo a linha do tempo das publicadas (mais recente → mais antiga). CA02: Quando abro uma versão, Então vejo o conteúdo com formatação. CA03: Rascunhos não aparecem.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Admin: sidebar PLATAFORMA → Histórico de versões (também via atalho do aviso). Client operador: sidebar Plataforma → Histórico de versões.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Linha do tempo v1.2.0 → v1.1.0 → v1.0.0 (desc), item mais recente expandido com conteúdo formatado.</li><li>Rascunhos (1.3.0-draft, e a 1.2.0 quando era rascunho) AUSENTES da lista.</li><li>Acessível a TODOS os papéis SEM gate de permissão (RN10): operador (papel não-master) vê o item no client.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/hu05-historico-versoes.png" alt="HU05-CA01/CA02/CA03 evidência"/><figcaption>hu05-historico-versoes.png</figcaption></figure><figure><img src="screenshots/hu05-hu06-client-operador-historico-rodape.png" alt="HU05-CA01/CA02/CA03 evidência"/><figcaption>hu05-hu06-client-operador-historico-rodape.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="HU06-CA01/CA02">
+      <h2>HU06-CA01/CA02 — Número da versão vigente no rodapé dos dois ambientes <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> CA01: Dado autenticado em qualquer ambiente, Quando navego, Então o rodapé exibe o número da versão publicada mais recente. CA02: Dado nova versão publicada, Então o rodapé passa a exibir o novo número.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Rodapé novo em AppLayout.vue (admin e client) consumindo GET platform-updates/current.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Rodapé "Versão 1.2.0" visível no admin (dialog do aviso) e no client (página de histórico).</li><li>Backend (apêndice): current muda de 1.1.0 → 1.2.0 ao publicar a 1.2.0 (HU06-CA02); rascunho nunca aparece (RN11).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/hu05-hu06-client-operador-historico-rodape.png" alt="HU06-CA01/CA02 evidência"/><figcaption>hu05-hu06-client-operador-historico-rodape.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="RN02/RN05/RN06/RN07/RN09/RN10/RN11 (backend)">
+      <h2>RN02/RN05/RN06/RN07/RN09/RN10/RN11 (backend) — Contrato de backend verificado por curls + Pest (apêndice) <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Regras verificadas diretamente na API: gating RN02 (403), aviso RN06 (latest-unread só a mais recente não lida; 204 quando lida), RN07 acknowledge idempotente (201→200), RN09 registro auditável, RN10 histórico só publicadas desc, RN11 rodapé (current).</p>
+      <p class="steps"><strong>Como foi testado:</strong> Transcript de curls autenticados (Sanctum cookie) no <code>:8090</code> + suíte Pest da feature (39 testes / 182 asserções). Ver apêndice.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>RN02: ADMIN_OPERADOR → 403 em toda a gestão; guard client não recebe abilities de escrita (fix da revisão).</li><li>RN06: admin (leu 1.0.0) → latest-unread = 1.1.0; master (leu 1.1.0) → 204; rascunhos ausentes de latest-unread/current/history.</li><li>RN07: acknowledge 201 depois 200 (idempotente), acknowledged_at gravado no servidor; RN05: publicar sem conteúdo → 422 errors.platform_version.</li><li>HU07: adesão confirmados=1 / total_ativos=10.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+  
+  <h2>Anexo — Evidência de backend — transcript de curls (:8090) + suíte Pest da feature (39 testes / 182 asserções; suíte completa 2574 passed, única falha pré-existente MinioConnectivityTest)</h2>
+  <pre class="pest">====================================================================
+ EVIDÊNCIA BACKEND — Gestão de Versões da Plataforma (:8090 / esuas_e2e)
+ api @ b2d5577 (sprint9-gestao-versoes) · 2026-07-05
+ Massa: 1.0.0 e 1.1.0 PUBLICADAS · 1.2.0 e 1.3.0-draft RASCUNHO
+ Leituras iniciais: admin(4498…) leu 1.0.0 · master(5299…) leu 1.1.0
+====================================================================
+
+### RN02 (HU01-CA04) — ADMIN_OPERADOR (manager 1234…) bloqueado na gestão
+   login[manager 12345678909] http=200
+   GET index    -&gt; &lt;&lt;http=403&gt;&gt;
+   GET show     -&gt; &lt;&lt;http=403&gt;&gt;
+   GET reads    -&gt; &lt;&lt;http=403&gt;&gt;
+   POST publish -&gt; &lt;&lt;http=403&gt;&gt;
+
+### RN06/HU04-CA01 — MASTER (leu a 1.1.0 mais recente) NÃO recebe aviso (pré-publish)
+   login[client 52998224725] http=200
+   latest-unread -&gt; &lt;&lt;http=204&gt;&gt;
+   history       = ['1.1.0', '1.0.0']
+
+### RN06/RN10/RN11 — consumo do ADMIN (leu 1.0.0)
+   login[manager 44983702016] http=200
+   latest-unread = 1.1.0 (published)
+   current       = 1.1.0
+   history       = ['1.1.0', '1.0.0']
+   → 1.2.0 e 1.3.0-draft (rascunhos) AUSENTES dos três — RN04/CA HU02-CA03 ✔
+
+### HU07-CA01/CA02 — adesão da 1.1.0 (só ADMIN): quem confirmou + resumo
+   confirmados=1 / total_ativos=10
+   leram: ['E2E Master CadÚnico']
+
+### RN05 (HU02-CA02) — publicar rascunho 1.3.0 SEM conteúdo → 422 errors.platform_version
+   publish -&gt; http 422 | chave: ['platform_version'] | Não é possível publicar esta versão: falta preencher o texto das novid
+
+### RN07/RN09 — acknowledge idempotente (admin confirma a 1.1.0)
+   1ª confirmação   -&gt; &lt;&lt;http=201&gt;&gt;
+   2ª (idempotente) -&gt; &lt;&lt;http=200&gt;&gt;
+   admin latest-unread agora -&gt; &lt;&lt;http=204&gt;&gt;
+   (admin lera 1.0.0; após confirmar 1.1.0 e sem outra publicada → 204) ✔
+
+### HU06-CA02/HU04-CA03 — publicar 1.2.0 → rodapé muda e aviso volta ao master
+   current(rodapé) agora = 1.2.0
+   login[client 52998224725] http=200
+   master latest-unread agora = 1.2.0 (published)
+   (master lera a 1.1.0; nova 1.2.0 publicada → aviso volta) ✔
+
+==================== APÊNDICE PEST (suíte da feature) ====================
+  ✓ it does not overwrite published_at when re-publishing (RN05)         0.01s  
+  ✓ it lists the reads with user identification and adhesion summary (H… 0.01s  
+  ✓ it forbids every management action for an ADMIN_OPERADOR (RN02/HU01… 0.01s  
+  ✓ it rejects the client guard on the management routes (RN02)          0.01s  
+  ✓ it does not expose a destroy route for platform versions             0.01s  
+
+   PASS  Tests\Feature\Console\SyncPermissionsTest
+  ✓ it extracts the can: abilities declared by controllers from the rou… 0.03s  
+  ✓ it keeps full parity with the previous hardcoded permission set (no… 0.01s  
+  ✓ it seeds permissions for both guards and assigns them to roles       0.42s  
+  ✓ it runs permissions:sync idempotently without duplicating permissio… 0.72s  
+  ✓ it prunes orphan permissions not present in the registry             0.77s  
+  ✓ it does not write anything on --dry-run                              0.03s  
+  ✓ it does not assign RESTRICTED_PERMISSIONS to any role                0.42s  
+  ✓ it permissions:sync --coverage fails when an authenticated route ha… 0.38s  
+  ✓ it never mirrors platform-versions write abilities into the client…  0.41s  
+
+  Tests:    39 passed (182 assertions)
+  Duration: 4.02s
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

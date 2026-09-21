@@ -1,0 +1,23 @@
+== CA04 — CBO alterado de 2516-05 para 4110-05 (Auxiliar de escritorio) ==
+user_tenant_role vigentes: operador, family_viewer
+
+  operador                   origin=suggested  revoked_at=-
+  family_viewer              origin=manual     revoked_at=-
+  pf_tecnico_referencia      origin=suggested  revoked_at=2026-08-07 13:17:45
+
+trilha: {
+    "tenant_id": 3,
+    "previous_cbo_code": "2516-05",
+    "new_cbo_code": "4110-05",
+    "new_cbo_has_mapping": true,
+    "revoked": [
+        "pf_tecnico_referencia"
+    ],
+    "suggested": [
+        "pf_apoio_administrativo"
+    ],
+    "preserved_manual": [
+        "family_viewer"
+    ],
+    "legacy": false
+}

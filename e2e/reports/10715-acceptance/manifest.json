@@ -1,0 +1,222 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — Contadores de Encaminhamento na Apuração",
+    "subtitle": "Épico Prontuário SUAS · fase F2 · HU #10715 — acender os três contadores do leiaute 15.6 que a fase F1 deixou apagados",
+    "rows": [
+      [
+        "Gerado em",
+        "03/09/2026 21:10 · complementado em 04/09/2026 16:35"
+      ],
+      [
+        "HU",
+        "GLPI #10715 — Ligar os contadores de encaminhamento à apuração"
+      ],
+      [
+        "Spec (contrato)",
+        ".planning/specs/10715-contadores-encaminhamento-apuracao.md"
+      ],
+      [
+        "Branch",
+        "feature/10712-encaminhamentos"
+      ],
+      [
+        "Commits api/",
+        "2b914f4 (contadores) · 7b13d2d (correções da revisão)"
+      ],
+      [
+        "Commits client/",
+        "f5c0468 (colunas) · 44ff938 (locale)"
+      ],
+      [
+        "Ambiente",
+        "API Sail/PostgreSQL em localhost · client :5174 · dados reais (não-mock)"
+      ],
+      [
+        "Ferramenta",
+        "playwright-cli (Chromium) + Pest 4"
+      ]
+    ]
+  },
+  "summary": "Os 10 critérios de aceite do chamado, mais 3 derivados na spec. A HU é pequena de código e grande de teste, por um motivo específico: trocar a contagem de distintos por contagem de linhas não quebraria nenhum teste nem nenhuma tela — apenas inflaria o número declarado ao Tribunal de Contas. Por isso a evidência central é a massa desenhada para falhar com a contagem errada, verificada por sete mutações independentes, todas mortas. Na tela, duas inclusões da mesma família no mesmo mês exibem 1, não 2.",
+  "cas": [
+    {
+      "id": "CA01",
+      "title": "Os três contadores aparecem na apuração",
+      "status": "nav",
+      "gherkin": "Dado que há encaminhamentos registrados no mês\nQuando eu consultar a apuração\nEntão vejo os contadores de inclusão no CadÚnico, atualização cadastral e BPC",
+      "steps_html": "Login como Master → <b>Prestação de Contas → Apuração de Atendimentos</b> → exercício 2026, mês 09.",
+      "results": [
+        "As três colunas novas aparecem na mesma tabela dos contadores da fase F1: 'Famílias encaminhadas para inclusão no CadÚnico', 'Famílias encaminhadas para atualização no CadÚnico' e 'Indivíduos encaminhados ao BPC'.",
+        "Nenhuma tela, rota ou permissão nova: é o mesmo endereço, o mesmo endpoint e o mesmo controle de acesso da HU #10711.",
+        "Os rótulos dizem a verdade sobre o que é contado — 'Famílias' e 'Indivíduos', não 'Encaminhamentos'. A correção de copy evita que o número seja lido como quantidade de registros e questionado na prestação de contas."
+      ],
+      "images": [
+        "screenshots/ca01-ca02-contadores-distintos.png"
+      ]
+    },
+    {
+      "id": "CA01b",
+      "title": "Unidade sem encaminhamento aparece com zero declarado (derivado do CA01)",
+      "status": "nav",
+      "gherkin": "Dado que a unidade não teve encaminhamentos no mês\nQuando eu consultar a apuração\nEntão ela aparece com zero, explicitamente declarado",
+      "steps_html": "O esqueleto de unidades vem da HU #10711 e passa a cobrir também os contadores novos.",
+      "results": [
+        "Duas das três unidades aparecem com o selo 'zero declarado' e zeros em todas as colunas.",
+        "A ausência de dado é declarada, não omitida — quem confere a remessa distingue 'não houve' de 'não foi apurado'."
+      ],
+      "images": [
+        "screenshots/ca01-ca02-contadores-distintos.png"
+      ]
+    },
+    {
+      "id": "CA02",
+      "title": "A contagem é de FAMÍLIAS DISTINTAS, não de encaminhamentos",
+      "status": "nav",
+      "gherkin": "Dado que a mesma família recebeu dois encaminhamentos de inclusão no mesmo mês\nQuando eu consultar a apuração\nEntão a família é contada uma única vez",
+      "steps_html": "Massa montada de propósito para falhar com a contagem errada: <b>dois</b> encaminhamentos de inclusão no CadÚnico para a <b>mesma</b> família, no mesmo mês e na mesma unidade.",
+      "results": [
+        "A tela exibe <b>1</b>, não 2 — a contagem é por famílias distintas.",
+        "Este é o erro mais silencioso da fase: contar linhas não quebraria teste nem tela, apenas inflaria a declaração ao Tribunal.",
+        "A massa é desenhada para matar a mutação: um dos dois encaminhamentos tem pessoa identificada e o outro não, então o agrupamento devolve duas linhas — contar linhas, contar grupos ou usar contagem simples no SQL devolveriam todos 2. Só o conjunto de famílias distintas devolve 1.",
+        "Sete mutações independentes foram aplicadas ao serviço durante a revisão e todas ficaram vermelhas."
+      ],
+      "images": [
+        "screenshots/ca01-ca02-contadores-distintos.png"
+      ]
+    },
+    {
+      "id": "CA03",
+      "title": "O contador do BPC conta PESSOAS distintas",
+      "status": "auto",
+      "gherkin": "Dado que a mesma pessoa recebeu dois encaminhamentos ao BPC\nQuando eu consultar a apuração\nEntão ela é contada uma única vez",
+      "steps_html": "O BPC é o único contador que conta indivíduos — os de CadÚnico contam famílias.",
+      "results": [
+        "Teste com a mesma pessoa duas vezes mais uma segunda pessoa assere 2, não 3.",
+        "Mutação que troca a chave de pessoa por família foi aplicada e o teste ficou vermelho.",
+        "Encaminhamento sem pessoa identificada não entra no contador de BPC — a guarda tem teste próprio."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA04",
+      "title": "O tipo de atendimento de cadastramento NÃO alimenta os contadores",
+      "status": "auto",
+      "gherkin": "Dado que há atendimentos do tipo cadastramento no mesmo mês\nQuando eu consultar a apuração\nEntão eles não somam nos contadores de CadÚnico",
+      "steps_html": "Este critério fecha um risco registrado na fase F1: derivar os contadores de CadÚnico da contagem do tipo de atendimento 4 faria o mesmo fato ser declarado duas vezes.",
+      "results": [
+        "Teste dedicado cria 9 atendimentos do tipo 4 e 7 encaminhamentos de atualização de 7 famílias distintas, no mesmo mês e unidade, e assere que o contador vale 7 e o total de atendimentos vale 9.",
+        "Qualquer derivação do tipo de atendimento produziria 16 ou 8 e quebraria o teste.",
+        "No código as duas consultas não se cruzam: uma lê atendimentos, a outra lê encaminhamentos, sem junção entre elas."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA05",
+      "title": "Encaminhamento cancelado não conta",
+      "status": "auto",
+      "gherkin": "Dado um encaminhamento cancelado\nQuando eu consultar a apuração\nEntão ele não é contado",
+      "steps_html": "O cancelamento é registrado por situação, não por exclusão — o registro permanece no prontuário mas sai da contagem.",
+      "results": [
+        "Mutação que remove o filtro de situação foi aplicada e o teste ficou vermelho."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA06",
+      "title": "O desfecho não interfere na contagem",
+      "status": "auto",
+      "gherkin": "Dado um encaminhamento sem desfecho registrado\nQuando eu consultar a apuração\nEntão ele conta igual a um encaminhamento já concluído",
+      "steps_html": "<b>Este critério também fecha o CA06 da HU #10714</b>, que foi deferido para esta etapa por depender da apuração.",
+      "results": [
+        "A consulta não menciona o campo de desfecho — aguardando retorno, atendido, não atendido e encerrado sem resposta contam igualmente.",
+        "Mutação que acrescenta filtro por desfecho foi aplicada e cinco testes ficaram vermelhos.",
+        "É a decisão correta: o encaminhamento foi feito e deve ser declarado, independentemente de o órgão de destino ter respondido."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA07",
+      "title": "A contagem é pelo mês do encaminhamento",
+      "status": "auto",
+      "gherkin": "Dado um encaminhamento registrado em mês diferente do de criação\nQuando eu consultar a apuração\nEntão ele conta no mês do encaminhamento",
+      "steps_html": "Conta pela data do encaminhamento, não pela data de criação do registro nem pela do desfecho.",
+      "results": [
+        "Mutação que troca a data de referência foi aplicada e cinco testes ficaram vermelhos."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA07b",
+      "title": "Código inativado continua contando o passado (derivado do CA07)",
+      "status": "auto",
+      "gherkin": "Dado que um código de encaminhamento foi inativado\nQuando eu consultar a apuração de mês anterior\nEntão os encaminhamentos daquele código continuam contando",
+      "steps_html": "Inativar um item do catálogo não pode apagar meses já prestados.",
+      "results": [
+        "Mutação que acrescenta filtro por item ativo foi aplicada e o teste ficou vermelho.",
+        "O mesmo vale para código excluído logicamente: a leitura continua enxergando o passado, e isso ganhou teste próprio e nota no código — o padrão que esta fase repetiu cinco vezes."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA08",
+      "title": "O painel de contadores indisponíveis encolhe",
+      "status": "nav",
+      "gherkin": "Dado que os contadores de encaminhamento passaram a ser apurados\nQuando eu consultar a apuração\nEntão eles saem da lista de indisponíveis",
+      "steps_html": "O painel é dinâmico: renderiza o que o backend declarar como indisponível.",
+      "results": [
+        "A lista caiu de <b>5 para 2</b> itens: restam 'Famílias em acompanhamento' (fase F3) e 'Benefícios eventuais concedidos' (fase F5).",
+        "O painel explica por que continua existindo: 'para que ninguém conclua que a remessa está completa'.",
+        "Uma dependência declarada erroneamente como fase F3 foi corrigida para F2 — era um erro herdado da especificação da HU #10711, encontrado ao escrever esta HU."
+      ],
+      "images": [
+        "screenshots/ca01-ca02-contadores-distintos.png"
+      ]
+    },
+    {
+      "id": "CA09",
+      "title": "Recorte por unidade",
+      "status": "auto",
+      "gherkin": "Dado que seleciono uma unidade específica\nQuando eu consultar a apuração\nEntão vejo apenas os números daquela unidade",
+      "steps_html": "O recorte por unidade da HU #10711 passa a valer também para os contadores novos.",
+      "results": [
+        "Coberto por teste; o recorte do Operacional usa a lotação vigente."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA09b",
+      "title": "Nenhuma permissão nem tela nova (derivado do CA09)",
+      "status": "auto",
+      "gherkin": "Dado que os contadores foram acesos\nQuando eu verificar a superfície da aplicação\nEntão nada de novo foi exposto",
+      "steps_html": "Restrição explícita da especificação: mesma rota, mesmo controle de acesso, mesma tela.",
+      "results": [
+        "O commit toca dois arquivos de produção no backend — o serviço e um comentário de documentação no controlador.",
+        "Zero migrations, zero rotas, zero permissões, zero telas.",
+        "No frontend, as colunas derivam da lista de contadores: acrescentar as três chaves produziu as três colunas sem tocar na lógica da tabela."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA10",
+      "title": "Isolamento entre organizações",
+      "status": "auto",
+      "gherkin": "Dado que outra organização tem encaminhamentos no mesmo mês\nQuando eu consultar a apuração da minha organização\nEntão os números dela não aparecem",
+      "steps_html": "Cobertura acrescentada após a revisão: era a única superfície da fase em que uma fonte de dados nova entrou num endpoint existente sem teste de isolamento.",
+      "results": [
+        "Teste com a organização B alimentando os três contadores no mesmo mês: a organização A vê o próprio encaminhamento contado (provando que a apuração está ligada, não desligada) e zero nos contadores alimentados apenas pela B.",
+        "A defesa no código é dupla: filtro por organização e restrição às unidades já delimitadas pela consulta anterior."
+      ],
+      "images": []
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Pest 4, --filter=AttendanceReport) — 31 testes, 143 asserções, todos verdes",
+    "file": "pest-attendance-report.txt"
+  },
+  "notes": [
+    {
+      "title": "Complemento de 04/09/2026 — apêndice completo e numeração alinhada ao chamado",
+      "html": "Dois ajustes de empacotamento, nenhum de implementação. O apêndice guardava apenas o trecho final da execução; a suíte foi reexecutada e agora traz os 31 testes por inteiro. E a numeração seguia a especificação técnica, de modo que os critérios CA08 e CA09 do chamado caíam sobre outros assuntos: o painel de contadores indisponíveis e o recorte por unidade passaram a ocupar os números do chamado, e as três entradas derivadas passaram a CA01b, CA07b e CA09b, indicando a qual critério cada uma pertence. Nenhum resultado foi alterado — apenas reorganizado para que a leitura acompanhe o chamado item a item."
+    }
+  ]
+}

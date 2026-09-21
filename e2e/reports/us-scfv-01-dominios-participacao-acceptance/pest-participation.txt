@@ -1,0 +1,136 @@
+
+   PASS  Tests\Unit\Models\SocialEntityTest
+  ✓ it has suasParticipationType relationship                            0.01s  
+
+   PASS  Tests\Unit\Models\SuasParticipationTypeTest
+  ✓ it has correct fillable attributes                                   0.02s  
+  ✓ it defaults is_active to true
+  ✓ it casts is_active to boolean
+  ✓ it uses soft deletes
+  ✓ it uses HasUuid trait
+  ✓ it uses LogsActivity trait
+  ✓ it defines socialEntities relationship as HasMany
+  ✓ it configures activity log with name suas_participation_type and dirty-only logging
+
+   PASS  Tests\Unit\ParticipationDomainsSeedTest
+  ✓ it semeia exatamente os oito servicos do bloco 16, na ordem do inst… 0.40s  
+  ✓ it semeia cada servico com o nome e os atributos exatos da matriz d… 0.02s  
+  ✓ it semeia cada servico com o nome e os atributos exatos da matriz d… 0.02s  
+  ✓ it semeia cada servico com o nome e os atributos exatos da matriz d… 0.02s  
+  ✓ it semeia cada servico com o nome e os atributos exatos da matriz d… 0.02s  
+  ✓ it semeia cada servico com o nome e os atributos exatos da matriz d… 0.02s  
+  ✓ it semeia cada servico com o nome e os atributos exatos da matriz d… 0.02s  
+  ✓ it semeia cada servico com o nome e os atributos exatos da matriz d… 0.02s  
+  ✓ it semeia cada servico com o nome e os atributos exatos da matriz d… 0.02s  
+  ✓ it semeia exatamente os cinco locais de realizacao, com os codigos…  0.02s  
+  ✓ it semeia cada local com o nome e o is_own_unit exatos da matriz do… 0.02s  
+  ✓ it semeia cada local com o nome e o is_own_unit exatos da matriz do… 0.02s  
+  ✓ it semeia cada local com o nome e o is_own_unit exatos da matriz do… 0.02s  
+  ✓ it semeia cada local com o nome e o is_own_unit exatos da matriz do… 0.02s  
+  ✓ it semeia cada local com o nome e o is_own_unit exatos da matriz do… 0.02s  
+  ✓ it marca is_own_unit em exatamente um local — o codigo 1 (RN05/§4.2… 0.02s  
+  ✓ it marca counts_as_scfv_elderly em exatamente um servico — o codigo… 0.02s  
+  ✓ it respeita a invariante elderly ⟹ scfv ⟹ group em todas as linhas   0.02s  
+  ✓ it marca requires_description em exatamente um servico — o codigo 9… 0.02s  
+  ✓ it preserva o salto 6 → 99 e marca is_instrument_extension so no 90… 0.03s  
+  ✓ it preserva o salto 4 → 9 dos locais (D05/RN05)                      0.02s  
+  ✓ it e idempotente: rodar duas vezes nao duplica nem renumera          0.02s  
+  ✓ it nao sobrescreve a inativacao feita pelo Administrador             0.02s  
+  ✓ it nao tem tenant_id em nenhuma das duas tabelas — sao lookups glob… 0.01s  
+  ✓ it nao aplica BelongsToTenant nos dois Models                        0.01s  
+  ✓ it aplica LogsActivity nos dois Models e audita os tres atributos d… 0.01s  
+
+   PASS  Tests\Unit\ParticipationServiceInvariantTest
+  ✓ it nao tem nenhuma linha violando elderly ⟹ scfv ⟹ group             0.02s  
+  ✓ it mantem a invariante item a item nos oito servicos                 0.02s  
+  ✓ it reserva o contador de idosos a exatamente um servico              0.02s  
+  ✓ it declara family_member_participations como consumidora dos dois d… 0.02s  
+  ✓ it nao trava a exclusao enquanto a tabela de participacoes nao exis… 0.02s  
+  ✓ it conta o uso pela coluna declarada assim que a tabela consumidora… 0.03s  
+
+   PASS  Tests\Unit\Services\Siap\SiapDomainMapTest
+  ✓ it collapses the four SUAS participation types into the three of SIAP
+
+   PASS  Tests\Feature\Api\Relationals\SuasParticipationTypeControllerTest
+  ✓ it lists only active suas participation types                        0.04s  
+  ✓ it returns up to 30 participation types and flags searchable above…  0.03s  
+  ✓ it exposes only id, name and code                                    0.04s  
+  ✓ it filters by search on name (case-insensitive)                      0.01s  
+  ✓ it filters by search on code                                         0.01s  
+  ✓ it rejects unauthenticated request with 401                          0.02s  
+  ✓ it rejects search shorter than 2 characters                          0.01s  
+  ✓ it accepts requests from the client guard                            0.02s  
+  ✓ it caches the active participation type set                          0.01s  
+  ✓ it invalidates the cache when a participation type is created        0.01s  
+  ✓ it invalidates the cache on bulk deactivate                          0.03s  
+  ✓ it drops a participation type from the cached set when it becomes i… 0.01s  
+
+   PASS  Tests\Feature\Api\SocialEntityControllerTest
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('sua… 0.05s  
+
+   PASS  Tests\Feature\Api\SuasParticipationTypeControllerTest
+  ✓ it lists suas participation types                                    0.02s  
+  ✓ it creates a suas participation type                                 0.02s  
+  ✓ it shows a suas participation type                                   0.02s  
+  ✓ it updates a suas participation type                                 0.02s  
+  ✓ it deletes a suas participation type                                 0.02s  
+  ✓ it validates required fields on create                               0.02s  
+  ✓ it requires authentication                                           0.01s  
+  ✓ it filters suas participation types by name                          0.02s  
+  ✓ it sorts suas participation types by code                            0.02s  
+  ✓ it blocks deletion when participation type is linked to a social en… 0.02s  
+  ✓ it allows deletion after social entity link is removed               0.02s  
+  ✓ it exposes is_active and defaults to true on create                  0.02s  
+  ✓ it filters suas participation types by is_active                     0.05s  
+  ✓ it bulk activates suas participation types                           0.02s  
+  ✓ it bulk deactivates suas participation types                         0.02s  
+  ✓ it forbids bulk activate without the bulk-update permission          0.02s  
+  ✓ it validates uuids on bulk activate                                  0.02s  
+  ✓ it rejects integer ids on bulk activate                              0.02s  
+
+   PASS  Tests\Feature\Manager\ParticipationDomainsTest
+  ✓ it lista os oito servicos com os codigos do instrumento e preserva…  0.03s  
+  ✓ it nunca expoe o id no payload dos dominios de participacao          0.03s  
+  ✓ it identifica o SCFV para adultos como extensao do produto, e so el… 0.02s  
+  ✓ it expoe os atributos de contagem de cada servico conforme a matriz… 0.03s  
+  ✓ it marca o contador de idosos em exatamente um servico — o codigo 2  0.02s  
+  ✓ it recusa marcar um segundo servico com o contador de idosos         0.02s  
+  ✓ it recusa a combinacao que viola elderly ⟹ scfv ⟹ group na criacao   0.03s  
+  ✓ it recusa desligar o grupo de um servico que continua contando como… 0.02s  
+  ✓ it cria um servico proprio do Administrador respeitando a invariant… 0.03s  
+  ✓ it aceita servico sem apelido e recusa apelido acima de 30 caracter… 0.02s  
+  ✓ it recusa renumerar o codigo de um servico, mas aceita o reenvio do… 0.02s  
+  ✓ it recusa renumerar o codigo de um local de realizacao               0.03s  
+  ✓ it lista os cinco locais com os codigos do instrumento e so o 1 com… 0.02s  
+  ✓ it nao registra nenhuma rota de escrita dos dominios de participaca… 0.02s  
+  ✓ it nao oferece escrita ao guard client, mas mantem a leitura das du… 0.04s  
+  ✓ it colhe exatamente as cinco abilities de cada dominio de participa… 0.05s  
+  ✓ it recusa excluir um servico ja usado em participacoes, orientando…  0.03s  
+  ✓ it recusa excluir um local ja usado em participacoes, orientando a…  0.03s  
+  ✓ it exclui um item sem uso, porque a lista e aberta e o engano preci… 0.03s  
+  ✓ it mantem o item inativado na lista e no historico, tirando-o so do… 0.03s  
+  ✓ it mantem o local inativado na lista completa e fora do select de a… 0.03s  
+  ✓ it audita a alteracao de um atributo de contagem com autor, data e…  0.02s  
+  ✓ it audita a alteracao do local de realizacao com o valor anterior d… 0.03s  
+  ✓ it deixa o Operacional Global consultar, mas nao manter, os dominio… 0.03s  
+
+  Tests:    97 passed (471 assertions)
+  Duration: 2.79s
+
+
+
+────────────────────────────────────────────────────────────────────────
+Fechamento da CA08 — participação REAL na base, guard real, sem stub
+(possível desde a entrega da US-SCFV-02, que criou a tabela consumidora)
+────────────────────────────────────────────────────────────────────────
+php vendor/bin/pest --filter=Participation
+
+   PASS  Tests\Feature\Manager\ParticipationDomainsTest
+  ✓ it recusa excluir servico e local com participacao REAL na base, se… 0.61s  
+
+  Tests:    1 passed (6 assertions)
+  Duration: 0.72s
+
+  Tests:    177 passed (960 assertions)
+  Duration: 5.98s
+

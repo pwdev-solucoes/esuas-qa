@@ -1,0 +1,6 @@
+Dois tenants na base no momento da geração.
+  meu município  : CNEAS 2946475109998 — Instituto Esperança (meu município)
+  outro município: CNEAS 7448541480754 — Entidade de OUTRO município
+
+Blocos <EntidadeSocial> no arquivo: 1
+CNEAS do outro município presente no arquivo: não

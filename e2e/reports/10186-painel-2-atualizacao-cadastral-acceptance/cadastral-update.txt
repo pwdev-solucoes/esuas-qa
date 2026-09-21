@@ -1,0 +1,18 @@
+
+   PASS  Tests\Feature\Dashboard\CadastralUpdateTest
+  ✓ it classifies families into the 4 time bands + no-information and p… 0.40s  
+  ✓ it places a family updated exactly at the 24-month boundary in 19–2… 0.05s  
+  ✓ it returns a contiguous 12-month evolution with empty months as zer… 0.07s  
+  ✓ it reports "updated" equal to the strategic indicators KPI 1 numera… 0.06s  
+  ✓ it recalculates for a neighborhood, covering only geocoded families… 0.06s  
+  ✓ it returns zeroed groups and a 12-point zero evolution when the sco… 0.04s  
+  ✓ it returns 422 for a neighborhood_uuid outside the tenant municipal… 0.04s  
+  ✓ it denies the panel to the base operator without the dedicated role  0.04s  
+  ✓ it grants the panel to the Master without any add-on role            0.04s  
+
+   PASS  Tests\Feature\TenantIsolation\DashboardCadastralUpdateIsolationTest
+  ✓ it never counts families from another tenant in the cadastral updat… 0.05s  
+
+  Tests:    10 passed (53 assertions)
+  Duration: 0.93s
+

@@ -1,0 +1,23 @@
+== CA04 — Master recusou o perfil funcional sugerido ==
+user_tenant_role concedidos: operador
+pf_tecnico_referencia presente? NAO — perfil recusado
+
+event: roles_granted_from_suggestion
+properties: {
+    "tenant_id": 3,
+    "cbo_code": "2516-05",
+    "has_mapping": true,
+    "suggested": [
+        "family_viewer",
+        "operador",
+        "pf_tecnico_referencia"
+    ],
+    "suggested_kept": [
+        "operador"
+    ],
+    "suggested_removed": [
+        "family_viewer",
+        "pf_tecnico_referencia"
+    ],
+    "manually_added": []
+}

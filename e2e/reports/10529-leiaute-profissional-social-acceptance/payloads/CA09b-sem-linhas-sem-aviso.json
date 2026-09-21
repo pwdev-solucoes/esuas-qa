@@ -1,0 +1,12 @@
+{
+    "_leitura": "CA09b — o leiaute nao tera nenhuma linha (profissional cadastrado, mas sem lotacao): a informativa da Folha de Pagamento NAO aparece. record_count 0, pendencies vazio.",
+    "leiaute": {
+        "name": "ProfissionalSocial",
+        "sort_order": 5,
+        "file_name": "ProfissionalSocial.xml",
+        "outcome": "header_only",
+        "record_count": 0,
+        "skipped_count": 0,
+        "pendencies": []
+    }
+}

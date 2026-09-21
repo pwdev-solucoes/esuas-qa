@@ -1,0 +1,48 @@
+# §8.2–8.4 — base DEV (esuas @ api-pgsql-1), 2026-09-16 06:46, psql (saida agregada, sem familia)
+SELECT s.code, a.created_at,
+       (a.properties::jsonb)->'old'->>'social_unit_type_id'        AS tipo_anterior,
+       (a.properties::jsonb)->'attributes'->>'social_unit_type_id' AS tipo_novo
+FROM activity_log a
+JOIN follow_up_services s ON s.id = a.subject_id
+WHERE a.subject_type = 'App\Models\FollowUpService'
+  AND (a.properties::jsonb)->'attributes' ? 'social_unit_type_id'
+  AND EXISTS (SELECT 1 FROM family_follow_ups f
+              WHERE f.follow_up_service_id = s.id AND f.created_at < a.created_at);
+ code | created_at | tipo_anterior | tipo_novo 
+------+------------+---------------+-----------
+(0 rows)
+
+SELECT su.tenant_id, su.id, a.created_at
+FROM activity_log a
+JOIN social_units su ON su.id = a.subject_id
+WHERE a.subject_type = 'App\Models\SocialUnit'
+  AND (a.properties::jsonb)->'attributes' ? 'type_id'
+  AND EXISTS (SELECT 1 FROM family_follow_ups f
+              WHERE f.social_unit_id = su.id AND f.created_at < a.created_at);
+ tenant_id | id | created_at 
+-----------+----+------------
+(0 rows)
+
+SELECT x.tenant_id, x.mes, COUNT(*) AS familias_com_reingresso_no_mes
+FROM (
+  SELECT f.tenant_id, f.social_unit_id, f.follow_up_service_id, f.family_id,
+         date_trunc('month', f.admitted_on) AS mes
+  FROM family_follow_ups f
+  WHERE f.deleted_at IS NULL
+    AND f.status <> 'cancelled'
+  GROUP BY f.tenant_id, f.social_unit_id, f.follow_up_service_id, f.family_id, date_trunc('month', f.admitted_on)
+  HAVING COUNT(*) > 1
+) x
+GROUP BY x.tenant_id, x.mes
+ORDER BY x.mes;
+ tenant_id | mes | familias_com_reingresso_no_mes 
+-----------+-----+--------------------------------
+(0 rows)
+
+SELECT subject_type, COUNT(*) FROM activity_log WHERE subject_type IN ('App\Models\FollowUpService','App\Models\SocialUnit') GROUP BY 1;
+        subject_type        | count 
+----------------------------+-------
+ App\Models\FollowUpService |     2
+ App\Models\SocialUnit      |     8
+(2 rows)
+

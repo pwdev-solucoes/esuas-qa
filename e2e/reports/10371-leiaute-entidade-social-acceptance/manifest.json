@@ -1,0 +1,354 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — HU #10371 (US-SIAP-04)",
+    "subtitle": "Leiaute EntidadeSocial — situação de funcionamento, endereço e bloqueio da remessa",
+    "rows": [
+      [
+        "Gerado em",
+        "13/08/2026 · evidências de tela recapturadas em 18/08/2026 contra a staging"
+      ],
+      [
+        "Ticket GLPI",
+        "#10371 · US-SIAP-04 · épico HU-SIAP-AS"
+      ],
+      [
+        "Spec (contrato)",
+        ".planning/specs/10371-leiaute-entidade-social.md (CA01–CA13)"
+      ],
+      [
+        "Branch",
+        "feature/10371-leiaute-entidade-social (api e client) — evidência de tela reconferida na staging (api 22fa09a · client c45b2ad)"
+      ],
+      [
+        "Commits",
+        "api 9c221c8 (situação e endereço) · api b41657e (bloqueio por entidade incompleta) · client 902f44d (data de encerramento no cadastro)"
+      ],
+      [
+        "Ambiente (XML e payloads)",
+        "API Laravel/Pest 4 sobre PostgreSQL — cenários montados por Pest e remessa gerada de verdade (zip + XML extraído do arquivo)"
+      ],
+      [
+        "Ferramenta",
+        "Pest 4 (php -d memory_limit=1G vendor/bin/pest) · Vitest (client) · psql via tinker (consultas §8)"
+      ],
+      [
+        "Origem normativa",
+        "Manual de Referência do SIAP (2026, 2ª ed.) — item 15.2, leiaute EntidadeSocial"
+      ],
+      [
+        "Natureza da evidência",
+        "XML gerado (CA01–CA05b, CA05d, CA09, CA10, CA11, CA13) · payload de recusa e da conferência prévia (CA03b, CA05c, CA05e, CA06–CA08, CA12) · Pest em todos · Vitest no campo do cadastro"
+      ],
+      [
+        "Cobertura desta execução",
+        "6 screenshots, todos do ambiente real (Sail :8000 + client Vite :5175, organização “E2E CadÚnico”, referência 08/2026): CA03b, CA06, CA07, CA08, CA12 e a data de encerramento no cadastro. Os critérios de CONTEÚDO do XML não têm tela e seguem evidenciados pelo arquivo gerado + Pest — cada seção diz qual evidência a sustenta. O print do FORMULÁRIO de edição não foi capturado: ver a seção “Data de Encerramento”."
+      ],
+      [
+        "LGPD",
+        "este leiaute não tem dado pessoal de cidadão; razão social, CNPJ e endereço de entidade são institucionais. O CPF do responsável legal existe no cadastro e NUNCA é lido por este leiaute (RN15). A pendência gravada identifica a entidade por uuid; a RAZÃO SOCIAL é derivada na resposta da conferência e nunca persistida (decisão da US-SIAP-02)"
+      ]
+    ]
+  },
+  "summary": "18 critérios avaliados (CA01–CA13 com os desdobramentos CA03b, CA05b, CA05c, CA05d e CA05e), mais o campo novo do cadastro no client — todos atendidos, nenhum reprovado. Esta HU é atípica no formato da evidência: a maior parte dos critérios fala do CONTEÚDO do EntidadeSocial.xml, e a evidência de primeira classe deles é o próprio trecho do arquivo — cada XML embutido neste relatório foi extraído do zip de uma remessa realmente gerada pelo endpoint POST client/siap-remittances, e está preservado em xml/. Os critérios de bloqueio (CA03b, CA05c, CA05e, CA06, CA07, CA08 e CA12) são demonstrados pelo 422 da geração e pelo payload da conferência prévia, preservados em payloads/ — um cenário de cada vez, porque qualquer um deles sozinho derruba a remessa inteira — e os cinco critérios com manifestação em tela foram fotografados no app real. Onde não há print, a seção declara qual evidência sustenta o critério, em vez de exibir um verde genérico. Suíte anexa: 132 testes (605 asserções) em --filter=Siap, todos verdes; no client, 1383 testes Vitest verdes. As duas últimas seções não são critérios: “§8” registra o dimensionamento (que a base local NÃO permite fazer) e “ACHADO” documenta um defeito confirmado no atalho da pendência bloqueante, que a HU reporta sem corrigir — ele aparece em vermelho de propósito, para não passar despercebido.",
+  "cas": [
+    {
+      "id": "CA01",
+      "title": "Entidades do município no leiaute (happy path)",
+      "status": "auto",
+      "gherkin": "Dado que meu município tem 4 entidades com CNEAS, CNPJ, endereço com CEP, e-mail,\n      situação, tipo de localização, participação no SUAS, modalidade e valor preenchidos\nQuando a remessa da referência 08/2026 for gerada\nEntão o leiaute EntidadeSocial traz 4 linhas com todos os campos do Manual",
+      "steps_html": "<p><b>Natureza da evidência:</b> este critério fala do <b>conteúdo do arquivo</b>. A evidência de primeira classe é o próprio trecho do <code>EntidadeSocial.xml</code>, extraído do zip de uma remessa realmente gerada pelo endpoint <code>POST client/siap-remittances</code> — não montado à mão. Não há tela a fotografar.</p><p>Quatro entidades completas no tenant, com <code>foundation_date</code> e <code>head_office_cnpj</code> preenchidos (os dois campos opcionais precisam de valor para as 17 tags saírem — o writer omite a tag do valor nulo, que é justamente o que o CA02 checa). Remessa gerada em <code>exercise=2026</code>, <code>reference_month=8</code>.</p><div class=\"filecap\">xml/ca01-quatro-entidades-completas.xml</div><pre class=\"xml\">&lt;?xml version=&quot;1.0&quot;?&gt;\n&lt;SIAP&gt;\n    &lt;Codigo&gt;004821&lt;/Codigo&gt;\n    &lt;Exercicio&gt;2026&lt;/Exercicio&gt;\n    &lt;Mes&gt;08&lt;/Mes&gt;\n    &lt;EntidadeSocial&gt;\n        &lt;NumeroCNEAS&gt;1817682866157&lt;/NumeroCNEAS&gt;\n        &lt;NomeEntidadeSocial&gt;Instituto Esperança&lt;/NomeEntidadeSocial&gt;\n        &lt;CNPJEntidadeSocial&gt;98574277644688&lt;/CNPJEntidadeSocial&gt;\n        &lt;EnderecoEntidadeSocial&gt;Rua, Largo Juliano, 488, Anexo, do Norte, Matheus d&#x27;Oeste&lt;/EnderecoEntidadeSocial&gt;\n        &lt;CEP&gt;57000000&lt;/CEP&gt;\n        &lt;SituacaoEntidadeSocial&gt;1&lt;/SituacaoEntidadeSocial&gt;\n        &lt;DataFundacao&gt;2010-05-20&lt;/DataFundacao&gt;\n        &lt;Email&gt;contato@entidade.test&lt;/Email&gt;\n        &lt;CNPJMatriz&gt;64586571259611&lt;/CNPJMatriz&gt;\n        &lt;TipoLocalizacao&gt;1&lt;/TipoLocalizacao&gt;\n        &lt;ParceriaPoderPublico&gt;2&lt;/ParceriaPoderPublico&gt;\n        &lt;ParticipanteSUAS&gt;1&lt;/ParticipanteSUAS&gt;\n        &lt;BeneficioEventual&gt;2&lt;/BeneficioEventual&gt;\n        &lt;ExecucaoServicos&gt;2&lt;/ExecucaoServicos&gt;\n        &lt;SituacaoUnidade&gt;1&lt;/SituacaoUnidade&gt;\n        &lt;Modalidade&gt;2&lt;/Modalidade&gt;\n        &lt;ValorVinculo&gt;12345.20&lt;/ValorVinculo&gt;\n    &lt;/EntidadeSocial&gt;\n    &lt;EntidadeSocial&gt;\n        &lt;NumeroCNEAS&gt;9358538824632&lt;/NumeroCNEAS&gt;\n        &lt;NomeEntidadeSocial&gt;Associação Lar Feliz&lt;/NomeEntidadeSocial&gt;\n        &lt;CNPJEntidadeSocial&gt;70645342337835&lt;/CNPJEntidadeSocial&gt;\n        &lt;EnderecoEntidadeSocial&gt;Rua, R. Patrícia Carrara, 37, d&#x27;Oeste, Garcia do Leste&lt;/EnderecoEntidadeSocial&gt;\n        &lt;CEP&gt;57000000&lt;/CEP&gt;\n        &lt;SituacaoEntidadeSocial&gt;1&lt;/SituacaoEntidadeSocial&gt;\n        &lt;DataFundacao&gt;2010-05-20&lt;/DataFundacao&gt;\n        &lt;Email&gt;contato@entidade.test&lt;/Email&gt;\n        &lt;CNPJMatriz&gt;84830249146620&lt;/CNPJMatriz&gt;\n        &lt;TipoLocalizacao&gt;1&lt;/TipoLocalizacao&gt;\n        &lt;ParceriaPoderPublico&gt;2&lt;/ParceriaPoderPublico&gt;\n        &lt;ParticipanteSUAS&gt;1&lt;/ParticipanteSUAS&gt;\n        &lt;BeneficioEventual&gt;2&lt;/BeneficioEventual&gt;\n        &lt;ExecucaoServicos&gt;2&lt;/ExecucaoServicos&gt;\n        &lt;SituacaoUnidade&gt;2&lt;/SituacaoUnidade&gt;\n        &lt;Modalidade&gt;2&lt;/Modalidade&gt;\n        &lt;ValorVinculo&gt;12345.20&lt;/ValorVinculo&gt;\n    &lt;/EntidadeSocial&gt;\n    &lt;EntidadeSocial&gt;\n        &lt;NumeroCNEAS&gt;4965636306072&lt;/NumeroCNEAS&gt;\n        &lt;NomeEntidadeSocial&gt;Casa de Apoio São José&lt;/NomeEntidadeSocial&gt;\n        &lt;CNPJEntidadeSocial&gt;16097578356443&lt;/CNPJEntidadeSocial&gt;\n        &lt;EnderecoEntidadeSocial&gt;Rua, Travessa Yasmin, 9, Apto 1058, do Leste, Rodolfo d&#x27;Oeste&lt;/EnderecoEntidadeSocial&gt;\n        &lt;CEP&gt;57000000&lt;/CEP&gt;\n        &lt;SituacaoEntidadeSocial&gt;1&lt;/SituacaoEntidadeSocial&gt;\n        &lt;DataFundacao&gt;2010-05-20&lt;/DataFundacao&gt;\n        &lt;Email&gt;contato@entidade.test&lt;/Email&gt;\n        &lt;CNPJMatriz&gt;77747319005384&lt;/CNPJMatriz&gt;\n        &lt;TipoLocalizacao&gt;1&lt;/TipoLocalizacao&gt;\n        &lt;ParceriaPoderPublico&gt;2&lt;/ParceriaPoderPublico&gt;\n        &lt;ParticipanteSUAS&gt;1&lt;/ParticipanteSUAS&gt;\n        &lt;BeneficioEventual&gt;2&lt;/BeneficioEventual&gt;\n        &lt;ExecucaoServicos&gt;2&lt;/ExecucaoServicos&gt;\n        &lt;SituacaoUnidade&gt;1&lt;/SituacaoUnidade&gt;\n        &lt;Modalidade&gt;2&lt;/Modalidade&gt;\n        &lt;ValorVinculo&gt;12345.20&lt;/ValorVinculo&gt;\n    &lt;/EntidadeSocial&gt;\n    &lt;EntidadeSocial&gt;\n        &lt;NumeroCNEAS&gt;7116095574461&lt;/NumeroCNEAS&gt;\n        &lt;NomeEntidadeSocial&gt;Obra Social Boa Vista&lt;/NomeEntidadeSocial&gt;\n        &lt;CNPJEntidadeSocial&gt;76183105997412&lt;/CNPJEntidadeSocial&gt;\n        &lt;EnderecoEntidadeSocial&gt;Rua, Rua Gisela Branco, 707, Apto 465, do Sul, Santa Thalia do Norte&lt;/EnderecoEntidadeSocial&gt;\n        &lt;CEP&gt;57000000&lt;/CEP&gt;\n        &lt;SituacaoEntidadeSocial&gt;1&lt;/SituacaoEntidadeSocial&gt;\n        &lt;DataFundacao&gt;2010-05-20&lt;/DataFundacao&gt;\n        &lt;Email&gt;contato@entidade.test&lt;/Email&gt;\n        &lt;CNPJMatriz&gt;02159625280816&lt;/CNPJMatriz&gt;\n        &lt;TipoLocalizacao&gt;1&lt;/TipoLocalizacao&gt;\n        &lt;ParceriaPoderPublico&gt;2&lt;/ParceriaPoderPublico&gt;\n        &lt;ParticipanteSUAS&gt;1&lt;/ParticipanteSUAS&gt;\n        &lt;BeneficioEventual&gt;2&lt;/BeneficioEventual&gt;\n        &lt;ExecucaoServicos&gt;2&lt;/ExecucaoServicos&gt;\n        &lt;SituacaoUnidade&gt;2&lt;/SituacaoUnidade&gt;\n        &lt;Modalidade&gt;2&lt;/Modalidade&gt;\n        &lt;ValorVinculo&gt;12345.20&lt;/ValorVinculo&gt;\n    &lt;/EntidadeSocial&gt;\n&lt;/SIAP&gt;</pre>",
+      "results": [
+        "O arquivo traz exatamente 4 blocos <EntidadeSocial> — um por entidade cadastrada (RN01).",
+        "Os 17 campos do item 15.2 do Manual aparecem nas 4 linhas: NumeroCNEAS, NomeEntidadeSocial, CNPJEntidadeSocial, EnderecoEntidadeSocial, CEP, SituacaoEntidadeSocial, DataFundacao, Email, CNPJMatriz, TipoLocalizacao, ParceriaPoderPublico, ParticipanteSUAS, BeneficioEventual, ExecucaoServicos, SituacaoUnidade, Modalidade e ValorVinculo.",
+        "O cabeçalho carrega o CARDUG 004821, o exercício 2026 e o mês 08, como a #10367 fixou.",
+        "O endereço já sai na ordem do Manual e termina no município (RN03/D06) — ver CA13.",
+        "Teste: “it brings every entity of the municipality with the seventeen fields of the Manual (CA01)” — assere substr_count($xml, '<EntidadeSocial>') === 4 e a presença dos 17 campos em cada linha."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA02",
+      "title": "Data de fundação e CNPJ da matriz em branco",
+      "status": "auto",
+      "gherkin": "Dado que uma entidade não tem data de fundação nem CNPJ de matriz\nQuando a remessa for gerada\nEntão a linha consta do leiaute com esses dois campos vazios\nE isso não gera pendência",
+      "steps_html": "<p><b>Natureza da evidência:</b> este critério fala do <b>conteúdo do arquivo</b>. A evidência de primeira classe é o próprio trecho do <code>EntidadeSocial.xml</code>, extraído do zip de uma remessa realmente gerada pelo endpoint <code>POST client/siap-remittances</code> — não montado à mão. Não há tela a fotografar.</p><div class=\"filecap\">xml/ca02-fundacao-e-matriz-ausentes.xml</div><pre class=\"xml\">&lt;?xml version=&quot;1.0&quot;?&gt;\n&lt;SIAP&gt;\n    &lt;Codigo&gt;004821&lt;/Codigo&gt;\n    &lt;Exercicio&gt;2026&lt;/Exercicio&gt;\n    &lt;Mes&gt;08&lt;/Mes&gt;\n    &lt;EntidadeSocial&gt;\n        &lt;NumeroCNEAS&gt;8859590004346&lt;/NumeroCNEAS&gt;\n        &lt;NomeEntidadeSocial&gt;Instituto Semear&lt;/NomeEntidadeSocial&gt;\n        &lt;CNPJEntidadeSocial&gt;35868670752029&lt;/CNPJEntidadeSocial&gt;\n        &lt;EnderecoEntidadeSocial&gt;Rua, R. Simon Delgado, 68114, do Norte, Santa Leo&lt;/EnderecoEntidadeSocial&gt;\n        &lt;CEP&gt;57000000&lt;/CEP&gt;\n        &lt;SituacaoEntidadeSocial&gt;1&lt;/SituacaoEntidadeSocial&gt;\n        &lt;Email&gt;contato@entidade.test&lt;/Email&gt;\n        &lt;TipoLocalizacao&gt;1&lt;/TipoLocalizacao&gt;\n        &lt;ParceriaPoderPublico&gt;2&lt;/ParceriaPoderPublico&gt;\n        &lt;ParticipanteSUAS&gt;1&lt;/ParticipanteSUAS&gt;\n        &lt;BeneficioEventual&gt;2&lt;/BeneficioEventual&gt;\n        &lt;ExecucaoServicos&gt;2&lt;/ExecucaoServicos&gt;\n        &lt;SituacaoUnidade&gt;1&lt;/SituacaoUnidade&gt;\n        &lt;Modalidade&gt;2&lt;/Modalidade&gt;\n        &lt;ValorVinculo&gt;12345.20&lt;/ValorVinculo&gt;\n    &lt;/EntidadeSocial&gt;\n&lt;/SIAP&gt;</pre><div class=\"filecap\">xml/ca02-contexto.txt</div><pre class=\"txt\">Entidade sem foundation_date e sem head_office_cnpj.\nA linha CONSTA do arquivo; o writer OMITE a tag do valor nulo.\nPendências gravadas nos campos DataFundacao/CNPJMatriz: 0 (esperado 0).</pre>",
+      "results": [
+        "A linha CONSTA do arquivo — a entidade não é omitida por causa dos dois campos opcionais.",
+        "<DataFundacao> e <CNPJMatriz> não aparecem: o writer omite a tag do valor nulo, que é a forma de “campo vazio” deste leiaute.",
+        "Nenhuma pendência foi gravada nesses dois campos (consulta direta a siap_remittance_pendencies: 0).",
+        "Teste: “it keeps the entity without foundation date and head office CNPJ in the file (CA02)”."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA03",
+      "title": "Vínculo conforme declarado no cadastro",
+      "status": "auto",
+      "gherkin": "Dado uma entidade com vínculo \"sim\" e outra com \"não\", independentemente da modalidade\nQuando a remessa for gerada\nEntão a primeira sai com 1 e a segunda com 2\nE o sistema não altera esses valores com base na modalidade de contrato",
+      "steps_html": "<p><b>Natureza da evidência:</b> este critério fala do <b>conteúdo do arquivo</b>. A evidência de primeira classe é o próprio trecho do <code>EntidadeSocial.xml</code>, extraído do zip de uma remessa realmente gerada pelo endpoint <code>POST client/siap-remittances</code> — não montado à mão. Não há tela a fotografar.</p><p>O cenário é deliberadamente contraintuitivo: a “Associação Lar Feliz” tem modalidade <b>Sem Vínculo</b> e o município declarou que <b>há</b> vínculo; o “Instituto Esperança” tem <b>Termo de Fomento</b> e vínculo declarado como <b>não</b>. Se o sistema derivasse um do outro, os valores viriam trocados.</p><div class=\"filecap\">xml/ca03-vinculo-declarado.xml</div><pre class=\"xml\">&lt;?xml version=&quot;1.0&quot;?&gt;\n&lt;SIAP&gt;\n    &lt;Codigo&gt;004821&lt;/Codigo&gt;\n    &lt;Exercicio&gt;2026&lt;/Exercicio&gt;\n    &lt;Mes&gt;08&lt;/Mes&gt;\n    &lt;EntidadeSocial&gt;\n        &lt;NumeroCNEAS&gt;5833906268323&lt;/NumeroCNEAS&gt;\n        &lt;NomeEntidadeSocial&gt;Associação Lar Feliz&lt;/NomeEntidadeSocial&gt;\n        &lt;CNPJEntidadeSocial&gt;06280491791045&lt;/CNPJEntidadeSocial&gt;\n        &lt;EnderecoEntidadeSocial&gt;Rua, Av. Taís, 3, do Leste, São Patrícia do Sul&lt;/EnderecoEntidadeSocial&gt;\n        &lt;CEP&gt;57000000&lt;/CEP&gt;\n        &lt;SituacaoEntidadeSocial&gt;1&lt;/SituacaoEntidadeSocial&gt;\n        &lt;Email&gt;contato@entidade.test&lt;/Email&gt;\n        &lt;TipoLocalizacao&gt;1&lt;/TipoLocalizacao&gt;\n        &lt;ParceriaPoderPublico&gt;2&lt;/ParceriaPoderPublico&gt;\n        &lt;ParticipanteSUAS&gt;1&lt;/ParticipanteSUAS&gt;\n        &lt;BeneficioEventual&gt;2&lt;/BeneficioEventual&gt;\n        &lt;ExecucaoServicos&gt;2&lt;/ExecucaoServicos&gt;\n        &lt;SituacaoUnidade&gt;1&lt;/SituacaoUnidade&gt;\n        &lt;Modalidade&gt;1&lt;/Modalidade&gt;\n        &lt;ValorVinculo&gt;12345.20&lt;/ValorVinculo&gt;\n    &lt;/EntidadeSocial&gt;\n    &lt;EntidadeSocial&gt;\n        &lt;NumeroCNEAS&gt;0228668805005&lt;/NumeroCNEAS&gt;\n        &lt;NomeEntidadeSocial&gt;Instituto Esperança&lt;/NomeEntidadeSocial&gt;\n        &lt;CNPJEntidadeSocial&gt;80350929783904&lt;/CNPJEntidadeSocial&gt;\n        &lt;EnderecoEntidadeSocial&gt;Rua, Largo Ortega, 40643, F, do Norte, Sanches do Leste&lt;/EnderecoEntidadeSocial&gt;\n        &lt;CEP&gt;57000000&lt;/CEP&gt;\n        &lt;SituacaoEntidadeSocial&gt;1&lt;/SituacaoEntidadeSocial&gt;\n        &lt;Email&gt;contato@entidade.test&lt;/Email&gt;\n        &lt;TipoLocalizacao&gt;1&lt;/TipoLocalizacao&gt;\n        &lt;ParceriaPoderPublico&gt;2&lt;/ParceriaPoderPublico&gt;\n        &lt;ParticipanteSUAS&gt;1&lt;/ParticipanteSUAS&gt;\n        &lt;BeneficioEventual&gt;2&lt;/BeneficioEventual&gt;\n        &lt;ExecucaoServicos&gt;2&lt;/ExecucaoServicos&gt;\n        &lt;SituacaoUnidade&gt;2&lt;/SituacaoUnidade&gt;\n        &lt;Modalidade&gt;3&lt;/Modalidade&gt;\n        &lt;ValorVinculo&gt;12345.20&lt;/ValorVinculo&gt;\n    &lt;/EntidadeSocial&gt;\n&lt;/SIAP&gt;</pre>",
+      "results": [
+        "Associação Lar Feliz: <SituacaoUnidade>1 com <Modalidade>1 (Sem Vínculo na escala do SIAP).",
+        "Instituto Esperança: <SituacaoUnidade>2 com <Modalidade>3 (Termo de Fomento).",
+        "O vínculo sai como DECLARADO — a modalidade não interfere (RN13, regressão da #10369).",
+        "Teste: “it emits the declared service agreement regardless of the contract modality (CA03)”."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA03b",
+      "title": "Bloqueio por vínculo não informado",
+      "status": "parc",
+      "gherkin": "Dado que uma entidade cadastrada antes da #10369 está sem o vínculo informado\nQuando eu solicitar a geração da remessa\nEntão a remessa não é gerada\nE a conferência aponta pendência impeditiva identificando a entidade e o campo SituacaoUnidade",
+      "steps_html": "<p><b>Natureza da evidência:</b> print da conferência prévia no app real <b>e</b> o payload do <code>422</code> do <code>POST client/siap-remittances</code>.</p><p>Duas entidades no tenant: uma completa e o “Instituto Esperança” com <code>has_active_service_agreement = null</code> — o estado em que toda entidade anterior à #10369 se encontra.</p><div class=\"filecap\">payloads/ca03b-bloqueio-sem-vinculo.json</div><pre class=\"json\">{\n  &quot;POST client/siap-remittances&quot;: {\n    &quot;status&quot;: 422,\n    &quot;body&quot;: {\n      &quot;message&quot;: &quot;The SIAP remittance cannot be generated: 1 social entity has an incomplete record for SIAP. Check the missing data in the pre-check screen.&quot;,\n      &quot;errors&quot;: {\n        &quot;social_entities&quot;: [\n          &quot;The SIAP remittance cannot be generated: 1 social entity has an incomplete record for SIAP. Check the missing data in the pre-check screen.&quot;\n        ]\n      }\n    }\n  },\n  &quot;remessas_criadas&quot;: 0,\n  &quot;arquivos_gravados&quot;: [],\n  &quot;pendencia_na_zona_de_bloqueio&quot;: {\n    &quot;scope&quot;: &quot;blocking&quot;,\n    &quot;kind&quot;: &quot;record_incomplete&quot;,\n    &quot;field_name&quot;: &quot;SituacaoUnidade&quot;,\n    &quot;subject_type&quot;: &quot;social_entity&quot;,\n    &quot;subject_uuid&quot;: &quot;76163309-9730-4b98-ad67-c8e0fc760c39&quot;,\n    &quot;affected_count&quot;: 1,\n    &quot;message_key&quot;: &quot;siap_remittance.pendency.entity_incomplete&quot;,\n    &quot;message&quot;: &quot;This social entity is missing SituacaoUnidade, required by SIAP. Fix the entity record: until then, no remittance can be generated.&quot;,\n    &quot;blocks_entire_remittance&quot;: true,\n    &quot;affected_layouts&quot;: 11,\n    &quot;resolution&quot;: {\n      &quot;resource&quot;: &quot;tenant-tce-parameters&quot;,\n      &quot;requires_role&quot;: &quot;master&quot;\n    }\n  }\n}</pre>",
+      "results": [
+        "Na conferência prévia, a faixa “IMPEDIMENTOS QUE BLOQUEIAM TODA A REMESSA” traz o selo “Bloqueia os 11 arquivos” e <b>identifica a entidade pela razão social</b>: “Registro: Instituto Esperanca Alagoana · Campo: SituacaoUnidade” — o botão <b>Gerar remessa</b> fica desabilitado.",
+        "O cartão explica a consequência em termos do próprio leiaute (“As entidades socioassistenciais compõem o leiaute EntidadeSocial, que o Tribunal usa para cruzar recurso repassado com serviço prestado”) e oferece o atalho <b>“Abrir o cadastro da entidade”</b>, que leva à ficha correta.",
+        "A geração é recusada com 422 e chave de erro <code>social_entities</code> — a remessa não chega a existir (<code>remessas_criadas: 0</code>, <code>arquivos_gravados: []</code>).",
+        "A entidade completa do mesmo tenant também fica sem remessa: o bloqueio é da remessa inteira (D04), não da linha.",
+        "Texto lido pelo município (pt-BR): “Esta entidade socioassistencial está sem SituacaoUnidade, exigido pelo SIAP. Corrija o cadastro da entidade: enquanto isso, nenhuma remessa pode ser gerada.” — ver payloads/mensagens-em-pt-br.txt.",
+        "Teste: “it refuses the generation when the service agreement was never informed (CA03b)”.",
+        "A mesma pendência aparece também na lista por leiaute, em “EntidadeSocial · Parcial”, nomeando a entidade — o município enxerga o impedimento e o detalhe por leiaute na mesma tela."
+      ],
+      "images": [
+        "screenshots/ca03b-bloqueio-sem-vinculo.png"
+      ]
+    },
+    {
+      "id": "CA04",
+      "title": "Indicadores de sim ou não",
+      "status": "auto",
+      "gherkin": "Dado uma entidade com parceria \"sim\", execução de serviços \"sim\" e benefício eventual \"não\"\nQuando a remessa for gerada\nEntão a linha informa 1, 1 e 2 respectivamente",
+      "steps_html": "<p><b>Natureza da evidência:</b> este critério fala do <b>conteúdo do arquivo</b>. A evidência de primeira classe é o próprio trecho do <code>EntidadeSocial.xml</code>, extraído do zip de uma remessa realmente gerada pelo endpoint <code>POST client/siap-remittances</code> — não montado à mão. Não há tela a fotografar.</p><div class=\"filecap\">xml/ca04-indicadores-sim-nao.xml</div><pre class=\"xml\">&lt;?xml version=&quot;1.0&quot;?&gt;\n&lt;SIAP&gt;\n    &lt;Codigo&gt;004821&lt;/Codigo&gt;\n    &lt;Exercicio&gt;2026&lt;/Exercicio&gt;\n    &lt;Mes&gt;08&lt;/Mes&gt;\n    &lt;EntidadeSocial&gt;\n        &lt;NumeroCNEAS&gt;9867577369489&lt;/NumeroCNEAS&gt;\n        &lt;NomeEntidadeSocial&gt;Instituto Esperança&lt;/NomeEntidadeSocial&gt;\n        &lt;CNPJEntidadeSocial&gt;58532550825344&lt;/CNPJEntidadeSocial&gt;\n        &lt;EnderecoEntidadeSocial&gt;Rua, Largo Gabriela, 38, do Leste, Montenegro do Leste&lt;/EnderecoEntidadeSocial&gt;\n        &lt;CEP&gt;57000000&lt;/CEP&gt;\n        &lt;SituacaoEntidadeSocial&gt;1&lt;/SituacaoEntidadeSocial&gt;\n        &lt;Email&gt;contato@entidade.test&lt;/Email&gt;\n        &lt;TipoLocalizacao&gt;1&lt;/TipoLocalizacao&gt;\n        &lt;ParceriaPoderPublico&gt;1&lt;/ParceriaPoderPublico&gt;\n        &lt;ParticipanteSUAS&gt;1&lt;/ParticipanteSUAS&gt;\n        &lt;BeneficioEventual&gt;2&lt;/BeneficioEventual&gt;\n        &lt;ExecucaoServicos&gt;1&lt;/ExecucaoServicos&gt;\n        &lt;SituacaoUnidade&gt;1&lt;/SituacaoUnidade&gt;\n        &lt;Modalidade&gt;2&lt;/Modalidade&gt;\n        &lt;ValorVinculo&gt;12345.20&lt;/ValorVinculo&gt;\n    &lt;/EntidadeSocial&gt;\n&lt;/SIAP&gt;</pre>",
+      "results": [
+        "<ParceriaPoderPublico>1, <ExecucaoServicos>1 e <BeneficioEventual>2 — exatamente o 1/1/2 do critério.",
+        "A tradução é do SiapDomainMap::yesNo(): true→1, false→2, null→pendência (RN11).",
+        "Teste: “it emits the yes or no indicators as 1 and 2 (CA04)”."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA05",
+      "title": "Entidade extinta no exercício da referência (e CA05b — em exercício anterior)",
+      "status": "auto",
+      "gherkin": "Dado uma entidade com situação \"extinta\" e data de encerramento em 2026\nQuando a remessa da referência 08/2026 for gerada\nEntão a entidade consta do leiaute com SituacaoEntidadeSocial = 3, e não é omitida\n\nCA05b — Dado uma entidade com situação \"extinta\" e data de encerramento em 2024\nQuando a remessa da referência 08/2026 for gerada\nEntão a entidade consta do leiaute com SituacaoEntidadeSocial = 4",
+      "steps_html": "<p><b>Natureza da evidência:</b> este critério fala do <b>conteúdo do arquivo</b>. A evidência de primeira classe é o próprio trecho do <code>EntidadeSocial.xml</code>, extraído do zip de uma remessa realmente gerada pelo endpoint <code>POST client/siap-remittances</code> — não montado à mão. Não há tela a fotografar.</p><p>Os dois critérios num arquivo só, de propósito: a <b>mesma</b> situação de cadastro (<code>006 Extinta</code>) produz valores diferentes porque a distinção 3 × 4 é <b>derivada</b> da <code>activity_end_date</code> comparada ao exercício da referência (RN08/D02), não travada em dois códigos de lookup. “Casa de Apoio São José” encerrou em 10/03/2026; “Obra Social Boa Vista”, em 20/11/2024. Referência: 08/2026.</p><div class=\"filecap\">xml/ca05-ca05b-extincao-por-exercicio.xml</div><pre class=\"xml\">&lt;?xml version=&quot;1.0&quot;?&gt;\n&lt;SIAP&gt;\n    &lt;Codigo&gt;004821&lt;/Codigo&gt;\n    &lt;Exercicio&gt;2026&lt;/Exercicio&gt;\n    &lt;Mes&gt;08&lt;/Mes&gt;\n    &lt;EntidadeSocial&gt;\n        &lt;NumeroCNEAS&gt;2317586160561&lt;/NumeroCNEAS&gt;\n        &lt;NomeEntidadeSocial&gt;Casa de Apoio São José (extinta em 2026)&lt;/NomeEntidadeSocial&gt;\n        &lt;CNPJEntidadeSocial&gt;41687552039453&lt;/CNPJEntidadeSocial&gt;\n        &lt;EnderecoEntidadeSocial&gt;Rua, Av. Ávila, 91, do Norte, Filipe do Leste&lt;/EnderecoEntidadeSocial&gt;\n        &lt;CEP&gt;57000000&lt;/CEP&gt;\n        &lt;SituacaoEntidadeSocial&gt;3&lt;/SituacaoEntidadeSocial&gt;\n        &lt;Email&gt;contato@entidade.test&lt;/Email&gt;\n        &lt;TipoLocalizacao&gt;1&lt;/TipoLocalizacao&gt;\n        &lt;ParceriaPoderPublico&gt;2&lt;/ParceriaPoderPublico&gt;\n        &lt;ParticipanteSUAS&gt;1&lt;/ParticipanteSUAS&gt;\n        &lt;BeneficioEventual&gt;2&lt;/BeneficioEventual&gt;\n        &lt;ExecucaoServicos&gt;2&lt;/ExecucaoServicos&gt;\n        &lt;SituacaoUnidade&gt;2&lt;/SituacaoUnidade&gt;\n        &lt;Modalidade&gt;2&lt;/Modalidade&gt;\n        &lt;ValorVinculo&gt;12345.20&lt;/ValorVinculo&gt;\n    &lt;/EntidadeSocial&gt;\n    &lt;EntidadeSocial&gt;\n        &lt;NumeroCNEAS&gt;5497775543290&lt;/NumeroCNEAS&gt;\n        &lt;NomeEntidadeSocial&gt;Obra Social Boa Vista (extinta em 2024)&lt;/NomeEntidadeSocial&gt;\n        &lt;CNPJEntidadeSocial&gt;72082364985552&lt;/CNPJEntidadeSocial&gt;\n        &lt;EnderecoEntidadeSocial&gt;Rua, Travessa Padrão, 836, do Norte, Danilo d&#x27;Oeste&lt;/EnderecoEntidadeSocial&gt;\n        &lt;CEP&gt;57000000&lt;/CEP&gt;\n        &lt;SituacaoEntidadeSocial&gt;4&lt;/SituacaoEntidadeSocial&gt;\n        &lt;Email&gt;contato@entidade.test&lt;/Email&gt;\n        &lt;TipoLocalizacao&gt;1&lt;/TipoLocalizacao&gt;\n        &lt;ParceriaPoderPublico&gt;2&lt;/ParceriaPoderPublico&gt;\n        &lt;ParticipanteSUAS&gt;1&lt;/ParticipanteSUAS&gt;\n        &lt;BeneficioEventual&gt;2&lt;/BeneficioEventual&gt;\n        &lt;ExecucaoServicos&gt;2&lt;/ExecucaoServicos&gt;\n        &lt;SituacaoUnidade&gt;1&lt;/SituacaoUnidade&gt;\n        &lt;Modalidade&gt;2&lt;/Modalidade&gt;\n        &lt;ValorVinculo&gt;12345.20&lt;/ValorVinculo&gt;\n    &lt;/EntidadeSocial&gt;\n&lt;/SIAP&gt;</pre>",
+      "results": [
+        "Casa de Apoio São José (encerrada em 2026) → <SituacaoEntidadeSocial>3.",
+        "Obra Social Boa Vista (encerrada em 2024) → <SituacaoEntidadeSocial>4.",
+        "As duas CONSTAM do arquivo — extinção não omite a entidade (RN02).",
+        "Por que derivar: um código estático não sabe o que é “ano atual”. A entidade classificada como extinta-no-ano-atual em 2026 continuaria afirmando isso em 2027.",
+        "Testes: “it emits the entity extinct within the reference exercise as 3 (CA05)” e “it emits the entity extinct in a previous exercise as 4 (CA05b)”."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA05c",
+      "title": "Entidade extinta sem data de encerramento",
+      "status": "auto",
+      "gherkin": "Dado uma entidade com situação \"extinta\" e sem data de encerramento\nQuando eu solicitar a geração da remessa\nEntão a remessa não é gerada\nE a conferência aponta pendência no campo SituacaoEntidadeSocial",
+      "steps_html": "<p><b>Natureza da evidência:</b> payload real do 422 e da conferência prévia. Sem print de tela nesta execução.</p><p>Entidade com <code>social_entity_status = 006 Extinta</code> e <code>activity_end_date = null</code>. O sistema <b>não arbitra</b> a situação (D08): sem a data, não há como saber se o Tribunal deve receber 3 ou 4.</p><div class=\"filecap\">payloads/ca05c-bloqueio-extinta-sem-data.json</div><pre class=\"json\">{\n  &quot;POST client/siap-remittances&quot;: {\n    &quot;status&quot;: 422,\n    &quot;body&quot;: {\n      &quot;message&quot;: &quot;The SIAP remittance cannot be generated: 1 social entity has an incomplete record for SIAP. Check the missing data in the pre-check screen.&quot;,\n      &quot;errors&quot;: {\n        &quot;social_entities&quot;: [\n          &quot;The SIAP remittance cannot be generated: 1 social entity has an incomplete record for SIAP. Check the missing data in the pre-check screen.&quot;\n        ]\n      }\n    }\n  },\n  &quot;remessas_criadas&quot;: 0,\n  &quot;pendencia_na_zona_de_bloqueio&quot;: {\n    &quot;scope&quot;: &quot;blocking&quot;,\n    &quot;kind&quot;: &quot;record_incomplete&quot;,\n    &quot;field_name&quot;: &quot;SituacaoEntidadeSocial&quot;,\n    &quot;subject_type&quot;: &quot;social_entity&quot;,\n    &quot;subject_uuid&quot;: &quot;9e4a5eb3-5e69-4d11-9e72-5f9faa85acf2&quot;,\n    &quot;affected_count&quot;: 1,\n    &quot;message_key&quot;: &quot;siap_remittance.pendency.entity_incomplete&quot;,\n    &quot;message&quot;: &quot;This social entity is missing SituacaoEntidadeSocial, required by SIAP. Fix the entity record: until then, no remittance can be generated.&quot;,\n    &quot;blocks_entire_remittance&quot;: true,\n    &quot;affected_layouts&quot;: 11,\n    &quot;resolution&quot;: {\n      &quot;resource&quot;: &quot;tenant-tce-parameters&quot;,\n      &quot;requires_role&quot;: &quot;master&quot;\n    }\n  }\n}</pre>",
+      "results": [
+        "A remessa não é gerada (422; <code>remessas_criadas: 0</code>).",
+        "A pendência é <code>record_incomplete</code> no campo <code>SituacaoEntidadeSocial</code>: o cadastro já afirma a extinção, o que falta é a DATA — a ação do município é completar o registro, não reclassificá-lo.",
+        "O mesmo tratamento vale para data POSTERIOR ao exercício (2027 numa remessa de 2026): a entidade não estava extinta naquele exercício e o cadastro está inconsistente (D08). O teste cobre os dois casos.",
+        "É o campo que a etapa 03 desta HU expôs no formulário do client — ver “Campo novo no cadastro”.",
+        "Teste: “it turns the extinct entity without a usable end date into a blocking pendency (CA05c / D08)”."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA05d",
+      "title": "Entidade paralisada",
+      "status": "auto",
+      "gherkin": "Dado uma entidade com situação \"paralisada\"\nQuando a remessa for gerada\nEntão a entidade consta do leiaute com SituacaoEntidadeSocial = 2",
+      "steps_html": "<p><b>Natureza da evidência:</b> este critério fala do <b>conteúdo do arquivo</b>. A evidência de primeira classe é o próprio trecho do <code>EntidadeSocial.xml</code>, extraído do zip de uma remessa realmente gerada pelo endpoint <code>POST client/siap-remittances</code> — não montado à mão. Não há tela a fotografar.</p><p>“Paralisada” (<code>005</code>) é uma das duas situações que esta HU <b>acrescentou</b> ao lookup global <code>social_entity_statuses</code> (D02) — antes dela, a escala do SIAP simplesmente não existia no cadastro de apoio, e a RN08 do artefato do PO descrevia uma origem de dado inexistente (§3.1 da spec).</p><div class=\"filecap\">xml/ca05d-entidade-paralisada.xml</div><pre class=\"xml\">&lt;?xml version=&quot;1.0&quot;?&gt;\n&lt;SIAP&gt;\n    &lt;Codigo&gt;004821&lt;/Codigo&gt;\n    &lt;Exercicio&gt;2026&lt;/Exercicio&gt;\n    &lt;Mes&gt;08&lt;/Mes&gt;\n    &lt;EntidadeSocial&gt;\n        &lt;NumeroCNEAS&gt;0645896110412&lt;/NumeroCNEAS&gt;\n        &lt;NomeEntidadeSocial&gt;Instituto Semear (paralisada)&lt;/NomeEntidadeSocial&gt;\n        &lt;CNPJEntidadeSocial&gt;68041474041425&lt;/CNPJEntidadeSocial&gt;\n        &lt;EnderecoEntidadeSocial&gt;Rua, Av. Gabi, 17628, Bloco A, do Sul, Porto Maximiano do Sul&lt;/EnderecoEntidadeSocial&gt;\n        &lt;CEP&gt;57000000&lt;/CEP&gt;\n        &lt;SituacaoEntidadeSocial&gt;2&lt;/SituacaoEntidadeSocial&gt;\n        &lt;Email&gt;contato@entidade.test&lt;/Email&gt;\n        &lt;TipoLocalizacao&gt;1&lt;/TipoLocalizacao&gt;\n        &lt;ParceriaPoderPublico&gt;2&lt;/ParceriaPoderPublico&gt;\n        &lt;ParticipanteSUAS&gt;1&lt;/ParticipanteSUAS&gt;\n        &lt;BeneficioEventual&gt;2&lt;/BeneficioEventual&gt;\n        &lt;ExecucaoServicos&gt;2&lt;/ExecucaoServicos&gt;\n        &lt;SituacaoUnidade&gt;1&lt;/SituacaoUnidade&gt;\n        &lt;Modalidade&gt;2&lt;/Modalidade&gt;\n        &lt;ValorVinculo&gt;12345.20&lt;/ValorVinculo&gt;\n    &lt;/EntidadeSocial&gt;\n&lt;/SIAP&gt;</pre>",
+      "results": [
+        "<SituacaoEntidadeSocial>2 — o código do Manual para “paralisada”.",
+        "A entidade CONSTA do arquivo (RN02).",
+        "Teste: “it emits the paralysed entity as 2 (CA05d)” + “it translates the paralysed entity added by the HU #10371 (CA05d)” no SiapDomainMapTest."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA05e",
+      "title": "Situação sem correspondente no SIAP",
+      "status": "auto",
+      "gherkin": "Dado uma entidade com situação \"Pendente\", \"Suspensa\" ou \"Inativa\"\nQuando eu solicitar a geração da remessa\nEntão a remessa não é gerada\nE a pendência é de tipo domain_unmapped, orientando revisar a classificação",
+      "steps_html": "<p><b>Natureza da evidência:</b> payload real da conferência. Sem print de tela nesta execução.</p><p>Entidade em <code>003 Suspensa</code>. A D03 foi respeitada: os quatro códigos originais do cadastro <b>permanecem intactos</b> e nenhum foi reinterpretado — “Suspensa” <b>não</b> virou “paralisada” e “Inativa” <b>não</b> virou “extinta”. São estados administrativos do cadastro, não da operação da entidade perante o Tribunal.</p><div class=\"filecap\">payloads/ca05e-situacao-sem-correspondente.json</div><pre class=\"json\">{\n  &quot;POST client/siap-remittances&quot;: {\n    &quot;status&quot;: 422,\n    &quot;body&quot;: {\n      &quot;message&quot;: &quot;The SIAP remittance cannot be generated: 1 social entity has an incomplete record for SIAP. Check the missing data in the pre-check screen.&quot;,\n      &quot;errors&quot;: {\n        &quot;social_entities&quot;: [\n          &quot;The SIAP remittance cannot be generated: 1 social entity has an incomplete record for SIAP. Check the missing data in the pre-check screen.&quot;\n        ]\n      }\n    }\n  },\n  &quot;pendencia_na_zona_de_bloqueio&quot;: {\n    &quot;scope&quot;: &quot;blocking&quot;,\n    &quot;kind&quot;: &quot;domain_unmapped&quot;,\n    &quot;field_name&quot;: &quot;SituacaoEntidadeSocial&quot;,\n    &quot;subject_type&quot;: &quot;social_entity&quot;,\n    &quot;subject_uuid&quot;: &quot;d43b98a0-b61c-4e4c-9d10-42f2fe40bb63&quot;,\n    &quot;affected_count&quot;: 1,\n    &quot;message_key&quot;: &quot;siap_remittance.pendency.entity_domain_unmapped&quot;,\n    &quot;message&quot;: &quot;The value in SituacaoEntidadeSocial has no counterpart in the SIAP table. Review the classification in the entity record: until then, no remittance can be generated.&quot;,\n    &quot;blocks_entire_remittance&quot;: true,\n    &quot;affected_layouts&quot;: 11,\n    &quot;resolution&quot;: {\n      &quot;resource&quot;: &quot;tenant-tce-parameters&quot;,\n      &quot;requires_role&quot;: &quot;master&quot;\n    }\n  }\n}</pre>",
+      "results": [
+        "A remessa não é gerada.",
+        "A pendência é <code>domain_unmapped</code> (não <code>record_incomplete</code>): a natureza sobrevive à promoção para a zona de bloqueio — é classificação a REVISAR, não campo a preencher.",
+        "<code>message_key: siap_remittance.pendency.entity_domain_unmapped</code> → “O valor informado em SituacaoEntidadeSocial não tem correspondente na tabela do SIAP. Revise a classificação no cadastro da entidade…”.",
+        "O teste cobre os três códigos (002 Pendente, 003 Suspensa, 004 Inativa) e verifica que nem com activity_end_date preenchida a entidade é reclassificada (D09 — o município declara, o sistema não infere).",
+        "Teste: “it keeps the cadastral statuses without a SIAP counterpart as blocking domain pendencies (CA05e / D03)”."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA06",
+      "title": "Bloqueio por CNEAS ausente",
+      "status": "parc",
+      "gherkin": "Dado que a entidade \"Instituto Esperança\" está sem o número CNEAS\nQuando eu solicitar a geração da remessa\nEntão a remessa não é gerada\nE a conferência aponta pendência impeditiva no leiaute EntidadeSocial\n     identificando essa entidade e o campo NumeroCNEAS",
+      "steps_html": "<p><b>Natureza da evidência:</b> print da conferência prévia no app real + o 422 do endpoint e o payload da conferência, capturados da API.</p><p>Um bloqueio de cada vez, sempre com uma segunda entidade completa no mesmo tenant — qualquer um deles sozinho derruba a remessa inteira, então não podem coabitar o mesmo cenário.</p><div class=\"filecap\">payloads/ca06-bloqueio-sem-cneas.json</div><pre class=\"json\">{\n  &quot;POST client/siap-remittances&quot;: {\n    &quot;status&quot;: 422,\n    &quot;body&quot;: {\n      &quot;message&quot;: &quot;The SIAP remittance cannot be generated: 1 social entity has an incomplete record for SIAP. Check the missing data in the pre-check screen.&quot;,\n      &quot;errors&quot;: {\n        &quot;social_entities&quot;: [\n          &quot;The SIAP remittance cannot be generated: 1 social entity has an incomplete record for SIAP. Check the missing data in the pre-check screen.&quot;\n        ]\n      }\n    }\n  },\n  &quot;remessas_criadas&quot;: 0,\n  &quot;arquivos_gravados&quot;: [],\n  &quot;pendencia_na_zona_de_bloqueio&quot;: {\n    &quot;scope&quot;: &quot;blocking&quot;,\n    &quot;kind&quot;: &quot;record_incomplete&quot;,\n    &quot;field_name&quot;: &quot;NumeroCNEAS&quot;,\n    &quot;subject_type&quot;: &quot;social_entity&quot;,\n    &quot;subject_uuid&quot;: &quot;0752638f-f1f9-4f6e-a193-e17cfa3aef92&quot;,\n    &quot;affected_count&quot;: 1,\n    &quot;message_key&quot;: &quot;siap_remittance.pendency.entity_incomplete&quot;,\n    &quot;message&quot;: &quot;This social entity is missing NumeroCNEAS, required by SIAP. Fix the entity record: until then, no remittance can be generated.&quot;,\n    &quot;blocks_entire_remittance&quot;: true,\n    &quot;affected_layouts&quot;: 11,\n    &quot;resolution&quot;: {\n      &quot;resource&quot;: &quot;tenant-tce-parameters&quot;,\n      &quot;requires_role&quot;: &quot;master&quot;\n    }\n  }\n}</pre>",
+      "results": [
+        "Na conferência prévia, a faixa “IMPEDIMENTOS QUE BLOQUEIAM TODA A REMESSA” traz o selo “Bloqueia os 11 arquivos” e <b>identifica a entidade pela razão social</b>: “Registro: Instituto Esperanca Alagoana · Campo: NumeroCNEAS” — o botão <b>Gerar remessa</b> fica desabilitado.",
+        "O cartão explica a consequência em termos do próprio leiaute (“As entidades socioassistenciais compõem o leiaute EntidadeSocial, que o Tribunal usa para cruzar recurso repassado com serviço prestado”) e oferece o atalho <b>“Abrir o cadastro da entidade”</b>, que leva à ficha correta.",
+        "A remessa não é gerada: 422 com a chave <code>social_entities</code>, <code>remessas_criadas: 0</code> e <code>arquivos_gravados: []</code>.",
+        "A entidade completa do mesmo tenant fica igualmente sem remessa — o bloqueio é da remessa inteira (D04).",
+        "Teste: cenário de bloqueio por NumeroCNEAS em SiapRemittanceGenerationTest (CA06).",
+        "A mesma pendência aparece também na lista por leiaute, em “EntidadeSocial · Parcial”, nomeando a entidade — o município enxerga o impedimento e o detalhe por leiaute na mesma tela."
+      ],
+      "images": [
+        "screenshots/ca06-ca12-bloqueio-sem-cneas.png"
+      ]
+    },
+    {
+      "id": "CA07",
+      "title": "Bloqueio por e-mail ausente",
+      "status": "parc",
+      "gherkin": "Dado uma entidade sem e-mail no cadastro\nQuando eu solicitar a geração da remessa\nEntão a remessa não é gerada\nE a conferência identifica a entidade e o campo Email",
+      "steps_html": "<p><b>Natureza da evidência:</b> print da conferência prévia no app real + o 422 do endpoint e o payload da conferência, capturados da API.</p><p>Um bloqueio de cada vez, sempre com uma segunda entidade completa no mesmo tenant — qualquer um deles sozinho derruba a remessa inteira, então não podem coabitar o mesmo cenário.</p><div class=\"filecap\">payloads/ca07-bloqueio-sem-email.json</div><pre class=\"json\">{\n  &quot;POST client/siap-remittances&quot;: {\n    &quot;status&quot;: 422,\n    &quot;body&quot;: {\n      &quot;message&quot;: &quot;The SIAP remittance cannot be generated: 1 social entity has an incomplete record for SIAP. Check the missing data in the pre-check screen.&quot;,\n      &quot;errors&quot;: {\n        &quot;social_entities&quot;: [\n          &quot;The SIAP remittance cannot be generated: 1 social entity has an incomplete record for SIAP. Check the missing data in the pre-check screen.&quot;\n        ]\n      }\n    }\n  },\n  &quot;remessas_criadas&quot;: 0,\n  &quot;arquivos_gravados&quot;: [],\n  &quot;pendencia_na_zona_de_bloqueio&quot;: {\n    &quot;scope&quot;: &quot;blocking&quot;,\n    &quot;kind&quot;: &quot;record_incomplete&quot;,\n    &quot;field_name&quot;: &quot;Email&quot;,\n    &quot;subject_type&quot;: &quot;social_entity&quot;,\n    &quot;subject_uuid&quot;: &quot;d12b7231-3315-44ea-be2f-948d4c828d3a&quot;,\n    &quot;affected_count&quot;: 1,\n    &quot;message_key&quot;: &quot;siap_remittance.pendency.entity_incomplete&quot;,\n    &quot;message&quot;: &quot;This social entity is missing Email, required by SIAP. Fix the entity record: until then, no remittance can be generated.&quot;,\n    &quot;blocks_entire_remittance&quot;: true,\n    &quot;affected_layouts&quot;: 11,\n    &quot;resolution&quot;: {\n      &quot;resource&quot;: &quot;tenant-tce-parameters&quot;,\n      &quot;requires_role&quot;: &quot;master&quot;\n    }\n  }\n}</pre>",
+      "results": [
+        "Na conferência prévia, a faixa “IMPEDIMENTOS QUE BLOQUEIAM TODA A REMESSA” traz o selo “Bloqueia os 11 arquivos” e <b>identifica a entidade pela razão social</b>: “Registro: Instituto Esperanca Alagoana · Campo: Email” — o botão <b>Gerar remessa</b> fica desabilitado.",
+        "O cartão explica a consequência em termos do próprio leiaute (“As entidades socioassistenciais compõem o leiaute EntidadeSocial, que o Tribunal usa para cruzar recurso repassado com serviço prestado”) e oferece o atalho <b>“Abrir o cadastro da entidade”</b>, que leva à ficha correta.",
+        "A remessa não é gerada: 422 com a chave <code>social_entities</code>, <code>remessas_criadas: 0</code> e <code>arquivos_gravados: []</code>.",
+        "A entidade completa do mesmo tenant fica igualmente sem remessa — o bloqueio é da remessa inteira (D04).",
+        "Teste: cenário de bloqueio por Email em SiapRemittanceGenerationTest (CA07).",
+        "A mesma pendência aparece também na lista por leiaute, em “EntidadeSocial · Parcial”, nomeando a entidade — o município enxerga o impedimento e o detalhe por leiaute na mesma tela."
+      ],
+      "images": [
+        "screenshots/ca07-bloqueio-sem-email.png"
+      ]
+    },
+    {
+      "id": "CA08",
+      "title": "Bloqueio por valor do vínculo ausente",
+      "status": "parc",
+      "gherkin": "Dado uma entidade sem o valor do contrato informado\nQuando eu solicitar a geração da remessa\nEntão a remessa não é gerada\nE a conferência identifica a entidade e o campo ValorVinculo\nE o sistema não assume valor zero no lugar do valor ausente",
+      "steps_html": "<p><b>Natureza da evidência:</b> print da conferência prévia no app real + o 422 do endpoint e o payload da conferência, capturados da API.</p><p>Um bloqueio de cada vez, sempre com uma segunda entidade completa no mesmo tenant — qualquer um deles sozinho derruba a remessa inteira, então não podem coabitar o mesmo cenário.</p><div class=\"filecap\">payloads/ca08-bloqueio-sem-valor.json</div><pre class=\"json\">{\n  &quot;POST client/siap-remittances&quot;: {\n    &quot;status&quot;: 422,\n    &quot;body&quot;: {\n      &quot;message&quot;: &quot;The SIAP remittance cannot be generated: 1 social entity has an incomplete record for SIAP. Check the missing data in the pre-check screen.&quot;,\n      &quot;errors&quot;: {\n        &quot;social_entities&quot;: [\n          &quot;The SIAP remittance cannot be generated: 1 social entity has an incomplete record for SIAP. Check the missing data in the pre-check screen.&quot;\n        ]\n      }\n    }\n  },\n  &quot;remessas_criadas&quot;: 0,\n  &quot;arquivos_gravados&quot;: [],\n  &quot;pendencia_na_zona_de_bloqueio&quot;: {\n    &quot;scope&quot;: &quot;blocking&quot;,\n    &quot;kind&quot;: &quot;record_incomplete&quot;,\n    &quot;field_name&quot;: &quot;ValorVinculo&quot;,\n    &quot;subject_type&quot;: &quot;social_entity&quot;,\n    &quot;subject_uuid&quot;: &quot;98748877-c159-4418-b344-ffa6d64ee536&quot;,\n    &quot;affected_count&quot;: 1,\n    &quot;message_key&quot;: &quot;siap_remittance.pendency.entity_incomplete&quot;,\n    &quot;message&quot;: &quot;This social entity is missing ValorVinculo, required by SIAP. Fix the entity record: until then, no remittance can be generated.&quot;,\n    &quot;blocks_entire_remittance&quot;: true,\n    &quot;affected_layouts&quot;: 11,\n    &quot;resolution&quot;: {\n      &quot;resource&quot;: &quot;tenant-tce-parameters&quot;,\n      &quot;requires_role&quot;: &quot;master&quot;\n    }\n  }\n}</pre>",
+      "results": [
+        "Na conferência prévia, a faixa “IMPEDIMENTOS QUE BLOQUEIAM TODA A REMESSA” traz o selo “Bloqueia os 11 arquivos” e <b>identifica a entidade pela razão social</b>: “Registro: Instituto Esperanca Alagoana · Campo: ValorVinculo” — o botão <b>Gerar remessa</b> fica desabilitado.",
+        "O cartão explica a consequência em termos do próprio leiaute (“As entidades socioassistenciais compõem o leiaute EntidadeSocial, que o Tribunal usa para cruzar recurso repassado com serviço prestado”) e oferece o atalho <b>“Abrir o cadastro da entidade”</b>, que leva à ficha correta.",
+        "A remessa não é gerada: 422 com a chave <code>social_entities</code>, <code>remessas_criadas: 0</code> e <code>arquivos_gravados: []</code>.",
+        "A entidade completa do mesmo tenant fica igualmente sem remessa — o bloqueio é da remessa inteira (D04).",
+        "Zero NÃO substitui ausente: a coluna <code>contract_amount</code> é <code>decimal(14,2)</code> nullable SEM default. Com valor <code>0</code> a entidade sai no arquivo como <code>&lt;ValorVinculo&gt;0.00&lt;/ValorVinculo&gt;</code> e nada bloqueia (ver CA09); com <code>null</code>, bloqueia (RN07).",
+        "Teste: cenário de bloqueio por ValorVinculo em SiapRemittanceGenerationTest (CA08).",
+        "A mesma pendência aparece também na lista por leiaute, em “EntidadeSocial · Parcial”, nomeando a entidade — o município enxerga o impedimento e o detalhe por leiaute na mesma tela."
+      ],
+      "images": [
+        "screenshots/ca08-bloqueio-sem-valor.png"
+      ]
+    },
+    {
+      "id": "CA09",
+      "title": "Valor com duas casas decimais",
+      "status": "auto",
+      "gherkin": "Dado uma entidade com valor de contrato de R$ 120.000,00\nQuando a remessa for gerada\nEntão o valor sai como 120000.00, com separador decimal em ponto",
+      "steps_html": "<p><b>Natureza da evidência:</b> este critério fala do <b>conteúdo do arquivo</b>. A evidência de primeira classe é o próprio trecho do <code>EntidadeSocial.xml</code>, extraído do zip de uma remessa realmente gerada pelo endpoint <code>POST client/siap-remittances</code> — não montado à mão. Não há tela a fotografar.</p><p>Duas entidades: uma com <code>contract_amount = 120000</code> e outra com <code>0</code> — o segundo caso prova o outro lado da RN07 (zero é um valor, e sai no arquivo sem bloquear nada).</p><div class=\"filecap\">xml/ca09-valor-do-vinculo.xml</div><pre class=\"xml\">&lt;?xml version=&quot;1.0&quot;?&gt;\n&lt;SIAP&gt;\n    &lt;Codigo&gt;004821&lt;/Codigo&gt;\n    &lt;Exercicio&gt;2026&lt;/Exercicio&gt;\n    &lt;Mes&gt;08&lt;/Mes&gt;\n    &lt;EntidadeSocial&gt;\n        &lt;NumeroCNEAS&gt;4174595337388&lt;/NumeroCNEAS&gt;\n        &lt;NomeEntidadeSocial&gt;Instituto Esperança&lt;/NomeEntidadeSocial&gt;\n        &lt;CNPJEntidadeSocial&gt;71551876112671&lt;/CNPJEntidadeSocial&gt;\n        &lt;EnderecoEntidadeSocial&gt;Rua, Av. Melissa Neves, 193, d&#x27;Oeste, Porto Carolina&lt;/EnderecoEntidadeSocial&gt;\n        &lt;CEP&gt;57000000&lt;/CEP&gt;\n        &lt;SituacaoEntidadeSocial&gt;1&lt;/SituacaoEntidadeSocial&gt;\n        &lt;Email&gt;contato@entidade.test&lt;/Email&gt;\n        &lt;TipoLocalizacao&gt;1&lt;/TipoLocalizacao&gt;\n        &lt;ParceriaPoderPublico&gt;2&lt;/ParceriaPoderPublico&gt;\n        &lt;ParticipanteSUAS&gt;1&lt;/ParticipanteSUAS&gt;\n        &lt;BeneficioEventual&gt;2&lt;/BeneficioEventual&gt;\n        &lt;ExecucaoServicos&gt;2&lt;/ExecucaoServicos&gt;\n        &lt;SituacaoUnidade&gt;2&lt;/SituacaoUnidade&gt;\n        &lt;Modalidade&gt;2&lt;/Modalidade&gt;\n        &lt;ValorVinculo&gt;120000.00&lt;/ValorVinculo&gt;\n    &lt;/EntidadeSocial&gt;\n    &lt;EntidadeSocial&gt;\n        &lt;NumeroCNEAS&gt;5760851249962&lt;/NumeroCNEAS&gt;\n        &lt;NomeEntidadeSocial&gt;Associação Lar Feliz&lt;/NomeEntidadeSocial&gt;\n        &lt;CNPJEntidadeSocial&gt;31778824215879&lt;/CNPJEntidadeSocial&gt;\n        &lt;EnderecoEntidadeSocial&gt;Rua, Rua Fátima Aguiar, 69, 86º Andar, d&#x27;Oeste, Daiane do Norte&lt;/EnderecoEntidadeSocial&gt;\n        &lt;CEP&gt;57000000&lt;/CEP&gt;\n        &lt;SituacaoEntidadeSocial&gt;1&lt;/SituacaoEntidadeSocial&gt;\n        &lt;Email&gt;contato@entidade.test&lt;/Email&gt;\n        &lt;TipoLocalizacao&gt;1&lt;/TipoLocalizacao&gt;\n        &lt;ParceriaPoderPublico&gt;2&lt;/ParceriaPoderPublico&gt;\n        &lt;ParticipanteSUAS&gt;1&lt;/ParticipanteSUAS&gt;\n        &lt;BeneficioEventual&gt;2&lt;/BeneficioEventual&gt;\n        &lt;ExecucaoServicos&gt;2&lt;/ExecucaoServicos&gt;\n        &lt;SituacaoUnidade&gt;2&lt;/SituacaoUnidade&gt;\n        &lt;Modalidade&gt;2&lt;/Modalidade&gt;\n        &lt;ValorVinculo&gt;0.00&lt;/ValorVinculo&gt;\n    &lt;/EntidadeSocial&gt;\n&lt;/SIAP&gt;</pre>",
+      "results": [
+        "Instituto Esperança: <ValorVinculo>120000.00 — ponto decimal, duas casas, sem separador de milhar.",
+        "Associação Lar Feliz: <ValorVinculo>0.00 — valor zero SAI no arquivo e não gera pendência.",
+        "Teste: “it emits the contract amount with two decimal places and a dot separator (CA09)”."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA10",
+      "title": "Município sem entidades",
+      "status": "auto",
+      "gherkin": "Dado que meu município não tem nenhuma entidade cadastrada\nQuando a remessa for gerada\nEntão o leiaute EntidadeSocial sai só com Codigo, Exercicio e Mes",
+      "steps_html": "<p><b>Natureza da evidência:</b> este critério fala do <b>conteúdo do arquivo</b>. A evidência de primeira classe é o próprio trecho do <code>EntidadeSocial.xml</code>, extraído do zip de uma remessa realmente gerada pelo endpoint <code>POST client/siap-remittances</code> — não montado à mão. Não há tela a fotografar.</p><div class=\"filecap\">xml/ca10-leiaute-em-branco.xml</div><pre class=\"xml\">&lt;?xml version=&quot;1.0&quot;?&gt;\n&lt;SIAP&gt;\n    &lt;Codigo&gt;004821&lt;/Codigo&gt;\n    &lt;Exercicio&gt;2026&lt;/Exercicio&gt;\n    &lt;Mes&gt;08&lt;/Mes&gt;\n&lt;/SIAP&gt;</pre>",
+      "results": [
+        "O arquivo sai com o cabeçalho e nada mais — nenhum bloco <EntidadeSocial> (RN16).",
+        "O leiaute continua no zip: “sem movimento” não é “sem arquivo”.",
+        "Teste: “it delivers the entity layout with the header only when there is no entity (CA10)”."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA11",
+      "title": "Isolamento entre municípios",
+      "status": "auto",
+      "gherkin": "Dado que existem entidades cadastradas em outros municípios da plataforma\nQuando a remessa do meu município for gerada\nEntão o leiaute contém exclusivamente entidades do meu município",
+      "steps_html": "<p><b>Natureza da evidência:</b> este critério fala do <b>conteúdo do arquivo</b>. A evidência de primeira classe é o próprio trecho do <code>EntidadeSocial.xml</code>, extraído do zip de uma remessa realmente gerada pelo endpoint <code>POST client/siap-remittances</code> — não montado à mão. Não há tela a fotografar.</p><p>Dois tenants na base no momento da geração, cada um com a sua entidade.</p><div class=\"filecap\">xml/ca11-contexto.txt</div><pre class=\"txt\">Dois tenants na base no momento da geração.\n  meu município  : CNEAS 2946475109998 — Instituto Esperança (meu município)\n  outro município: CNEAS 7448541480754 — Entidade de OUTRO município\n\nBlocos &lt;EntidadeSocial&gt; no arquivo: 1\nCNEAS do outro município presente no arquivo: não</pre><div class=\"filecap\">xml/ca11-isolamento-entre-municipios.xml</div><pre class=\"xml\">&lt;?xml version=&quot;1.0&quot;?&gt;\n&lt;SIAP&gt;\n    &lt;Codigo&gt;004821&lt;/Codigo&gt;\n    &lt;Exercicio&gt;2026&lt;/Exercicio&gt;\n    &lt;Mes&gt;08&lt;/Mes&gt;\n    &lt;EntidadeSocial&gt;\n        &lt;NumeroCNEAS&gt;2946475109998&lt;/NumeroCNEAS&gt;\n        &lt;NomeEntidadeSocial&gt;Instituto Esperança (meu município)&lt;/NomeEntidadeSocial&gt;\n        &lt;CNPJEntidadeSocial&gt;02829194421490&lt;/CNPJEntidadeSocial&gt;\n        &lt;EnderecoEntidadeSocial&gt;Rua, R. Souza, 6, d&#x27;Oeste, James do Sul&lt;/EnderecoEntidadeSocial&gt;\n        &lt;CEP&gt;57000000&lt;/CEP&gt;\n        &lt;SituacaoEntidadeSocial&gt;1&lt;/SituacaoEntidadeSocial&gt;\n        &lt;Email&gt;contato@entidade.test&lt;/Email&gt;\n        &lt;TipoLocalizacao&gt;1&lt;/TipoLocalizacao&gt;\n        &lt;ParceriaPoderPublico&gt;2&lt;/ParceriaPoderPublico&gt;\n        &lt;ParticipanteSUAS&gt;1&lt;/ParticipanteSUAS&gt;\n        &lt;BeneficioEventual&gt;2&lt;/BeneficioEventual&gt;\n        &lt;ExecucaoServicos&gt;2&lt;/ExecucaoServicos&gt;\n        &lt;SituacaoUnidade&gt;2&lt;/SituacaoUnidade&gt;\n        &lt;Modalidade&gt;2&lt;/Modalidade&gt;\n        &lt;ValorVinculo&gt;12345.20&lt;/ValorVinculo&gt;\n    &lt;/EntidadeSocial&gt;\n&lt;/SIAP&gt;</pre>",
+      "results": [
+        "Um único bloco <EntidadeSocial> no arquivo, o do meu município.",
+        "O CNEAS da entidade do outro município não aparece em lugar nenhum do arquivo.",
+        "O isolamento não depende do Global Scope: a query dispensa APENAS o escopo de tenant e filtra explicitamente por <code>$reference-&gt;tenantId</code>; o SoftDeletingScope permanece, então entidade excluída do cadastro também não reaparece na prestação de contas (RN17).",
+        "Testes: “it contains exclusively the entities of my municipality (CA11)” e “it keeps the soft deleted entity out of the file (RN01 — regressão)”."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA12",
+      "title": "Dupla exibição — a pendência aparece nos dois lugares",
+      "status": "auto",
+      "gherkin": "Dado uma entidade sem CNEAS\nQuando eu abrir a conferência prévia\nEntão a pendência aparece na zona de bloqueio E na lista do leiaute EntidadeSocial\nE blocks_entire_remittance é verdadeiro nos dois lugares\nE pendency_count não a conta duas vezes",
+      "steps_html": "<p><b>Natureza da evidência:</b> print da conferência prévia mostrando a MESMA pendência nas duas zonas da tela, mais o payload completo que a estrutura por trás.</p><div class=\"filecap\">payloads/ca12-dupla-exibicao.json</div><pre class=\"json\">{\n    &quot;cenario&quot;: &quot;CA12 / RN19 — a mesma pendência nos dois lugares, contada uma vez só&quot;,\n    &quot;entidade&quot;: &quot;72f5a434-f968-472f-9aa9-a1b0a27b2a0a&quot;,\n    &quot;zona_de_bloqueio (data.blocking.pendencies)&quot;: {\n        &quot;scope&quot;: &quot;blocking&quot;,\n        &quot;kind&quot;: &quot;record_incomplete&quot;,\n        &quot;field_name&quot;: &quot;NumeroCNEAS&quot;,\n        &quot;subject_type&quot;: &quot;social_entity&quot;,\n        &quot;subject_uuid&quot;: &quot;72f5a434-f968-472f-9aa9-a1b0a27b2a0a&quot;,\n        &quot;affected_count&quot;: 1,\n        &quot;message_key&quot;: &quot;siap_remittance.pendency.entity_incomplete&quot;,\n        &quot;message&quot;: &quot;This social entity is missing NumeroCNEAS, required by SIAP. Fix the entity record: until then, no remittance can be generated.&quot;,\n        &quot;blocks_entire_remittance&quot;: true,\n        &quot;affected_layouts&quot;: 11,\n        &quot;resolution&quot;: {\n            &quot;resource&quot;: &quot;tenant-tce-parameters&quot;,\n            &quot;requires_role&quot;: &quot;master&quot;\n        }\n    },\n    &quot;lista_do_leiaute (data.layouts[EntidadeSocial].pendencies)&quot;: {\n        &quot;scope&quot;: &quot;blocking&quot;,\n        &quot;kind&quot;: &quot;record_incomplete&quot;,\n        &quot;field_name&quot;: &quot;NumeroCNEAS&quot;,\n        &quot;subject_type&quot;: &quot;social_entity&quot;,\n        &quot;subject_uuid&quot;: &quot;72f5a434-f968-472f-9aa9-a1b0a27b2a0a&quot;,\n        &quot;affected_count&quot;: 1,\n        &quot;message_key&quot;: &quot;siap_remittance.pendency.entity_incomplete&quot;,\n        &quot;message&quot;: &quot;This social entity is missing NumeroCNEAS, required by SIAP. Fix the entity record: until then, no remittance can be generated.&quot;,\n        &quot;blocks_entire_remittance&quot;: true\n    },\n    &quot;contagem&quot;: {\n        &quot;pendencias_listadas_no_leiaute_EntidadeSocial&quot;: 1,\n        &quot;pendencias_na_zona_de_bloqueio&quot;: 1,\n        &quot;summary&quot;: {\n            &quot;layout_count&quot;: 11,\n            &quot;record_count&quot;: 1,\n            &quot;blocking_pendency_count&quot;: 1,\n            &quot;layout_pendency_count&quot;: 17\n        },\n        &quot;nota&quot;: &quot;summary.layout_pendency_count soma exclusivamente os relatórios dos leiautes: promover a pendência para a zona de bloqueio NÃO cria pendência nova nem soma de novo (SiapPreCheckService, D08 da #10370).&quot;\n    },\n    &quot;blocks_entire_remittance&quot;: {\n        &quot;na_zona_de_bloqueio&quot;: true,\n        &quot;na_lista_do_leiaute&quot;: true\n    }\n}</pre>",
+      "results": [
+        "A MESMA pendência (mesmo <code>subject_uuid</code>, mesmo <code>field_name</code>, mesmo <code>message_key</code>) aparece em <code>data.blocking.pendencies</code> e em <code>data.layouts[EntidadeSocial].pendencies</code>.",
+        "<code>blocks_entire_remittance: true</code> nos dois lugares — quem declara é o backend, não o frontend.",
+        "Contagem: 1 pendência listada no leiaute, 1 na zona de bloqueio, e <code>summary.layout_pendency_count</code> soma exclusivamente os relatórios dos leiautes. Promover para a zona de bloqueio não cria pendência nova nem soma de novo (D08 da #10370).",
+        "A lista dos 11 leiautes continua completa mesmo com a remessa bloqueada — o município vê tudo o que precisa corrigir de uma vez, em vez de descobrir uma pendência por rodada.",
+        "Testes: “it shows the incomplete entity pendency in the blocking zone AND in the layout list (CA12/RN19)” e “it counts the promoted entity pendency only once (CA12b)”."
+      ],
+      "images": [
+        "screenshots/ca12-dupla-exibicao.png"
+      ]
+    },
+    {
+      "id": "CA13",
+      "title": "Endereço — supressão progressiva",
+      "status": "auto",
+      "gherkin": "Dado uma entidade com ponto de referência longo o bastante para estourar 255 caracteres\nQuando a remessa for gerada\nEntão o ponto de referência some do endereço\nE o complemento permanece\nE logradouro, número, bairro e município continuam presentes\nE o endereço final tem no máximo 255 caracteres",
+      "steps_html": "<p><b>Natureza da evidência:</b> este critério fala do <b>conteúdo do arquivo</b>. A evidência de primeira classe é o próprio trecho do <code>EntidadeSocial.xml</code>, extraído do zip de uma remessa realmente gerada pelo endpoint <code>POST client/siap-remittances</code> — não montado à mão. Não há tela a fotografar.</p><p>O “antes” abaixo é a concatenação de todos os elementos do endereço cadastrado (292 caracteres); o “depois” é o que efetivamente saiu no <code>&lt;EnderecoEntidadeSocial&gt;</code>. A diferença é <b>supressão progressiva</b>, não corte cego: primeiro sai o ponto de referência, depois — se ainda não couber — o complemento. Logradouro, número, bairro e município são sempre preservados (RN03/D06).</p><div class=\"filecap\">xml/ca13-endereco-antes-depois.txt</div><pre class=\"txt\">ANTES (todos os elementos concatenados — o que estouraria o limite)\n------------------------------------------------------------------------------\nRua das Flores, 120, Sala 3, Em frente à praça central, ao lado do mercado municipal, próximo ao antigo terminal rodoviário próximo ao antigo terminal rodoviário próximo ao antigo terminal rodoviário próximo ao antigo terminal rodoviário próximo ao antigo terminal rodoviário , Centro, Maceió\ncomprimento: 292 caracteres\n\nDEPOIS (EnderecoEntidadeSocial emitido no XML)\n------------------------------------------------------------------------------\nRua, das Flores, 120, Sala 3, Centro, Maceió\ncomprimento: 44 caracteres\n\nVerificações do CA13\n------------------------------------------------------------------------------\n  ponto de referência sumiu ...: sim\n  complemento permanece ........: sim\n  logradouro permanece .........: sim\n  número permanece .............: sim\n  bairro permanece .............: sim\n  município permanece ..........: sim\n  &lt;= 255 caracteres ............: sim</pre><div class=\"filecap\">xml/ca13-endereco-suprimido.xml</div><pre class=\"xml\">&lt;?xml version=&quot;1.0&quot;?&gt;\n&lt;SIAP&gt;\n    &lt;Codigo&gt;004821&lt;/Codigo&gt;\n    &lt;Exercicio&gt;2026&lt;/Exercicio&gt;\n    &lt;Mes&gt;08&lt;/Mes&gt;\n    &lt;EntidadeSocial&gt;\n        &lt;NumeroCNEAS&gt;7552835281105&lt;/NumeroCNEAS&gt;\n        &lt;NomeEntidadeSocial&gt;Instituto Esperança&lt;/NomeEntidadeSocial&gt;\n        &lt;CNPJEntidadeSocial&gt;93590305100548&lt;/CNPJEntidadeSocial&gt;\n        &lt;EnderecoEntidadeSocial&gt;Rua, das Flores, 120, Sala 3, Centro, Maceió&lt;/EnderecoEntidadeSocial&gt;\n        &lt;CEP&gt;57000000&lt;/CEP&gt;\n        &lt;SituacaoEntidadeSocial&gt;1&lt;/SituacaoEntidadeSocial&gt;\n        &lt;Email&gt;contato@entidade.test&lt;/Email&gt;\n        &lt;TipoLocalizacao&gt;1&lt;/TipoLocalizacao&gt;\n        &lt;ParceriaPoderPublico&gt;2&lt;/ParceriaPoderPublico&gt;\n        &lt;ParticipanteSUAS&gt;1&lt;/ParticipanteSUAS&gt;\n        &lt;BeneficioEventual&gt;2&lt;/BeneficioEventual&gt;\n        &lt;ExecucaoServicos&gt;2&lt;/ExecucaoServicos&gt;\n        &lt;SituacaoUnidade&gt;2&lt;/SituacaoUnidade&gt;\n        &lt;Modalidade&gt;2&lt;/Modalidade&gt;\n        &lt;ValorVinculo&gt;12345.20&lt;/ValorVinculo&gt;\n    &lt;/EntidadeSocial&gt;\n&lt;/SIAP&gt;</pre>",
+      "results": [
+        "O ponto de referência sumiu; o complemento “Sala 3” permanece.",
+        "Logradouro (das Flores), número (120), bairro (Centro) e município (Maceió) continuam presentes — e o município, que antes desta HU nem era carregado pela query, agora fecha a linha.",
+        "44 caracteres, dentro do limite de 255. O SiapValueFormatter::text(…, 255) segue como rede de segurança.",
+        "Testes: “it emits the entity address in the Manual order, ending with the municipality (RN03)”, “it suppresses the entity reference point first and keeps the complement (CA13)” e “it also suppresses the entity complement when the reference point is not enough (CA13b)”."
+      ],
+      "images": []
+    },
+    {
+      "id": "CAD",
+      "title": "Campo novo no cadastro — Data de Encerramento (client/)",
+      "status": "auto",
+      "gherkin": "Dado que a data de encerramento passou a decidir se a entidade extinta sai como 3 ou 4\nQuando o município abrir o cadastro da entidade\nEntão existe o campo \"Data de Encerramento\", opcional inclusive para situação \"Extinta\"",
+      "steps_html": "<p><b>Natureza da evidência:</b> print do <b>detalhe</b> da entidade no app real, mais os testes Vitest e os gates do <code>client/</code>. O print do <b>formulário de edição</b> NÃO foi capturado: a rota <code>/app/entidades/:uuid/editar</code> devolveu <code>/403</code> tanto para o Master quanto para o Operacional neste ambiente — observação de execução registrada no relatório da etapa, não avaliada aqui.</p><p>Sem este campo o município não teria como preencher o dado que o CA05c passou a exigir. Commit <code>902f44d</code> no submódulo <code>client/</code>: <code>activity_end_date</code> nos types, no schema Zod, no <code>InfoTab.vue</code>, no <code>EntidadeFormPage.vue</code> (hidratação no edit + envio, com string vazia virando <code>null</code>), no <code>EntidadeDetailPage.vue</code> e no histórico de alterações — mais label e hint em pt-BR.</p><pre class=\"txt\">$ npm run lint     → sem erro\n$ npm run test:run → Test Files 180 passed (180) · Tests 1383 passed (1383)\n$ npm run build    → vue-tsc + bundle, ✓ built in 742ms</pre>",
+      "results": [
+        "O campo é OPCIONAL — inclusive para situação “Extinta”. A cobrança da data é da remessa (pendência bloqueante do CA05c), não do formulário (§10 da spec). Teste dedicado: “não bloqueia o submit de entidade extinta sem data de encerramento”.",
+        "Nenhuma obrigatoriedade condicional foi introduzida — era proibição explícita do plano.",
+        "Nenhuma data é inventada: <code>getInitialValues()</code> devolve string vazia, que vira <code>null</code> no payload (D09 — o município declara, o sistema não infere).",
+        "O campo entrou no <code>logOnly()</code> do backend, então mudança de data de encerramento deixa rastro de auditoria; o histórico do client formata a data em dd/mm/aaaa.",
+        "Cobertura: 8 novos casos em SocialEntitySchema.test.ts e 2 em useSocialEntityForm.test.ts.",
+        "No print: entidade “Instituto Esperança” com situação Extinta e DATA DE ENCERRAMENTO 10/03/2026, ao lado de DATA DA FUNDAÇÃO vazia (—, a chave detail.empty_field) — o campo aparece preenchido e vazio na mesma tela."
+      ],
+      "images": [
+        "screenshots/cadastro-data-de-encerramento.png"
+      ]
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Pest, --filter=Siap)",
+    "file": "pest-10371.txt"
+  },
+  "notes": [
+    {
+      "title": "Achado reportado nesta HU — JÁ CORRIGIDO, confirmado na recaptura",
+      "html": "<p>Na entrega original registrou-se um achado: embora a mensagem da pendência estivesse correta e específica (“Esta entidade socioassistencial está sem NumeroCNEAS…”), o <b>texto de consequência e o atalho do cartão</b> eram sempre os do identificador da Unidade Gestora — o cartão dizia que o código da Unidade Gestora compõe o cabeçalho dos arquivos e oferecia “Corrigir nos Parâmetros TCE/AL”, o que não tinha relação com a pendência exibida. O achado foi reportado e não corrigido dentro desta HU, por decisão de escopo.</p><p><b>Na recaptura de 18/08/2026 o defeito não existe mais.</b> O cartão passou a trazer o texto do próprio leiaute de entidades e o atalho <b>“Abrir o cadastro da entidade”</b>, que leva à ficha certa. A correção veio junto com a evolução da conferência prévia na US-SIAP-02. Os prints deste dossiê já mostram o comportamento corrigido.</p>"
+    },
+    {
+      "title": "Recaptura das evidências de tela",
+      "html": "<p>Os critérios de <b>conteúdo</b> do arquivo (CA01, CA02, CA03, CA04, CA05, CA09, CA10 e CA11) têm como evidência o próprio <code>EntidadeSocial.xml</code> de uma remessa gerada de verdade, e seguem como na entrega original.</p><p>Os quatro critérios de <b>bloqueio</b> (CA03b, CA06, CA07 e CA08) tiveram a evidência de tela refeita. Motivo: depois da entrega original, a conferência prévia passou a <b>identificar o registro pendente pela razão social</b>. Nas capturas anteriores a entidade não aparecia identificada na tela, de modo que os prints não demonstravam a parte do critério que diz “identificando a entidade”. Hoje a tela mostra “Registro: <i>razão social</i> · Campo: <i>campo</i>”, e é isso que as capturas atuais registram. O comportamento de bloqueio em si não mudou.</p>"
+    },
+    {
+      "title": "PENDENTE — dimensionamento do impacto antes do deploy",
+      "html": "<p>Continua <b>pendente</b> a medição que responde quantas entidades e quantos municípios ficariam bloqueados hoje, e quantas entidades precisam ser reclassificadas antes da primeira remessa. As consultas estão prontas na especificação e precisam ser executadas em <b>staging</b> — ou em produção, em janela de leitura — antes do deploy.</p><p>O risco que ela mede é concreto: toda entidade cujo cadastro esteja em situação diferente de “em atividade”, “paralisada” ou “extinta” passa a impedir a remessa até ser reclassificada pelo município, e nenhuma entidade anterior à reativação do campo de vínculo tem esse dado preenchido. É o custo operacional combinado desta história com a US-SIAP-08, e não está dimensionado.</p>"
+    },
+    {
+      "title": "Responsável legal não entra neste leiaute",
+      "html": "<p>O cadastro mantém o histórico de responsável legal da entidade, com dado pessoal, mas o leiaute EntidadeSocial não prevê esse campo e ele <b>não é informado</b> na remessa. Nenhuma informação de pessoa física sai neste arquivo.</p>"
+    }
+  ]
+}

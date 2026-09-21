@@ -1,0 +1,288 @@
+{
+  "meta": {
+    "title": "Critérios de Aceite — HU #10709",
+    "subtitle": "Registrar atendimento no prontuário da família",
+    "rows": [
+      [
+        "Gerado em",
+        "01/09/2026 22:20"
+      ],
+      [
+        "Épico",
+        "Prontuário SUAS — fase F1 (Atendimento)"
+      ],
+      [
+        "Branch",
+        "feature/10709-atendimento (não pushada)"
+      ],
+      [
+        "Commits",
+        "api 817520f · client dd152a6 · meta 000cca2"
+      ],
+      [
+        "Ambiente",
+        "API Sail :80 · Client (Vite) :5174 · banco esuas com E2EProntuarioSeeder"
+      ],
+      [
+        "Perfis",
+        "Operacional c/ add-on LGPD (CRAS Centro) e Master — guard client"
+      ],
+      [
+        "Ferramenta",
+        "playwright-cli (Chromium) + Pest 4"
+      ]
+    ]
+  },
+  "summary": "13 critérios da HU mais 4 derivados na spec. 8 evidenciados dirigindo o Painel do Tenant, 3 de forma combinada e 6 pela suíte automatizada. Nenhum reprovado. Os critérios cobertos apenas por suíte são os que exigem massa que a tela levaria muitos passos para montar (lote com 3 famílias, responsável sem lotação na data) — não lacunas de implementação.",
+  "cas": [
+    {
+      "id": "CA01",
+      "title": "Registrar atendimento individualizado",
+      "status": "nav",
+      "gherkin": "Dado que sou Operacional do Tenant com o add-on LGPD, lotado no \"CRAS Centro\"\nE que a família é referenciada no \"CRAS Centro\"\nQuando eu registrar um atendimento de hoje, do tipo \"Atendimento socioassistencial individualizado\", identificando a integrante e descrevendo o que foi tratado\nEntão o atendimento é salvo\nE consta do prontuário com a data, o tipo, a pessoa, a descrição, o responsável técnico e o autor do registro",
+      "steps_html": "Login como Operacional (CPF <code>111.444.777-35</code>), prontuário da família <code>…f0001</code>, aba <b>Atendimentos</b> → <b>Registrar atendimento</b>.",
+      "results": [
+        "O select de tipo traz os <b>8 tipos do instrumento</b>, com os códigos <b>1–7 e 9</b> — sem o 8 (catálogo da #10708).",
+        "Salvo com <i>“Atendimento registrado no prontuário.”</i>",
+        "Confirmado no banco: <code>data=01/09/2026 · tipo=1 · unidade=E2E CRAS Centro · status=registered · pessoas=1 · descrição=129 chars</code>.",
+        "<b>Responsável</b> (profissional #5) e <b>autor</b> (usuário #12) gravados em colunas distintas."
+      ],
+      "images": [
+        "screenshots/ca01-tipos-do-instrumento.png",
+        "screenshots/ca01-formulario-preenchido.png",
+        "screenshots/ca01-atendimento-registrado.png"
+      ]
+    },
+    {
+      "id": "CA02",
+      "title": "Atendimento da família, sem identificar pessoa",
+      "status": "nav",
+      "gherkin": "Dado que realizei uma visita domiciliar à família, com o grupo familiar\nQuando eu registrar o atendimento sem identificar nenhuma pessoa\nEntão o atendimento é salvo\nE a tela informa que ele soma nos atendimentos da unidade, mas não fará nenhum integrante constar como usuário da rede na remessa ao TCE-AL",
+      "steps_html": "Registro de visita domiciliar sem marcar nenhuma pessoa na lista de integrantes.",
+      "results": [
+        "A tela declara a consequência, citando <b>“usuário da rede”</b>.",
+        "O atendimento é salvo mesmo assim, e a linha do histórico exibe <b>“Sem pessoa identificada”</b>."
+      ],
+      "images": [
+        "screenshots/ca02-sem-pessoa-identificada.png"
+      ]
+    },
+    {
+      "id": "CA03",
+      "title": "Data futura é recusada",
+      "status": "parc",
+      "gherkin": "Dado que estou registrando um atendimento\nQuando eu informar uma data posterior a hoje\nEntão o registro não é salvo\nE o sistema indica que não se registra atendimento que ainda não aconteceu",
+      "steps_html": "Inspeção do campo de data no formulário e validação de backend na suíte.",
+      "results": [
+        "O input tem <code>max=\"2026-09-01\"</code> — o navegador impede a data futura na origem.",
+        "O backend recusa independentemente (regra <code>before_or_equal:today</code>), coberto no apêndice."
+      ],
+      "images": [
+        "screenshots/ca03-data-max-hoje.png"
+      ]
+    },
+    {
+      "id": "CA04",
+      "title": "Lançamento retroativo em período já declarado",
+      "status": "nav",
+      "gherkin": "Dado que a remessa da referência 07/2026 já foi gerada\nQuando eu registrar um atendimento com data de 20/07/2026\nEntão o atendimento é salvo\nE o sistema avisa que o contador daquele período mudou e que a remessa precisa ser gerada novamente caso ainda não tenha sido enviada",
+      "steps_html": "Com uma remessa <code>completed</code> de 07/2026 no banco, escolher a data <b>20/07/2026</b> no formulário.",
+      "results": [
+        "O aviso aparece <b>ao escolher a data</b>, antes de salvar: <i>“A remessa de 07/2026 já foi gerada. O contador daquele período mudou — gere a remessa novamente caso ainda não tenha sido enviada.”</i>",
+        "É <b>não-bloqueante</b>: o atendimento é salvo, e o aviso reaparece como toast na resposta.",
+        "A referência 08/2026, sem remessa gerada, <b>não</b> dispara aviso — a assimetria prova que o serviço não avisa por padrão."
+      ],
+      "images": [
+        "screenshots/ca04-aviso-remessa-gerada.png"
+      ]
+    },
+    {
+      "id": "CA05",
+      "title": "Pessoa precisa ser integrante da família",
+      "status": "parc",
+      "gherkin": "Dado que estou registrando um atendimento no prontuário da família\nQuando eu tentar identificar como pessoa atendida alguém que não integra a composição vigente dessa família\nEntão o registro não é salvo\nE o sistema indica que a pessoa precisa constar da composição familiar",
+      "steps_html": "Inspeção da lista de pessoas oferecidas no formulário + regra de backend na suíte.",
+      "results": [
+        "A tela oferece <b>somente os 3 integrantes ativos</b> da composição — pessoa de fora não é sequer selecionável.",
+        "O backend recusa com 422 quem não integra a composição vigente (apêndice)."
+      ],
+      "images": [
+        "screenshots/ca01-formulario-preenchido.png"
+      ]
+    },
+    {
+      "id": "CA06",
+      "title": "Atividade coletiva gera um registro por família",
+      "status": "auto",
+      "gherkin": "Dado que realizei uma oficina com integrantes de três famílias\nQuando eu registrar a participação\nEntão lanço um atendimento no prontuário de cada uma das três famílias\nE não existe registro único da atividade com as três famílias juntas",
+      "steps_html": "Coberto pela suíte — montar três famílias na tela exigiria muitos passos sem ganho de evidência.",
+      "results": [
+        "O lote grava <b>N linhas independentes</b> numa transação; nenhuma coluna liga uma à outra.",
+        "Família inválida no lote → <b>nenhuma</b> é gravada (tudo ou nada), com <code>invalid_families[]</code> na resposta."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA07",
+      "title": "Responsável técnico diferente do autor",
+      "status": "nav",
+      "gherkin": "Dado que estou digitando um atendimento realizado pela assistente social Ana\nQuando eu registrar indicando Ana como responsável técnica\nEntão o atendimento consta com Ana como responsável\nE comigo como autor do registro\nE o autor não é alterável",
+      "steps_html": "Observação do campo Responsável ao selecionar a unidade, e conferência das colunas no banco.",
+      "results": [
+        "Ao escolher a unidade, o campo <b>Responsável técnico</b> é pré-preenchido com o próprio usuário (RN07) e a lista oferece os profissionais lotados naquela unidade.",
+        "No banco, <code>responsible_professional_id</code> e <code>created_by</code> são colunas <b>distintas</b>.",
+        "O autor não é campo do formulário — é sempre quem lançou, e não é alterável."
+      ],
+      "images": [
+        "screenshots/ca01-formulario-preenchido.png"
+      ]
+    },
+    {
+      "id": "CA08",
+      "title": "Responsável sem lotação vigente na data",
+      "status": "auto",
+      "gherkin": "Dado que estou registrando um atendimento de 10/08/2026 no \"CRAS Centro\"\nQuando eu tentar indicar como responsável um profissional cuja lotação naquela unidade só começou em 20/08/2026\nEntão o registro não é salvo\nE o sistema indica que o profissional não tinha lotação vigente na unidade naquela data",
+      "steps_html": "Coberto pela suíte, com testes de fronteira do intervalo <code>[start, end)</code>.",
+      "results": [
+        "A lista de responsáveis é filtrada pela lotação vigente <b>na data do atendimento</b>, não hoje.",
+        "O backend revalida com a Rule <code>ProfessionalAssignedOnDate</code> — a tela não é a única guarda."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA09",
+      "title": "Corrigir atendimento",
+      "status": "auto",
+      "gherkin": "Dado que registrei um atendimento com o tipo errado\nQuando eu corrigir o tipo\nEntão a correção é salva\nE a trilha de auditoria registra a alteração, com autor e data",
+      "steps_html": "Coberto pela suíte; a trilha resultante está evidenciada no CA10.",
+      "results": [
+        "A correção passa por <code>$model->save()</code>, o que mantém a trilha viva.",
+        "A edição revalida o trio inteiro (data, unidade, responsável), não só o campo alterado."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA10",
+      "title": "Correção da descrição não expõe o conteúdo na auditoria",
+      "status": "parc",
+      "gherkin": "Dado que corrigi a descrição sumária de um atendimento\nQuando eu consultar a trilha de auditoria\nEntão consta que a descrição foi alterada, com autor e data\nE o conteúdo anterior e o novo NÃO aparecem na trilha",
+      "steps_html": "Varredura do <code>activity_log</code> real depois de registrar, cancelar e alterar atendimentos pela tela.",
+      "results": [
+        "<b>Nenhuma</b> das iscas apareceu: nem o texto da descrição, nem o motivo do cancelamento, nem os nomes das colunas <code>description</code>/<code>cancel_reason</code>.",
+        "<b>E a trilha não ficou vazia</b>: <code>attendance_type_id</code>, <code>attended_on</code>, <code>social_unit_id</code> e <code>status</code> estão lá.",
+        "As duas metades importam — provar só a ausência passaria com uma trilha morta."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA11",
+      "title": "Cancelar em vez de excluir",
+      "status": "nav",
+      "gherkin": "Dado que lancei um atendimento por engano\nQuando eu cancelá-lo informando o motivo\nEntão o atendimento não é apagado\nE permanece no histórico marcado como cancelado, com motivo e autor\nE deixa de somar nos contadores do período",
+      "steps_html": "Ação <b>Cancelar</b> na linha do atendimento, com motivo obrigatório.",
+      "results": [
+        "O diálogo explica a regra ao usuário antes de confirmar.",
+        "No banco: <code>status=cancelled</code>, com motivo e autor — e <code>deleted_at = NULL</code>. <b>O registro não foi apagado.</b>",
+        "Continua visível no histórico, marcado; e sai da apuração (ver dossiê da #10711, CA04)."
+      ],
+      "images": [
+        "screenshots/ca11-dialogo-cancelamento.png",
+        "screenshots/ca11-cancelado-no-historico.png"
+      ]
+    },
+    {
+      "id": "CA11b",
+      "title": "O cancelamento também avisa sobre a remessa",
+      "status": "nav",
+      "gherkin": "Dado que a remessa da referência 07/2026 já foi gerada\nE que existe um atendimento de 20/07/2026\nQuando eu cancelar esse atendimento\nEntão o cancelamento é salvo\nE o sistema avisa que o contador daquele período mudou",
+      "steps_html": "Cancelamento do atendimento retroativo de 20/07/2026.",
+      "results": [
+        "O mesmo aviso do CA04 dispara <b>no cancelamento</b>.",
+        "É o caso mais grave se ficasse silencioso: o contador do período muda <i>para menos</i> sem ninguém saber."
+      ],
+      "images": [
+        "screenshots/ca11-cancelado-no-historico.png"
+      ]
+    },
+    {
+      "id": "CA12",
+      "title": "Negativa por unidade declara o motivo",
+      "status": "nav",
+      "gherkin": "Dado que sou Operacional do Tenant com o add-on LGPD, lotado apenas no \"CRAS Centro\"\nE que a família Souza é referenciada no \"CREAS\"\nQuando eu tentar registrar um atendimento para a família Souza\nEntão o registro não é permitido\nE a tela informa que a família é referenciada em unidade onde não tenho lotação vigente, orientando procurar o gestor Master\nE não nomeia a unidade que atende a família",
+      "steps_html": "Acesso ao prontuário da família <code>…f0002</code>, referenciada no CREAS, com o operador lotado apenas no CRAS Centro.",
+      "results": [
+        "A tela mostra <b>Acesso restrito</b>: <i>“Esta família é referenciada em uma unidade socioassistencial onde você não possui lotação vigente. Solicite o acesso ao gestor Master da sua organização.”</i>",
+        "<b>A unidade não é nomeada</b> — varredura confirmou que a palavra “CREAS” não aparece na página.",
+        "No formulário, o select de unidade também só ofereceu as <b>duas lotações do operador</b>; o CREAS não é opção."
+      ],
+      "images": [
+        "screenshots/ca12-negativa-por-unidade.png",
+        "screenshots/rn01-unidades-so-da-lotacao.png"
+      ]
+    },
+    {
+      "id": "CA13",
+      "title": "Isolamento entre municípios",
+      "status": "auto",
+      "gherkin": "Dado que sou usuário do município A\nQuando eu consultar ou registrar atendimentos\nEntão alcanço somente famílias e unidades do município A",
+      "steps_html": "Coberto por <code>AttendanceIsolationTest</code> em <code>tests/Feature/TenantIsolation/</code>.",
+      "results": [
+        "Família de outra organização devolve <b>404</b>, com corpo idêntico ao de uuid inexistente — não confirma existência.",
+        "O <code>tenant_id</code> vem do header validado pelo <code>EnsureTenantScope</code>, não da query."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA14",
+      "title": "Família sem unidade de referência não recebe atendimento",
+      "status": "nav",
+      "gherkin": "Dado que a família foi importada do CadÚnico e ainda não tem unidade de referência\nQuando eu abrir o prontuário dela e tentar registrar um atendimento\nEntão a ação de registrar não é oferecida\nE a tela orienta atribuir a unidade de referência primeiro",
+      "steps_html": "Prontuário da família <code>…f0003</code>, sem unidade de referência.",
+      "results": [
+        "O botão <b>Registrar atendimento</b> está <b>invisível</b> (verificado por <code>offsetParent</code>).",
+        "A tela orienta: <i>“Esta família ainda não tem unidade de referência. Atribua a unidade na capa do prontuário antes de registrar atendimentos.”</i>",
+        "O backend reforça com 422 <code>family_without_unit</code>, valendo também para o lote."
+      ],
+      "images": [
+        "screenshots/ca14-familia-sem-unidade.png"
+      ]
+    },
+    {
+      "id": "CA15",
+      "title": "Lançamento em lote grava registros independentes",
+      "status": "auto",
+      "gherkin": "Dado que realizei uma oficina com três famílias\nQuando eu lançar em lote, preenchendo uma única vez data, tipo e descrição\nEntão são gravados três atendimentos, um no prontuário de cada família\nE cancelar o de uma não afeta os outros dois",
+      "steps_html": "Coberto pela suíte (ver CA06).",
+      "results": [
+        "Cada linha é editável e cancelável isoladamente.",
+        "A tela de lote é <b>página própria</b>, não painel lateral — o seletor de famílias já é um drawer."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA16",
+      "title": "A edição revalida o trio inteiro",
+      "status": "auto",
+      "gherkin": "Dado que um atendimento tem responsável cuja lotação terminou\nQuando eu corrigir apenas a data\nEntão o registro não é salvo\nE o sistema indica que o responsável não tinha lotação vigente na nova data",
+      "steps_html": "Coberto pela suíte.",
+      "results": [
+        "Mudar só a data pode invalidar um responsável que já estava lá — por isso a revalidação é do trio, não do campo."
+      ],
+      "images": []
+    }
+  ],
+  "notes": [
+    {
+      "title": "Por que 6 critérios são cobertos por suíte e não por tela",
+      "html": "<p>CA06/CA15 (lote), CA08 e CA16 (lotação na data) exigiriam montar massa que a tela levaria dezenas de passos para produzir — três famílias participantes, um profissional com lotação encerrada numa data específica —, sem que o print acrescentasse informação ao que a suíte já prova. CA09 e CA13 são regra de backend. <b>Nenhum deles é lacuna de implementação</b>: os 153 testes do apêndice cobrem os quatro.</p>"
+    },
+    {
+      "title": "O que foi provado no banco, não só na tela",
+      "html": "<p>Três afirmações desta HU só valem se o dado confirmar, e por isso foram verificadas por consulta direta: o cancelamento manteve <code>deleted_at = NULL</code> (não é soft delete); responsável e autor ficaram em colunas distintas; e a trilha de auditoria não contém o texto da descrição nem do motivo — <b>mas contém</b> os campos estruturados.</p>"
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Pest — fase F1: 139 testes / 700 asserções, mais 14 testes / 119 asserções de permissões; todos verdes)",
+    "file": "pest-f1.txt"
+  }
+}

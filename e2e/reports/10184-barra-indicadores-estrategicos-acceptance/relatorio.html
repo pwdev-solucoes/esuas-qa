@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — Barra de Indicadores Estratégicos (KPIs)</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — Barra de Indicadores Estratégicos (KPIs)</h1>
+    <div class="sub">HU #10184 · Evidências end-to-end no client (Painel do Tenant) — regeneradas na UI redesenhada</div>
+    <div class="meta"><div><span>Gerado em:</span> 30/07/2026</div><div><span>HU:</span> #10184 — Barra de Indicadores Estratégicos (KPIs do Topo Fixo)</div><div><span>Branch:</span> feature/10184-barra-indicadores-estrategicos (api/ + client/)</div><div><span>Spec:</span> .planning/specs/10184-barra-indicadores-estrategicos.md</div><div><span>Endpoint:</span> GET /api/client/dashboard/strategic-indicators (auth:client + EnsureTenantScope, can:dashboard.view-indicators)</div><div><span>Ambiente:</span> API Sail/PostgreSQL+PostGIS · client :5174 (não-mock) · tenant E2E CadÚnico</div><div><span>Organização (tenant):</span> E2E CadÚnico (id 3) → município Arapiraca (IBGE 2700300) — 96 famílias cadastradas; bairro "Centro Demo #10184" com geometria PostGIS (3 famílias)</div><div><span>Ferramenta:</span> playwright-cli (Chromium) + Pest</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">6 Critérios de Aceite verificados. 4 por navegador (CA01 exibição persistente, CA02 recálculo por bairro, CA03 limpar filtro, CA05 gate de permissão na UI) e 2 pela suíte automatizada Pest (CA04 isolamento/validação de bairro, CA06 denominador zero). A barra renderiza os 5 KPIs do RN02: na visão municipal Atualização 22,9% · Válidos 44,1% · Bolsa Família 22 · Unipessoais 22,9% · Extrema Pobreza 19,8%; ao selecionar o bairro "Centro Demo #10184" (recorte espacial ST_Contains, 3 de 96 famílias) recalcula para 100,0% · 71,4% · 2 · 33,3% · 100,0% e volta ao municipal ao limpar o filtro. Endpoint respondeu 200 para o Master (com e sem neighborhood_uuid) e a barra fica oculta (sem chamada ao endpoint) para o Operador sem a permissão dedicada. Suíte: 16 testes, 64 asserções, todos verdes.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA01</td><td>Exibição persistente dos KPIs</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA02</td><td>Recálculo por bairro selecionado</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA03</td><td>Limpar filtro (RG01)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA04</td><td>Isolamento multi-tenant e validação do bairro</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA05</td><td>Gate de permissão (dashboard.view-indicators)</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA06</td><td>Denominador zero → percentuais 0 (RN02.2)</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA01">
+      <h2>CA01 — Exibição persistente dos KPIs <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que navego entre as abas/telas do dashboard, Quando altero de painel, Então os 5 cartões do topo fixo permanecem visíveis sem reiniciar seus valores.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Login como <b>Master</b> (52998224725) → dashboard <code>/app</code> exibe a região <code>Indicadores estratégicos</code> com os 5 cartões. Navegação para <code>/app/geo-panel</code> e retorno a <code>/app</code>: a barra reaparece com os mesmos valores.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A barra renderiza os 5 KPIs: Atualização Cadastral 22,9% · Cadastros Válidos 44,1% · Famílias no Bolsa Família 22 · Cadastros Unipessoais 22,9% · Extrema Pobreza 19,8%.</li><li>Após navegar para outro módulo e voltar, os cartões permanecem visíveis com os mesmos valores (persistência).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca01-barra-kpis-master.png" alt="CA01 evidência"/><figcaption>ca01-barra-kpis-master.png</figcaption></figure><figure><img src="screenshots/ca01-persistencia-apos-navegar.png" alt="CA01 evidência"/><figcaption>ca01-persistencia-apos-navegar.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA02">
+      <h2>CA02 — Recálculo por bairro selecionado <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que seleciono o bairro "Centro" no filtro global, Quando a página reprocessa, Então os 5 cartões do topo recalculam seus percentuais e totais absolutos considerando apenas os moradores do Centro.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Login como <b>Master</b> → dashboard mostra a visão municipal (96 famílias). No filtro <code>Bairro</code> seleciono <code>Centro Demo #10184</code>: o frontend chama <code>GET /dashboard/strategic-indicators?neighborhood_uuid=61c87f4f-…</code> (200) e os cartões recalculam. O recorte é espacial (<code>ST_Contains</code>, RN07): das 96 famílias, apenas as <b>3 geocodificadas dentro do polígono</b> do bairro entram.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Requisição disparada com o neighborhood_uuid do bairro selecionado (200 OK).</li><li>KPIs recalculam de municipal (22,9% · 44,1% · 22 · 22,9% · 19,8%) para o bairro: Atualização 100,0% · Válidos 71,4% · Bolsa Família 2 · Unipessoais 33,3% · Extrema Pobreza 100,0%.</li><li>Legenda do cartão passa a exibir "Recalculado por bairro: Centro Demo #10184".</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca02-recalculo-bairro.png" alt="CA02 evidência"/><figcaption>ca02-recalculo-bairro.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA03">
+      <h2>CA03 — Limpar filtro (RG01) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que estou com o bairro "Centro" selecionado, Quando aciono "Limpar Filtro", Então a visão retorna imediatamente à consolidação municipal completa do município.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Com o bairro "Centro Demo #10184" selecionado (CA02), aciono o botão <code>Limpar Filtro</code>: o frontend chama <code>GET /dashboard/strategic-indicators</code> <b>sem</b> <code>neighborhood_uuid</code> (200) e o filtro volta para <code>Todos os Bairros</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Requisição refeita sem neighborhood_uuid (200 OK) — recorte municipal.</li><li>Filtro volta a "Todos os Bairros" e os 5 cartões retornam à consolidação municipal (22,9% · 44,1% · 22 · 22,9% · 19,8%).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca03-limpar-filtro-municipal.png" alt="CA03 evidência"/><figcaption>ca03-limpar-filtro-municipal.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA04">
+      <h2>CA04 — Isolamento multi-tenant e validação do bairro <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um usuário de um tenant, Quando solicita os indicadores, Então apenas famílias/pessoas do próprio tenant entram nos cálculos; E um neighborhood_uuid de bairro fora do município retorna 422.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Coberto pela suíte Pest: <code>DashboardIndicatorsIsolationTest</code> ("it never counts families from another tenant") e <code>StrategicIndicatorsTest</code> ("422 for a neighborhood_uuid outside the tenant municipality" e "422 for a malformed neighborhood_uuid").</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Agregados nunca contam famílias de outro tenant (RN05).</li><li>422 para bairro fora do município do tenant e para uuid malformado.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA05">
+      <h2>CA05 — Gate de permissão (dashboard.view-indicators) <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um usuário sem a permissão dashboard.view-indicators, Quando acessa o dashboard, Então a barra de indicadores não é exibida (e o endpoint retorna 403).</p>
+      <p class="steps"><strong>Como foi testado:</strong> UI: login como <b>Operador</b> sem a permissão (39053344705, papel <code>operador</code>, vinculado ao tenant 3) → dashboard <code>/app</code> exibe "Painel do Técnico" <b>sem</b> a região "Indicadores estratégicos"; o frontend sequer chama o endpoint. Backend: Pest confirma Master e geo_panel_viewer autorizados e Operador-base negado.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Operador sem a permissão NÃO vê a barra de KPIs (gate no frontend).</li><li>Pest: Master (RN03) e Operador+geo_panel_viewer recebem; Operador-base é negado.</li><li>Confirmação de permissão no banco: master=Y, operador-base=N.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca05-operador-sem-barra.png" alt="CA05 evidência"/><figcaption>ca05-operador-sem-barra.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA06">
+      <h2>CA06 — Denominador zero → percentuais 0 (RN02.2) <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um recorte sem nenhuma família, Quando os indicadores são calculados, Então cada percentual retorna 0 e cada numerador/denominador retorna 0, sem erro.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Coberto pela suíte Pest: <code>StrategicIndicatorsTest</code> ("it returns zeroed percentages without error when the scope has no families") e <code>DashboardIndicatorServiceTest</code> ("it returns zero percentages without dividing by zero"). Observado também na UI antes do seed de demonstração: tenant sem famílias exibia 0,0% em todos os cartões.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Percentuais retornam 0 sem divisão por zero quando o recorte não tem famílias.</li><li>Comportamento observado na UI (estado zero) e garantido em unidade e feature.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+  
+  <h2>Anexo — Cobertura automatizada (Pest — Dashboard indicators + isolamento): 16 testes, 64 asserções, todos verdes</h2>
+  <pre class="pest">
+   PASS  Tests\Unit\Dashboard\DashboardIndicatorServiceTest
+  ✓ it computes the cadastral update rate from the 24-month window (KPI… 0.48s  
+  ✓ it computes valid registrations crossing persons.cpf and family_mem… 0.04s  
+  ✓ it counts distinct PBF families as an absolute total (KPI 3)         0.03s  
+  ✓ it computes the single-person rate as families with exactly one act… 0.04s  
+  ✓ it computes the extreme poverty rate against the configured thresho… 0.03s  
+  ✓ it returns zero percentages without dividing by zero when the scope… 0.01s  
+  ✓ it reads the extreme poverty threshold from config, not a hard-code… 0.02s  
+
+   PASS  Tests\Feature\Dashboard\StrategicIndicatorsTest
+  ✓ it returns the 5 KPIs with numerator/denominator/percentage (and to… 0.09s  
+  ✓ it returns zeroed percentages without error when the scope has no f… 0.04s  
+  ✓ it recalculates KPIs for a neighborhood, covering only geocoded fam… 0.06s  
+  ✓ it returns 422 for a neighborhood_uuid outside the tenant municipal… 0.06s  
+  ✓ it returns 422 for a malformed neighborhood_uuid                     0.04s  
+  ✓ it denies the indicators to the base operator without the dedicated… 0.04s  
+  ✓ it grants the indicators to the operator once the geo_panel_viewer…  0.04s  
+  ✓ it grants the indicators to the Master without any add-on role (RN0… 0.04s  
+
+   PASS  Tests\Feature\TenantIsolation\DashboardIndicatorsIsolationTest
+  ✓ it never counts families from another tenant in the aggregates (RN0… 0.05s  
+
+  Tests:    16 passed (64 assertions)
+  Duration: 1.53s
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

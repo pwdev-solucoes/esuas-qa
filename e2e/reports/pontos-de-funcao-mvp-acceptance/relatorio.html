@@ -1,0 +1,1096 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Contagem de Pontos de Função do MVP — eSUAS (US-09, IFPUG)</title>
+<style>
+:root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+* { box-sizing:border-box; }
+body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+.wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+header.cover h1 { margin:0 0 6px; font-size:23px; }
+header.cover .sub { color:var(--muted); font-size:13.5px; }
+h1 { font-size:21px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+h2 { font-size:17px; margin:22px 0 8px; }
+h3 { font-size:14.5px; margin:18px 0 6px; color:#0b5cad; }
+p, li { font-size:12.5px; }
+table { width:100%; border-collapse:collapse; margin:10px 0 16px; font-size:11px; }
+th, td { text-align:left; padding:6px 8px; border-bottom:1px solid var(--line); vertical-align:top; }
+th { background:var(--bg); font-size:10px; text-transform:uppercase; letter-spacing:.03em; color:var(--muted); }
+code { background:var(--bg); padding:1px 4px; border-radius:3px; font-size:10.5px; }
+blockquote { background:var(--bg); border-left:3px solid #0b5cad; padding:10px 14px; margin:10px 0; border-radius:4px; font-size:12px; }
+strong { color:#0b5cad; }
+footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:11px; }
+@media print { h2, h3 { break-after:avoid; } table { break-inside:auto; } tr { break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+<header class="cover">
+  <h1>Contagem de Pontos de Função do MVP — eSUAS</h1>
+  <div class="sub">US-09 · Método IFPUG detalhado (ALI/AIE/EE/SE/CE) · PF não ajustados · 54 módulos ·
+  atualizado em 2026-07-31 (módulo dashboard/INV-054, ticket GLPI #10143)</div>
+</header>
+<h1
+id="contagem-de-pontos-de-função-do-mvp-esuas-us-09-ifpug-detalhada">Contagem
+de Pontos de Função do MVP — eSUAS (US-09, IFPUG detalhada)</h1>
+<blockquote>
+<p><strong>Fonte da verdade:</strong> esta contagem mede, em Pontos de
+Função IFPUG não ajustados (sem VAF — decisão registrada na US-09), cada
+funcionalidade com status <code>entregue</code> do inventário
+(<code>inventory.md</code>, US-08). Vive em
+<code>.planning/product/inventory/</code>, ao lado do inventário e da
+matriz de testes, sob as mesmas regras de atualização (CA06). Criada em
+2026-07-30 a partir do estado do inventário nesse dia (53 módulos).
+<strong>Atualizada em 2026-07-31</strong> com o módulo
+<code>dashboard</code> (INV-054, achado no ticket GLPI #10142) — 54
+módulos.</p>
+</blockquote>
+<h2 id="metodologia-ca02ca03-como-reproduzir-esta-contagem">Metodologia
+(CA02/CA03 — como reproduzir esta contagem)</h2>
+<p><strong>Método:</strong> IFPUG detalhado (ALI/AIE por função de
+dados; EE/SE/CE por função transacional), complexidade pelas tabelas
+padrão do CPM, PF <strong>não ajustados</strong> (VAF e as 14
+características gerais do sistema ficam fora de escopo — decisão da
+US-09).</p>
+<p><strong>Convenção de DET</strong> (Tipo de Dado / Data Element Type):
+para funções de dados, DET = número de colunas de dado da tabela na
+migration mais recente, <strong>excluindo</strong> <code>id</code>,
+<code>uuid</code>, <code>created_at</code>, <code>updated_at</code>,
+<code>deleted_at</code> (campos técnicos, não reconhecíveis pelo
+usuário). Para funções transacionais, DET ≈ número de campos de entrada
++ saída distintos cruzando a fronteira (aproximado a partir das colunas
+envolvidas + confirmação/id retornado), sem contar duas vezes o mesmo
+campo.</p>
+<p><strong>Convenção de RET</strong> (Tipo de Registro / Record Element
+Type): RET=1 para toda tabela simples de lookup. RET&gt;1 quando a
+tabela tem subgrupos de dados claramente distintos (ex.:
+<code>families</code> tem registro/renda/contato/vulnerabilidade como
+blocos separados). Uma tabela filha com <strong>CRUD próprio e
+independente</strong> (rota dedicada) é contada como <strong>ALI
+separada</strong>, não como RET da tabela pai — ex.:
+<code>tenant_responsibles</code> é ALI própria, mas
+<code>geo_layer_tenants</code> (pivot sem CRUD próprio) é RET de
+<code>geo_layers</code>.</p>
+<p><strong>Convenção de FTR</strong> (Arquivo Referenciado / File Type
+Referenced): FTR = 1 (a própria ALI mantida) + 1 para cada outra ALI/AIE
+<strong>já contada nesta lista</strong> que a transação valida ou lê
+(chave estrangeira obrigatória, junção de exibição). Referências a
+campos de auditoria (<code>created_by</code>/<code>updated_by</code>)
+não somam FTR.</p>
+<p><strong>Entidades compartilhadas contadas uma única vez:</strong>
+<code>addresses</code> (endereço genérico, usado por
+<code>social-units</code>, <code>tenants</code>, <code>families</code>
+etc.) é contada como 1 AIE só na primeira aparição (módulo
+<code>tenants</code>), e só referenciada por FTR nos módulos seguintes —
+nunca duplicada. Módulos client que reusam o mesmo backend do admin
+(<code>legal-acceptance</code>, <code>tenant-settings</code>,
+<code>users</code>, <code>platform-updates</code>) reusam a(s) ALI(s) já
+contada(s) no admin — só as transações de auto-serviço do client são
+novas.</p>
+<p><strong>Convenção de agregação (só para reduzir repetição de linhas
+idênticas):</strong> quando um módulo tem o conjunto padrão de
+transações de manutenção
+(<code>store</code>/<code>update</code>/<code>destroy</code>/<code>bulk-activate</code>/
+<code>bulk-deactivate</code>) com FTR e DET idênticos entre si, elas
+aparecem em <strong>uma linha agregada</strong> citando os nomes das
+ações — cada uma continua sendo uma função transacional distinta pela
+definição IFPUG, só a apresentação é agrupada. A evidência (caminho do
+arquivo de rotas) é a mesma citada.</p>
+<p><strong>Tabelas de complexidade usadas</strong> (padrão CPM, sem
+alteração):</p>
+<table>
+<thead>
+<tr>
+<th>ALI/AIE</th>
+<th>RET 1</th>
+<th>RET 2–5</th>
+<th>RET 6+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DET 1–19</td>
+<td>Baixa</td>
+<td>Baixa</td>
+<td>Média</td>
+</tr>
+<tr>
+<td>DET 20–50</td>
+<td>Baixa</td>
+<td>Média</td>
+<td>Alta</td>
+</tr>
+<tr>
+<td>DET 51+</td>
+<td>Média</td>
+<td>Alta</td>
+<td>Alta</td>
+</tr>
+</tbody>
+</table>
+<p>PF: ALI Baixa=7 / Média=10 / Alta=15 · AIE Baixa=5 / Média=7 /
+Alta=10</p>
+<table>
+<thead>
+<tr>
+<th>EE</th>
+<th>FTR 0–1</th>
+<th>FTR 2</th>
+<th>FTR 3+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DET 1–4</td>
+<td>Baixa</td>
+<td>Baixa</td>
+<td>Média</td>
+</tr>
+<tr>
+<td>DET 5–15</td>
+<td>Baixa</td>
+<td>Média</td>
+<td>Alta</td>
+</tr>
+<tr>
+<td>DET 16+</td>
+<td>Média</td>
+<td>Alta</td>
+<td>Alta</td>
+</tr>
+</tbody>
+</table>
+<p>PF EE: Baixa=3 / Média=4 / Alta=6</p>
+<table>
+<thead>
+<tr>
+<th>SE / CE</th>
+<th>FTR 0–1</th>
+<th>FTR 2–3</th>
+<th>FTR 4+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DET 1–5</td>
+<td>Baixa</td>
+<td>Baixa</td>
+<td>Média</td>
+</tr>
+<tr>
+<td>DET 6–19</td>
+<td>Baixa</td>
+<td>Média</td>
+<td>Alta</td>
+</tr>
+<tr>
+<td>DET 20+</td>
+<td>Média</td>
+<td>Alta</td>
+<td>Alta</td>
+</tr>
+</tbody>
+</table>
+<p>PF SE: Baixa=4 / Média=5 / Alta=7 · PF CE: Baixa=3 / Média=4 /
+Alta=6</p>
+<p><strong>SE vs. CE:</strong> uma transação de saída é
+<strong>SE</strong> quando produz dado derivado/calculado, agrega, ou
+tem lógica de processamento além da simples recuperação (ex.:
+<code>geo-panel/search</code> calcula agregações por setor;
+<code>families/details</code> computa
+<code>vulnerabilities[]</code>/<code>registry_alert</code>). Caso
+contrário é <strong>CE</strong> (mera listagem/consulta).</p>
+<hr />
+<h2 id="módulo-por-módulo">Módulo por módulo</h2>
+<h3 id="grupo-a-lookups-simples-padrão-ouro-admin">Grupo A — lookups
+simples padrão-ouro (admin)</h3>
+<p>Os 21 módulos abaixo seguem o mesmo molde: 1 ALI própria, sem FK para
+outro módulo do inventário (exceto <code>postal-codes</code>),
+transações de manutenção padrão idênticas em complexidade. Evidência:
+migration + arquivo de rotas citados por módulo
+(<code>api/routes/api/{manager,shared,relationals}.php</code>).</p>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th>Módulo (INV)</th>
+<th>ALI: tabela · RET · DET · complexidade · PF</th>
+<th>Transações (FTR·DET·complexidade·PF cada)</th>
+<th>Evidência</th>
+<th>Subtotal</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>phone-types (INV-001)</td>
+<td><code>phone_types</code> · 1 · 3 · Baixa · 7</td>
+<td>index/show/store/update/destroy/bulk-ativar/bulk-desativar/relacional
+· 1·~4·Baixa·3 ×8</td>
+<td><code>2026_06_16_100003_create_phone_types_table.php</code> ·
+<code>manager.php</code>+<code>relationals.php</code></td>
+<td><strong>31</strong></td>
+</tr>
+<tr>
+<td>address-sources (INV-007)</td>
+<td><code>address_sources</code> · 1 · 4 · Baixa · 7</td>
+<td>mesmo padrão ×8 · 1·~5·Baixa·3</td>
+<td><code>2026_06_01_000001_create_address_sources_table.php</code> ·
+<code>manager.php</code>+<code>relationals.php</code></td>
+<td><strong>31</strong></td>
+</tr>
+<tr>
+<td>address-zone-types (INV-008)</td>
+<td><code>address_zone_types</code> · 1 · 4 · Baixa · 7</td>
+<td>mesmo padrão ×8 · 1·~5·Baixa·3</td>
+<td><code>2026_05_30_171536_create_address_zone_types_table.php</code> ·
+<code>manager.php</code>+<code>relationals.php</code></td>
+<td><strong>31</strong></td>
+</tr>
+<tr>
+<td>cbos (INV-009)</td>
+<td><code>cbos</code> · 1 · 4 · Baixa · 7</td>
+<td>padrão ×8 (3) + bulk-ativar/desativar-elegibilidade ×2 (3)</td>
+<td><code>2026_06_25_120000_create_cbos_table.php</code> ·
+<code>manager.php</code>+<code>relationals.php</code></td>
+<td><strong>37</strong></td>
+</tr>
+<tr>
+<td>contract-modalities (INV-011)</td>
+<td><code>contract_modalities</code> · 1 · 4 · Baixa · 7</td>
+<td>mesmo padrão ×8 · 1·~5·Baixa·3</td>
+<td><code>2026_04_15_203023_create_contract_modalities_table.php</code>
+· <code>manager.php</code>+<code>relationals.php</code></td>
+<td><strong>31</strong></td>
+</tr>
+<tr>
+<td>legal-document-types (INV-017)</td>
+<td><code>legal_document_types</code> · 1 · 5 · Baixa · 7</td>
+<td>mesmo padrão ×8 · 1·~6·Baixa·3</td>
+<td><code>2026_06_03_000001_create_legal_document_types_table.php</code>
+· <code>manager.php</code>+<code>relationals.php</code></td>
+<td><strong>31</strong></td>
+</tr>
+<tr>
+<td>nationalities (INV-020)</td>
+<td><code>nationalities</code> · 1 · 3 · Baixa · 7</td>
+<td>mesmo padrão ×8 · 1·~4·Baixa·3</td>
+<td><code>2026_06_16_100002_create_nationalities_table.php</code> ·
+<code>manager.php</code>+<code>relationals.php</code></td>
+<td><strong>31</strong></td>
+</tr>
+<tr>
+<td>postal-codes (INV-024)</td>
+<td><code>postal_codes</code> · 1 · 23 · Baixa (RET1 permanece Baixa até
+50 DET) · 7</td>
+<td>store/update: FTR6
+(self+address-sources+states+cities+territorial-units+streets)·DET~24·<strong>Alta</strong>·6
+cada (12); destroy/bulk-ativar/bulk-desativar: FTR1·Baixa·3 cada (9);
+index/show: FTR6·DET~24·<strong>Alta</strong>·6 cada (12); relacional:
+FTR1·Baixa·3</td>
+<td><code>2026_07_20_000001_add_geolocation_to_postal_codes_table.php</code>
+· <code>manager.php</code>+<code>relationals.php</code></td>
+<td><strong>43</strong></td>
+</tr>
+<tr>
+<td>race-colors (INV-025)</td>
+<td><code>race_colors</code> · 1 · 3 · Baixa · 7</td>
+<td>store/update/destroy/bulk-ativar/bulk-desativar (manager) +
+index/show (shared) · 1·~4·Baixa·3 ×7</td>
+<td><code>2026_06_27_100005_create_race_colors_table.php</code> ·
+<code>manager.php</code>+<code>shared.php</code></td>
+<td><strong>28</strong></td>
+</tr>
+<tr>
+<td>sexes (INV-027)</td>
+<td><code>sexes</code> · 1 · 3 · Baixa · 7</td>
+<td>mesmo padrão ×8 · 1·~4·Baixa·3</td>
+<td><code>2026_06_16_100001_create_sexes_table.php</code> ·
+<code>manager.php</code>+<code>relationals.php</code></td>
+<td><strong>31</strong></td>
+</tr>
+<tr>
+<td>social-entity-statuses (INV-028)</td>
+<td><code>social_entity_statuses</code> · 1 · 3 · Baixa · 7</td>
+<td>mesmo padrão ×8 · 1·~4·Baixa·3</td>
+<td><code>2026_04_15_203021_create_social_entity_statuses_table.php</code>
+· <code>manager.php</code>+<code>relationals.php</code></td>
+<td><strong>31</strong></td>
+</tr>
+<tr>
+<td>social-specificities (INV-029)</td>
+<td><code>social_specificities</code> · 1 · 3 · Baixa · 7</td>
+<td>mesmo padrão ×8 · 1·~4·Baixa·3</td>
+<td><code>2026_05_13_171642_create_social_specificities_table.php</code>
+· <code>manager.php</code>+<code>relationals.php</code></td>
+<td><strong>31</strong></td>
+</tr>
+<tr>
+<td>social-unit-equipments (INV-030)</td>
+<td><code>social_unit_equipments</code> · 1 · 3 · Baixa · 7</td>
+<td>store/update/destroy/bulk-ativar/bulk-desativar/bulk-destroy
+(manager) + index/show (shared) + relacional · 1·~4·Baixa·3 ×9</td>
+<td><code>2026_05_13_171640_create_social_unit_equipments_table.php</code>
+·
+<code>manager.php</code>+<code>shared.php</code>+<code>relationals.php</code></td>
+<td><strong>34</strong></td>
+</tr>
+<tr>
+<td>social-unit-statuses (INV-031)</td>
+<td><code>social_unit_status</code> · 1 · 3 · Baixa · 7</td>
+<td>mesmo padrão de 9 ações (incl. bulk-destroy) · 1·~4·Baixa·3</td>
+<td><code>2026_04_15_203019_create_social_unit_status_table.php</code> ·
+<code>manager.php</code>+<code>shared.php</code>+<code>relationals.php</code></td>
+<td><strong>34</strong></td>
+</tr>
+<tr>
+<td>social-unit-structures (INV-032)</td>
+<td><code>social_unit_structures</code> · 1 · 3 · Baixa · 7</td>
+<td>store/update/destroy/bulk-ativar/bulk-desativar (manager) +
+index/show (shared) + relacional · 1·~4·Baixa·3 ×8</td>
+<td><code>2026_05_13_171641_create_social_unit_structures_table.php</code>
+·
+<code>manager.php</code>+<code>shared.php</code>+<code>relationals.php</code></td>
+<td><strong>31</strong></td>
+</tr>
+<tr>
+<td>social-unit-types (INV-033)</td>
+<td><code>social_unit_types</code> · 1 · 5 · Baixa · 7</td>
+<td>mesmo padrão de 9 ações (incl. bulk-destroy) · 1·~6·Baixa·3</td>
+<td><code>2026_04_15_203018_create_social_unit_types_table.php</code> ·
+<code>manager.php</code>+<code>shared.php</code>+<code>relationals.php</code></td>
+<td><strong>34</strong></td>
+</tr>
+<tr>
+<td>street-types (INV-035)</td>
+<td><code>street_types</code> · 1 · 6 · Baixa · 7</td>
+<td>mesmo padrão ×8 · 1·~7·Baixa·3</td>
+<td><code>2026_06_01_000003_create_street_types_table.php</code> ·
+<code>manager.php</code>+<code>relationals.php</code></td>
+<td><strong>31</strong></td>
+</tr>
+<tr>
+<td>suas-participation-types (INV-037)</td>
+<td><code>suas_participation_types</code> · 1 · 3 · Baixa · 7</td>
+<td>mesmo padrão ×8 · 1·~4·Baixa·3</td>
+<td><code>2026_04_15_203022_create_suas_participation_types_table.php</code>
+· <code>manager.php</code>+<code>relationals.php</code></td>
+<td><strong>31</strong></td>
+</tr>
+<tr>
+<td>tenant-statuses (INV-038)</td>
+<td><code>tenant_status</code> · 1 · 4 · Baixa · 7</td>
+<td>index/show/store/update/destroy/bulk-ativar/bulk-desativar (sem
+relacional) · 1·~5·Baixa·3 ×7</td>
+<td><code>2026_04_15_203017_create_tenant_status_table.php</code> ·
+<code>manager.php</code></td>
+<td><strong>28</strong></td>
+</tr>
+<tr>
+<td>territorial-unit-types (INV-040)</td>
+<td><code>territorial_unit_types</code> · 1 · 4 · Baixa · 7</td>
+<td>mesmo padrão ×8 · 1·~5·Baixa·3</td>
+<td><code>2026_05_31_000001_create_territorial_unit_types_table.php</code>
+· <code>manager.php</code>+<code>relationals.php</code></td>
+<td><strong>31</strong></td>
+</tr>
+<tr>
+<td>traditional-population-groups (INV-042)</td>
+<td><code>traditional_population_groups</code> · 1 · 3 · Baixa · 7</td>
+<td>store/update/destroy/bulk-ativar/bulk-desativar (manager) +
+index/show (shared), sem relacional · 1·~4·Baixa·3 ×7</td>
+<td><code>2026_06_27_100007_create_traditional_population_groups_table.php</code>
+· <code>manager.php</code>+<code>shared.php</code></td>
+<td><strong>28</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Subtotal Grupo A: 669 PF</strong></p>
+<h3 id="grupo-b-lookups-geográficos-com-relação-pai-filho-admin">Grupo B
+— lookups geográficos com relação pai-filho (admin)</h3>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th>Módulo (INV)</th>
+<th>Funções de dados</th>
+<th>Transações</th>
+<th>Evidência</th>
+<th>Subtotal</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>countries (INV-012)</td>
+<td><code>countries</code> · 1 RET · 4 DET · Baixa · 7</td>
+<td>index/show/store/update/destroy/bulk-ativar/bulk-desativar (sem
+relacional) · FTR1·~5·Baixa·3 ×7</td>
+<td><code>2026_04_15_203014_create_countries_table.php</code> ·
+<code>manager.php</code></td>
+<td><strong>28</strong></td>
+</tr>
+<tr>
+<td>states (INV-034)</td>
+<td><code>states</code> · 1 · 5 · Baixa · 7</td>
+<td>store/update: FTR2 (self+countries)·DET~6·Média·4 (8);
+destroy/bulk-ativar/bulk-desativar: FTR1·Baixa·3 (9); index/show:
+FTR2·DET~7·Média·4 (8); relacional: FTR1·Baixa·3</td>
+<td><code>2026_06_13_000003_add_ibge_code_to_states_table.php</code> ·
+<code>manager.php</code>+<code>relationals.php</code></td>
+<td><strong>35</strong></td>
+</tr>
+<tr>
+<td>cities (INV-010)</td>
+<td><code>cities</code> · 1 · 6 · Baixa · 7</td>
+<td>store/update: FTR2 (self+states)·DET~7·Média·4 (8);
+destroy/bulk-ativar/bulk-desativar: FTR1·Baixa·3 (9); index/show:
+FTR2·DET~8·Média·4 (8); relacional: FTR1·Baixa·3;
+<code>cities/{id}/addresses</code>: FTR2
+(self+addresses)·DET~8·Média·4</td>
+<td><code>2026_06_13_000001_add_timezone_to_cities_table.php</code> ·
+<code>manager.php</code>+<code>relationals.php</code></td>
+<td><strong>39</strong></td>
+</tr>
+<tr>
+<td>education-levels (INV-014)</td>
+<td><code>education_levels</code> · 1 · 3 · Baixa · 7</td>
+<td>index/show (shared) +
+store/update/destroy/bulk-ativar/bulk-desativar (manager), sem
+relacional · FTR1·~4·Baixa·3 ×7</td>
+<td><code>2026_06_27_100006_create_education_levels_table.php</code> ·
+<code>manager.php</code>+<code>shared.php</code></td>
+<td><strong>28</strong></td>
+</tr>
+<tr>
+<td>location-types (INV-019)</td>
+<td><code>location_types</code> · 1 · 3 · Baixa · 7</td>
+<td>index/show (shared) +
+store/update/destroy/bulk-ativar/bulk-desativar (manager) + relacional ·
+FTR1·~4·Baixa·3 ×8</td>
+<td><code>2026_04_15_203020_create_location_types_table.php</code> ·
+<code>manager.php</code>+<code>shared.php</code>+<code>relationals.php</code></td>
+<td><strong>31</strong></td>
+</tr>
+<tr>
+<td>streets (INV-036)</td>
+<td><code>streets</code> · 1 · 9 · Baixa · 7</td>
+<td>store/update: FTR5
+(self+cities+territorial-units+street-types+states)·DET~10·<strong>Alta</strong>·6
+(12); destroy/bulk-ativar/bulk-desativar: FTR1·Baixa·3 (9); index/show:
+FTR5·DET~10·<strong>Alta</strong>·6 (12); relacional (por unidade
+territorial): FTR2·Baixa·3</td>
+<td><code>2026_06_12_000002_add_state_id_to_streets_and_territorial_units.php</code>
+· <code>manager.php</code>+<code>relationals.php</code></td>
+<td><strong>43</strong></td>
+</tr>
+<tr>
+<td>territorial-units (INV-041)</td>
+<td><code>territorial_units</code> · 1 · 11 · Baixa · 7</td>
+<td>store/update: FTR6
+(self+cities+territorial-unit-types+address-zone-types+address-sources+states)·DET~12·<strong>Alta</strong>·6
+(12); destroy/bulk-ativar/bulk-desativar: FTR1·Baixa·3 (9); index/show:
+FTR6·DET~12·<strong>Alta</strong>·6 (12); relacional: FTR1·Baixa·3</td>
+<td><code>2026_06_10_000001_create_territorial_unit_geometries_table.php</code>
+· <code>manager.php</code>+<code>relationals.php</code></td>
+<td><strong>43</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Subtotal Grupo B: 247 PF</strong></p>
+<h3 id="grupo-c-módulos-admin-de-maior-complexidade">Grupo C — módulos
+admin de maior complexidade</h3>
+<p><strong>geo-layers (INV-002)</strong> — Construtor de Camadas ALI
+<code>geo_layers</code> (11 DET: name, description, criteria(jsonb),
+representation, style, status, audience, published_at, inactivated_at,
+created_by, updated_by; RET2 — identidade+config vs. auditoria de
+publicação; pivot <code>geo_layer_tenants</code> tratado como RET, sem
+CRUD próprio) · Baixa · 7. Transações: store/update (FTR1·DET~12·Baixa·3
+cada, 6) · publish (FTR2 self+geo_layer_tenants·Baixa·3) · audience
+(FTR2·Baixa·3) · inactivate/reactivate (FTR1·Baixa·3 cada, 6) · preview
+— <strong>SE</strong> (calcula prévia sobre famílias/endereços,
+FTR4+·DET~8·Alta·7) · index (FTR2 self+audiência·DET~11·Média·4) · show
+(FTR2·DET~11·Média·4). Evidência:
+<code>2026_04_15_...create_geo_layers_table.php</code> (nome exato
+verificado no schema atual) · <code>api/routes/api/manager.php</code>
+(<code>GeoLayerController</code>). <strong>Subtotal: 40</strong></p>
+<p><strong>dne-imports (INV-013)</strong> ALI <code>dne_imports</code>
+(14 DET: competence, original_filename, file_path, file_size, status,
+started_at, finished_at, error_message, row_counts, created_by,
+sync_status, synced_at, sync_summary, sync_error; RET1) · Baixa · 7.
+Transações: store (FTR1·Baixa·3) ·
+destroy/bulk-destroy/restore/force-destroy/retry/sync (FTR1·Baixa·3
+cada, 18) · index/show (FTR1·DET~14·Baixa·3 cada, 6). Evidência:
+<code>DneImportController</code> ·
+<code>api/routes/api/manager.php</code>. <strong>Subtotal:
+34</strong></p>
+<p><strong>geo-layer-imports (INV-015)</strong> — importação de
+geometrias + setores censitários + geometrias municipais + conferência
+de bairros ALIs: <code>geo_layer_imports</code> (13 DET; RET2 —
+metadados de import + metadados de sync;
+<code>geo_layer_import_features</code> staging tratada como RET, sem
+CRUD próprio) · Baixa · 7 — <code>city_geometries</code> (10 DET; RET1)
+· Baixa · 7 — <code>census_sectors</code> (7 DET; RET1;
+<code>census_sector_geometries</code> tratada como RET) · Baixa · 7.
+Bairros reusam <code>territorial_units</code> (já contada em
+<code>territorial-units</code>/INV-041) — nenhuma ALI nova. Transações:
+geo_layer_imports — store (FTR1·Baixa·3),
+destroy/bulk-destroy/restore/force-destroy/retry/sync (FTR1·Baixa·3
+cada, 18), index/show (FTR1·Baixa·3 cada, 6) — subtotal 27.
+<code>city-geometries</code>: index (FTR1·Baixa·3), show — GeoJSON,
+<strong>SE</strong> por formatação derivada (FTR1·DET~10·Média·4)?
+tratado como CE formatado (FTR1·DET~10·Baixa/Média·4).
+<code>census-sectors</code> index (FTR2 self+city_geometries·Média·4).
+<code>neighborhoods</code> conferência: index (FTR2
+self(territorial_units)+city_geometries·Média·4) +
+municipalities-do-lote (FTR2 self+geo_layer_imports·Baixa·3). Evidência:
+<code>GeoLayerImportController</code>,
+<code>CityGeometryController</code>,
+<code>CensusSectorController</code>, <code>NeighborhoodController</code>
+· <code>api/routes/api/manager.php</code>. <strong>Subtotal:
+66</strong></p>
+<p><strong>legal-acceptance — admin (INV-016)</strong> ALI
+<code>user_legal_document_acceptances</code> (11 DET: user_id,
+acceptance_scope, tenant_id, global_legal_document_id,
+global_legal_document_version_id, tenant_legal_document_id,
+tenant_legal_document_version_id, accepted_at, ip_address, user_agent,
+accepted_content_hash; RET1) · Baixa · 7. Transações: pending
+(FTR2·Baixa·3) · show (FTR2·DET~8·Média·4) · accept (FTR2·Baixa·3).
+Evidência: <code>LegalAcceptanceController</code> ·
+<code>api/routes/api/shared.php</code>. <strong>Subtotal:
+17</strong></p>
+<p><strong>legal-documents — admin/global (INV-018)</strong> ALIs:
+<code>global_legal_documents</code> (8 DET; RET1) · Baixa · 7 —
+<code>global_legal_document_versions</code> (9 DET; RET1, histórico com
+consulta própria) · Baixa · 7. Transações: index (FTR1·Baixa·3) · store
+(FTR2 self+legal-document-types·Média·4) · show (FTR2·Média·4) · update
+(FTR2·Média·4) · destroy (FTR1·Baixa·3) · publish (FTR2
+self+versions·Média·4) · versions (FTR2·Média·4) · showVersion
+(FTR2·Média·4). Evidência: <code>GlobalLegalDocumentController</code> ·
+<code>api/routes/api/manager.php</code>. <strong>Subtotal:
+44</strong></p>
+<p><strong>persons (INV-021)</strong> — repositório global de pessoas
+ALI <code>persons</code> (18 DET: full_name, mother_name, birth_date,
+sex_id, nationality_id, nationality_foreigner_country_id, cpf, rg,
+rg_issuer, rg_state, email, person_type, cnpj, trade_name,
+municipal_registration, state_registration, created_by, updated_by;
+RET1) · Baixa · 7. Transações: index (FTR3
+self+sexes+nationalities·DET~18·Média·4) · store (FTR4
++countries·DET~19·<strong>Alta</strong>·6) · show (FTR3·Média·4) ·
+update (FTR4·<strong>Alta</strong>·6) · checkCpf (FTR1·Baixa·3) ·
+checkCnpj (FTR1·Baixa·3). Evidência: <code>PersonController</code> ·
+<code>api/routes/api/manager.php</code>. <strong>Subtotal:
+33</strong></p>
+<p><strong>platform-updates — admin (INV-022)</strong> — sem ALI própria
+(reusa <code>platform_versions</code>, contada em
+platform-versions/INV-023) Transações: latestUnread (FTR2·Baixa·3) ·
+current (FTR1·Baixa·3) · history (FTR2·DET~9·Média·4) · acknowledge
+(FTR2 self+platform_version_reads·Baixa·3). Evidência:
+<code>PlatformUpdateController</code> ·
+<code>api/routes/api/shared.php</code>. <strong>Subtotal:
+13</strong></p>
+<p><strong>platform-versions (INV-023)</strong> ALI
+<code>platform_versions</code> (9 DET: version_number, released_at,
+title, content_html, content_text, status, published_at, created_by,
+updated_by; RET2 — conteúdo+publicação;
+<code>platform_version_reads</code> tratada como RET, log de leitura sem
+CRUD próprio) · Baixa · 7. Transações: index (FTR1·Baixa·3) · store
+(FTR1·DET~10·Baixa·3) · show (FTR1·Baixa·3) · update (FTR1·Baixa·3) ·
+publish (FTR1·Baixa·3) · reads (FTR2 self+reads·Baixa·3). Evidência:
+<code>PlatformVersionController</code> ·
+<code>api/routes/api/manager.php</code>. <strong>Subtotal:
+25</strong></p>
+<p><strong>roles (INV-026)</strong> ALI <code>roles</code> (6 DET: name,
+label, guard_name, description, level, is_active; RET1) · Baixa · 7. AIE
+<code>permissions</code> (3 DET: name, label, guard_name; mantida pelo
+<code>PermissionRegistry</code>/<code>permissions:sync</code>, não por
+CRUD de usuário — por isso AIE, não ALI) · Baixa · 5. Transações: index
+(FTR1·Baixa·3) · store (FTR1·Baixa·3) · show (FTR2
+self+permissions·Média·4) · update (FTR1·Baixa·3) · destroy
+(FTR1·Baixa·3) · updatePermissions (FTR2·DET~5·Média·4) · clone
+(FTR1·Baixa·3) · users (FTR2 self+users·Média·4) · activity (FTR2
+self+activity_log·Média·4) · bulk-ativar/desativar/destroy (FTR1·Baixa·3
+cada, 9) · permissions-index (FTR1·Baixa·3). Evidência:
+<code>RoleController</code>, <code>PermissionController</code> ·
+<code>api/routes/api/manager.php</code>. <strong>Subtotal:
+55</strong></p>
+<p><strong>tenants — admin (INV-039)</strong> ALIs: <code>tenants</code>
+(7 DET; RET1) · Baixa · 7 — <code>tenant_settings</code> (4 DET; RET1) ·
+Baixa · 7 — <code>tenant_tce_parameters</code> (4 DET; RET1) · Baixa · 7
+— <code>tenant_responsibles</code> (4 DET; RET1) · Baixa · 7. AIE
+<code>addresses</code> (10 DET: street, street_number, complement,
+neighborhood, country_id, state_id, city_id, postal_code, latitude,
+longitude; RET1 — <strong>contada uma única vez aqui, reusada por FTR em
+todos os módulos que a referenciam</strong>) · Baixa · 5.
+(<code>tenant_config</code>, pivot fino de link ao endereço oficial,
+tratado como RET de <code>tenants</code>.) Transações — CRUD de tenants:
+index/show/store/update/destroy/showByUuid/updateStatus/audits
+(FTR2·DET~7·Média·4 nas 5 de leitura/escrita com FK a
+tenant_status+activity_log, FTR1·Baixa·3 nas 3 simples — total 28) ·
+endereço do tenant: index/store/show/update (FTR2·Média·4 cada, 16) +
+destroy/geocode/map-tiles-session (FTR1·Baixa·3 cada, 9) = 25 · TCE:
+show/update (FTR2·Baixa·3 cada, 6) · responsáveis:
+index/store/update/destroy (FTR2·Baixa·3 cada, 12) · endereço oficial:
+show/update (FTR2·Média·4 cada, 8) · settings/logo: show/upload/delete
+(FTR1-2·Baixa·3 cada, 9) · relacional (FTR1·Baixa·3). Evidência:
+<code>TenantController</code>, <code>TenantAddressController</code>,
+<code>TenantTceParameterController</code>,
+<code>TenantResponsibleController</code>,
+<code>TenantConfigController</code>,
+<code>TenantSettingController</code> ·
+<code>api/routes/api/manager.php</code> +
+<code>api/routes/api/client.php</code> (mirror manager).
+<strong>Subtotal: 124</strong></p>
+<p><strong>users — admin (INV-043)</strong> ALIs: <code>users</code> (10
+DET: full_name, email, phone, cpf, is_active, last_login_at, birth_date,
+photo_path, type, person_id; RET1) · Baixa · 7 —
+<code>user_tenant_role</code> (3 DET: user_id, role_id, tenant_id; RET1,
+CRUD próprio via endpoints dedicados) · Baixa · 7. Transações: index
+(FTR1·Baixa·3) · store (FTR2 self+persons·Média·4) · show (FTR3
+self+roles+tenants, <code>tenant_permissions</code>·Média·4) · update
+(FTR2·Média·4) · destroy/resetPassword/uploadPhoto/
+bulk-ativar/bulk-desativar (FTR1·Baixa·3 cada, 15) · user-tenant-role
+index/store/destroy (FTR2·Baixa·3 cada, exceto destroy FTR1, 9).
+Evidência: <code>UserController</code>,
+<code>UserTenantRoleController</code> ·
+<code>api/routes/api/manager.php</code>. <strong>Subtotal:
+53</strong></p>
+<p><strong>Subtotal Grupo C: 504 PF</strong></p>
+<h3 id="grupo-d-módulos-client-tenant-scoped">Grupo D — módulos client
+(tenant-scoped)</h3>
+<p><strong>social-units (INV-003)</strong> ALI <code>social_units</code>
+(11 DET: mds_number, name, type_id, status_id, location_type_id, email,
+phone, address_id, responsible_user_id, activity_start_date,
+activity_end_date; RET3 — identidade, equipamentos e estruturas
+vinculados como subgrupos via pivots sem CRUD próprio) · Baixa · 7.
+Transações: index/store/show/update (FTR4-5
+self+tipo+status+location_type[+endereço]·DET~11-15·<strong>Alta</strong>·6
+cada, 24) · destroy/updateStatus (FTR1-2·Baixa·3 cada, 6) ·
+statusHistory (FTR2·Baixa·3) · activity (FTR2·Média·4) · equipments
+store/update/destroy (FTR2·Baixa·3 cada, 9) · professionals
+index/candidates (FTR3·Média·4 cada, 8) + store
+(FTR3·<strong>Alta</strong>·6) + update (FTR3·Média·4) ·
+bulk-destroy/bulk-change-status (FTR1-2·Baixa·3 cada, 6) · endereço da
+unidade (index/store/show/update: FTR2·Média·4 cada, 16;
+geocode/map-tiles: FTR1·Baixa·3 cada, 6). Evidência:
+<code>SocialUnitController</code> ·
+<code>api/routes/api/client.php</code>. <strong>Subtotal:
+103</strong></p>
+<p><strong>families (INV-004)</strong> ALI
+<code>families</code>+<code>family_members</code> (RET6+ — registro,
+renda, contato, identidade/vulnerabilidade e composição familiar como
+subgrupos claramente distintos; DET~45 somando os campos únicos das duas
+tabelas, tratadas como uma única ALI porque <code>family_members</code>
+não tem endpoint de CRUD próprio — é sempre lida embutida no detalhe) ·
+<strong>Alta</strong> · 15. AIE <code>family_statuses</code> (3 DET)
+contada aqui, sem CRUD próprio no inventário · Baixa · 5. Transação:
+<code>details</code> — <strong>SE</strong> (computa
+<code>vulnerabilities[]</code> só com códigos ativos,
+<code>registry_alert</code> derivado, ordena <code>members[]</code> com
+responsável primeiro; FTR8+ self+persons+addresses+territorial_units+
+street_types+cities+states+traditional_population_groups+race_colors+education_levels;
+DET~30+ contando todos os blocos de resposta) · <strong>Alta</strong> ·
+7. Evidência: <code>FamilyController::details</code> ·
+<code>api/routes/api/client.php</code>. <strong>Subtotal: 27</strong>
+(15+5 dados + 7 transação)</p>
+<p><strong>address-inconsistencies (INV-005)</strong> ALI
+<code>family_address_inconsistencies</code> (9 DET: family_id,
+address_id, rejected_address_text, failure_reason, status,
+flagged_by_import_id, flagged_at, resolved_by_import_id, resolved_at;
+RET1) · Baixa · 7. Transações: index (FTR2 self+families·Média·4) ·
+export — <strong>SE</strong> (CSV com formatação/agregação derivada,
+FTR2·Média·5). Evidência: <code>AddressInconsistencyController</code> ·
+<code>api/routes/api/client.php</code>. <strong>Subtotal:
+16</strong></p>
+<p><strong>geo-panel (INV-006)</strong> ALI
+<code>geo_panel_exports</code> (9 DET: format, filters, map_image_path,
+status, file_path, file_size, error_message, finished_at, requested_by;
+RET1) · Baixa · 7. Transações: context (FTR2·Baixa·3) · layers (FTR2
+self+geo_layers·Média·4) · map-tiles-session (FTR1·Baixa·3) ·
+layers/data (FTR2·Média·4) · census-sectors (FTR2·Média·4) ·
+neighborhoods (FTR2·Média·4) · social-units (FTR2·Média·4) · summary —
+<strong>SE</strong> (agregação por setor, FTR6+·<strong>Alta</strong>·7)
+· search — <strong>SE</strong> (AND-combinado com bbox+pontos anônimos,
+FTR6+·<strong>Alta</strong>·7) · exports store/index/show/ download
+(FTR1·Baixa·3 cada, 12). Evidência: <code>GeoPanelController</code>,
+<code>GeoPanelExportController</code> ·
+<code>api/routes/api/client.php</code>. <strong>Subtotal:
+59</strong></p>
+<p><strong>cadunico-imports (INV-044)</strong> ALI
+<code>cadunico_imports</code> (22 DET; RET1 —
+<code>cadunico_import_errors</code> tratada como RET, sem CRUD próprio)
+· Baixa · 7. Transações: index (FTR1·DET22·Média·4) · validate
+(FTR1·Baixa·3) · store (FTR1·Baixa·3) · sync (FTR2
+self+families·Baixa·3) · show (FTR2 self+errors·Média·4). Evidência:
+<code>CadunicoImportController</code> ·
+<code>api/routes/api/client.php</code>. <strong>Subtotal:
+24</strong></p>
+<p><strong>legal-acceptance — client (INV-045)</strong> — mesmo backend
+do admin (INV-016); ALI já contada lá, não duplicada. Transações
+(auto-serviço do tenant, guard <code>client</code>): pending (Baixa·3) ·
+show (Média·4) · accept (Baixa·3). Evidência:
+<code>LegalAcceptanceController</code> ·
+<code>api/routes/api/shared.php</code>. <strong>Subtotal:
+10</strong></p>
+<p><strong>legal-documents — client (INV-046)</strong> ALIs:
+<code>tenant_legal_documents</code> (11 DET; RET1) · Baixa · 7 —
+<code>tenant_legal_document_versions</code> (11 DET; RET1) · Baixa · 7.
+Transações: index (FTR2·Média·4) · show (FTR2·Média·4) ·
+update/personalizar (FTR2·Média·4) · publish (FTR2·Baixa·3) ·
+versions-histórico (FTR2·Média·4) · global-version-review
+(FTR3·Média·4). Evidência: <code>TenantLegalDocumentController</code> ·
+<code>api/routes/api/client.php</code>. <strong>Subtotal:
+37</strong></p>
+<p><strong>person-search (INV-047)</strong> — sem ALI própria (consulta
+sobre
+<code>family_members</code>+<code>persons</code>+<code>families</code>+
+<code>addresses</code>, todas já contadas) Transação: search —
+<strong>SE</strong> (<code>age</code>/<code>can_view_details</code>
+derivados; FTR4+·DET~12·<strong>Alta</strong>·7). Evidência:
+<code>PersonSearchController</code> ·
+<code>api/routes/api/client.php</code>. <strong>Subtotal: 7</strong></p>
+<p><strong>professionals — client (INV-048)</strong> ALIs:
+<code>tenant_professionals</code> (9 DET; RET1) · Baixa · 7 —
+<code>social_tenant_professional_assignments</code> (6 DET; RET1,
+vínculo multi-unidade com CRUD próprio) · Baixa · 7. Transações: lookup
+(FTR1·Baixa·3) · index (FTR2·Média·4) · store (FTR3
+self+users+addresses·<strong>Alta</strong>·6) · show (FTR3·Média·4) ·
+update (FTR3·<strong>Alta</strong>·6) ·
+photo/inactivate/reactivate/resetPassword (FTR1·Baixa·3 cada, 12) ·
+legal-acceptances-histórico (FTR2·Baixa·3) · roles index/update
+(FTR2·Baixa·3 cada, 6) · units index/candidates (FTR2·Média·4/Baixa·3,
+7) + store/update (FTR3·<strong>Alta</strong>·6 cada, 12). Evidência:
+<code>ProfessionalController</code>,
+<code>ProfessionalUnitAssignmentController</code>,
+<code>ProfessionalRoleController</code> ·
+<code>api/routes/api/client.php</code>. <strong>Subtotal:
+77</strong></p>
+<p><strong>social-entities (INV-049)</strong> ALIs:
+<code>social_entities</code> (16 DET — leiaute SIAP; RET1) · Baixa · 7 —
+<code>social_entity_legal_representatives</code> (5 DET; RET1, histórico
+com CRUD próprio) · Baixa · 7. Transações: index/store/show/update
+(FTR5-6 self+status+location_type+participation_type+
+contract_modality[+endereço]·DET16-20·<strong>Alta</strong>·6 cada, 24)
+· destroy/changeStatus/statusHistory/ bulk-destroy/bulk-change-status
+(FTR1-2·Baixa·3 cada, 15) · legalReps index/store/destroy (FTR2-3·Baixa
+ou <strong>Alta</strong>·3/3/6, 12). Evidência:
+<code>SocialEntityController</code>,
+<code>SocialEntityLegalRepresentativeController</code> ·
+<code>api/routes/api/client.php</code>. <strong>Subtotal:
+65</strong></p>
+<p><strong>social-professionals (INV-050)</strong> ALIs:
+<code>social_professionals</code> (3 DET; RET1) · Baixa · 7 —
+<code>social_professional_assignments</code> (5 DET; RET1, CRUD próprio
+de abertura/encerramento) · Baixa · 7. Transações:
+index/store/show/update/destroy/lookup/close-assignment (FTR1-2·Baixa·3
+cada, 21) · open-assignment (FTR3
+self+assignments+social_units·Média·4). Evidência:
+<code>SocialProfessionalController</code> ·
+<code>api/routes/api/client.php</code>. <strong>Subtotal:
+39</strong></p>
+<p><strong>tenant-settings — client (INV-051)</strong> — mesmo backend
+das ALIs de <code>tenants</code>/INV-039, não duplicadas. Transações
+(auto-serviço): settings show/update (6) · logo upload/delete (6) · TCE
+show/update (6) · responsáveis index/store/update/destroy/candidatos
+(15) · tenant-audits index (Média·4) · tenant-config show/update (8) ·
+endereço oficial show/update (8). Evidência:
+<code>TenantSettingController</code>,
+<code>TenantTceParameterController</code>,
+<code>TenantResponsibleController</code>,
+<code>TenantConfigController</code> ·
+<code>api/routes/api/client.php</code>. <strong>Subtotal:
+53</strong></p>
+<p><strong>users — client (INV-052)</strong> — mesmo backend de
+<code>users</code>/INV-043, ALIs não duplicadas. Transações (filtradas
+por hierarquia de papel): index/show/store/update/destroy/lookup
+(FTR1-3·Baixa ou Média·3/4, 21) · from-cpf (FTR2 self+persons·Média·4) ·
+attach-to-tenant (FTR2·Baixa·3) · roles-index (FTR1·Baixa·3) ·
+user-tenant-roles index/show/update/destroy (FTR2·Baixa·3 cada, 12).
+Evidência: <code>UserController</code>,
+<code>UserTenantRoleController</code> ·
+<code>api/routes/api/client.php</code>. <strong>Subtotal:
+43</strong></p>
+<p><strong>platform-updates — client (INV-053)</strong> — mesmo backend
+do admin (INV-022), ALI não duplicada (não há ALI própria em nenhum dos
+dois lados). Transações: latestUnread/current/history/acknowledge —
+idênticas ao admin. Evidência: <code>PlatformUpdateController</code> ·
+<code>api/routes/api/shared.php</code>. <strong>Subtotal:
+13</strong></p>
+<p><strong>dashboard (INV-054)</strong> — tela “Início”, barra de
+indicadores estratégicos + 7 painéis analíticos (HUs #10184–#10188,
+#10190–#10192) Sem ALI própria — os 8 endpoints são leitura agregada
+<strong>read-only</strong>, sem migration nova, reaproveitando as ALIs
+já contadas em <code>families</code>/INV-004
+(<code>families</code>+<code>family_members</code>),
+<code>persons</code>/INV-021 e <code>territorial-units</code>/INV-041
+(predicado espacial do filtro por bairro). Todas as 8 transações são
+<strong>SE</strong> (agregam/derivam KPIs e séries — nunca simples
+listagem) com FTR4+ (self + families + family_members + persons [+
+territorial_units quando o KPI é por bairro]): barra de indicadores — 5
+KPIs com numerador/denominador/percentual,
+DET~15·<strong>Alta</strong>·7; Painel 1 Resumo Geral — total
+famílias/pessoas + distribuição por 3 faixas de renda + limiares,
+DET~11·<strong>Alta</strong>·7; Painel 2 Atualização Cadastral —
+indicadores de topo + distribuição em 5 faixas + série mensal de 12
+pontos, DET~24·<strong>Alta</strong>·7; Painel 3 Bolsa Família —
+cobertura + perfil por 3 faixas + limiares,
+DET~11·<strong>Alta</strong>·7; Painel 4 Qualidade Cadastral — 3
+indicadores (unipessoais/duplicidade/pendência documental),
+DET~6·<strong>Alta</strong>·7; Painel 5 Atendimento — 2 séries temporais
+de 12 pontos + totais, DET~26·<strong>Alta</strong>·7; Painel 6
+Territorial — 2 rankings Top-N por bairro + distribuição de situação do
+domicílio, DET~14·<strong>Alta</strong>·7; Painel 7 Público Prioritário
+— indígena/quilombola/pessoa em situação de rua/deficiência + grupos
+GPTE, DET~13·<strong>Alta</strong>·7. Evidência:
+<code>DashboardController</code> (métodos
+<code>strategicIndicators</code>/<code>generalSummary</code>/<code>cadastralUpdate</code>/
+<code>bolsaFamilia</code>/<code>registrationQuality</code>/<code>attendance</code>/<code>territorial</code>/<code>priorityGroups</code>)
+· <code>api/routes/api/client.php</code>; contraparte frontend
+<code>client/src/pages/app/DashboardPage.vue</code> +
+<code>client/src/modules/dashboard/</code>. <strong>Subtotal:
+56</strong> (8 transações SE Alta · 7 PF cada)</p>
+<p><strong>Subtotal Grupo D: 629 PF</strong></p>
+<hr />
+<h2 id="consolidação-por-módulo-e-total-ca04">Consolidação por módulo e
+total (CA04)</h2>
+<table>
+<thead>
+<tr>
+<th>Grupo</th>
+<th>Módulos</th>
+<th>PF não ajustados</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A — lookups simples (admin)</td>
+<td>21</td>
+<td>669</td>
+</tr>
+<tr>
+<td>B — lookups geográficos (admin)</td>
+<td>7</td>
+<td>247</td>
+</tr>
+<tr>
+<td>C — módulos complexos (admin)</td>
+<td>11</td>
+<td>504</td>
+</tr>
+<tr>
+<td>D — módulos client (tenant-scoped)</td>
+<td>15</td>
+<td>629</td>
+</tr>
+<tr>
+<td><strong>Total do MVP (não ajustado)</strong></td>
+<td><strong>54</strong></td>
+<td><strong>2049</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Nenhum fator de ajuste (VAF) é aplicado — decisão registrada na
+US-09: PF não ajustados evitam a discussão subjetiva das 14
+características gerais do sistema, hoje desencorajada pelo próprio
+IFPUG.</p>
+<hr />
+<h2 id="pendências-ca05">Pendências (CA05)</h2>
+<p>Nenhuma funcionalidade do inventário ficou sem classificação — as 54
+entradas de <code>inventory.md</code> com status <code>entregue</code>
+têm PF atribuído. As pendências abaixo são de <strong>precisão da
+contagem</strong>, não de cobertura, e ficam registradas explicitamente
+em vez de mascaradas como se a contagem fosse definitiva:</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Pendência</th>
+<th>Descrição</th>
+<th>Risco</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Contagem de DET por aproximação de colunas de schema, não por
+tela</td>
+<td>IFPUG estrito conta campos <strong>reconhecíveis pelo usuário na
+tela/relatório</strong>, que podem divergir do número de colunas da
+tabela (campos calculados no frontend, campos técnicos exibidos, campos
+agrupados numa mesma seção visual). Usei a coluna de schema como proxy
+consistente e documentado, mas não naveguei tela a tela para confirmar
+DET exato.</td>
+<td>Médio — pode deslocar 1 faixa de complexidade em alguns módulos de
+fronteira (ex.: <code>states</code>, <code>cities</code>,
+<code>streets</code>, próximos do limite Baixa/Média)</td>
+</tr>
+<tr>
+<td>RET de <code>families</code> e demais ALIs multi-bloco definido por
+julgamento, não por regra mecânica</td>
+<td>A separação em subgrupos (RET) de tabelas como
+<code>families</code>, <code>geo_layers</code>, <code>tenants</code>,
+<code>dne-imports</code> seguiu julgamento profissional sobre o que é um
+“subgrupo de dados reconhecível pelo usuário”, não uma regra
+determinística</td>
+<td>Baixo-Médio — afeta sobretudo <code>families</code> (a ALI de maior
+peso do MVP)</td>
+</tr>
+<tr>
+<td>Transações de exportação/geocodificação externas (Google Maps,
+CepAberto) contadas como EE/CE internas</td>
+<td>O contrato IFPUG trata chamadas a serviço externo
+(<code>geocode</code>, <code>map-tiles/session</code>, geocodificação
+CepAberto) como transação da própria aplicação; não foi feita distinção
+fina entre “processamento interno” e “proxy para API externa”, que
+poderia mudar FTR em alguns casos</td>
+<td>Baixo</td>
+</tr>
+<tr>
+<td>Módulos placehoder (<code>auditoria</code>, <code>beneficios</code>,
+<code>encaminhamentos</code>, <code>grupos</code>, <code>pafs</code>,
+<code>prontuarios</code>, <code>relatorios</code>, <code>visitas</code>
+do admin) e protótipos estáticos
+(<code>families</code>/<code>manager</code>/<code>siap</code> do admin)
+<strong>não contados</strong></td>
+<td>Consistente com o inventário (US-08): não são “funcionalidade
+entregue” — são rotas placeholder sem função real, ou UI estática sem
+integração com API (ver nota do <code>inventory.md</code>)</td>
+<td>Nenhum — decisão já validada na US-08</td>
+</tr>
+<tr>
+<td>DET do módulo <code>dashboard</code> (INV-054) estimado a partir da
+spec, não do payload real do endpoint</td>
+<td>Diferente do resto da contagem (que usa colunas de migration como
+proxy), os 8 endpoints do dashboard não têm ALI própria — o DET foi
+aproximado contando os campos descritos na seção “expor um endpoint que
+retorne” de cada spec (<code>.planning/specs/101{84..92}-*.md</code>),
+sem inspecionar a resposta JSON real em runtime</td>
+<td>Médio — os 8 itens já caem em Alta (FTR4+, DET≥6) por margem
+folgada, então um ajuste fino de DET dificilmente muda a faixa; mas o
+valor exato de DET fica sem confirmação empírica</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2
+id="revisão-independente-nos-itens-de-alta-complexidade-ca06">Revisão
+independente nos itens de alta complexidade (CA06)</h2>
+<p>O CA06 exige registro de conferência por um <strong>segundo
+contador</strong>, com data e responsável, para toda função classificada
+como complexidade <strong>Alta</strong>. Esta contagem foi produzida por
+um único agente/sessão — <strong>não há, até o momento, um segundo
+contador que tenha revisado os itens abaixo</strong>. Isso é registrado
+explicitamente, em vez de omitido, seguindo o mesmo espírito do
+CA05.</p>
+<p><strong>Itens de complexidade Alta pendentes de revisão
+independente:</strong></p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Módulo</th>
+<th>Item</th>
+<th>Tipo</th>
+<th>PF</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>postal-codes</td>
+<td>store/update/index/show</td>
+<td>EE/CE</td>
+<td>6 cada (4 itens)</td>
+</tr>
+<tr>
+<td>streets</td>
+<td>store/update/index/show</td>
+<td>EE/CE</td>
+<td>6 cada (4 itens)</td>
+</tr>
+<tr>
+<td>territorial-units</td>
+<td>store/update/index/show</td>
+<td>EE/CE</td>
+<td>6 cada (4 itens)</td>
+</tr>
+<tr>
+<td>persons</td>
+<td>store, update</td>
+<td>EE</td>
+<td>6 cada (2 itens)</td>
+</tr>
+<tr>
+<td>social-units</td>
+<td>index/store/show/update, professionals-store</td>
+<td>EE/CE</td>
+<td>6 cada (5 itens)</td>
+</tr>
+<tr>
+<td>families</td>
+<td>ALI (registro+composição)</td>
+<td>ALI</td>
+<td>15</td>
+</tr>
+<tr>
+<td>families</td>
+<td>details</td>
+<td>SE</td>
+<td>7</td>
+</tr>
+<tr>
+<td>person-search</td>
+<td>search</td>
+<td>SE</td>
+<td>7</td>
+</tr>
+<tr>
+<td>geo-panel</td>
+<td>summary, search</td>
+<td>SE</td>
+<td>7 cada (2 itens)</td>
+</tr>
+<tr>
+<td>professionals (client)</td>
+<td>store, update, units-store, units-update</td>
+<td>EE</td>
+<td>6 cada (4 itens)</td>
+</tr>
+<tr>
+<td>social-entities</td>
+<td>index/store/show/update, legalReps-store</td>
+<td>EE/CE</td>
+<td>6 cada (5 itens)</td>
+</tr>
+<tr>
+<td>dashboard</td>
+<td>strategic-indicators, general-summary, cadastral-update,
+bolsa-familia, registration-quality, attendance, territorial,
+priority-groups</td>
+<td>SE</td>
+<td>7 cada (8 itens)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Status:</strong> aguardando conferência. Nenhum fechamento de
+contagem deve ser tratado como definitivo até que essa revisão
+ocorra.</p>
+<footer>Gerado a partir de <code>.planning/product/inventory/function-points.md</code>, cruzado com o
+inventário (<code>inventory.md</code>, US-08) e o código-fonte de <code>api/</code>/<code>client/</code>.
+Criado em 2026-07-30; atualizado em 2026-07-31 com o módulo <code>dashboard</code> (INV-054).</footer>
+</div></body></html>

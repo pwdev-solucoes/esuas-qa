@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — Tela de Detalhes da Família</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — Tela de Detalhes da Família</h1>
+    <div class="sub">HU #9909 (Resumo e Identificação Territorial) · HU #9910 (Composição Familiar) · HU #9911 (Vulnerabilidades e Alertas Ativos)</div>
+    <div class="meta"><div><span>Gerado em:</span> 13/07/2026 16:35</div><div><span>Branch:</span> feature/prontuario-familia-9909-9911 (api + client)</div><div><span>Commits:</span> api: fa743ca · 164b7f8 · 87f93f4  |  client: d99d460 · 1bf93ce</div><div><span>Spec:</span> .planning/specs/sprint10/9909-9911-tela-detalhes-familia.md</div><div><span>Ambiente:</span> API Sail/PostgreSQL (localhost) · client Vite :5174 (não-mock)</div><div><span>Organização (tenant):</span> Maceió Geo · IBGE 2704302</div><div><span>Perfis usados:</span> Master (autorizado) e geo_panel_viewer (sem families.view-details)</div><div><span>Ferramenta:</span> playwright-cli (Chromium) + Pest</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">6 critérios evidenciados: CA01 (#9909), CA02 (#9910), CA05 e CA06 (#9911) por navegador, mais as regras de negócio transversais RN01 (acesso condicionado ao perfil) e RN06 (isolamento multi-tenant), também por navegador. Todos atendidos. A auditoria LGPD foi verificada diretamente na base (uma linha por abertura autorizada; zero linhas para o acesso negado). Apêndice: 45 testes Pest / 206 asserções cobrindo o serviço de vulnerabilidades, o payload do endpoint, o enum de zona de domicílio e a consistência com o Painel de Georreferenciamento.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA01</td><td>Renderização de dados integrados de moradia (HU #9909)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA02</td><td>Leitura de integrantes cadastrados (HU #9910)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA05</td><td>Exibição do painel de riscos e tags (HU #9911)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA06</td><td>Alerta cronológico de defasagem (HU #9911)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">RN01</td><td>Acesso condicionado ao perfil do profissional</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">RN06</td><td>Isolamento de dados territorial (multi-tenant)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA01">
+      <h2>CA01 — Renderização de dados integrados de moradia (HU #9909) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que possuo o perfil autorizado e clico em visualizar os detalhes de uma família, Quando a aba "Resumo" é carregada, Então o sistema exibe os dados civis do responsável ao lado do endereço postal completo e traz a informação explícita se o domicílio fica em área Urbana ou Rural, de forma aberta e sem mascaramento.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Login como Master do tenant <b>Maceió Geo</b> → abertura do prontuário da família <code>270430200003</code> (escolhida por ser <b>rural</b>, o caso menos óbvio) → aba <b>Resumo</b>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Bloco "Dados da Referência Familiar" exibe nome, CPF, data de nascimento com idade calculada, NIS e telefones — todos abertos, sem máscara e sem clique de revelação (RN01).</li><li>Bloco "Endereço e Zona de Residência" traz localidade, tipo e nome do logradouro, número, complemento, CEP e município/UF.</li><li>A situação do domicílio aparece como destaque visual do bloco: "Situação do Domicílio: Rural" — informação explícita, conforme exige o critério.</li><li>Cabeçalho identifica "Referência Familiar: LUCIA PEREIRA · Maceió/AL" e o indicador "Somente leitura" (RN02).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca01-resumo-zona-rural.png" alt="CA01 evidência"/><figcaption>ca01-resumo-zona-rural.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA02">
+      <h2>CA02 — Leitura de integrantes cadastrados (HU #9910) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que estou na tela de detalhes da familia, Quando clico na aba "Composição Familiar", Então o sistema exibe a tabela de membros listando o nome de cada dependente da familia, o grau de parentesco com a referência, CPF, nascimento, grau de instrução se possui deficiência (Sim ou Não) em formato de leitura.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Abertura do prontuário da família <code>270430200001</code> (4 integrantes ativos) → aba <b>Composição Familiar</b>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Tabela com as seis colunas obrigatórias: Nome Completo, Parentesco com a Referência, Data de Nascimento, CPF, Grau de Instrução e Deficiência.</li><li>A Referência Familiar aparece na primeira linha, com o marcador "Responsável Familiar" (ordenação garantida pelo backend).</li><li>Idade calculada exibida junto ao nascimento (ex.: "12/04/1985 (41 anos)").</li><li>Deficiência renderizada como Sim/Não. Tabela travada para modificação: nenhum campo editável, nenhuma ação de inclusão ou exclusão (RN02).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca02-composicao-familiar.png" alt="CA02 evidência"/><figcaption>ca02-composicao-familiar.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA05">
+      <h2>CA05 — Exibição do painel de riscos e tags (HU #9911) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que acesso a aba "Vulnerabilidades e Alertas", Quando a tela renderiza os dados da família, Então o sistema apresenta em blocos de destaque apenas as vulnerabilidades que aquela família possui (Ex: exibe as tags [Extrema Pobreza] e [Trabalho Infantil], mas omite as demais caso não possuam marcação na base).</p>
+      <p class="steps"><strong>Como foi testado:</strong> Três famílias foram usadas para cobrir os três comportamentos do critério: <code>270430200003</code> (marcadores ativos e omissão dos demais), <code>270430200005</code> (grupo tradicional real) e uma família sem nenhum marcador (estado vazio).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Família 270430200003: exibe exatamente os 5 marcadores ativos — Extrema pobreza e Trabalho infantil (Riscos), Povos Indígenas (Identidade), Bolsa Família (Programas) e Cadastro A Vencer (Gestão Cadastral).</li><li>OMITE os marcadores sem registro na base: família unipessoal, situação de rua, pessoa com deficiência, comunidade quilombola e GPTE — não aparecem apagados nem em cinza, simplesmente não são renderizados.</li><li>Família 270430200005: exibe "GPTE — Família Cigana", provando que o nome do grupo tradicional real é apresentado.</li><li>Identidade e Inclusão usa tom neutro (azul institucional), distinto do laranja de alerta dos riscos — ser indígena ou quilombola não é um alerta.</li><li>Família sem marcadores: estado vazio explícito — "Nenhuma vulnerabilidade ativa registrada para esta família." — em vez de uma aba em branco, que seria ambígua.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca05-vulnerabilidades-ativas.png" alt="CA05 evidência"/><figcaption>ca05-vulnerabilidades-ativas.png</figcaption></figure><figure><img src="screenshots/ca05b-gpte-grupo-real.png" alt="CA05 evidência"/><figcaption>ca05b-gpte-grupo-real.png</figcaption></figure><figure><img src="screenshots/ca05c-estado-vazio.png" alt="CA05 evidência"/><figcaption>ca05c-estado-vazio.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA06">
+      <h2>CA06 — Alerta cronológico de defasagem (HU #9911) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que a data da última atualização da família no arquivo importado aponta um intervalo de 24 meses de atraso, Quando abro a aba de vulnerabilidades, Então o sistema exibe de forma destacada o alerta de gestão: [Cadastro Vencido].</p>
+      <p class="steps"><strong>Como foi testado:</strong> Família <code>270430200002</code>, com <code>source_updated_at</code> em 09/03/2024 — mais de 24 meses antes da data corrente.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Alerta "Cadastro Vencido" exibido em destaque, com a explicação "Última atualização no CadÚnico há mais de 24 meses."</li><li>O alerta aparece no CABEÇALHO da tela, fora das abas, além de constar no bloco "Alertas de Gestão Cadastral" — decisão de design registrada na spec (§2): é a informação acionável, e escondê-la atrás do terceiro clique contrariaria o propósito da HU.</li><li>Os limiares (vencido acima de 24 meses; a vencer entre 19 e 24) vêm das mesmas constantes usadas pelo Painel de Georreferenciamento — o CA01 evidencia o caso "A Vencer" na mesma tela.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca06-cadastro-vencido.png" alt="CA06 evidência"/><figcaption>ca06-cadastro-vencido.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="RN01">
+      <h2>RN01 — Acesso condicionado ao perfil do profissional <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> A tela de detalhes do prontuário familiar só poderá ser aberta se o operador possuir o perfil habilitado. Uma vez superada essa barreira, todos os dados carregam de forma aberta e legível, sem cliques adicionais de revelação.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Segunda sessão de navegador, logada como <code>geoviewer-2704302</code> — usuário com papel <code>geo_panel_viewer</code>, que NÃO carrega a permissão restrita <code>families.view-details</code>. Navegação direta para a URL do prontuário.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O backend responde 403 e a tela renderiza o estado "Acesso restrito — Acesso negado.", sem qualquer dado da família.</li><li>O gate é do backend, não da interface: a rota não tem guard local de permissão (por design — a permissão é restrita e o Master a acessa por bypass, então um guard local bloquearia o próprio Master).</li><li>Auditoria conferida na base: o usuário sem permissão gerou ZERO registros de abertura em activity_log (log_name=family_access). O acesso negado não deixa rastro de leitura — só o acesso autorizado deixa.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/rn01-403-acesso-restrito.png" alt="RN01 evidência"/><figcaption>rn01-403-acesso-restrito.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="RN06">
+      <h2>RN06 — Isolamento de dados territorial (multi-tenant) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Um profissional logado e com perfil ativo só poderá abrir e visualizar as telas de prontuários detalhados das famílias que pertençam à base cadastral do seu próprio município (tenant).</p>
+      <p class="steps"><strong>Como foi testado:</strong> Ainda logado como Master do tenant <b>Maceió Geo</b>, navegação direta para o UUID de uma família pertencente a OUTRO tenant ("Tenant B Isolamento").</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A tela responde "Família não encontrada" — o backend devolve 404, não 403.</li><li>O 404 (em vez de 403) é intencional: um 403 confirmaria a existência da família em outro município, vazando informação por canal lateral. O 404 nega até a existência do registro.</li><li>A verificação de posse do tenant é feita linha a linha no controller, porque o route-model-binding é resolvido antes de o escopo de tenant ser injetado.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/rn06-404-cross-tenant.png" alt="RN06 evidência"/><figcaption>rn06-404-cross-tenant.png</figcaption></figure></div>
+    </section>
+  
+  <h2>Anexo — Cobertura automatizada (Pest — FamilyVulnerabilityService, FamilyDetails, DomicileSituation, GeoPanelQueryService): 45 testes, 206 asserções</h2>
+  <pre class="pest">  ✓ it returns the enriched record blocks: responsible, address with do… 0.06s  
+  ✓ it projects only the ACTIVE vulnerability codes, in canonical order… 0.05s  
+  ✓ it lists the full active composition: kinship, age, cpf and educati… 0.05s  
+  ✓ it keeps a stable shape for a sparse family: empty vulnerabilities,… 0.05s  
+
+  Tests:    45 passed (206 assertions)
+  Duration: 4.82s
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

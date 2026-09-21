@@ -1,0 +1,123 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — US-SCFV-01",
+    "subtitle": "Épico HU-PRONT-SCFV (fase F4) · Domínios de participação do bloco 16 no Painel de Administração Global",
+    "rows": [
+      [
+        "Gerado em",
+        "09/09/2026"
+      ],
+      [
+        "História",
+        "US-SCFV-01 — Manter os domínios de participação no Painel Global"
+      ],
+      [
+        "Spec",
+        ".planning/specs/US-SCFV-01-dominios-de-participacao-painel-global.md"
+      ],
+      [
+        "Branch",
+        "feature/scfv-prontuario-bloco-16, a partir de feature/acomp-prontuario-bloco-24"
+      ],
+      [
+        "Commits (api/)",
+        "adda72a · 2ee21c5 · e511988"
+      ],
+      [
+        "Commits (admin/)",
+        "afd658d · 2e17c26"
+      ],
+      [
+        "Commits (e2e/)",
+        "e80b8a4"
+      ],
+      [
+        "Ambiente",
+        "Stack E2E Docker · API em :8090 · admin (vite preview) em :4173 · base esuas_e2e recém-semeada"
+      ],
+      [
+        "Perfil usado",
+        "Administrador (RoleCode ADMIN, guard manager) — Painel de Administração Global"
+      ],
+      [
+        "Ferramenta",
+        "Playwright (Chromium) + Pest 4"
+      ]
+    ]
+  },
+  "summary": "Dez critérios de aceite, todos atendidos. Seis evidenciados no navegador (CA01, CA02, CA03, CA04, CA05 e CA06, com quatro prints) e quatro cobertos pela suíte automatizada (CA07, CA08, CA09 e CA10). A suíte do domínio de participação fecha com 177 testes e 960 asserções, e os 4 cenários Playwright passam contra base recém-semeada. A ressalva que este dossiê trazia na CA08 — o guard de uso não tinha o que contar antes da US-SCFV-02 — foi fechada com prova de ponta a ponta. Nenhum critério em falha.",
+  "criteria": [
+    {
+      "id": "CA01",
+      "title": "Lista de serviços disponível, com os códigos do instrumento",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "scfv01-a-oito-servicos.png"
+      ]
+    },
+    {
+      "id": "CA02",
+      "title": "Item de SCFV para adultos identificado como extensão",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "scfv01-b-selo-extensao.png"
+      ]
+    },
+    {
+      "id": "CA03",
+      "title": "Atributo de grupo correto em cada item",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "scfv01-c-matriz-atributos.png"
+      ]
+    },
+    {
+      "id": "CA04",
+      "title": "Atributo de SCFV correto em cada item",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "scfv01-c-matriz-atributos.png"
+      ]
+    },
+    {
+      "id": "CA05",
+      "title": "Atributo de SCFV para idosos exclusivo",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "scfv01-c-matriz-atributos.png"
+      ]
+    },
+    {
+      "id": "CA06",
+      "title": "Locais de realização com os códigos do instrumento",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "scfv01-d-cinco-locais.png"
+      ]
+    },
+    {
+      "id": "CA07",
+      "title": "Município não edita as listas",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "CA08",
+      "title": "Item em uso não é excluído",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "CA09",
+      "title": "Item inativado continua contando no histórico",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "CA10",
+      "title": "Alteração de atributo de contagem auditada",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    }
+  ]
+}

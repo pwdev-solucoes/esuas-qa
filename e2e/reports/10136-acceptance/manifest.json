@@ -1,0 +1,105 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — HU #10136",
+    "subtitle": "Botões e campos somente leitura com comportamento previsível · Design system cross-cutting (admin/ + client/) · Evidências end-to-end no navegador",
+    "rows": [
+      ["Gerado em", "30/07/2026 21:29"],
+      ["Ticket", "GLPI #10136 — Botões e campos somente leitura com comportamento previsível"],
+      ["Spec", ".planning/specs/10136-campos-readonly-botoes-previsiveis.md"],
+      ["Branch", "feature/10136-campos-readonly-botoes-previsiveis (admin/ e client/)"],
+      ["Commits", "admin adee37b (aprovado em revisão, zero achados) · client da897c2 + eb7ef17 (achados de revisão corrigidos no 2º commit)"],
+      ["Ambiente", "API Sail :80 (container api-laravel.test-1, reusado) · admin Vite :5173 (worktree isolado no commit adee37b) · client Vite :5174 (branch real, checkout já existente)"],
+      ["Usuários", "Manager admin: 'Administrador eSUAS' CPF 44983702016 (role admin, seed UserSeeder). Client master: 'João Coordenador' CPF 15543849079 (role master, tenants Fortaleza/Maceió, seed UserSeeder)"],
+      ["Ferramenta", "playwright-cli (Chromium) + npm run audit:ui (scripts/audit-ui-consistency.mjs, admin e client)"]
+    ]
+  },
+  "summary": "6 critérios de aceite (CA01–CA06). Feature sem back-end: puramente de componentes Vue/Tailwind compartilhados entre admin/ e client/. CA01, CA02, CA04 e CA05 evidenciados por navegador (screenshots + inspeção de atributos/classes reais renderizadas); CA03 evidenciado por navegador + pela suíte automatizada 'npm run audit:ui' (zero desvios em ambos os repos); CA06 evidenciado injetando propositalmente um desvio real num arquivo temporário e descartável, provando que o script detecta e reporta 'arquivo:linha' — o arquivo foi removido logo em seguida e 'git status' confirmou que nada ficou pendente. Resultado geral: todos os 6 CAs atendidos.",
+  "cas": [
+    {
+      "id": "CA01",
+      "title": "Campo somente leitura é inequívoco",
+      "status": "nav",
+      "gherkin": "Dado um prontuário aberto em modo consulta\nQuando inspeciono um campo somente leitura\nEntão ele usa o mesmo par de tokens (fundo/texto) em todas as telas do módulo\nE carrega o atributo `readonly` (ou `aria-readonly=\"true\"`)\nE é anunciado como somente leitura por leitor de tela",
+      "steps_html": "No <b>client</b>, login como master (15543849079) → tenant Fortaleza → <code>/app/cadastros/profissionais-municipais/:uuid/editar</code> (edição de um profissional municipal já cadastrado). O campo <b>CPF</b> usa <code>:readonly=\"isEdit\"</code> em <code>ProfissionalMunicipalFormPage.vue:390</code>, delegado ao componente-base <code>Input.vue</code> (RN02/RN03 da spec). Inspecionado via <code>page.evaluate</code> no elemento real (não apenas a árvore de acessibilidade) para capturar os atributos DOM que o leitor de tela consome.",
+      "results": [
+        "Atributo nativo <code>readOnly = true</code> no elemento &lt;input&gt; (confirmado via eval, ver <code>ca01-cpf-a11y-attrs.json</code>).",
+        "<code>aria-readonly=\"true\"</code> injetado automaticamente pelo componente — o atributo é exatamente o que leitores de tela (NVDA/JAWS/VoiceOver) usam para anunciar 'somente leitura', sem que a tela precise declará-lo (RN03).",
+        "Classe computada do elemento inclui <code>read-only:bg-muted read-only:text-muted-foreground read-only:cursor-default read-only:caret-transparent read-only:shadow-none</code> — o mesmo par de tokens fundo/texto vem do componente <code>Input.vue</code>, não colado na tela (RN02).",
+        "Visualmente o campo CPF aparece com fundo/texto acinzentados (muted), distinto dos demais campos editáveis da mesma tela (ver screenshot).",
+        "Árvore de acessibilidade completa da tela salva em <code>ca01-accessibility-snapshot.yml</code> para referência (o snapshot ARIA do playwright-cli não expõe 'readonly' como rótulo textual — por isso a evidência primária desta CA é a leitura direta dos atributos DOM/ARIA reais em <code>ca01-cpf-a11y-attrs.json</code>, que é o dado que efetivamente chega ao leitor de tela)."
+      ],
+      "images": ["screenshots/ca01-campo-readonly-cpf.png"]
+    },
+    {
+      "id": "CA02",
+      "title": "Somente leitura não engana o teclado",
+      "status": "nav",
+      "gherkin": "Dado o mesmo campo\nQuando navego por Tab\nEntão ele é focável (para leitura) mas não aceita digitação\nE não exibe cursor de texto piscando, que sinalizaria edição possível",
+      "steps_html": "No mesmo campo CPF (readonly, tela de edição de profissional municipal): clique para focar (equivalente a alcançar o campo por Tab), confirmado via <code>document.activeElement === el</code> → <code>true</code>. Em seguida, tentativa de digitação de 9 dígitos (<code>page.keyboard.type('999999999')</code>) diretamente no campo focado.",
+      "results": [
+        "Campo é focável: <code>document.activeElement</code> aponta para o elemento após o clique/Tab.",
+        "Valor do campo permanece inalterado após a tentativa de digitação: <code>814.590.269-80</code> antes e depois (confirmado por leitura de <code>el.value</code>) — o atributo <code>readonly</code> nativo do HTML bloqueia a edição mesmo com o campo focado.",
+        "A classe <code>read-only:caret-transparent</code> (visível na inspeção de CA01) torna o cursor de texto transparente quando o campo está em modo readonly — não há cursor piscando sinalizando edição possível.",
+        "Print 'antes' e 'depois' da tentativa de digitação, para comparação visual."
+      ],
+      "images": ["screenshots/ca02-focado-antes-digitar.png", "screenshots/ca02-depois-digitar-inalterado.png"]
+    },
+    {
+      "id": "CA03",
+      "title": "Botões primários uniformes",
+      "status": "parc",
+      "gherkin": "Dado qualquer formulário de `admin/` ou `client/`\nQuando comparo os botões de ação principal\nEntão todos usam a mesma variante e o mesmo `size` do design system\nE nenhum sobrescreve altura, `padding` ou cor por classe utilitária avulsa",
+      "steps_html": "Navegador: screenshot do botão primário 'Salvar profissional' no rodapé do formulário de edição de profissional municipal (<b>client</b>) e do botão primário 'Salvar' no diálogo 'Novo País' (<b>admin</b>). Classe computada de cada botão lida via <code>el.className</code> e comparada contra o <code>cva</code> de <code>components/ui/button/index.ts</code> (idêntico nos dois repos). Automatizado: <code>npm run audit:ui</code> rodado em <code>admin/</code> (worktree, commit adee37b) e <code>client/</code> (branch real, commit eb7ef17), saída completa salva em <code>audit-ui-admin.txt</code> / <code>audit-ui-client.txt</code> (consolidado em <code>audit-ui-consolidado.txt</code>).",
+      "results": [
+        "client 'Salvar profissional': classe <code>bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2 has-[>svg]:px-3</code> — combinação exata do <code>variant=\"default\" size=\"default\"</code> do cva, sem classe utilitária extra de cor/altura/padding.",
+        "admin 'Salvar' (diálogo Novo País): classe <code>bg-primary text-primary-foreground hover:bg-primary/90 h-10 rounded-md px-4 has-[>svg]:px-4</code> — mesma variante <code>default</code>, <code>size=\"lg\"</code> (também um valor canônico do cva, não um override manual; a diferença de altura entre os dois é uma escolha de <code>size</code> prop válida do design system, não uma classe colada).",
+        "npm run audit:ui em admin/: 'Resultado: ZERO desvios' (586 arquivos .vue varridos); as ocorrências listadas no relatório são exceções RN07 explicitamente documentadas (ex.: toggle de visualização tabela/cards com estado, não botão de ação), não desvios.",
+        "npm run audit:ui em client/: 'OK: zero desvios de conformidade de UI' (279 arquivos .vue varridos), com 2 exceções RN07 documentadas (DatePicker trigger, tile de logo — nenhum é botão de ação do design system).",
+        "Ver anexo consolidado para a saída completa de ambos os comandos."
+      ],
+      "images": ["screenshots/ca03-botoes-client-profissional.png", "screenshots/ca03-botoes-admin-pais.png"]
+    },
+    {
+      "id": "CA04",
+      "title": "Ação destrutiva nunca compete com a primária",
+      "status": "nav",
+      "gherkin": "Dado uma tela com ação destrutiva (excluir, inativar)\nQuando a observo\nEntão ela usa a variante `destructive`\nE não ocupa a posição visual de ação primária do formulário",
+      "steps_html": "<b>Client</b>: menu 'Mais ações' → 'Inativar' na listagem de Profissionais Municipais, abrindo o diálogo de confirmação. <b>Admin</b>: menu 'Mais ações' → 'Excluir' na listagem de Países, abrindo <code>DeleteCountryDialog.vue</code>. Em ambos, classe computada dos botões 'Cancelar' vs. ação destrutiva foi lida via <code>el.className</code>. Nenhuma exclusão/inativação foi de fato confirmada — os diálogos foram fechados via 'Cancelar' para não alterar dados de seed.",
+      "results": [
+        "client 'Inativar': <code>bg-destructive text-white hover:bg-destructive/90 ... h-10 rounded-md px-4</code> (variant=\"destructive\"); 'Cancelar' ao lado: <code>border bg-background ...</code> (variant=\"outline\") — a ação destrutiva não ocupa a posição de ação primária do formulário (não é <code>bg-primary</code>).",
+        "admin 'Excluir': mesma combinação <code>bg-destructive text-white ...</code>; 'Cancelar': <code>border bg-background ...</code> — idêntico ao client.",
+        "Visualmente, em ambos os prints o botão destrutivo (vermelho, ícone de lixeira) fica claramente separado e com menor ênfase de posição que uma ação primária típica, ao lado do 'Cancelar' neutro."
+      ],
+      "images": ["screenshots/ca04-dialog-destrutivo-client.png", "screenshots/ca04-dialog-destrutivo-admin.png"]
+    },
+    {
+      "id": "CA05",
+      "title": "Foco visível e idêntico entre Admin e Client",
+      "status": "nav",
+      "gherkin": "Dado qualquer botão em foco por teclado\nQuando comparo Admin e Client\nEntão o anel de foco tem o mesmo token e espessura\nE contraste ≥ 3:1 contra o fundo adjacente",
+      "steps_html": "Foco programático (equivalente a chegar por Tab) no botão primário de cada app — 'Salvar profissional' (client, formulário de edição) e 'Salvar' (admin, diálogo Novo País) — seguido de screenshot. Classe computada de cada botão comparada token a token.",
+      "results": [
+        "Ambos os botões carregam exatamente <code>focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]</code> — mesmo token de tema (<code>--ring</code>) e mesma espessura (3px), herdados do <code>cva</code> compartilhado (RN06), sem nenhuma sobrescrita local.",
+        "Visualmente os dois prints mostram um anel azul de ~3px ao redor do botão, com contraste nítido contra o fundo branco/card adjacente em ambas as telas (validação manual ≥ 3:1 — o projeto não tem ferramenta automatizada de contraste, conforme já registrado na spec §10)."
+      ],
+      "images": ["screenshots/ca05-foco-client-botao.png", "screenshots/ca05-foco-admin-botao.png"]
+    },
+    {
+      "id": "CA06",
+      "title": "Desvio é detectável (caminho de erro)",
+      "status": "auto",
+      "gherkin": "Dado um componente que sobrescreve a variante por classe utilitária\nQuando executo a auditoria de conformidade\nEntão ele é listado como desvio, com `arquivo:linha`",
+      "steps_html": "Para provar que o script <b>detecta</b> desvios (e não apenas que passa com zero desvios, o que por si só não comprova capacidade de detecção), foi criado um arquivo <b>temporário e descartável</b> — <code>client/src/pages/app/__audit-ui-demo-temp.vue</code>, fora de qualquer diretório real do módulo — contendo um <code>&lt;button class=\"bg-destructive h-10 px-5\"&gt;</code> nativo replicando de propósito a variante <code>destructive</code>. Rodado <code>npm run audit:ui</code> (saída salva em <code>audit-ui-deteccao-demo.txt</code>), o arquivo foi removido em seguida (<code>rm</code>) e <code>git status</code> confirmou working tree limpa — nada do arquivo de demonstração permaneceu, commitado ou não.",
+      "results": [
+        "Saída do script (com o arquivo de demo presente): <code>[R2] RN05 — &lt;button&gt; nativo replicando o design system: 1 desvio(s)</code>, listando exatamente <code>src/pages/app/__audit-ui-demo-temp.vue:11 — &lt;button&gt; nativo reimplementa a aparencia do componente Button (use &lt;Button variant=... size=...&gt;)</code> — formato <code>arquivo:linha</code> conforme RN07.",
+        "Exit code do comando: 1 (falha o gate de PR), confirmando que a auditoria é efetivamente bloqueante, não apenas informativa.",
+        "Após <code>rm</code> do arquivo, nova execução de <code>npm run audit:ui</code> voltou a reportar 'OK: zero desvios de conformidade de UI' (exit 0) e <code>git status --short</code> em <code>client/</code> não mostrou nenhuma alteração pendente — a demonstração não deixou rastro."
+      ],
+      "images": []
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada — npm run audit:ui (admin/, client/) + demonstração de detecção do CA06",
+    "file": "audit-ui-consolidado.txt"
+  }
+}

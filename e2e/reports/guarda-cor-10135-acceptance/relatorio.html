@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — Guarda automatizada contra cor fora do token</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — Guarda automatizada contra cor fora do token</h1>
+    <div class="sub">GLPI #10135 · US-02 (HU-10008) · Evidências automatizadas em admin/ e client/</div>
+    <div class="meta"><div><span>Ticket GLPI:</span> #10135</div><div><span>Spec:</span> .planning/product/stories/US-02-guarda-cor-fora-do-token.md</div><div><span>Branch admin:</span> develop (merge do PR #72, commit c40de61)</div><div><span>Branch client:</span> develop (merge do PR #62, commit 7e48a96)</div><div><span>Ambiente:</span> Execução direta dos scripts scripts/check-color-tokens.mjs (Node) — nenhum CA depende de UI navegável</div><div><span>Ferramenta:</span> node (execução direta dos scripts de guarda) + git diff</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">4 critérios de aceite, todos de mecanismo de CI/tooling (sem UI navegável) — evidenciados via execução direta dos scripts scripts/check-color-tokens.mjs em admin/ e client/, já mergeados em develop. CA01: varredura da baseline sem violação fora da allowlist nos dois frontends. CA02: cada entrada da allowlist tem caminho e justificativa não-vazia. CA03: injeção de #ff0000 fora da allowlist faz o script falhar (exit 1) apontando arquivo:linha, nos dois frontends. CA04: adicionar uma entrada justificada à allowlist faz o script voltar a passar (exit 0), com o diff da allowlist visível — provado e revertido nos dois frontends. Resultado geral: 4/4 atendidos.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA01</td><td>Varredura limpa na linha de base</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA02</td><td>Allowlist explícita e justificada</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA03</td><td>Violação barra o PR (caminho de erro)</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA04</td><td>Exceção nova é possível sem contornar a guarda</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA01">
+      <h2>CA01 — Varredura limpa na linha de base <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado o código atual de admin/src e client/src Quando executo a checagem de cor literal (#rrggbb, rgb(), rgba(), hsl()) Então nenhum arquivo .vue acusa ocorrência fora da allowlist.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Executado <code>npm run check:colors</code> (que roda <code>node scripts/check-color-tokens.mjs</code>) na raiz de <code>admin/</code> e de <code>client/</code>, ambos no estado atual de <code>develop</code> pós-merge dos PRs #72 e #62.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>admin/src: 586 arquivos .vue varridos, resultado 'ZERO cor literal fora da allowlist' (exit 0).</li><li>client/src: 298 arquivos .vue varridos (inclui src/components/ui/**), resultado 'OK: zero cor literal fora do token' (exit 0).</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA02">
+      <h2>CA02 — Allowlist explícita e justificada <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado o arquivo de configuração da guarda Quando o inspeciono Então cada entrada da allowlist tem caminho e uma linha de justificativa.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Inspecionado o array <code>ALLOWLIST</code> declarado em <code>scripts/check-color-tokens.mjs</code> de cada frontend.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>admin: 2 entradas (MapPointPicker.vue, GeoLayerPreviewMap.vue), cada uma com campo file e reason não-vazio.</li><li>client: 1 entrada (MapPointPicker.vue), com campo file e reason não-vazio.</li><li>Ambos os scripts recusam rodar (erro de configuração distinto de violação) se qualquer entrada tiver reason vazio — validado no código de validateAllowlist().</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA03">
+      <h2>CA03 — Violação barra o PR (caminho de erro) <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um PR que introduz #ff0000 em um .vue Quando o CI executa Então falha e a saída aponta arquivo:linha da ocorrência.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Criado um arquivo temporário <code>src/components/__proof10135__.vue</code> com <code>color: #ff0000</code> fora da allowlist, em admin/ e em client/; rodado <code>npm run check:colors</code> em cada um; arquivo removido ao final.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>admin: script falha (exit 1), aponta 'src/components/__proof10135__.vue:2 — #ff0000'.</li><li>client: script falha (exit 1), aponta 'src/components/__proof10135__.vue:2 #ff0000'.</li><li>Em ambos, a mensagem final orienta corrigir com token semântico ou allowlistar com justificativa.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA04">
+      <h2>CA04 — Exceção nova é possível sem contornar a guarda <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um caso legítimo novo (lib imperativa que exige cor concreta) Quando adiciono o arquivo à allowlist com justificativa Então o CI volta a passar, e o diff da allowlist fica visível na revisão.</p>
+      <p class="steps"><strong>Como foi testado:</strong> A partir do estado de violação do CA03, adicionada uma entrada <code>{ file: 'src/components/__proof10135__.vue', reason: '...' }</code> à ALLOWLIST de cada script (via <code>git diff</code>, mudança visível); rodado <code>npm run check:colors</code> novamente; allowlist e arquivo de prova revertidos ao final.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>admin: com a entrada adicionada, script volta a passar (exit 0), lista a nova exceção com sua justificativa entre as 'Exceções ativas'.</li><li>client: mesmo resultado — exit 0, nova exceção listada entre 'Excecoes declaradas'.</li><li>O diff da allowlist (git diff) é a evidência de que a mudança fica visível na revisão do PR — nenhum mecanismo de silenciamento fora da allowlist foi usado.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+  
+  <h2>Anexo — Saída bruta dos scripts de guarda (admin + client) — CA01 a CA04</h2>
+  <pre class="pest">################################################################
+# CA01 — Varredura limpa na linha de base (admin/src)
+################################################################
+
+&gt; sigsuas-frontend-admin@0.1.0 check:colors
+&gt; node scripts/check-color-tokens.mjs
+
+Guarda de cor fora do token — GLPI #10135
+Arquivos .vue varridos: 586
+
+Exceções ativas (allowlist — listadas, nunca silenciadas):
+
+  src/components/map/MapPointPicker.vue — 2 ocorrência(s)
+  Motivo: Marcador SVG do OpenLayers: a lib de mapa exige um data-URI de SVG com cor concreta (o `fill` da marca vem de brand-tokens.ts; só o branco do traço do ícone é literal). Consumidor imperativo sem alternativa via classe/token CSS.
+    src/components/map/MapPointPicker.vue:68 — #ffffff
+    src/components/map/MapPointPicker.vue:69 — #ffffff
+
+  src/modules/geo-layers/components/GeoLayerPreviewMap.vue — 1 ocorrência(s)
+  Motivo: `toRgba(hex, alpha)` converte a cor configurada na camada (ou de brand-tokens.ts) para o `rgba()` exigido pelo estilo de layer/heatmap do OpenLayers — não é cor solta, é transformação do token para o formato que a lib pede.
+    src/modules/geo-layers/components/GeoLayerPreviewMap.vue:93 — rgba(
+
+Resultado: ZERO cor literal fora da allowlist.
+
+################################################################
+# CA01 — Varredura limpa na linha de base (client/src)
+################################################################
+
+&gt; esuas-client@0.1.0 check:colors
+&gt; node scripts/check-color-tokens.mjs
+
+Guarda de cor fora do token (GLPI #10135) — 298 arquivos .vue em src/ (inclui src/components/ui/**)
+
+Excecoes declaradas (visiveis por RN03/RN05): 1
+  src/components/map/MapPointPicker.vue — Marcador SVG do OpenLayers: a lib exige um data-URI de SVG com stroke/fill literais no icone; a cor de marca ja vem de brand-tokens.ts e so o branco do traco/miolo do pin e literal — nao ha token semantico consumivel dentro do SVG.
+
+OK: zero cor literal fora do token (2 ocorrencia(s) allowlistada(s)).
+
+################################################################
+# CA02 — Allowlist explícita e justificada (admin)
+################################################################
+export const ALLOWLIST = [
+  {
+    file: 'src/components/map/MapPointPicker.vue',
+    reason:
+      'Marcador SVG do OpenLayers: a lib de mapa exige um data-URI de SVG com cor concreta ' +
+      '(o `fill` da marca vem de brand-tokens.ts; só o branco do traço do ícone é literal). ' +
+      'Consumidor imperativo sem alternativa via classe/token CSS.',
+  },
+  {
+    file: 'src/modules/geo-layers/components/GeoLayerPreviewMap.vue',
+    reason:
+      '`toRgba(hex, alpha)` converte a cor configurada na camada (ou de brand-tokens.ts) para ' +
+      'o `rgba()` exigido pelo estilo de layer/heatmap do OpenLayers — não é cor solta, é ' +
+      'transformação do token para o formato que a lib pede.',
+  },
+]
+
+// --- varredura de arquivos ------------------------------------------------
+
+################################################################
+# CA02 — Allowlist explícita e justificada (client)
+################################################################
+const ALLOWLIST = [
+  {
+    file: 'src/components/map/MapPointPicker.vue',
+    reason:
+      'Marcador SVG do OpenLayers: a lib exige um data-URI de SVG com stroke/fill ' +
+      'literais no icone; a cor de marca ja vem de brand-tokens.ts e so o branco do ' +
+      'traco/miolo do pin e literal — nao ha token semantico consumivel dentro do SVG.',
+  },
+]
+
+
+################################################################
+# CA03 — Violação barra o PR (admin)
+################################################################
+=== CA03: injeção de #ff0000 fora da allowlist ===
+
+&gt; sigsuas-frontend-admin@0.1.0 check:colors
+&gt; node scripts/check-color-tokens.mjs
+
+Guarda de cor fora do token — GLPI #10135
+Arquivos .vue varridos: 587
+
+✗ 1 ocorrência(s) de cor literal fora da allowlist:
+
+  src/components/__proof10135__.vue:2  (#ff0000)
+    &lt;div style="color: #ff0000"&gt;proof&lt;/div&gt;
+
+Exceções ativas (allowlist — listadas, nunca silenciadas):
+
+  src/components/map/MapPointPicker.vue — 2 ocorrência(s)
+  Motivo: Marcador SVG do OpenLayers: a lib de mapa exige um data-URI de SVG com cor concreta (o `fill` da marca vem de brand-tokens.ts; só o branco do traço do ícone é literal). Consumidor imperativo sem alternativa via classe/token CSS.
+    src/components/map/MapPointPicker.vue:68 — #ffffff
+    src/components/map/MapPointPicker.vue:69 — #ffffff
+
+  src/modules/geo-layers/components/GeoLayerPreviewMap.vue — 1 ocorrência(s)
+  Motivo: `toRgba(hex, alpha)` converte a cor configurada na camada (ou de brand-tokens.ts) para o `rgba()` exigido pelo estilo de layer/heatmap do OpenLayers — não é cor solta, é transformação do token para o formato que a lib pede.
+    src/modules/geo-layers/components/GeoLayerPreviewMap.vue:93 — rgba(
+
+Resultado: 1 violação(ões) em 1 arquivo(s).
+Corrija usando um token semântico do design system, ou — se for um consumidor imperativo
+legítimo (lib de mapa/gráfico que exige string de cor) — adicione uma entrada justificada
+na ALLOWLIST de scripts/check-color-tokens.mjs (o diff fica visível na revisão do PR).
+exit=1
+
+################################################################
+# CA03 — Violação barra o PR (client)
+################################################################
+=== CA03: injeção de #ff0000 fora da allowlist ===
+
+&gt; esuas-client@0.1.0 check:colors
+&gt; node scripts/check-color-tokens.mjs
+
+Guarda de cor fora do token (GLPI #10135) — 299 arquivos .vue em src/ (inclui src/components/ui/**)
+
+x 1 ocorrencia(s) de cor literal fora da allowlist:
+
+  src/components/__proof10135__.vue
+    src/components/__proof10135__.vue:2  #ff0000
+      &lt;div style="color: #ff0000"&gt;proof&lt;/div&gt;
+
+Excecoes declaradas (visiveis por RN03/RN05): 1
+  src/components/map/MapPointPicker.vue — Marcador SVG do OpenLayers: a lib exige um data-URI de SVG com stroke/fill literais no icone; a cor de marca ja vem de brand-tokens.ts e so o branco do traco/miolo do pin e literal — nao ha token semantico consumivel dentro do SVG.
+
+FALHA: 1 cor(es) literal(is) fora do token. Corrija usando um token semantico ou, se for consumidor imperativo legitimo, adicione uma entrada justificada na ALLOWLIST de scripts/check-color-tokens.mjs.
+exit=1
+
+################################################################
+# CA04 — Exceção nova sem contornar a guarda (admin)
+################################################################
+=== CA04: diff da allowlist adicionando a exceção justificada ===
+diff --git a/scripts/check-color-tokens.mjs b/scripts/check-color-tokens.mjs
+index c7cc73d..5a4510d 100644
+--- a/scripts/check-color-tokens.mjs
++++ b/scripts/check-color-tokens.mjs
+@@ -46,6 +46,10 @@ const SRC = join(ROOT, 'src')
+  * - `reason`: obrigatório e não-vazio (CA02).
+  */
+ export const ALLOWLIST = [
++  {
++    file: 'src/components/__proof10135__.vue',
++    reason: 'CA04 (GLPI #10135) — entrada de prova temporaria, removida ao final da evidencia.',
++  },
+   {
+     file: 'src/components/map/MapPointPicker.vue',
+     reason:
+
+=== CA04: CI volta a passar ===
+
+&gt; sigsuas-frontend-admin@0.1.0 check:colors
+&gt; node scripts/check-color-tokens.mjs
+
+Guarda de cor fora do token — GLPI #10135
+Arquivos .vue varridos: 587
+
+Exceções ativas (allowlist — listadas, nunca silenciadas):
+
+  src/components/__proof10135__.vue — 1 ocorrência(s)
+  Motivo: CA04 (GLPI #10135) — entrada de prova temporaria, removida ao final da evidencia.
+    src/components/__proof10135__.vue:2 — #ff0000
+
+  src/components/map/MapPointPicker.vue — 2 ocorrência(s)
+  Motivo: Marcador SVG do OpenLayers: a lib de mapa exige um data-URI de SVG com cor concreta (o `fill` da marca vem de brand-tokens.ts; só o branco do traço do ícone é literal). Consumidor imperativo sem alternativa via classe/token CSS.
+    src/components/map/MapPointPicker.vue:68 — #ffffff
+    src/components/map/MapPointPicker.vue:69 — #ffffff
+
+  src/modules/geo-layers/components/GeoLayerPreviewMap.vue — 1 ocorrência(s)
+  Motivo: `toRgba(hex, alpha)` converte a cor configurada na camada (ou de brand-tokens.ts) para o `rgba()` exigido pelo estilo de layer/heatmap do OpenLayers — não é cor solta, é transformação do token para o formato que a lib pede.
+    src/modules/geo-layers/components/GeoLayerPreviewMap.vue:93 — rgba(
+
+Resultado: ZERO cor literal fora da allowlist.
+exit=0
+
+################################################################
+# CA04 — Exceção nova sem contornar a guarda (client)
+################################################################
+=== CA04: diff da allowlist adicionando a exceção justificada ===
+diff --git a/scripts/check-color-tokens.mjs b/scripts/check-color-tokens.mjs
+index ba48408..e4420a7 100644
+--- a/scripts/check-color-tokens.mjs
++++ b/scripts/check-color-tokens.mjs
+@@ -39,6 +39,10 @@ const SRC = join(ROOT, 'src')
+  *   - `match` — trecho que a linha precisa conter (mais estavel que `line`).
+  */
+ const ALLOWLIST = [
++  {
++    file: 'src/components/__proof10135__.vue',
++    reason: 'CA04 (GLPI #10135) — entrada de prova temporaria, removida ao final da evidencia.',
++  },
+   {
+     file: 'src/components/map/MapPointPicker.vue',
+     reason:
+
+=== CA04: CI volta a passar ===
+
+&gt; esuas-client@0.1.0 check:colors
+&gt; node scripts/check-color-tokens.mjs
+
+Guarda de cor fora do token (GLPI #10135) — 299 arquivos .vue em src/ (inclui src/components/ui/**)
+
+Excecoes declaradas (visiveis por RN03/RN05): 2
+  src/components/__proof10135__.vue — CA04 (GLPI #10135) — entrada de prova temporaria, removida ao final da evidencia.
+  src/components/map/MapPointPicker.vue — Marcador SVG do OpenLayers: a lib exige um data-URI de SVG com stroke/fill literais no icone; a cor de marca ja vem de brand-tokens.ts e so o branco do traco/miolo do pin e literal — nao ha token semantico consumivel dentro do SVG.
+
+OK: zero cor literal fora do token (3 ocorrencia(s) allowlistada(s)).
+exit=0
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

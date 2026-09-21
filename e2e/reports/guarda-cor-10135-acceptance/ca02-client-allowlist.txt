@@ -1,0 +1,10 @@
+const ALLOWLIST = [
+  {
+    file: 'src/components/map/MapPointPicker.vue',
+    reason:
+      'Marcador SVG do OpenLayers: a lib exige um data-URI de SVG com stroke/fill ' +
+      'literais no icone; a cor de marca ja vem de brand-tokens.ts e so o branco do ' +
+      'traco/miolo do pin e literal — nao ha token semantico consumivel dentro do SVG.',
+  },
+]
+

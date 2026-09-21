@@ -1,0 +1,48 @@
+== CA01/CA02 — GET /api/client/professionals/role-suggestion?cbo_id=715 (CBO 2516-05) ==
+HTTP 200
+{
+  "data": {
+    "cbo": {
+      "uuid": "60c9b76c-b7d2-4561-8fb9-d559bb453bb2",
+      "code": "2516-05",
+      "name": "Assistente social"
+    },
+    "has_mapping": true,
+    "roles": [
+      {
+        "id": 4,
+        "uuid": "f8dd30de-d7f9-45d1-af4a-87e0376bd81b",
+        "name": "operador",
+        "label": "Operador",
+        "level": 30,
+        "group": "base",
+        "preselected": true,
+        "source": "suggested"
+      },
+      {
+        "id": 10,
+        "uuid": "a7e3174e-29ff-41c0-9469-4dae398321fc",
+        "name": "pf_tecnico_referencia",
+        "label": "Técnico de Referência (PAIF / PAEFI)",
+        "level": 40,
+        "group": "functional",
+        "preselected": true,
+        "source": "suggested"
+      },
+      {
+        "id": 5,
+        "uuid": "3ab11c97-0826-403a-8e1d-7795bb9af65e",
+        "name": "family_viewer",
+        "label": "Visualização de Detalhes da Família — LGPD",
+        "level": 910,
+        "group": "addon",
+        "preselected": false,
+        "source": "suggested"
+      }
+    ]
+  },
+  "meta": {
+    "fallback": null,
+    "message": null
+  }
+}

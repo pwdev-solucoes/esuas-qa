@@ -1,0 +1,53 @@
+{
+    "_leitura": "CA07 — a MESMA pendência aparece na zona de bloqueio (data.blocking.pendencies) E na lista do leiaute EstruturaUnidadeSocial (data.layouts[].pendencies), com blocks_entire_remittance verdadeiro nos dois lugares. O leiaute fica \"partial\": 1 registro emitido (o Banheiro) e 1 pulado. O contador layout_pendency_count NÃO soma a promovida — senão o município a veria duas vezes.",
+    "blocking": {
+        "can_generate": false,
+        "pendencies": [
+            {
+                "scope": "blocking",
+                "kind": "domain_unmapped",
+                "field_name": "Estrutura",
+                "subject_type": "social_unit",
+                "subject_uuid": "f373b9b5-c5b1-4a38-9fc8-baf1e6341c5a",
+                "affected_count": 1,
+                "message_key": "siap_remittance.pendency.structure_code_unmapped",
+                "message": "O código de estrutura \"099\" registrado nesta unidade não consta da tabela de estruturas do SIAP. Há duas saídas: corrigir o código no cadastro de apoio de estruturas de unidade, no Painel de Administração Global — acione o administrador da plataforma —, ou desvincular esta estrutura da unidade, o que está ao alcance do município. Enquanto nenhuma das duas for feita, nenhuma remessa pode ser gerada.",
+                "blocks_entire_remittance": true,
+                "affected_layouts": 11,
+                "resolution": {
+                    "scope": "global",
+                    "resource": "social-unit-structures",
+                    "requires_role": null
+                }
+            }
+        ]
+    },
+    "layout": {
+        "name": "EstruturaUnidadeSocial",
+        "sort_order": 4,
+        "file_name": "EstruturaUnidadeSocial.xml",
+        "outcome": "partial",
+        "record_count": 1,
+        "skipped_count": 1,
+        "pendencies": [
+            {
+                "scope": "blocking",
+                "kind": "domain_unmapped",
+                "field_name": "Estrutura",
+                "subject_type": "social_unit",
+                "subject_uuid": "f373b9b5-c5b1-4a38-9fc8-baf1e6341c5a",
+                "affected_count": 1,
+                "message_key": "siap_remittance.pendency.structure_code_unmapped",
+                "message": "O código de estrutura \"099\" registrado nesta unidade não consta da tabela de estruturas do SIAP. Há duas saídas: corrigir o código no cadastro de apoio de estruturas de unidade, no Painel de Administração Global — acione o administrador da plataforma —, ou desvincular esta estrutura da unidade, o que está ao alcance do município. Enquanto nenhuma das duas for feita, nenhuma remessa pode ser gerada.",
+                "blocks_entire_remittance": true
+            }
+        ]
+    },
+    "summary": {
+        "layout_count": 11,
+        "record_count": 2,
+        "blocking_pendency_count": 1,
+        "informative_pendency_count": 0,
+        "layout_pendency_count": 17
+    }
+}

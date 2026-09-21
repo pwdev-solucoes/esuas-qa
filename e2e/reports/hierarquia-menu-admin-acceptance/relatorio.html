@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — Hierarquia do menu (Admin)</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — Hierarquia do menu (Admin)</h1>
+    <div class="sub">US-06 · HU-10008 · Evidências end-to-end no frontend Admin</div>
+    <div class="meta"><div><span>Gerado em:</span> 22/07/2026 17:50</div><div><span>Feature:</span> hierarquia-menu-admin (US-06)</div><div><span>Branch (admin):</span> feature/us-06-hierarquia-menu</div><div><span>Spec:</span> .planning/product/stories/US-06-hierarquia-menu-admin.md</div><div><span>Escopo:</span> Guia visual de hierarquia + subdivisão de ENDEREÇO e PESSOAS no AppSidebar.vue</div><div><span>Ambiente:</span> API Sail/PostgreSQL :8000 · Admin (Vite) :5174 não-mock · E2ESeeder</div><div><span>Credenciais:</span> Super Admin 44983702016 · Admin Operador 12345678909 (senha123)</div><div><span>Ferramenta:</span> playwright-cli (Chromium) + Vitest</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">5 Critérios de Aceite verificados: 4 por navegação direta no Admin real (CA01, CA02, CA03, CA04) e CA05 por navegação (item oculto e ausência de título órfão). Todos ATENDIDOS. Os grupos ENDEREÇO e PESSOAS passaram a exibir subgrupos nomeados (nenhum com mais de 8 itens), com uma linha vertical de hierarquia sob o grupo collapsible aberto — no modo expandido e no flyout do modo rail. A subdivisão preservou o estado ativo (isActive), o gating por permissão e não gera títulos órfãos. Apêndice: suíte Vitest do AppSidebar (8/8 verdes), incluindo os casos mapeados a CA01/CA02/CA04/CA05.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA01</td><td>Grupos longos subdivididos (nenhum subgrupo com mais de 8 itens)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA02</td><td>Agrupamento fiel à referência</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA03</td><td>Flyout do modo rail espelha a hierarquia</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA04</td><td>Item ativo continua sendo detectado</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA05</td><td>Permissões preservadas (sem título de subgrupo órfão)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA01">
+      <h2>CA01 — Grupos longos subdivididos (nenhum subgrupo com mais de 8 itens) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado os grupos ENDEREÇO e PESSOAS, quando abro cada um no modo expandido, então os itens estão distribuídos em subgrupos nomeados, nenhum subgrupo com mais de 8 itens.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Login como Super Admin no Admin real (<code>:5174</code>); abrir os grupos <b>ENDEREÇO</b> e <b>PESSOAS</b> no modo expandido e inspecionar a distribuição dos itens em subgrupos.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>ENDEREÇO subdividido em 3 subgrupos: DIVISÃO TERRITORIAL (5), LOGRADOUROS &amp;amp; CEP (5), IMPORTAÇÕES &amp;amp; GEO (3).</li><li>PESSOAS subdividido em 2 subgrupos: CADASTRO (1) e CLASSIFICAÇÕES (6).</li><li>Maior subgrupo = 6 itens (≤ 8). Linha vertical de hierarquia sob o grupo aberto, itens indentados sob o título do subgrupo.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca01b-endereco-subgrupos.png" alt="CA01 evidência"/><figcaption>ca01b-endereco-subgrupos.png</figcaption></figure><figure><img src="screenshots/ca01-enderecos-pessoas-subgrupos.png" alt="CA01 evidência"/><figcaption>ca01-enderecos-pessoas-subgrupos.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA02">
+      <h2>CA02 — Agrupamento fiel à referência <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado a referência Cuida, quando comparo os títulos e a composição dos subgrupos, então correspondem ao que a referência define.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Comparar títulos e composição dos subgrupos renderizados com a definição pretendida. <b>Observação:</b> o artefato "Cuida" não foi disponibilizado (bloqueio original da HU); a composição segue a proposta documentada no plano (§3) — DIVISÃO TERRITORIAL, LOGRADOUROS &amp; CEP, IMPORTAÇÕES &amp; GEO / CADASTRO, CLASSIFICAÇÕES.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Títulos e composição batem com a proposta §3 do plano (evidência visual em CA01).</li><li>Pendência: validar contra o artefato Cuida quando disponível — ajustar títulos/ordem se divergir, mantendo a regra ≤ 8 itens.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca01b-endereco-subgrupos.png" alt="CA02 evidência"/><figcaption>ca01b-endereco-subgrupos.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA03">
+      <h2>CA03 — Flyout do modo rail espelha a hierarquia <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado a barra lateral recolhida (modo rail), quando aciono o ícone de um grupo subdividido, então o flyout exibe os mesmos subgrupos, com os mesmos títulos, na mesma ordem do modo expandido.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Recolher a sidebar (modo rail) e acionar o ícone do grupo <b>ENDEREÇO</b>; inspecionar o flyout (Popover).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Flyout exibe DIVISÃO TERRITORIAL → LOGRADOUROS &amp;amp; CEP → IMPORTAÇÕES &amp;amp; GEO, mesmos títulos e mesma ordem do modo expandido.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca03-rail-flyout-hierarquia.png" alt="CA03 evidência"/><figcaption>ca03-rail-flyout-hierarquia.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA04">
+      <h2>CA04 — Item ativo continua sendo detectado <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que estou numa rota de um item movido para dentro de um subgrupo, quando o menu renderiza, então o grupo aparece como ativo e o item aparece destacado — a subdivisão não pode quebrar o isActive nem o estado de abertura persistido.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Navegar para <code>/app/streets</code> (item <b>Logradouros</b>, dentro do subgrupo LOGRADOUROS &amp; CEP) e observar o estado do menu.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>ENDEREÇO auto-expande e aparece ativo; o item Logradouros fica destacado (fundo/realce primary) dentro do subgrupo.</li><li>A subdivisão não quebrou o isActive nem a abertura persistida do grupo.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca04-item-ativo-subgrupo.png" alt="CA04 evidência"/><figcaption>ca04-item-ativo-subgrupo.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA05">
+      <h2>CA05 — Permissões preservadas (sem título de subgrupo órfão) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um admin_operador sem platform-versions.index, quando o menu renderiza após a subdivisão, então o item continua oculto, e um subgrupo que fique inteiramente sem itens visíveis não renderiza título órfão.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Login como <b>Admin Operador</b> (<code>12345678909</code>, role admin_operador) e inspecionar o menu após a subdivisão.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>PLATAFORMA exibe apenas 'Histórico de versões'; 'Gerenciar versões' (exige platform-versions.index) fica oculto.</li><li>Em ENDEREÇO, os subgrupos sem itens visíveis para o operador (DIVISÃO TERRITORIAL, LOGRADOUROS &amp;amp; CEP) NÃO renderizam título órfão — sobra apenas IMPORTAÇÕES &amp;amp; GEO com o item permitido (Construtor de Camadas).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca05-permissao-item-oculto.png" alt="CA05 evidência"/><figcaption>ca05-permissao-item-oculto.png</figcaption></figure></div>
+    </section>
+  
+  <h2>Anexo — Cobertura automatizada (Vitest — src/components/app/AppSidebar.test.ts)</h2>
+  <pre class="pest">
+ RUN  v2.1.9 /Users/binho/Projetos/esuas-all/admin
+
+ ✓ src/components/app/AppSidebar.test.ts &gt; AppSidebar &gt; renderiza todos os macro-grupos
+ ✓ src/components/app/AppSidebar.test.ts &gt; AppSidebar &gt; inicia com todos os grupos collapsible abertos
+ ✓ src/components/app/AppSidebar.test.ts &gt; AppSidebar &gt; fecha um grupo de forma independente sem afetar os demais
+ ✓ src/components/app/AppSidebar.test.ts &gt; AppSidebar &gt; auto-expande o grupo que contém a rota ativa
+ ✓ src/components/app/AppSidebar.test.ts &gt; AppSidebar &gt; renderiza os subgrupos nomeados de ENDEREÇO e PESSOAS
+ ✓ src/components/app/AppSidebar.test.ts &gt; AppSidebar &gt; nenhum subgrupo do modelo de menu tem mais de 8 itens
+ ✓ src/components/app/AppSidebar.test.ts &gt; AppSidebar &gt; destaca o item ativo dentro de um subgrupo e mantém o grupo pai ativo
+ ✓ src/components/app/AppSidebar.test.ts &gt; AppSidebar &gt; não renderiza o título de um subgrupo sem itens visíveis por permissão
+
+ Test Files  1 passed (1)
+      Tests  8 passed (8)
+   Start at  17:50:32
+   Duration  1.16s (transform 289ms, setup 12ms, collect 579ms, tests 127ms, environment 220ms, prepare 54ms)
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

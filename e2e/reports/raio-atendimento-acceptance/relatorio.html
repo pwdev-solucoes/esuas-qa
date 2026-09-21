@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — Raio de Atendimento</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — Raio de Atendimento</h1>
+    <div class="sub">HU #10147 · Análise de Abrangência e Adensamento por Raio de Atendimento · Evidências end-to-end no client</div>
+    <div class="meta"><div><span>Gerado em:</span> 24/07/2026</div><div><span>HU:</span> #10147 — Análise de Abrangência e Adensamento por Raio de Atendimento</div><div><span>Backend:</span> api/ · feature/10147-raio-atendimento · commit 7f7cf92</div><div><span>Frontend:</span> client/ · feature/10147-raio-atendimento · commit 50935b7</div><div><span>Spec:</span> .planning/specs/10147-analise-abrangencia-raio-atendimento.md</div><div><span>Ambiente:</span> API Sail/PostgreSQL+PostGIS (ST_DWithin) · client Vite :5174 (não-mock)</div><div><span>Organização (tenant):</span> Maceió Geo · IBGE 2704302</div><div><span>Ferramenta:</span> playwright-cli (Chromium) + Pest 4</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">4 critérios de aceite (CA15–CA18) do filtro de raio de atendimento do Painel de Georreferenciamento, todos evidenciados por navegador (playwright-cli) dirigindo o client real contra a API PostGIS não-mock, com dados geo semeados no tenant Maceió (CRAS Eldorado e CREAS Central georreferenciados + famílias posicionadas a distâncias conhecidas, algumas com trabalho infantil). Os totais exibidos na UI (3 famílias em 2 km; 2 famílias com trabalho infantil em 1,5 km) foram cruzados com o resultado do GeoPanelQueryService e com a suíte Pest (48 testes, 144 asserções — apêndice), que exercita o ramo espacial ST_DWithin (PostgreSQL) e o fallback Haversine (SQLite). Resultado geral: 4/4 atendidos.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA15</td><td>Aplicação do filtro de raio com sucesso</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA16</td><td>Desenho gráfico da área de abrangência</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA17</td><td>Cruzamento cumulativo (Raio + Vulnerabilidades)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA18</td><td>Limpeza do perímetro radial</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA15">
+      <h2>CA15 — Aplicação do filtro de raio com sucesso <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que estou na modal de Busca Avançada, Quando seleciono o "CRAS Eldorado", informo o valor 2 no campo de raio em KM e clico em "Aplicar no mapa", Então o mapa renderiza as manchas de calor e atualiza o painel lateral considerando apenas as famílias localizadas a até 2 km de distância do CRAS Eldorado.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Na Busca Avançada, bloco <b>Área de abrangência</b>: selecionar <code>CRAS · CRAS Eldorado</code> na Unidade de referência (o campo Raio habilita), informar <code>2</code> em Raio (km) e clicar <b>Buscar</b>. O sistema semeado tem 3 famílias dentro de 2 km e 2 fora.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A busca retorna "3 família(s) encontrada(s)" — exatamente as famílias a 0,5 / 1,0 / 1,5 km do CRAS Eldorado; as de 3 e 4 km são descartadas.</li><li>Ao aplicar, o mapa projeta o heatmap somente dessas 3 famílias (legenda "pico: 1 família(s)/ponto") e o chip "CRAS Eldorado · 2 km" fica ativo.</li><li>Total conferido com GeoPanelQueryService::search (total=3) e com a suíte Pest ("includes families inside the radius and excludes the ones outside").</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca15-busca-raio-3-familias.png" alt="CA15 evidência"/><figcaption>ca15-busca-raio-3-familias.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA16">
+      <h2>CA16 — Desenho gráfico da área de abrangência <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que apliquei o filtro de raio de 2 km no CRAS Eldorado, Quando o mapa atualiza, Então o sistema exibe um círculo translúcido delimitando a fronteira de 2 km ao redor do marcador do CRAS Eldorado e ajusta o zoom da tela para enquadrar todo o perímetro.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Após "Aplicar no mapa" com o raio de 2 km no CRAS Eldorado, observar a camada gráfica desenhada no mapa e o enquadramento automático (fit-bounds).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O mapa desenha um círculo translúcido (contorno azul + preenchimento translúcido) centrado no CRAS Eldorado, delimitando a fronteira de 2 km.</li><li>O zoom é ajustado automaticamente (fit-bounds) para enquadrar todo o perímetro do círculo.</li><li>Os 3 pontos de calor das famílias dentro do raio aparecem contidos no círculo.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca16-circulo-raio-2km-cras-eldorado.png" alt="CA16 evidência"/><figcaption>ca16-circulo-raio-2km-cras-eldorado.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA17">
+      <h2>CA17 — Cruzamento cumulativo (Raio + Vulnerabilidades) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que configurei um raio de 1.5 km para o CREAS Central e marquei a vulnerabilidade "Ocorrência de Trabalho Infantil", Quando clico em aplicar, Então o sistema exibe no mapa e no resumo lateral estritamente os casos de trabalho infantil localizados dentro do raio de 1.5 km do CREAS Central.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Na Busca Avançada: marcar a vulnerabilidade <b>Trabalho infantil</b>, selecionar <code>CREAS · CREAS Central</code>, informar <code>1.5</code> em Raio (km) e Buscar/Aplicar. O tenant tem, dentro de 1,5 km do CREAS, 2 famílias com trabalho infantil e 1 sem; e 1 com trabalho infantil a 2 km (fora).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A busca retorna "2 família(s) encontrada(s)" — apenas os casos de trabalho infantil dentro de 1,5 km (a família sem trabalho infantil e a de 2 km são excluídas).</li><li>No mapa, o círculo de 1,5 km (menor que o de 2 km) contém exatamente 2 pontos de calor; chips ativos "Trabalho infantil" + "CREAS Central · 1.5 km".</li><li>Recorte cumulativo (interseção raio × vulnerabilidade) confirmado: baseline de trabalho infantil no município é 3, mas só 2 residem dentro do raio (GeoPanelQueryService + Pest).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca17-cruzamento-raio-trabalho-infantil.png" alt="CA17 evidência"/><figcaption>ca17-cruzamento-raio-trabalho-infantil.png</figcaption></figure><figure><img src="screenshots/ca17b-mapa-creas-1500m-trabalho-infantil.png" alt="CA17 evidência"/><figcaption>ca17b-mapa-creas-1500m-trabalho-infantil.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA18">
+      <h2>CA18 — Limpeza do perímetro radial <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que há um raio delimitado visível no mapa, Quando abro a Busca Avançada e clico no botão "Limpar critérios", Então a camada do círculo translúcido é removida do mapa e os indicadores voltam a considerar a totalidade do município.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Com o perímetro de 1,5 km aplicado, abrir a Busca Avançada e clicar <b>Limpar critérios</b>; fechar a busca.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A camada do círculo translúcido é removida do mapa (nenhum "FILTROS ATIVOS" permanece).</li><li>O painel volta ao estado neutro de Maceió ("Selecione ao menos uma vulnerabilidade...") — os indicadores voltam a considerar a totalidade do município, com as divisões territoriais (limite municipal / setores) novamente disponíveis.</li><li>O campo Raio volta a ficar desabilitado e a vulnerabilidade é desmarcada.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca18-limpeza-perimetro-visao-municipio.png" alt="CA18 evidência"/><figcaption>ca18-limpeza-perimetro-visao-municipio.png</figcaption></figure></div>
+    </section>
+  
+  <h2>Anexo — Cobertura automatizada (Pest — GeoPanelTest + GeoPanelRadiusIsolationTest + GeoPanelQueryServiceTest)</h2>
+  <pre class="pest">
+   PASS  Tests\Feature\Api\Client\GeoPanelTest
+  ✓ it returns the tenant municipality with geometry, centroid and the…  0.35s  
+  ✓ it responds 409 geo_panel.city_unavailable when the tenant has no r… 0.03s  
+  ✓ it responds 409 when the municipality geometry exists but is inacti… 0.03s  
+  ✓ it lists exactly the 3 builtin layers with the stable contract (CA2… 0.04s  
+  ✓ it serves the census sectors of the tenant municipality as a GeoJSO… 0.04s  
+  ✓ it serves the tenant social units as anonymous points with type_cod… 0.04s  
+  ✓ it applies the AND intersection of combined criteria scoped to the…  0.05s  
+  ✓ it never leaks families from another tenant in the search (RN01/CA3… 0.04s  
+  ✓ it returns an empty payload when no record matches, so the map stay… 0.04s  
+  ✓ it rejects a search without any effective criterion (Seção 10 — reg… 0.04s  
+  ✓ it rejects a sector_uuid that belongs to another municipality (RN08… 0.04s  
+  ✓ it restricts the search to families within the service radius and e… 0.05s  
+  ✓ it accepts the radius as the only effective criterion (CA15/RN-C)    0.04s  
+  ✓ it intersects the radius cumulatively with a vulnerability filter (… 0.06s  
+  ✓ it keeps the legacy contract without radius params — no radius key…  0.05s  
+  ✓ it rejects an origin unit without an active location point (422 — R… 0.04s  
+  ✓ it requires radius_km and origin_social_unit_uuid together (require… 0.04s  
+  ✓ it rejects a radius above the configured max_radius_km ceiling       0.04s  
+  ✓ it always includes the fixed RN07 indicator in the summary, even wi… 0.05s  
+  ✓ it aggregates the summary by census sector under the active filters… 0.05s  
+  ✓ it denies every geo-panel endpoint to the base operator without the… 0.04s  
+  ✓ it grants the full panel to the operator once the geo_panel_viewer…  0.05s  
+  ✓ it grants the full panel to the Master without any add-on role (RN2… 0.04s  
+  ✓ it creates a panel-scoped google map tiles session for the geo_pane… 0.04s  
+  ✓ it denies the panel map tiles session to the base operator without…  0.04s  
+  ✓ it does not let the geo_panel_viewer role in Tenant A open the pane… 0.04s  
+  ✓ it exposes geo_panel_viewer as an add-on role, never a hierarchy po… 0.03s  
+
+   PASS  Tests\Feature\TenantIsolation\GeoPanelRadiusIsolationTest
+  ✓ it never resolves an origin unit from another tenant as the radius…  0.02s  
+  ✓ it applies an impossible predicate (zero families) when the origin…  0.03s  
+
+   PASS  Tests\Unit\Services\Geo\GeoPanelQueryServiceTest
+  ✓ it filters extreme_poverty by per_capita_income against the configu… 0.03s  
+  ✓ it filters single_person as exactly one ACTIVE member                0.04s  
+  ✓ it filters receives_pbf on the family flag                           0.02s  
+  ✓ it filters member flags (child_labor, homeless_situation, has_disab… 0.08s  
+  ✓ it filters indigenous_quilombola as an OR between the two family fl… 0.03s  
+  ✓ it filters gpte by any traditional group, refinable by traditional_… 0.03s  
+  ✓ it never counts the "Nenhuma" sentinel group (code 0) as gpte, not…  0.03s  
+  ✓ it intersects multiple criteria with AND (RN06)                      0.04s  
+  ✓ it classifies expired as more than 24 months since source_updated_a… 0.03s  
+  ✓ it classifies expiring as between 19 and 24 months since source_upd… 0.03s  
+  ✓ it restricts by sector_uuid (SQLite fallback: sector city = family…  0.03s  
+  ✓ it aggregates by sector, groups anonymous points and computes the b… 0.03s  
+  ✓ it ignores families without an active locatable address point        0.03s  
+  ✓ it scopes every aggregate to the given tenant (RN01)                 0.03s  
+  ✓ it includes families inside the radius and excludes the ones outsid… 0.03s  
+  ✓ it yields zero families when the origin unit has no active point (R… 0.02s  
+  ✓ it leaves the contract untouched without radius params (no radius k… 0.02s  
+  ✓ it validates that an origin unit belongs to the tenant and is locat… 0.02s  
+  ✓ it validates that a sector belongs to the tenant municipality (RN08… 0.02s  
+
+  Tests:    48 passed (144 assertions)
+  Duration: 2.10s
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

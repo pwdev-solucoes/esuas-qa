@@ -1,0 +1,41 @@
+
+   PASS  Tests\Unit\Family\OpenFamilyRecordActionTest
+  ✓ it writes unit, opening date and author, defaulting the date to tod… 0.42s  
+  ✓ it honours an informed opening date (§10)                            0.01s  
+  ✓ it flags only a unit without an MDS number (RN05/CA05)               0.01s  
+  ✓ it swaps the reference unit without reopening the record (RN01/RN02… 0.02s  
+
+   PASS  Tests\Feature\Family\FamilyAccessByUnitTest
+  ✓ it opens the record for a professional assigned to the reference un… 0.09s  
+  ✓ it answers a family of another unit as a nonexistent record — 404 w… 0.04s  
+  ✓ it reaches every unit where the professional is assigned, and none…  0.05s  
+  ✓ it hides families of other units from the person search, keeping th… 0.05s  
+  ✓ it blocks every record for a professional whose assignment is close… 0.05s  
+  ✓ it keeps the Master free from the unit cut, auditing the bypass (CA… 0.03s  
+  ✓ it does not let the unit assignment replace the LGPD add-on (CA06/R… 0.05s  
+  ✓ it keeps a family without reference unit visible during the transit… 0.04s  
+  ✓ it starts cutting as soon as the family receives a unit outside the… 0.04s  
+
+   PASS  Tests\Feature\Family\OpenFamilyRecordTest
+  ✓ it opens the record assigning the reference unit, the opening date…  0.04s  
+  ✓ it accepts an informed opening date and refuses a future one (§10)   0.03s  
+  ✓ it lists every family without a reference unit, by the name of the…  0.03s  
+  ✓ it drops the family from the pending list as soon as it gets a unit… 0.04s  
+  ✓ it never assigns a unit by itself — the payload must carry the choi… 0.03s  
+  ✓ it opens normally in a unit without an MDS number, warning without…  0.04s  
+  ✓ it warns about the previous team losing access before saving the ch… 0.05s  
+  ✓ it refuses a change on a record that was never opened, and a change… 0.03s  
+  ✓ it offers only the units where the professional is assigned, and re… 0.03s  
+  ✓ it offers every active unit of the municipality to the Master (RN10… 0.03s  
+  ✓ it keeps a unit that is not active out of the offer and out of the…  0.03s  
+  ✓ it does not let the {family:uuid} binding swallow the literal witho… 0.03s  
+  ✓ it blocks whoever cannot open records: no add-on, no active assignm… 0.03s  
+  ✓ it ships the record cover in the family details payload, so CA01 ho… 0.04s  
+
+   PASS  Tests\Feature\TenantIsolation\FamilyAccessTenantIsolationTest
+  ✓ it treats a family of another organization as a nonexistent record,… 0.04s  
+  ✓ it never lists people of another organization in the person search,… 0.03s  
+
+  Tests:    29 passed (163 assertions)
+  Duration: 1.81s
+

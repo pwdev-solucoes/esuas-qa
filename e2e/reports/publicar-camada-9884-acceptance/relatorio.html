@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — HU #9884 Publicar camada de forma global ou direcionada</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — HU #9884 Publicar camada de forma global ou direcionada</h1>
+    <div class="sub">Construtor de Camadas (rota admin /geo-layers) · projeção no Painel de Georreferenciamento do tenant (client) · Evidências end-to-end no app real</div>
+    <div class="meta"><div><span>Gerado em:</span> 10/07/2026</div><div><span>História:</span> HU #9884 — Publicar camada de forma global ou direcionada</div><div><span>Critérios:</span> CA42, CA43, CA44, CA45 e CA46 (5 critérios)</div><div><span>Submódulos:</span> admin (branch develop) · client (branch develop) · api develop</div><div><span>Ambiente:</span> API Sail/PostgreSQL · admin Vite :5173 (Sanctum-stateful, não-mock) · client Vite :5174 (não-mock) → http://localhost/api</div><div><span>Personas:</span> Administrador (CPF 44983702016, papel admin) · Master-geo do tenant Maceió Geo (CPF 27043020140, papéis master + geo_panel_viewer)</div><div><span>Organizações de referência:</span> Maceió Geo (IBGE 2704302) e Arapiraca Geo (IBGE 2700300) — malha + setores homologados</div><div><span>Ferramenta:</span> playwright-cli (Chromium, viewport 1680×1050) + Pest</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">Os 5 critérios de aceite da HU #9884 sobre a publicação de camadas do Construtor de Camadas (rota admin /geo-layers, com efeito no Painel de Georreferenciamento /georreferenciamento do tenant no client) foram verificados dirigindo os apps reais (admin e client) no navegador e reforçados pela suíte automatizada — todos ATENDIDOS. CA42: como Administrador, publicando um rascunho válido com público "Todas as organizações", a camada passa a Publicada/Global (POST /geo-layers/{uuid}/publish, pivot vazio = todos os tenants ativos, inclusive futuros) e aparece na barra lateral do painel de um tenant (Maceió Geo) desligada por padrão. CA43: publicando com "Organizações selecionadas" (Maceió Geo), a camada fica Publicada/Direcionada para 1 organização e somente ela a visualiza. CA44: com as bases geográficas primárias não homologadas (setores censitários fora de completed+synced), a publicação é bloqueada e o diálogo informa a pendência das bases obrigatórias (revalidação RN03 no GeoLayerLifecycleService). CA45: alterando o público de uma camada publicada e direcionada (inclusão de Arapiraca Geo), o pivot é atualizado imediatamente para 2 organizações. CA46: uma camada publicada globalmente, ao ser ligada no painel do tenant, projeta apenas os dados do escopo territorial/cadastral daquele tenant — o isolamento multi-tenant define de quem são os dados. Cobertura automatizada: Pest GeoLayerControllerTest (26 testes/150 asserções) cobre publish global (pivot vazio), publish direcionado (CA43/RN04), exigência da lista de tenants, gate RN03/CA44 (ambas as bases), alteração de público com pivot imediato (CA45) e a não-vazão de outro tenant do mesmo município na projeção (CA46).</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA42</td><td>Publicação global (aparece na barra lateral de todos os tenants, desligada por padrão)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA43</td><td>Publicação direcionada (somente os tenants selecionados)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA44</td><td>Bloqueio sem base geográfica homologada</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA45</td><td>Alteração de público com efeito imediato</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA46</td><td>Isolamento de dados na camada</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA42">
+      <h2>CA42 — Publicação global (aparece na barra lateral de todos os tenants, desligada por padrão) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que tenho uma camada em rascunho válida, Quando publico com público "todos os tenants", Então a camada passa a aparecer na barra lateral do Painel de Georreferenciamento de todos os tenants ativos, desligada por padrão.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Como <b>Administrador</b> (44983702016), no Construtor de Camadas → ação <b>Publicar</b> da camada "Famílias em Extrema Pobreza" (rascunho) → público <b>Todas as organizações</b> → <b>Publicar</b>. Em seguida, autenticado no <b>client</b> como Master-geo do tenant <b>Maceió Geo</b>, aberto o Painel de Georreferenciamento → barra <b>Camadas</b>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>POST /geo-layers/{uuid}/publish responde 200 e a camada passa a Status &lt;b&gt;Publicada&lt;/b&gt; e Público &lt;b&gt;Global — Todas as organizações&lt;/b&gt;, com data de publicação registrada.</li><li>O próprio diálogo antecipa o comportamento: "A camada passa a aparecer na barra lateral do painel das organizações do público, desligada por padrão."</li><li>No painel do tenant Maceió Geo, a camada "Famílias em Extrema Pobreza" consta na seção "Camadas de informação" com o switch &lt;b&gt;desligado por padrão&lt;/b&gt; (aria-checked=false).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca42-dialog-global.png" alt="CA42 evidência"/><figcaption>ca42-dialog-global.png</figcaption></figure><figure><img src="screenshots/ca42-publicada-global.png" alt="CA42 evidência"/><figcaption>ca42-publicada-global.png</figcaption></figure><figure><img src="screenshots/ca42-client-sidebar-desligada.png" alt="CA42 evidência"/><figcaption>ca42-client-sidebar-desligada.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA43">
+      <h2>CA43 — Publicação direcionada (somente os tenants selecionados) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que tenho uma camada em rascunho válida, Quando publico selecionando tenants específicos, Então somente os tenants selecionados passam a visualizar a camada em seus painéis.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Na ação <b>Publicar</b> da camada "Programa Bolsa Família — Cobertura" (rascunho), selecionado o público <b>Organizações selecionadas</b> e marcada apenas <b>Maceió Geo</b> no multi-select → <b>Publicar</b>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>POST /geo-layers/{uuid}/publish responde 200 com audience=selected e o pivot recebe somente Maceió Geo.</li><li>No catálogo a camada consta como &lt;b&gt;Publicada · Direcionada · 1 organização&lt;/b&gt;.</li><li>No painel do tenant Maceió Geo (selecionado) a camada aparece na lista; os tenants fora da seleção não a recebem (isolamento do público — coberto pela suíte, CA43/RN04).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca43-dialog-direcionada.png" alt="CA43 evidência"/><figcaption>ca43-dialog-direcionada.png</figcaption></figure><figure><img src="screenshots/ca43-publicada-direcionada.png" alt="CA43 evidência"/><figcaption>ca43-publicada-direcionada.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA44">
+      <h2>CA44 — Bloqueio sem base geográfica homologada <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que as bases geográficas primárias não estão homologadas, Quando tento publicar uma camada, Então o sistema bloqueia a publicação e informa a pendência das bases obrigatórias.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Com a base de <b>setores censitários</b> temporariamente fora de <i>completed+synced</i> (desomologada), acionada a publicação de um rascunho → <b>Publicar</b>. (Estado da base restaurado logo após a captura.)</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A publicação é bloqueada e o diálogo exibe o alerta: "Não é possível publicar a camada: as bases geográficas primárias (geometrias municipais e setores censitários) precisam estar importadas, concluídas e sincronizadas. Homologue as duas bases em Importações de Camadas Geográficas."</li><li>Espelho no backend (anexo): GeoLayerLifecycleService::assertBasesHomologated() lança 422 quando não existem imports municipal_geometry E census_sector ambos completed+synced (RN03). Pest: "it blocks publish while BOTH national bases are not homologated (CA44)".</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca44-bloqueio-bases.png" alt="CA44 evidência"/><figcaption>ca44-bloqueio-bases.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA45">
+      <h2>CA45 — Alteração de público com efeito imediato <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que uma camada está publicada para tenants específicos, Quando altero o público incluindo ou removendo tenants, Então a disponibilidade da camada é atualizada imediatamente nos painéis dos tenants afetados.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Na camada "Programa Bolsa Família — Cobertura" (publicada, direcionada a Maceió Geo), ação <b>Alterar público</b> → adicionada <b>Arapiraca Geo</b> ao multi-select (já semeado com Maceió Geo) → <b>Salvar</b>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A alteração responde 200 e o pivot é sincronizado &lt;b&gt;imediatamente&lt;/b&gt;: a camada passa a 2 organizações (Maceió Geo + Arapiraca Geo).</li><li>No catálogo o público passa a &lt;b&gt;Direcionada · 2 organizações&lt;/b&gt; sem republicação — efeito imediato na disponibilidade (RN04).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca45-dialog-alterar-publico.png" alt="CA45 evidência"/><figcaption>ca45-dialog-alterar-publico.png</figcaption></figure><figure><img src="screenshots/ca45-publico-atualizado.png" alt="CA45 evidência"/><figcaption>ca45-publico-atualizado.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA46">
+      <h2>CA46 — Isolamento de dados na camada <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que uma camada foi publicada globalmente, Quando um tenant a liga em seu painel, Então visualiza apenas os dados do seu próprio escopo, sem qualquer dado de outro tenant.</p>
+      <p class="steps"><strong>Como foi testado:</strong> No painel do tenant <b>Maceió Geo</b>, ligado o switch da camada global "Famílias em Extrema Pobreza" — a projeção é executada no escopo do tenant.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A camada projeta sobre a malha do município do tenant apenas os registros do seu próprio escopo territorial/cadastral; a camada define &lt;i&gt;o quê&lt;/i&gt; é exibido e o isolamento multi-tenant define &lt;i&gt;de quem&lt;/i&gt; são os dados.</li><li>Garantia no backend (anexo): a projeção/preview é sempre executada sob o tenant. Pest: "it never leaks another tenant of the same municipality into the preview" — confirma que nenhum dado de outro tenant do mesmo município vaza.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca46-client-isolamento-maceio.png" alt="CA46 evidência"/><figcaption>ca46-client-isolamento-maceio.png</figcaption></figure></div>
+    </section>
+  
+  <h2>Anexo — Cobertura automatizada — Pest GeoLayerControllerTest (CA42–CA46, RN03–RN08)</h2>
+  <pre class="pest">=== Cobertura automatizada — GeoLayerController (CA42-CA46 / RN03-RN08) ===
+(executado ao vivo em 10/07/2026 contra a stack Sail)
+
+   PASS  Tests\Feature\Api\Manager\GeoLayerControllerTest
+  ✓ it creates a layer as draft with normalized criteria and it shows u… 0.45s  
+  ✓ it blocks creation without name or without any criterion (CA38)      0.03s  
+  ✓ it rejects criteria outside the panel vocabulary (P3)                0.02s  
+  ✓ it blocks a duplicated name case-insensitively, but frees it after…  0.03s  
+  ✓ it filters the catalog by status and audience (CA51)                 0.04s  
+  ✓ it shows the layer detail with audience tenants and the full audit…  0.04s  
+  ✓ it updates the current definition of a published layer (CA47)        0.02s  
+  ✓ it keeps the unique name rule on update, ignoring the layer itself…  0.03s  
+  ✓ it does not expose DELETE — the missing verb answers 405 (P5/RN06)   0.02s  
+  ✓ it blocks publish while BOTH national bases are not homologated (CA… 0.03s  
+  ✓ it publishes globally: empty pivot means every active tenant, prese… 0.03s  
+  ✓ it publishes to selected tenants only (CA43/RN04)                    0.03s  
+  ✓ it requires the tenant list when publishing to a selected audience   0.03s  
+  ✓ it rejects publishing a layer that is not a draft (RN06)             0.02s  
+  ✓ it changes the audience of a published layer with immediate pivot s… 0.03s  
+  ✓ it only allows changing the audience of published layers (RN06)      0.02s  
+  ✓ it inactivates a published layer and rejects invalid transitions (C… 0.03s  
+  ✓ it reactivates an inactive layer back to the CONFIGURED audience (C… 0.03s  
+  ✓ it revalidates the RN03 gate on reactivation (CA44/CA49)             0.02s  
+  ✓ it rejects reactivating a layer that is not inactive (RN06)          0.03s  
+  ✓ it previews the layer under the single reference tenant — WYSIWYG,…  0.06s  
+  ✓ it never leaks another tenant of the same municipality into the pre… 0.05s  
+  ✓ it rejects the preview when the reference tenant has no homologated… 0.02s  
+  ✓ it requires a valid tenant_uuid on preview                           0.02s  
+  ✓ it gives the admin_operador read-only access — every write is 403 (… 1.08s  
+  ✓ it gives the ADMIN every geo-layers ability through the automatic h… 1.05s  
+  Tests:    26 passed (150 assertions)
+  Duration: 3.68s
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

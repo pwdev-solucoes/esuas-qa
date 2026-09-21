@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — US-CAPAC-02</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  section.note { border:1px solid var(--line); border-left:4px solid #b06a00; border-radius:6px; padding:10px 14px; margin:10px 0; background:#fffdf7; font-size:13px; }
+  section.note h3 { margin:0 0 6px; font-size:13.5px; color:#8a5200; }
+  section.note p { margin:6px 0; }
+  section.note ul { margin:6px 0 6px 18px; padding:0; }
+  section.note pre { background:var(--bg); border:1px solid var(--line); border-radius:4px; padding:8px; overflow-x:auto; font-size:11px; white-space:pre-wrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — US-CAPAC-02</h1>
+    <div class="sub">Registro das ações de capacitação e divulgação na unidade (frontend do tenant) · evidências end-to-end no client</div>
+    <div class="meta"><div><span>Gerado em:</span> 02/09/2026 · apêndice completado em 04/09/2026</div><div><span>Épico:</span> HU-UNID-CAPAC — leiaute 15.9 do SIAP (CapacitacaoDivulgacao)</div><div><span>Branch:</span> feature/capac-leiaute-15-9 (api, admin, client)</div><div><span>Spec:</span> .planning/specs/US-CAPAC-02-registro-acoes-capacitacao-unidade.md</div><div><span>Ambiente:</span> Stack E2E isolada — admin :4173 · client :4174 · API :8090 · banco esuas_e2e (E2ESeeder)</div><div><span>Organização (tenant):</span> E2E CadÚnico — unidades E2E CRAS Centro, E2E CREAS e E2E CRAS Sem MDS</div><div><span>Ferramenta:</span> Playwright (Chromium) — specs committed em e2e/ — + Pest (anexo)</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">Doze critérios. Seis com evidência no navegador (aba “Capacitação e divulgação” da unidade, guard client, operador com lotação vigente) gravada pelos 6 casos de tests/client/capacitation-actions.spec.ts, todos aprovados — CA01, CA02, CA03, CA08, CA10 e CA11 — e todos com contraparte na suíte Pest. Os outros seis (CA04, CA05, CA06, CA07, CA09 e CA12) são regras de backend sem tela dedicada nesta massa e ficam com a evidência automatizada do anexo. Nenhum critério ficou sem evidência; nenhum critério foi declarado atendido sem prova. Complemento de 04/09/2026: o apêndice passou a incluir também a suíte de apuração, que é onde se provam as metades de CONTAGEM do CA05 (o curso em andamento soma mês a mês) e do CA10 (a ação cancelada sai dos contadores). O anexo fecha com 72 testes e 307 asserções, todos verdes.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA01</td><td>Registrar participação em seminário (happy path)</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA02</td><td>Reunião interna não exige participantes</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA03</td><td>Palestra exige ao menos um participante</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA04</td><td>Curso pede período</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA05</td><td>Curso em andamento</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA06</td><td>Participante precisa ter lotação vigente na data</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA07</td><td>Mesmo profissional não entra duas vezes</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA08</td><td>Data futura recusada</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA09</td><td>Retroativo em período já declarado</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA10</td><td>Cancelar em vez de excluir</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA11</td><td>Operacional não registra em unidade onde não tem lotação</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA12</td><td>Isolamento entre municípios</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA01">
+      <h2>CA01 — Registrar participação em seminário (happy path) <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Operacional do Tenant com lotação vigente no "CRAS Centro"
+Quando eu enviar POST /api/client/social-units/{cras-centro}/capacitation-actions
+     com type = "001", title = "Seminário estadual do SUAS", occurred_on = ontem
+     e participants = [uuid1, uuid2, uuid3]
+Então recebo 201
+E a ação consta na unidade com 3 participantes, created_by = meu user_id,
+  created_by_label = meu nome e created_at preenchido</p>
+      <p class="steps"><strong>Como foi testado:</strong> Como Operacional com lotação vigente no <b>E2E CRAS Centro</b>: abrir <code>/app/unidades/{uuid}?tab=capacitation</code> → “Nova ação” → tipo <code>001</code> → título único → data de ontem (o preenchimento dispara o <code>GET …/participant-candidates</code> daquela data) → marcar um participante → salvar → localizar a ação pela busca.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A ação é criada (201) e aparece na listagem da unidade com data, tipo e participantes.</li><li>A coluna “Registrado por” traz o nome do autor — o registro é assinado e datado (RN12).</li><li>A linha carrega data-status="active".</li><li>A lista de participantes ofertada pela tela é a dos profissionais com lotação vigente NA DATA escolhida (F5).</li><li>Pest: “registra seminario com tres participantes, autor e data de lancamento”.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca01-registra-uma-palestra-com-participantes-assinada-e-datada.png" alt="CA01 evidência"/><figcaption>ca01-registra-uma-palestra-com-participantes-assinada-e-datada.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA02">
+      <h2>CA02 — Reunião interna não exige participantes <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o tipo "003" (Reuniões internas) tem counting_mode = "event"
+Quando eu enviar o registro com título e data, sem participants
+Então recebo 201
+E a ação passa a contar como 1 evento no período (US-CAPAC-03)</p>
+      <p class="steps"><strong>Como foi testado:</strong> Mesmo fluxo, tipo <code>003</code> (counting_mode = event), sem selecionar ninguém. O caso assevera o texto que a tela mostra ao escolher esse tipo, e depois salva.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A tela explica antes do envio: “Este tipo conta a ação, não as pessoas. Informar participantes é opcional.”</li><li>A ação é salva sem participante nenhum e aparece na listagem com data-status="active".</li><li>Pest: “registra reuniao interna sem participantes quando o tipo conta eventos”.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca02-reuniao-interna-e-salva-sem-participantes-o-tipo-conta-o-eve.png" alt="CA02 evidência"/><figcaption>ca02-reuniao-interna-e-salva-sem-participantes-o-tipo-conta-o-eve.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA03">
+      <h2>CA03 — Palestra exige ao menos um participante <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o tipo "001" tem counting_mode = "participation"
+Quando eu enviar o registro sem participants
+Então recebo 422
+E a mensagem diz que esse tipo conta participações e precisa de ao menos um participante</p>
+      <p class="steps"><strong>Como foi testado:</strong> Tipo <code>001</code> (counting_mode = participation), com título e data, <b>sem</b> participante, e submeter. Duas evidências: a tela no momento da recusa (print “-erro-participante-obrigatorio”) e o estado final, após descartar o formulário.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Antes do envio a tela já explica a contagem: “Este tipo conta as participações dos profissionais — selecione ao menos um participante.”</li><li>Ao submeter, o erro “Selecione ao menos um participante para este tipo de ação.” aparece e o formulário permanece aberto — nada foi gravado.</li><li>Pest: “recusa palestra sem participante quando o tipo conta participacoes” (422).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca03-palestra-sem-participante-e-recusada-com-a-explicacao-da-con-erro-participante-obrigatorio.png" alt="CA03 evidência"/><figcaption>ca03-palestra-sem-participante-e-recusada-com-a-explicacao-da-con-erro-participante-obrigatorio.png</figcaption></figure><figure><img src="screenshots/ca03-palestra-sem-participante-e-recusada-com-a-explicacao-da-con.png" alt="CA03 evidência"/><figcaption>ca03-palestra-sem-participante-e-recusada-com-a-explicacao-da-con.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA04">
+      <h2>CA04 — Curso pede período <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o tipo "005" tem date_mode = "period"
+Quando eu enviar occurred_on
+Então recebo 422 indicando que este tipo exige started_on (e opcionalmente ended_on)
+E quando eu enviar started_on sem ended_on, recebo 201</p>
+      <p class="steps"><strong>Como foi testado:</strong> <b>Sem print nesta massa.</b> O critério é sobre a validação de <code>occurred_on</code> × <code>started_on</code> para o tipo de <code>date_mode = period</code>; o spec do navegador exercita os tipos de data única (001 e 003) e não cobre o formulário do curso. Verificado no Pest: <code>Tests\Feature\Client\CapacitationActionTest</code> → “recusa data unica e aceita periodo aberto quando o tipo e de periodo”.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Enviar occurred_on para o tipo 005 devolve 422 indicando a exigência de started_on.</li><li>Enviar started_on sem ended_on devolve 201.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA05">
+      <h2>CA05 — Curso em andamento <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que uma profissional iniciou um curso em 10/06/2026 e ele não terminou
+Quando eu registrar a ação com started_on = 2026-06-10 e ended_on = null
+Então recebo 201
+E a apuração a conta de junho em diante enquanto ended_on for nulo</p>
+      <p class="steps"><strong>Como foi testado:</strong> <b>Sem print nesta massa</b> (mesmo motivo do CA04). Verificado no Pest: “persiste o curso em andamento com ended_on nulo (CA05)”; a contagem “de junho em diante” está no anexo da US-CAPAC-03 (“conta o curso sem data de fim do inicio em diante”).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A ação com started_on preenchido e ended_on nulo é aceita (201) e persistida como curso em andamento.</li><li>A segunda metade do critério — “conta nos meses de junho em diante, enquanto não houver data de fim” — é regra de apuração e fica provada por &lt;code&gt;✓ it conta o curso sem data de fim do inicio em diante (CA05)&lt;/code&gt;, do serviço de apuração, agora incluído no apêndice deste dossiê.</li><li>O curso é o único tipo que registra estado e não evento: enquanto o fim não é informado, o profissional segue somando mês a mês, a partir do início.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA06">
+      <h2>CA06 — Participante precisa ter lotação vigente na data <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que registro uma ação de 10/08/2026 no "CRAS Centro"
+Quando eu incluir um participante cuja lotação naquela unidade começou em 20/08/2026
+Então recebo 422 com error_code "participant_without_active_assignment"
+E a mensagem nomeia o profissional e a data
+E nada é gravado (transação)</p>
+      <p class="steps"><strong>Como foi testado:</strong> <b>Sem print da recusa.</b> Pela tela é impossível chegar ao 422: o formulário só oferece como candidatos os profissionais com lotação vigente na data escolhida (essa consulta por data é visível no caso do CA01). O erro <code>participant_without_active_assignment</code> e a atomicidade da transação são verificados no Pest: “recusa participante sem lotacao vigente na data e nao deixa acao orfa”, mais as 12 asserções de fronteira de <code>CapacitationParticipantValidatorTest</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Participante sem lotação vigente na data devolve 422 com error_code participant_without_active_assignment.</li><li>A mensagem nomeia o profissional e a data; nada é gravado (transação).</li><li>Fronteiras testadas: lotação iniciada depois da data, encerrada no dia (fronteira aberta), lotação em outra unidade do mesmo município e profissional de outro município.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA07">
+      <h2>CA07 — Mesmo profissional não entra duas vezes <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que envio participants com o mesmo uuid repetido
+Quando eu salvar
+Então recebo 422 (regra distinct)
+E, em corrida, o índice único (capacitation_action_id, tenant_professional_id) impede a duplicidade</p>
+      <p class="steps"><strong>Como foi testado:</strong> <b>Sem print.</b> A tela usa checkboxes — não há como marcar o mesmo profissional duas vezes, então a duplicidade só existe no plano da API. Verificado no Pest em dois níveis, como o próprio Gherkin pede: “recusa o mesmo profissional repetido na lista de participantes (regra distinct)” e “barra a duplicidade no banco pelo indice unico da dupla acao/profissional”.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Lista com uuid repetido devolve 422 (regra distinct).</li><li>Em corrida, o índice único (capacitation_action_id, tenant_professional_id) impede a duplicidade no banco.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA08">
+      <h2>CA08 — Data futura recusada <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que registro uma ação de data única
+Quando eu informar occurred_on posterior a hoje
+Então recebo 422</p>
+      <p class="steps"><strong>Como foi testado:</strong> Tipo <code>003</code> de propósito (contagem por evento: sem exigência de participante, o único motivo possível de recusa é a data). O caso confere o atributo <code>max</code> do campo <b>antes</b> de qualquer envio e depois submete a data de amanhã.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O campo de data já declara o teto na marcação (max = hoje) — a tela recusa antes de perguntar.</li><li>Ao submeter data futura, aparece “A data de realização não pode ser futura.” e o formulário continua aberto.</li><li>Pest: “recusa acao com data posterior a hoje (CA08)” (422).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca08-data-futura-e-recusada-erro-data-futura.png" alt="CA08 evidência"/><figcaption>ca08-data-futura-e-recusada-erro-data-futura.png</figcaption></figure><figure><img src="screenshots/ca08-data-futura-e-recusada.png" alt="CA08 evidência"/><figcaption>ca08-data-futura-e-recusada.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA09">
+      <h2>CA09 — Retroativo em período já declarado <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que existe siap_remittances com exercise = 2026, reference_month = 7 e status = "completed"
+Quando eu registrar uma ação com occurred_on = 2026-07-22
+Então recebo 201
+E o corpo traz warning.code = "remittance_already_generated"
+E a mensagem informa que o contador de 07/2026 mudou e a remessa precisa ser gerada novamente</p>
+      <p class="steps"><strong>Como foi testado:</strong> <b>Sem print.</b> O aviso depende de existir uma <code>siap_remittances</code> concluída para a referência da data — massa que a stack de evidências não tem e que o spec do navegador não cria. Verificado no Pest: “salva o retroativo e avisa que a remessa da referencia ja foi gerada”, mais as 7 asserções de <code>CapacitationRemittanceWarningServiceTest</code> (inclusive a derivação de uma referência por mês coberto por um curso).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A ação retroativa é salva (201) e o corpo traz warning.code = remittance_already_generated.</li><li>A mensagem informa a referência (MM/AAAA) cujo contador mudou e que a remessa precisa ser gerada de novo.</li><li>O aviso não vaza entre municípios nem dispara para remessa ainda não concluída.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA10">
+      <h2>CA10 — Cancelar em vez de excluir <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que registrei uma ação por engano
+Quando eu enviar PATCH .../capacitation-actions/{uuid}/cancel com cancellation_reason
+Então recebo 200 com status = "cancelled", cancelled_at e cancelled_by preenchidos
+E a ação continua aparecendo na listagem, marcada
+E deixa de contar na apuração
+E não existe rota DELETE para o recurso</p>
+      <p class="steps"><strong>Como foi testado:</strong> O caso cria a própria massa (uma reunião interna), abre o menu da linha, assevera a <b>ausência</b> de “Excluir/Remover/Apagar”, aciona “Cancelar ação”, confere o texto do diálogo, informa o motivo e confirma — observando o <code>PATCH …/cancel</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O menu da linha não oferece exclusão: cancelar é o único caminho de reversão (D04).</li><li>O diálogo avisa, antes de confirmar, que a ação “continua na listagem, marcada como cancelada”.</li><li>O PATCH responde 200; a linha passa a data-status="cancelled", exibe o selo “Cancelada” e o motivo informado.</li><li>A ação continua visível na listagem — some da apuração, não da tela (RN09).</li><li>Pest: “cancela com motivo, mantem a acao listada e recusa o segundo cancelamento” e “nao expoe rota DELETE para o recurso (CA10/D04)”.</li><li>A parte “deixa de contar nos contadores do período” fica provada por &lt;code&gt;✓ it nao conta acao cancelada, e a unidade fica sem registro no periodo&lt;/code&gt;, do serviço de apuração, agora incluído no apêndice.</li><li>Os dois lados do cancelamento ficam demonstrados juntos: a ação permanece na listagem, marcada, e sai da contagem — sem ser apagada.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca10-cancelar-com-motivo-a-acao-continua-listada-marcada-e-nao-ha.png" alt="CA10 evidência"/><figcaption>ca10-cancelar-com-motivo-a-acao-continua-listada-marcada-e-nao-ha.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA11">
+      <h2>CA11 — Operacional não registra em unidade onde não tem lotação <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Operacional lotado apenas no "CRAS Centro"
+Quando eu enviar POST em /social-units/{creas}/capacitation-actions
+Então recebo 403 com error_code "no_active_assignment_in_unit"
+E a mensagem orienta procurar o gestor Master</p>
+      <p class="steps"><strong>Como foi testado:</strong> Com o mesmo operador, abrir a aba de capacitação do <b>E2E CREAS</b> — unidade do mesmo município onde ele NÃO tem lotação.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A tela mostra o painel “Sem lotação vigente nesta unidade”, que explica a negativa e orienta procurar o Master do município.</li><li>Não houve desvio para a página genérica de 403: a URL permanece na unidade (negativa explicada, não “acesso negado”).</li><li>Pest: “devolve 403 com error_code quando o Operacional nao tem lotacao” e “devolve 403 quando a lotacao do Operacional na unidade ja foi encerrada”.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca11-unidade-sem-lotacao-vigente-negativa-explicada-nao-acesso-ne.png" alt="CA11 evidência"/><figcaption>ca11-unidade-sem-lotacao-vigente-negativa-explicada-nao-acesso-ne.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA12">
+      <h2>CA12 — Isolamento entre municípios <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou usuário do município A
+Quando eu acessar uma unidade ou uma ação do município B
+Então recebo 404
+E a listagem devolve apenas ações do município A</p>
+      <p class="steps"><strong>Como foi testado:</strong> <b>Sem print, por impossibilidade de massa.</b> A stack de evidências tem <b>um</b> tenant (E2E CadÚnico); provar isolamento exige dois municípios e um usuário de cada. É exatamente o que faz <code>Tests\Feature\TenantIsolation\CapacitationActionIsolationTest</code> (6 casos, todos no anexo).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>404 ao ler unidade de outro município, ao registrar nela, ao abrir e ao cancelar ação de outro município.</li><li>A listagem devolve apenas ações do próprio município.</li><li>Os candidatos a participante não alcançam profissionais de outro município.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+  
+  <h2>Observações e ressalvas</h2>
+  <section class="note"><h3>Como estas evidências foram produzidas (e por que isso importa)</h3><p>Nenhum print foi tirado à mão. Cada imagem deste dossiê foi gravada pelo <b>mesmo caso Playwright que verifica o critério</b>, executado com <code>CAPTURE_EVIDENCE=1</code> (<code>e2e/helpers/evidence.ts</code>): a foto só é salva quando o caso <b>passa</b>. Se uma asserção cai, não existe imagem — logo, a presença do arquivo é ela própria parte da prova. Sem essa variável de ambiente a suíte roda exatamente como antes, sem gravar nada.</p><p>Quando um caso cobre mais de um critério, o mesmo instante é salvo com um nome por critério (ex.: <code>ca02-…</code>, <code>ca03-…</code> e <code>ca04-…</code> são a mesma tela).</p></section><section class="note"><h3>Mensagens da API em inglês sobre UI em pt-BR (anterior a esta HU)</h3><p>Alguns textos vindos da API aparecem em inglês nos prints (o diálogo de recusa da exclusão, o painel “Sem lotação vigente”, o toast de cancelamento). É um comportamento de <b>plataforma</b>, comum a todos os módulos e anterior a este épico: o <code>SetLocale</code> da API resolve o idioma pelo <code>Accept-Language</code> do navegador (o Chromium do Playwright envia <code>en-US</code>) e <b>nenhum</b> dos frontends envia <code>X-Locale</code>. O que os critérios afirmam — a recusa, a explicação e a orientação — está atendido; a tradução é dívida técnica registrada à parte.</p></section><section class="note"><h3>Onde o anexo automatizado foi executado</h3><p>O anexo Pest foi rodado no <b>host</b>, em <code>api/</code>, com <code>DB_CONNECTION=sqlite DB_DATABASE=:memory:</code>. Rodar a mesma suíte dentro do contêiner da stack E2E <b>não é seguro</b>: as variáveis de ambiente do contêiner vencem os <code>&lt;env&gt;</code> do <code>phpunit.xml</code>, e o <code>RefreshDatabase</code> recria o banco <code>esuas_e2e</code> — isto é, apaga a massa da própria stack de evidências.</p></section><section class="note"><h3>Complemento de 04/09/2026 — a suíte de apuração entrou no apêndice</h3>O dossiê original cobria com rigor o ato de registrar: cada critério do chamado tinha teste nomeado pelo proprio numero, de CA01 a CA12. Restava uma costura fina: dois criterios nao terminam no registro, terminam na contagem. O CA05 exige que o curso sem data de fim conte nos meses seguintes, e o CA10 exige que a acao cancelada deixe de contar — e o filtro do anexo cobria registro, participantes e remessa, mas nao a apuracao.<br><br>A execucao foi refeita acrescentando a suite de apuracao, e os dois testes que fecham essas metades passaram a acompanhar o documento, citados nominalmente nos respectivos criterios. Nenhum resultado anterior foi alterado.</section>
+  
+  <h2>Anexo — Cobertura automatizada (Pest, --filter="CapacitationAction(?!Type)|CapacitationParticipant|CapacitationRemittance|CapacitationTally") — 72 testes, 307 asserções, todos verdes</h2>
+  <pre class="pest">
+   PASS  Tests\Unit\Services\Capacitation\CapacitationActionWriteTest
+  ✓ it registra a ação com participantes, autor congelado e tenant da u… 0.79s  
+  ✓ it não deixa ação órfã quando um participante não tem lotação vigen… 0.11s  
+  ✓ it sincroniza a lista completa na edição e registra o diff sem PII…  0.04s  
+  ✓ it preserva os participantes quando a edição não menciona a lista    0.03s  
+  ✓ it cancela com motivo e recusa o segundo cancelamento (CA10/F3)      0.05s  
+  ✓ it impede o mesmo profissional duas vezes na mesma ação (RN07 no sc… 0.03s  
+
+   PASS  Tests\Unit\Services\Capacitation\CapacitationParticipantValidatorTest
+  ✓ it aceita participante com lotação aberta iniciada antes da data (Q… 0.07s  
+  ✓ it recusa participante cuja lotação começou depois da data da ação…  0.03s  
+  ✓ it trata end_date como fronteira ABERTA: encerrar no dia da ação já… 0.03s  
+  ✓ it recusa lotação vigente em OUTRA unidade do mesmo município        0.03s  
+  ✓ it aceita lotação que intersecta o período do curso, inclusive no ú… 0.03s  
+  ✓ it recusa lotação encerrada no início do período do curso (fronteir… 0.03s  
+  ✓ it aceita curso em andamento (ended_on nulo) enquanto a lotação est… 0.02s  
+  ✓ it recusa profissional inativo ou de outro município, sem vazar CPF  0.03s  
+  ✓ it nomeia o profissional e a data na recusa, e para no PRIMEIRO pro… 0.03s  
+  ✓ it devolve null quando a lista inteira passa                         0.03s  
+  ✓ it candidatos e checagem por participante concordam em toda a matri… 0.04s  
+  ✓ it a Rule falha com a mensagem da recusa e passa em silêncio quando… 0.04s  
+
+   PASS  Tests\Unit\Services\Capacitation\CapacitationRemittanceWarningServiceTest
+  ✓ it avisa quando a referência da data já tem remessa gerada           0.03s  
+  ✓ it não avisa quando a remessa ainda não foi concluída                0.02s  
+  ✓ it não avisa por remessa de OUTRO município                          0.04s  
+  ✓ it deriva uma referência por mês coberto pelo período do curso       0.04s  
+  ✓ it avisa por qualquer mês do período que já tenha remessa gerada     0.03s  
+  ✓ it considera também a janela ANTERIOR quando a data da ação muda de… 0.03s  
+  ✓ it formata a referência no padrão MM/AAAA do Manual                  0.03s  
+
+   PASS  Tests\Unit\Services\Capacitation\CapacitationTallyServiceTest
+  ✓ it apura participacoes, eventos e cursos de uma unidade no mes (CA0… 0.06s  
+  ✓ it devolve sempre os cinco contadores, na ordem do leiaute e com a…  0.04s  
+  ✓ it conta reuniao interna por EVENTO, ignorando quantos participaram… 0.05s  
+  ✓ it conta o curso em TODOS os meses em que esteve em andamento (CA04… 0.03s  
+  ✓ it conta o curso sem data de fim do inicio em diante (CA05)          0.03s  
+  ✓ it conta uma vez a profissional que esta em dois cursos simultaneos… 0.04s  
+  ✓ it nao conta acao cancelada, e a unidade fica sem registro no perio… 0.04s  
+  ✓ it conta a acao retroativa no mes em que ela OCORREU, nao no do lan… 0.03s  
+  ✓ it devolve contador de tipo INATIVADO, porque o campo e do leiaute…  0.03s  
+  ✓ it sinaliza has_no_records apenas quando NAO existe registro algum…  0.03s  
+  ✓ it ordena as unidades por nome e ignora id inexistente (RN11)        0.03s  
+  ✓ it nao mistura as acoes de outra unidade nem de outro municipio      0.04s  
+  ✓ it recusa mes fora de 1–12 (D08)                                     0.03s  
+
+   PASS  Tests\Feature\Client\CapacitationActionTest
+  ✓ it registra seminario com tres participantes, autor e data de lanca… 0.10s  
+  ✓ it registra reuniao interna sem participantes quando o tipo conta e… 0.04s  
+  ✓ it recusa palestra sem participante quando o tipo conta participaco… 0.05s  
+  ✓ it recusa data unica e aceita periodo aberto quando o tipo e de per… 0.05s  
+  ✓ it persiste o curso em andamento com ended_on nulo (CA05)            0.04s  
+  ✓ it recusa participante sem lotacao vigente na data e nao deixa acao… 0.05s  
+  ✓ it recusa o mesmo profissional repetido na lista de participantes (… 0.04s  
+  ✓ it barra a duplicidade no banco pelo indice unico da dupla acao/pro… 0.04s  
+  ✓ it recusa acao com data posterior a hoje (CA08)                      0.05s  
+  ✓ it salva o retroativo e avisa que a remessa da referencia ja foi ge… 0.05s  
+  ✓ it cancela com motivo, mantem a acao listada e recusa o segundo can… 0.06s  
+  ✓ it nao expoe rota DELETE para o recurso (CA10/D04)                   0.04s  
+  ✓ it devolve 403 com error_code quando o Operacional nao tem lotacao…  0.06s  
+  ✓ it devolve 403 quando a lotacao do Operacional na unidade ja foi en… 0.04s  
+  ✓ it permite ao Master registrar em qualquer unidade do municipio (CA… 0.06s  
+
+   PASS  Tests\Feature\Client\CapacitationTallyTest
+  ✓ it devolve os cinco contadores com a forma de contagem e o rotulo d… 0.07s  
+  ✓ it sinaliza a unidade sem nenhum registro com os cinco contadores z… 0.05s  
+  ✓ it distingue "nao registrou nada" de "registrou algo que conta zero… 0.05s  
+  ✓ it devolve ao Operacional apenas as unidades de lotacao vigente (CA… 0.06s  
+  ✓ it devolve 404 ao Operacional que filtra unidade fora da sua lotaca… 0.05s  
+  ✓ it devolve 200 com lista vazia ao Operacional sem lotacao nenhuma (… 0.05s  
+  ✓ it devolve ao Master todas as unidades do municipio, ordenadas por…  0.04s  
+  ✓ it nao expoe nenhuma rota de escrita para o recurso (RN03/D09)       0.04s  
+  ✓ it recusa mes fora de 1-12 e exercicio fora de faixa (D08/§10)       0.05s  
+  ✓ it exige a permissao capacitation-tallies.index                      0.04s  
+
+   PASS  Tests\Feature\TenantIsolation\CapacitationActionIsolationTest
+  ✓ it devolve 404 ao ler a unidade de outro municipio (CA12)            0.05s  
+  ✓ it devolve 404 ao registrar em unidade de outro municipio (CA12)     0.04s  
+  ✓ it devolve 404 ao abrir uma acao de outro municipio (CA12)           0.04s  
+  ✓ it devolve 404 ao cancelar uma acao de outro municipio (CA12)        0.04s  
+  ✓ it lista apenas as acoes do proprio municipio (CA12)                 0.04s  
+  ✓ it nao alcanca profissionais de outro municipio como candidatos a p… 0.05s  
+
+   PASS  Tests\Feature\TenantIsolation\CapacitationTallyIsolationTest
+  ✓ it devolve 404 quando o Master de A filtra a apuracao por unidade d… 0.05s  
+  ✓ it apura apenas unidades do proprio municipio, sem somar acoes de B… 0.05s  
+  ✓ it nao vaza a unidade de B nem quando o Master de A e Master tambem… 0.06s  
+
+  Tests:    72 passed (307 assertions)
+  Duration: 4.70s
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

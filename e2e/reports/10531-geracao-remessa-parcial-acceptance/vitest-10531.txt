@@ -1,0 +1,638 @@
+
+> esuas-client@0.1.0 test:run
+> vitest run
+
+
+ RUN  v2.1.9 /Users/binho/Projetos/esuas-all/client
+
+ ✓ src/modules/geo-panel/composables/useGeoPanelExport.test.ts (11 tests) 10ms
+ ✓ src/modules/cadunico-imports/composables/useCadunicoImports.test.ts (19 tests) 15ms
+ ✓ src/modules/geo-panel/composables/useGeoPanel.test.ts (28 tests) 11ms
+ ✓ src/modules/geo-panel/composables/useGeoPanelSearch.test.ts (18 tests) 9ms
+ ✓ src/modules/geo-panel/components/GeoPanelSummaryBar.test.ts (16 tests) 65ms
+ ✓ src/modules/siap-remittances/components/SiapPreflightPanel.test.ts (26 tests) 162ms
+ ✓ src/stores/me.test.ts (21 tests) 7ms
+ ✓ src/modules/social-units/components/detail/tabs/HistoryTab.test.ts (9 tests) 50ms
+ ✓ src/modules/siap-remittances/components/SiapPendencyLink.test.ts (12 tests) 41ms
+ ✓ src/modules/social-entities/schemas/SocialEntitySchema.test.ts (29 tests) 7ms
+ ✓ src/modules/geo-panel/components/GeoPanelSectorCombobox.test.ts (16 tests) 148ms
+ ✓ src/pages/auth/LoginPage.test.ts (28 tests) 291ms
+ ✓ src/pages/app/ProfissionalMunicipalFormPage.test.ts (10 tests) 395ms
+ ✓ src/modules/users/composables/useUsers.test.ts (12 tests) 10ms
+ ✓ src/modules/siap-remittances/components/SiapBlockingIssueCallout.test.ts (11 tests) 51ms
+ ✓ src/modules/address-inconsistencies/composables/useAddressInconsistencies.test.ts (14 tests) 10ms
+ ✓ src/pages/app/GeoPanelPage.test.ts (5 tests) 85ms
+ ✓ src/router/guards.test.ts (20 tests) 6ms
+ ✓ src/modules/social-professionals/composables/useSocialProfessionals.test.ts (12 tests) 4ms
+ ✓ src/modules/geo-panel/components/GeoPanelNeighborhoodCombobox.test.ts (13 tests) 116ms
+ ✓ src/components/app/sidebar-menu.test.ts (11 tests) 49ms
+ ✓ src/modules/geo-panel/composables/useMapProvider.test.ts (7 tests) 20ms
+ ✓ src/modules/social-entities/components/SocialEntityHistoryTab.test.ts (9 tests) 41ms
+ ✓ src/modules/professionals/composables/useProfessionals.test.ts (13 tests) 8ms
+ ✓ src/pages/app/DashboardPage.spec.ts (25 tests) 978ms
+ ✓ src/modules/legal-documents/composables/useTenantLegalDocuments.test.ts (15 tests) 5ms
+ ✓ src/modules/platform-updates/stores/platformUpdates.test.ts (11 tests) 11ms
+ ✓ src/modules/social-units/composables/useSocialUnitAddress.test.ts (11 tests) 9ms
+ ✓ src/services/http/tenantAccess.test.ts (15 tests) 6ms
+ ✓ src/composables/useBranding.test.ts (15 tests) 3ms
+ ✓ src/modules/geo-panel/components/GeoPanelSearchModal.radius.test.ts (6 tests) 281ms
+ ✓ src/components/auth/SupportContactDialog.test.ts (11 tests) 250ms
+ ✓ src/modules/social-entities/components/SocialEntitiesListPage.test.ts (2 tests) 30ms
+ ✓ src/modules/social-entities/components/InfoTab.test.ts (14 tests) 1034ms
+stderr | src/pages/app/ConfiguracoesPage.test.ts > ConfiguracoesPage — CA08 da HU #10367 > CA08: com remessa gerada, alterar o identificador NÃO salva e abre o aviso
+[Vue warn]: Invalid prop: type check failed for prop "resolveCep". Expected Function, got Undefined  
+  at <SocialUnitAddressDrawer open=false address=null is-saving=false  ... > 
+  at <ConfiguracoesPage ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | src/pages/app/ConfiguracoesPage.test.ts > ConfiguracoesPage — CA08 da HU #10367 > CA08: ao confirmar, salva com confirm_identifier_change
+[Vue warn]: Invalid prop: type check failed for prop "resolveCep". Expected Function, got Undefined  
+  at <SocialUnitAddressDrawer open=false address=null is-saving=false  ... > 
+  at <ConfiguracoesPage ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | src/pages/app/ConfiguracoesPage.test.ts > ConfiguracoesPage — CA08 da HU #10367 > CA08: ao cancelar, nada é salvo
+[Vue warn]: Invalid prop: type check failed for prop "resolveCep". Expected Function, got Undefined  
+  at <SocialUnitAddressDrawer open=false address=null is-saving=false  ... > 
+  at <ConfiguracoesPage ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | src/pages/app/ConfiguracoesPage.test.ts > ConfiguracoesPage — CA08 da HU #10367 > CA08: sem remessa gerada, salva direto sem incomodar o Master
+[Vue warn]: Invalid prop: type check failed for prop "resolveCep". Expected Function, got Undefined  
+  at <SocialUnitAddressDrawer open=false address=null is-saving=false  ... > 
+  at <ConfiguracoesPage ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | src/pages/app/ConfiguracoesPage.test.ts > ConfiguracoesPage — CA08 da HU #10367 > CA08: editar outro campo com remessa gerada não pede confirmação
+[Vue warn]: Invalid prop: type check failed for prop "resolveCep". Expected Function, got Undefined  
+  at <SocialUnitAddressDrawer open=false address=null is-saving=false  ... > 
+  at <ConfiguracoesPage ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | src/pages/app/ConfiguracoesPage.test.ts > ConfiguracoesPage — deep-link das abas (D-CA06-2) > abre a aba de parâmetros TCE/AL quando a URL traz ?tab=tce
+[Vue warn]: Invalid prop: type check failed for prop "resolveCep". Expected Function, got Undefined  
+  at <SocialUnitAddressDrawer open=false address=null is-saving=false  ... > 
+  at <ConfiguracoesPage ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | src/pages/app/ConfiguracoesPage.test.ts > ConfiguracoesPage — deep-link das abas (D-CA06-2) > cai na aba padrão quando a aba da URL não existe
+[Vue warn]: Invalid prop: type check failed for prop "resolveCep". Expected Function, got Undefined  
+  at <SocialUnitAddressDrawer open=false address=null is-saving=false  ... > 
+  at <ConfiguracoesPage ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ ✓ src/pages/app/ConfiguracoesPage.test.ts (7 tests) 172ms
+ ✓ src/pages/auth/ResetPasswordPage.test.ts (8 tests) 113ms
+ ✓ src/modules/professionals/components/ProfessionalActionsMenu.test.ts (12 tests) 55ms
+ ✓ src/modules/families/components/detail/tabs/VulnerabilidadesTab.test.ts (10 tests) 47ms
+ ✓ src/modules/social-entities/components/SocialEntitiesFilters.test.ts (12 tests) 99ms
+ ✓ src/modules/person-search/composables/usePersonSearch.test.ts (11 tests) 28ms
+ ✓ src/modules/social-entities/composables/useSocialEntityForm.test.ts (6 tests) 5ms
+ ✓ src/modules/siap-remittances/composables/useSiapRemittances.test.ts (9 tests) 11ms
+ ✓ src/pages/app/RemessasSiapPage.test.ts (6 tests) 38ms
+ ✓ src/components/map/MapPointPicker.spec.ts (9 tests) 206ms
+ ✓ src/pages/auth/ForgotPasswordPage.test.ts (6 tests) 248ms
+ ✓ src/modules/professionals/components/ManageProfessionalRolesDrawer.test.ts (5 tests) 112ms
+ ✓ src/modules/social-entities/composables/useSocialEntities.test.ts (12 tests) 7ms
+ ✓ src/modules/legal-documents/components/PersonalizeLegalDocumentSheet.test.ts (7 tests) 146ms
+ ✓ src/modules/families/components/detail/tabs/ResumoTab.test.ts (10 tests) 99ms
+ ✓ src/components/address/AddressDrawer.test.ts (6 tests) 144ms
+ ✓ src/modules/professionals/composables/useProfessionalAccessReview.test.ts (9 tests) 13ms
+ ✓ src/modules/tenant-settings/composables/useTenantResponsibles.test.ts (9 tests) 14ms
+ ✓ src/modules/social-professionals/composables/useSocialProfessionalAssignments.test.ts (7 tests) 3ms
+ ✓ src/modules/dashboard/resources/insights.test.ts (10 tests) 5ms
+ ✓ src/modules/tenant-settings/components/OrganizationLogoHeader.test.ts (7 tests) 94ms
+ ✓ src/modules/social-units/components/detail/SocialUnitAddressDrawer.test.ts (4 tests) 135ms
+ ✓ src/modules/social-professionals/composables/useSocialProfessionalCpfLookup.test.ts (9 tests) 16ms
+ ✓ src/composables/useRememberedCpf.test.ts (17 tests) 4ms
+ ✓ src/modules/platform-updates/components/PlatformUpdateNotice.test.ts (7 tests) 317ms
+ ✓ src/modules/siap-remittances/components/SiapRemittancesTable.test.ts (6 tests) 94ms
+ ✓ src/modules/professionals/resources/ProfessionalHttp.test.ts (14 tests) 10ms
+ ✓ src/stores/auth.test.ts (14 tests) 4027ms
+   ✓ useAuthStore.login (modo mock) > user mock com 1 tenant → auto-seleciona e redireciona para dashboard 805ms
+   ✓ useAuthStore.login (modo mock) > user mock com N tenants → tela de selecao sem ativar 806ms
+   ✓ useAuthStore.login (modo mock) > user mock sem tenants vinculados → erro amigavel 802ms
+   ✓ useAuthStore.login (modo mock) > senha "erro" → falha sem persistir 802ms
+   ✓ useAuthStore.login (modo mock) > CPF não cadastrado em mockUsers → falha 801ms
+ ✓ src/modules/geo-panel/composables/useNeighborhoodsLayer.test.ts (6 tests) 3ms
+ ✓ src/modules/users/resources/UserLookupHttp.test.ts (9 tests) 5ms
+ ✓ src/modules/social-units/composables/useSocialUnits.test.ts (8 tests) 3ms
+ ✓ src/modules/social-entities/composables/useSocialEntityLegalRepresentative.test.ts (8 tests) 3ms
+ ✓ src/modules/tenant-settings/resources/TenantSettingsHttp.test.ts (11 tests) 3ms
+ ✓ src/modules/professionals/composables/useProfessionalUnits.test.ts (6 tests) 7ms
+ ✓ src/modules/professionals/composables/useProfessionalRoleSuggestion.test.ts (7 tests) 9ms
+ ✓ src/pages/app/ProfissionaisMunicipaisListPage.test.ts (6 tests) 88ms
+ ✓ src/components/app/dashboard/StrategicIndicatorsBar.test.ts (6 tests) 105ms
+ ✓ src/composables/usePersonCpfLookup.test.ts (9 tests) 20ms
+ ✓ src/modules/geo-panel/heat-palettes.test.ts (12 tests) 3ms
+ ✓ src/modules/dashboard/composables/useStrategicIndicators.test.ts (6 tests) 4ms
+ ✓ src/modules/tenant-settings/composables/useTenantSettings.test.ts (8 tests) 20ms
+ ✓ src/composables/useValidCnpj.test.ts (23 tests) 2ms
+ ✓ src/components/app/dashboard/TerritorialPanel.test.ts (5 tests) 106ms
+ ✓ src/modules/social-entities/composables/useSocialEntitiesView.test.ts (12 tests) 4ms
+ ✓ src/modules/dashboard/composables/useCadastralUpdate.test.ts (5 tests) 2ms
+ ✓ src/directives/can.test.ts (6 tests) 54ms
+ ✓ src/modules/professionals/components/ProfessionalAddressField.test.ts (6 tests) 63ms
+ ✓ src/modules/social-entities/components/AssignLegalRepresentativeDialog.test.ts (7 tests) 72ms
+ ✓ src/modules/dashboard/composables/useTerritorial.test.ts (5 tests) 3ms
+ ✓ src/modules/professionals/composables/useProfessionalLookup.test.ts (7 tests) 11ms
+ ✓ src/modules/social-professionals/resources/SocialProfessionalHttp.test.ts (8 tests) 4ms
+ ✓ src/pages/app/PlatformVersionsHistoryPage.test.ts (4 tests) 162ms
+ ✓ src/components/ui/input/Input.test.ts (11 tests) 39ms
+ ✓ src/modules/tenant-settings/components/drawers/TceParametersDrawer.test.ts (8 tests) 120ms
+ ✓ src/modules/dashboard/composables/useGeneralSummary.test.ts (5 tests) 3ms
+ ✓ src/modules/social-entities/components/SocialEntityActionsMenu.test.ts (4 tests) 55ms
+ ✓ src/composables/useMeProfile.test.ts (5 tests) 9ms
+ ✓ src/modules/dashboard/composables/usePriorityGroups.test.ts (5 tests) 3ms
+ ✓ src/modules/dashboard/composables/useBolsaFamilia.test.ts (5 tests) 3ms
+ ✓ src/modules/professionals/components/ProfessionalsCardGrid.test.ts (7 tests) 57ms
+ ✓ src/modules/tenant-settings/components/ResponsibleCard.test.ts (6 tests) 96ms
+ ✓ src/modules/families/composables/useFamilyDetail.test.ts (5 tests) 5ms
+ ✓ src/components/app/dashboard/PriorityGroupsPanel.test.ts (5 tests) 123ms
+ ✓ src/modules/geo-panel/components/GeoPanelHeatLegend.test.ts (4 tests) 112ms
+ ✓ src/components/app/dashboard/CadastralUpdatePanel.test.ts (4 tests) 84ms
+ ✓ src/modules/dashboard/composables/useRegistrationQuality.test.ts (5 tests) 5ms
+ ✓ src/modules/social-entities/composables/useSocialEntitiesLookups.test.ts (5 tests) 5ms
+ ✓ src/modules/geo-panel/providers/openlayers.test.ts (6 tests) 4ms
+ ✓ src/components/app/dashboard/BolsaFamiliaPanel.test.ts (5 tests) 120ms
+ ✓ src/components/app/dashboard/GeneralSummaryPanel.test.ts (5 tests) 76ms
+ ✓ src/modules/social-units/composables/useSocialUnitsLookups.test.ts (5 tests) 3ms
+ ✓ src/modules/social-professionals/components/OtherAssignmentsList.test.ts (5 tests) 40ms
+ ✓ src/modules/social-units/composables/useSocialUnitsView.test.ts (10 tests) 3ms
+ ✓ src/modules/dashboard/composables/useAttendance.test.ts (5 tests) 4ms
+ ✓ src/modules/tenant-settings/components/TceParametersCard.test.ts (7 tests) 96ms
+ ✓ src/modules/tenant-settings/composables/useTenantOfficialAddress.test.ts (4 tests) 5ms
+ ✓ src/pages/app/EntidadeFormPage.test.ts (5 tests) 454ms
+ ✓ src/modules/social-entities/resources/SocialEntityHttp.test.ts (9 tests) 3ms
+ ✓ src/modules/social-units/composables/useSocialUnitEquipmentAssignments.test.ts (5 tests) 16ms
+ ✓ src/modules/cadunico-imports/resources/CadunicoImportHttp.test.ts (6 tests) 3ms
+ ✓ src/modules/users/components/UserAvatar.test.ts (11 tests) 49ms
+ ✓ src/services/http/ResourceHttp.test.ts (9 tests) 10ms
+ ✓ src/components/app/dashboard/RegistrationQualityPanel.test.ts (4 tests) 110ms
+ ✓ src/modules/dashboard/resources/cadastralUpdate.test.ts (3 tests) 2ms
+ ✓ src/modules/geo-panel/composables/useMapMeasurement.test.ts (8 tests) 11ms
+ ✓ src/modules/tenant-settings/composables/useTenantSettingsLookups.test.ts (4 tests) 9ms
+ ✓ src/composables/useSupportChannels.test.ts (9 tests) 3ms
+ ✓ src/modules/legal-acceptance/components/LegalAcceptanceDocCard.test.ts (5 tests) 121ms
+ ✓ src/composables/useErrorHandler.test.ts (4 tests) 9ms
+ ✓ src/modules/social-professionals/components/dialogs/AttachUnitDrawer.test.ts (5 tests) 225ms
+stderr | src/modules/legal-acceptance/stores/legalAcceptance.test.ts > useLegalAcceptanceStore > fail open: erro no fetch resolve como sem pendência
+[legal-acceptance] falha ao consultar pendência de aceite
+
+ ✓ src/modules/legal-acceptance/stores/legalAcceptance.test.ts (6 tests) 7ms
+ ✓ src/modules/social-professionals/components/SocialProfessionalUnitFormSheet.test.ts (3 tests) 267ms
+ ✓ src/modules/families/components/detail/tabs/ComposicaoFamiliarTab.test.ts (3 tests) 62ms
+ ✓ src/components/app/dashboard/AttendancePanel.test.ts (4 tests) 61ms
+ ✓ src/components/app/dashboard/MetricCard.test.ts (4 tests) 65ms
+ ✓ src/modules/dashboard/resources/territorial.test.ts (3 tests) 24ms
+ ✓ src/modules/legal-acceptance/composables/useReadingProgress.test.ts (5 tests) 5ms
+ ✓ src/composables/useCpfMask.test.ts (21 tests) 7ms
+ ✓ src/modules/professionals/components/ProfessionalStatusBadge.test.ts (5 tests) 65ms
+ ✓ src/modules/social-units/resources/GeocodeHttp.test.ts (4 tests) 2ms
+ ✓ src/modules/social-entities/components/LegalRepresentativeCard.test.ts (6 tests) 111ms
+ ✓ src/services/http/RelationalHttp.test.ts (4 tests) 4ms
+ ✓ src/components/app/DatePicker.test.ts (5 tests) 38ms
+ ✓ src/modules/tenant-settings/components/OfficialAddressCard.test.ts (4 tests) 159ms
+ ✓ src/modules/users/resources/UserHttp.test.ts (4 tests) 5ms
+ ✓ src/modules/dashboard/resources/generalSummary.test.ts (4 tests) 2ms
+ ✓ src/modules/platform-updates/components/AppVersionFooter.test.ts (3 tests) 23ms
+ ✓ src/modules/dashboard/resources/bolsaFamilia.test.ts (3 tests) 5ms
+ ✓ src/modules/address-inconsistencies/resources/AddressInconsistencyHttp.test.ts (4 tests) 6ms
+ ✓ src/modules/dashboard/resources/dashboard.test.ts (4 tests) 1ms
+stderr | src/modules/platform-updates/platform-updates.gate.test.ts > client — histórico de versões (consumo) e ausência de gestão de versões > rota platform-updates-history existe e NÃO tem meta.permission (RN10)
+[Vue Router warn]: uncaught error during route navigation:
+TypeError: meStore.ensureHydrated is not a function
+    at redirectIfAuthenticated (/Users/binho/Projetos/esuas-all/client/src/router/guards.ts:31:17)
+    at file:///Users/binho/Projetos/esuas-all/client/node_modules/vue-router/dist/devtools-DCoWQoU_.js:555:50
+    at runWithContext (file:///Users/binho/Projetos/esuas-all/client/node_modules/vue-router/dist/devtools-DCoWQoU_.js:537:83)
+    at file:///Users/binho/Projetos/esuas-all/client/node_modules/vue-router/dist/devtools-DCoWQoU_.js:555:23
+    at new Promise (<anonymous>)
+    at file:///Users/binho/Projetos/esuas-all/client/node_modules/vue-router/dist/devtools-DCoWQoU_.js:539:15
+    at Object.runWithContext (/Users/binho/Projetos/esuas-all/client/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:4294:18)
+    at runWithContext (file:///Users/binho/Projetos/esuas-all/client/node_modules/vue-router/dist/vue-router.js:1292:64)
+    at file:///Users/binho/Projetos/esuas-all/client/node_modules/vue-router/dist/vue-router.js:1494:63
+    at processTicksAndRejections (node:internal/process/task_queues:104:5)
+[Vue Router warn]: Unexpected error when starting the router: TypeError: meStore.ensureHydrated is not a function
+    at redirectIfAuthenticated (/Users/binho/Projetos/esuas-all/client/src/router/guards.ts:31:17)
+    at file:///Users/binho/Projetos/esuas-all/client/node_modules/vue-router/dist/devtools-DCoWQoU_.js:555:50
+    at runWithContext (file:///Users/binho/Projetos/esuas-all/client/node_modules/vue-router/dist/devtools-DCoWQoU_.js:537:83)
+    at file:///Users/binho/Projetos/esuas-all/client/node_modules/vue-router/dist/devtools-DCoWQoU_.js:555:23
+    at new Promise (<anonymous>)
+    at file:///Users/binho/Projetos/esuas-all/client/node_modules/vue-router/dist/devtools-DCoWQoU_.js:539:15
+    at Object.runWithContext (/Users/binho/Projetos/esuas-all/client/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:4294:18)
+    at runWithContext (file:///Users/binho/Projetos/esuas-all/client/node_modules/vue-router/dist/vue-router.js:1292:64)
+    at file:///Users/binho/Projetos/esuas-all/client/node_modules/vue-router/dist/vue-router.js:1494:63
+    at processTicksAndRejections (node:internal/process/task_queues:104:5)
+
+ ✓ src/modules/platform-updates/platform-updates.gate.test.ts (3 tests) 51ms
+ ✓ src/modules/dashboard/resources/registrationQuality.test.ts (2 tests) 1ms
+ ✓ src/components/app/RichTextEditor.test.ts (4 tests) 235ms
+ ✓ src/composables/useCnpjMask.test.ts (17 tests) 30ms
+ ✓ src/modules/siap-remittances/components/SiapPeriodPicker.test.ts (1 test) 33ms
+stderr | src/modules/tenant-settings/components/drawers/TceIdentifierChangeDialog.test.ts > TceIdentifierChangeDialog — CA08 da HU #10367 > avisa que as remessas anteriores mantêm o código antigo
+aria-hidden HTMLDivElement {
+  Symbol(SameObject caches): [Object: null prototype] {
+    style: CSSStyleDeclaration {},
+    classList: DOMTokenList {}
+  },
+  Symbol(_vei): {
+    onFocusCapture: [Function: invoker] {
+      value: [Function: onFocusCapture],
+      attached: 1786986788869
+    },
+    onBlurCapture: [Function: invoker] {
+      value: [Function: onBlurCapture],
+      attached: 1786986788869
+    },
+    onPointerdownCapture: [Function: invoker] {
+      value: [Function: onPointerDownCapture],
+      attached: 1786986788869
+    },
+    onKeydown: [Function: invoker] {
+      value: [Function: handleKeyDown],
+      attached: 1786986788869
+    }
+  }
+} in not contained inside HTMLBodyElement {
+  Symbol(SameObject caches): [Object: null prototype] {
+    style: CSSStyleDeclaration {
+      '0': 'padding-right',
+      '1': 'margin-right',
+      '2': 'overflow'
+    }
+  }
+} . Doing nothing
+Warning: `DialogContent` requires a `DialogTitle` for the component to be accessible for screen reader users.
+
+If you want to hide the `DialogTitle`, you can wrap it with our VisuallyHidden component.
+
+For more information, see https://www.reka-ui.com/docs/components/dialog.html#title
+Warning: Missing `Description` or `aria-describedby="undefined"` for DialogContent.
+
+stderr | src/modules/tenant-settings/components/drawers/TceIdentifierChangeDialog.test.ts > TceIdentifierChangeDialog — CA08 da HU #10367 > mostra o identificador anterior e o novo
+aria-hidden HTMLDivElement {
+  Symbol(SameObject caches): [Object: null prototype] {
+    style: CSSStyleDeclaration { '0': 'pointer-events' },
+    classList: DOMTokenList {}
+  },
+  Symbol(_vei): {
+    onFocusCapture: [Function: invoker] {
+      value: [Function: onFocusCapture],
+      attached: 1786986788938
+    },
+    onBlurCapture: [Function: invoker] {
+      value: [Function: onBlurCapture],
+      attached: 1786986788938
+    },
+    onPointerdownCapture: [Function: invoker] {
+      value: [Function: onPointerDownCapture],
+      attached: 1786986788938
+    },
+    onKeydown: [Function: invoker] {
+      value: [Function: handleKeyDown],
+      attached: 1786986788938
+    }
+  }
+} in not contained inside HTMLBodyElement {
+  Symbol(SameObject caches): [Object: null prototype] {
+    style: CSSStyleDeclaration {
+      '0': 'padding-right',
+      '1': 'margin-right',
+      '2': 'overflow',
+      '3': 'pointer-events'
+    },
+    children: HTMLCollection {}
+  }
+} . Doing nothing
+Warning: `DialogContent` requires a `DialogTitle` for the component to be accessible for screen reader users.
+
+If you want to hide the `DialogTitle`, you can wrap it with our VisuallyHidden component.
+
+For more information, see https://www.reka-ui.com/docs/components/dialog.html#title
+Warning: Missing `Description` or `aria-describedby="undefined"` for DialogContent.
+
+stderr | src/modules/tenant-settings/components/drawers/TceIdentifierChangeDialog.test.ts > TceIdentifierChangeDialog — CA08 da HU #10367 > emite confirm ao confirmar
+aria-hidden HTMLDivElement {
+  Symbol(SameObject caches): [Object: null prototype] {
+    style: CSSStyleDeclaration { '0': 'pointer-events' },
+    classList: DOMTokenList {}
+  },
+  Symbol(_vei): {
+    onFocusCapture: [Function: invoker] {
+      value: [Function: onFocusCapture],
+      attached: 1786986788954
+    },
+    onBlurCapture: [Function: invoker] {
+      value: [Function: onBlurCapture],
+      attached: 1786986788954
+    },
+    onPointerdownCapture: [Function: invoker] {
+      value: [Function: onPointerDownCapture],
+      attached: 1786986788954
+    },
+    onKeydown: [Function: invoker] {
+      value: [Function: handleKeyDown],
+      attached: 1786986788954
+    }
+  }
+} in not contained inside HTMLBodyElement {
+  Symbol(SameObject caches): [Object: null prototype] {
+    style: CSSStyleDeclaration {
+      '0': 'padding-right',
+      '1': 'margin-right',
+      '2': 'overflow',
+      '3': 'pointer-events'
+    },
+    children: HTMLCollection {}
+  }
+} . Doing nothing
+Warning: `DialogContent` requires a `DialogTitle` for the component to be accessible for screen reader users.
+
+If you want to hide the `DialogTitle`, you can wrap it with our VisuallyHidden component.
+
+For more information, see https://www.reka-ui.com/docs/components/dialog.html#title
+Warning: Missing `Description` or `aria-describedby="undefined"` for DialogContent.
+
+stderr | src/modules/tenant-settings/components/drawers/TceIdentifierChangeDialog.test.ts > TceIdentifierChangeDialog — CA08 da HU #10367 > cancelar fecha sem confirmar
+aria-hidden HTMLDivElement {
+  Symbol(SameObject caches): [Object: null prototype] {
+    style: CSSStyleDeclaration { '0': 'pointer-events' },
+    classList: DOMTokenList {}
+  },
+  Symbol(_vei): {
+    onFocusCapture: [Function: invoker] {
+      value: [Function: onFocusCapture],
+      attached: 1786986788970
+    },
+    onBlurCapture: [Function: invoker] {
+      value: [Function: onBlurCapture],
+      attached: 1786986788970
+    },
+    onPointerdownCapture: [Function: invoker] {
+      value: [Function: onPointerDownCapture],
+      attached: 1786986788970
+    },
+    onKeydown: [Function: invoker] {
+      value: [Function: handleKeyDown],
+      attached: 1786986788970
+    }
+  }
+} in not contained inside HTMLBodyElement {
+  Symbol(SameObject caches): [Object: null prototype] {
+    style: CSSStyleDeclaration {
+      '0': 'padding-right',
+      '1': 'margin-right',
+      '2': 'overflow',
+      '3': 'pointer-events'
+    },
+    children: HTMLCollection {}
+  }
+} . Doing nothing
+Warning: `DialogContent` requires a `DialogTitle` for the component to be accessible for screen reader users.
+
+If you want to hide the `DialogTitle`, you can wrap it with our VisuallyHidden component.
+
+For more information, see https://www.reka-ui.com/docs/components/dialog.html#title
+Warning: Missing `Description` or `aria-describedby="undefined"` for DialogContent.
+
+ ✓ src/modules/tenant-settings/components/drawers/TceIdentifierChangeDialog.test.ts (4 tests) 154ms
+ ✓ src/modules/social-entities/components/SocialEntitiesTable.test.ts (4 tests) 60ms
+ ✓ src/modules/social-units/components/SocialUnitsTable.test.ts (4 tests) 37ms
+ ✓ src/modules/social-professionals/components/SocialProfessionalsTable.test.ts (4 tests) 25ms
+ ✓ src/composables/useMoneyMask.test.ts (9 tests) 12ms
+ ✓ src/modules/social-professionals/components/SocialProfessionalsCardGrid.test.ts (4 tests) 52ms
+ ✓ src/modules/cadunico-imports/components/CadunicoImportsTable.test.ts (4 tests) 45ms
+ ✓ src/modules/social-entities/components/SocialEntitiesCardGrid.test.ts (4 tests) 63ms
+ ✓ src/modules/person-search/resources/PersonSearchHttp.test.ts (3 tests) 3ms
+ ✓ src/modules/dashboard/resources/priorityGroups.test.ts (2 tests) 10ms
+ ✓ src/services/http/csrf.test.ts (3 tests) 4ms
+ ✓ src/modules/legal-documents/components/LegalDocumentsTable.test.ts (4 tests) 43ms
+ ✓ src/components/ui/table/TableStatusMessage.test.ts (4 tests) 56ms
+ ✓ src/modules/legal-documents/components/LegalDocumentsCardGrid.test.ts (4 tests) 57ms
+ ✓ src/modules/social-units/components/SocialUnitsCardGrid.test.ts (4 tests) 44ms
+ ✓ src/modules/legal-documents/resources/LegalDocumentHttp.test.ts (5 tests) 2ms
+ ✓ src/modules/legal-acceptance/composables/legalAcceptanceMeta.test.ts (8 tests) 4ms
+ ✓ src/modules/dashboard/resources/attendance.test.ts (2 tests) 17ms
+ ✓ src/modules/social-entities/resources/SocialEntityLegalRepresentativeHttp.test.ts (3 tests) 3ms
+ ✓ src/modules/cadunico-imports/components/CadunicoImportsCardGrid.test.ts (4 tests) 29ms
+ ✓ src/composables/usePhoneMask.test.ts (14 tests) 2ms
+ ✓ src/modules/address-inconsistencies/components/AddressInconsistenciesTable.test.ts (4 tests) 47ms
+ ✓ src/stores/app.test.ts (6 tests) 5ms
+ ✓ src/modules/professionals/components/ProfessionalsTable.test.ts (4 tests) 33ms
+ ✓ src/services/http/interceptors.test.ts (4 tests) 1ms
+ ✓ src/lib/date.test.ts (5 tests) 4ms
+ ✓ src/modules/social-units/resources/SocialUnitHttp.test.ts (6 tests) 2ms
+ ✓ src/components/auth/AuthInput.test.ts (4 tests) 31ms
+ ✓ src/components/app/dashboard/InsightStrip.test.ts (3 tests) 29ms
+ ✓ src/modules/families/resources/FamilyHttp.test.ts (2 tests) 3ms
+ ✓ src/composables/useCepMask.test.ts (10 tests) 3ms
+ ✓ src/modules/legal-acceptance/resources/LegalAcceptanceHttp.test.ts (3 tests) 3ms
+ ✓ src/services/http/axios.test.ts (2 tests) 22ms
+ ✓ src/modules/person-search/components/PersonSearchTable.test.ts (4 tests) 31ms
+ ✓ src/modules/legal-acceptance/components/LogoutConfirmDialog.test.ts (2 tests) 68ms
+ ✓ src/lib/utils.test.ts (4 tests) 8ms
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 8 unhandled errors during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+ReferenceError: document is not defined
+ ❯ testStyle node_modules/echarts/lib/component/tooltip/helper.js:57:15
+ ❯ node_modules/echarts/lib/component/tooltip/helper.js:64:31
+ ❯ ModuleJob.run node:internal/modules/esm/module_job:439:25
+ ❯ processTicksAndRejections node:internal/process/task_queues:104:5
+ ❯ node:internal/modules/esm/loader:633:26
+ ❯ VitestExecutor.interopedImport node_modules/vite-node/dist/client.mjs:421:28
+ ❯ VitestExecutor.directRequest node_modules/vite-node/dist/client.mjs:280:24
+ ❯ VitestExecutor.cachedRequest node_modules/vite-node/dist/client.mjs:206:14
+ ❯ VitestExecutor.dependencyRequest node_modules/vite-node/dist/client.mjs:259:12
+ ❯ src/components/app/dashboard/BeneficiaryProfileChart.vue:5:31
+      3| import { use } from 'echarts/core'
+      4| import { PieChart } from 'echarts/charts'
+      5| import { LegendComponent, TooltipComponent } from 'echarts/components'
+       |                               ^
+      6| import { CanvasRenderer } from 'echarts/renderers'
+      7| import VChart from 'vue-echarts'
+
+This error originated in "src/components/app/dashboard/BolsaFamiliaPanel.test.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+This error was caught after test environment was torn down. Make sure to cancel any running tasks before test finishes:
+- cancel timeouts using clearTimeout and clearInterval
+- wait for promises to resolve using the await keyword
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+ReferenceError: document is not defined
+ ❯ testStyle node_modules/echarts/lib/component/tooltip/helper.js:57:15
+ ❯ node_modules/echarts/lib/component/tooltip/helper.js:64:31
+ ❯ ModuleJob.run node:internal/modules/esm/module_job:439:25
+ ❯ processTicksAndRejections node:internal/process/task_queues:104:5
+ ❯ node:internal/modules/esm/loader:633:26
+ ❯ VitestExecutor.interopedImport node_modules/vite-node/dist/client.mjs:421:28
+ ❯ VitestExecutor.directRequest node_modules/vite-node/dist/client.mjs:280:24
+ ❯ VitestExecutor.cachedRequest node_modules/vite-node/dist/client.mjs:206:14
+ ❯ VitestExecutor.dependencyRequest node_modules/vite-node/dist/client.mjs:259:12
+ ❯ src/components/app/dashboard/BeneficiaryProfileChart.vue:5:31
+      3| import { use } from 'echarts/core'
+      4| import { PieChart } from 'echarts/charts'
+      5| import { LegendComponent, TooltipComponent } from 'echarts/components'
+       |                               ^
+      6| import { CanvasRenderer } from 'echarts/renderers'
+      7| import VChart from 'vue-echarts'
+
+This error originated in "src/components/app/dashboard/BolsaFamiliaPanel.test.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+This error was caught after test environment was torn down. Make sure to cancel any running tasks before test finishes:
+- cancel timeouts using clearTimeout and clearInterval
+- wait for promises to resolve using the await keyword
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+ReferenceError: document is not defined
+ ❯ testStyle node_modules/echarts/lib/component/tooltip/helper.js:57:15
+ ❯ node_modules/echarts/lib/component/tooltip/helper.js:64:31
+ ❯ ModuleJob.run node:internal/modules/esm/module_job:439:25
+ ❯ processTicksAndRejections node:internal/process/task_queues:104:5
+ ❯ node:internal/modules/esm/loader:633:26
+ ❯ VitestExecutor.interopedImport node_modules/vite-node/dist/client.mjs:421:28
+ ❯ VitestExecutor.directRequest node_modules/vite-node/dist/client.mjs:280:24
+ ❯ VitestExecutor.cachedRequest node_modules/vite-node/dist/client.mjs:206:14
+ ❯ VitestExecutor.dependencyRequest node_modules/vite-node/dist/client.mjs:259:12
+ ❯ src/components/app/dashboard/BeneficiaryProfileChart.vue:5:31
+      3| import { use } from 'echarts/core'
+      4| import { PieChart } from 'echarts/charts'
+      5| import { LegendComponent, TooltipComponent } from 'echarts/components'
+       |                               ^
+      6| import { CanvasRenderer } from 'echarts/renderers'
+      7| import VChart from 'vue-echarts'
+
+This error originated in "src/components/app/dashboard/BolsaFamiliaPanel.test.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+This error was caught after test environment was torn down. Make sure to cancel any running tasks before test finishes:
+- cancel timeouts using clearTimeout and clearInterval
+- wait for promises to resolve using the await keyword
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+ReferenceError: document is not defined
+ ❯ testStyle node_modules/echarts/lib/component/tooltip/helper.js:57:15
+ ❯ node_modules/echarts/lib/component/tooltip/helper.js:64:31
+ ❯ ModuleJob.run node:internal/modules/esm/module_job:439:25
+ ❯ processTicksAndRejections node:internal/process/task_queues:104:5
+ ❯ node:internal/modules/esm/loader:633:26
+ ❯ VitestExecutor.interopedImport node_modules/vite-node/dist/client.mjs:421:28
+ ❯ VitestExecutor.directRequest node_modules/vite-node/dist/client.mjs:280:24
+ ❯ VitestExecutor.cachedRequest node_modules/vite-node/dist/client.mjs:206:14
+ ❯ VitestExecutor.dependencyRequest node_modules/vite-node/dist/client.mjs:259:12
+ ❯ src/components/app/dashboard/BeneficiaryProfileChart.vue:5:31
+      3| import { use } from 'echarts/core'
+      4| import { PieChart } from 'echarts/charts'
+      5| import { LegendComponent, TooltipComponent } from 'echarts/components'
+       |                               ^
+      6| import { CanvasRenderer } from 'echarts/renderers'
+      7| import VChart from 'vue-echarts'
+
+This error originated in "src/components/app/dashboard/BolsaFamiliaPanel.test.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+This error was caught after test environment was torn down. Make sure to cancel any running tasks before test finishes:
+- cancel timeouts using clearTimeout and clearInterval
+- wait for promises to resolve using the await keyword
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+ReferenceError: document is not defined
+ ❯ testStyle node_modules/echarts/lib/component/tooltip/helper.js:57:15
+ ❯ node_modules/echarts/lib/component/tooltip/helper.js:64:31
+ ❯ ModuleJob.run node:internal/modules/esm/module_job:439:25
+ ❯ processTicksAndRejections node:internal/process/task_queues:104:5
+ ❯ node:internal/modules/esm/loader:633:26
+ ❯ VitestExecutor.interopedImport node_modules/vite-node/dist/client.mjs:421:28
+ ❯ VitestExecutor.directRequest node_modules/vite-node/dist/client.mjs:280:24
+ ❯ VitestExecutor.cachedRequest node_modules/vite-node/dist/client.mjs:206:14
+ ❯ VitestExecutor.dependencyRequest node_modules/vite-node/dist/client.mjs:259:12
+ ❯ src/components/app/dashboard/AttendanceSeriesChart.vue:5:31
+      3| import { use } from 'echarts/core'
+      4| import { LineChart } from 'echarts/charts'
+      5| import { GridComponent, TooltipComponent } from 'echarts/components'
+       |                               ^
+      6| import { CanvasRenderer } from 'echarts/renderers'
+      7| import VChart from 'vue-echarts'
+
+This error originated in "src/components/app/dashboard/AttendancePanel.test.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+This error was caught after test environment was torn down. Make sure to cancel any running tasks before test finishes:
+- cancel timeouts using clearTimeout and clearInterval
+- wait for promises to resolve using the await keyword
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+ReferenceError: document is not defined
+ ❯ testStyle node_modules/echarts/lib/component/tooltip/helper.js:57:15
+ ❯ node_modules/echarts/lib/component/tooltip/helper.js:64:31
+ ❯ ModuleJob.run node:internal/modules/esm/module_job:439:25
+ ❯ processTicksAndRejections node:internal/process/task_queues:104:5
+ ❯ node:internal/modules/esm/loader:633:26
+ ❯ VitestExecutor.interopedImport node_modules/vite-node/dist/client.mjs:421:28
+ ❯ VitestExecutor.directRequest node_modules/vite-node/dist/client.mjs:280:24
+ ❯ VitestExecutor.cachedRequest node_modules/vite-node/dist/client.mjs:206:14
+ ❯ VitestExecutor.dependencyRequest node_modules/vite-node/dist/client.mjs:259:12
+ ❯ src/components/app/dashboard/AttendanceSeriesChart.vue:5:31
+      3| import { use } from 'echarts/core'
+      4| import { LineChart } from 'echarts/charts'
+      5| import { GridComponent, TooltipComponent } from 'echarts/components'
+       |                               ^
+      6| import { CanvasRenderer } from 'echarts/renderers'
+      7| import VChart from 'vue-echarts'
+
+This error originated in "src/components/app/dashboard/AttendancePanel.test.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+This error was caught after test environment was torn down. Make sure to cancel any running tasks before test finishes:
+- cancel timeouts using clearTimeout and clearInterval
+- wait for promises to resolve using the await keyword
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+ReferenceError: document is not defined
+ ❯ testStyle node_modules/echarts/lib/component/tooltip/helper.js:57:15
+ ❯ node_modules/echarts/lib/component/tooltip/helper.js:64:31
+ ❯ ModuleJob.run node:internal/modules/esm/module_job:439:25
+ ❯ processTicksAndRejections node:internal/process/task_queues:104:5
+ ❯ node:internal/modules/esm/loader:633:26
+ ❯ VitestExecutor.interopedImport node_modules/vite-node/dist/client.mjs:421:28
+ ❯ VitestExecutor.directRequest node_modules/vite-node/dist/client.mjs:280:24
+ ❯ VitestExecutor.cachedRequest node_modules/vite-node/dist/client.mjs:206:14
+ ❯ VitestExecutor.dependencyRequest node_modules/vite-node/dist/client.mjs:259:12
+ ❯ src/components/app/dashboard/AttendanceSeriesChart.vue:5:31
+      3| import { use } from 'echarts/core'
+      4| import { LineChart } from 'echarts/charts'
+      5| import { GridComponent, TooltipComponent } from 'echarts/components'
+       |                               ^
+      6| import { CanvasRenderer } from 'echarts/renderers'
+      7| import VChart from 'vue-echarts'
+
+This error originated in "src/components/app/dashboard/AttendancePanel.test.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+This error was caught after test environment was torn down. Make sure to cancel any running tasks before test finishes:
+- cancel timeouts using clearTimeout and clearInterval
+- wait for promises to resolve using the await keyword
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+ReferenceError: document is not defined
+ ❯ testStyle node_modules/echarts/lib/component/tooltip/helper.js:57:15
+ ❯ node_modules/echarts/lib/component/tooltip/helper.js:64:31
+ ❯ ModuleJob.run node:internal/modules/esm/module_job:439:25
+ ❯ processTicksAndRejections node:internal/process/task_queues:104:5
+ ❯ node:internal/modules/esm/loader:633:26
+ ❯ VitestExecutor.interopedImport node_modules/vite-node/dist/client.mjs:421:28
+ ❯ VitestExecutor.directRequest node_modules/vite-node/dist/client.mjs:280:24
+ ❯ VitestExecutor.cachedRequest node_modules/vite-node/dist/client.mjs:206:14
+ ❯ VitestExecutor.dependencyRequest node_modules/vite-node/dist/client.mjs:259:12
+ ❯ src/components/app/dashboard/AttendanceSeriesChart.vue:5:31
+      3| import { use } from 'echarts/core'
+      4| import { LineChart } from 'echarts/charts'
+      5| import { GridComponent, TooltipComponent } from 'echarts/components'
+       |                               ^
+      6| import { CanvasRenderer } from 'echarts/renderers'
+      7| import VChart from 'vue-echarts'
+
+This error originated in "src/components/app/dashboard/AttendancePanel.test.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+This error was caught after test environment was torn down. Make sure to cancel any running tasks before test finishes:
+- cancel timeouts using clearTimeout and clearInterval
+- wait for promises to resolve using the await keyword
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+ Test Files  185 passed (185)
+      Tests  1443 passed (1443)
+     Errors  8 errors
+   Start at  14:12:54
+   Duration  16.60s (transform 5.40s, setup 669ms, collect 44.86s, tests 15.61s, environment 52.34s, prepare 7.11s)
+

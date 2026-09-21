@@ -1,0 +1,15 @@
+<!-- CA04 — duas impressoras, uma de 15/02/2025 e outra sem data. Esperado: linha consolidada com DataUltimaCompra 2025-02-15 -->
+<!-- Gerado pela remessa 07/2026 do tenant de teste. Conteudo do EquipamentoUnidade.xml do pacote, sem edicao. -->
+<?xml version="1.0"?>
+<SIAP>
+    <Codigo>004821</Codigo>
+    <Exercicio>2026</Exercicio>
+    <Mes>07</Mes>
+    <EquipamentoUnidade>
+        <NumeroMDS>3370923467683</NumeroMDS>
+        <Equipamento>6</Equipamento>
+        <Quantidade>2</Quantidade>
+        <QuantidadeUso>2</QuantidadeUso>
+        <DataUltimaCompra>2025-02-15</DataUltimaCompra>
+    </EquipamentoUnidade>
+</SIAP>

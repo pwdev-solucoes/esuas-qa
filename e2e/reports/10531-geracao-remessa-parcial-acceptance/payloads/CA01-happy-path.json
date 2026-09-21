@@ -1,0 +1,291 @@
+{
+    "_cenario": "CA01 — Master gera 08/2026 sem pendência; pacote nasce pending e conclui completed com os 11 leiautes",
+    "post_response_201": {
+        "status": "pending",
+        "cardug_identifier": "004821",
+        "exercise": 2026,
+        "reference_month": 8
+    },
+    "show_apos_conclusao": {
+        "id": 1,
+        "uuid": "034293ed-33c5-410e-bb19-02e645956bb6",
+        "tenant_id": 1,
+        "exercise": 2026,
+        "reference_month": 8,
+        "reference_label": "08/2026",
+        "status": "completed",
+        "status_label": "Gerada",
+        "cardug_identifier": "004821",
+        "generated_with_previous_identifier": false,
+        "file_size": 2999,
+        "file_checksum": "651ba2bd6cb646e52b67ca415a814cf913d190cc071361b8bd35077b1ef688c1",
+        "suggested_file_name": "remessa-assistencia-social-maceio-2026-08.zip",
+        "layout_count": 11,
+        "record_count": 5,
+        "pendency_count": 17,
+        "error_message": null,
+        "requested_by_label": "Joana B. F.",
+        "started_at": "2026-08-17T17:18:39.000000Z",
+        "finished_at": "2026-08-17T17:18:39.000000Z",
+        "created_at": "2026-08-17T17:18:39.000000Z",
+        "layouts": [
+            {
+                "uuid": "2e86a6ca-551d-4d96-8de4-a30c3e80f051",
+                "layout_name": "UnidadeSocial",
+                "sort_order": 1,
+                "outcome": "complete",
+                "outcome_label": "Completo",
+                "record_count": 1,
+                "skipped_count": 0,
+                "file_name": "UnidadeSocial.xml",
+                "file_size": 562
+            },
+            {
+                "uuid": "14229410-2b34-448b-a7b5-5b1d758fe43f",
+                "layout_name": "EntidadeSocial",
+                "sort_order": 2,
+                "outcome": "complete",
+                "outcome_label": "Completo",
+                "record_count": 1,
+                "skipped_count": 0,
+                "file_name": "EntidadeSocial.xml",
+                "file_size": 956
+            },
+            {
+                "uuid": "65f92e77-bb13-424d-86ec-977136287cf6",
+                "layout_name": "EquipamentoUnidade",
+                "sort_order": 3,
+                "outcome": "complete",
+                "outcome_label": "Completo",
+                "record_count": 1,
+                "skipped_count": 0,
+                "file_name": "EquipamentoUnidade.xml",
+                "file_size": 325
+            },
+            {
+                "uuid": "7818d3ad-19ce-42c3-b52f-082c81757141",
+                "layout_name": "EstruturaUnidadeSocial",
+                "sort_order": 4,
+                "outcome": "complete",
+                "outcome_label": "Completo",
+                "record_count": 1,
+                "skipped_count": 0,
+                "file_name": "EstruturaUnidadeSocial.xml",
+                "file_size": 252
+            },
+            {
+                "uuid": "a2460c19-2910-4c9a-884c-0d6dfffa3480",
+                "layout_name": "ProfissionalSocial",
+                "sort_order": 5,
+                "outcome": "complete",
+                "outcome_label": "Completo",
+                "record_count": 1,
+                "skipped_count": 0,
+                "file_name": "ProfissionalSocial.xml",
+                "file_size": 316
+            },
+            {
+                "uuid": "17973a3d-5ecd-4c00-8ac4-a95d715ce00c",
+                "layout_name": "RegistrosUnidade",
+                "sort_order": 6,
+                "outcome": "header_only",
+                "outcome_label": "Somente cabeçalho",
+                "record_count": 0,
+                "skipped_count": 0,
+                "file_name": "RegistrosUnidade.xml",
+                "file_size": 115
+            },
+            {
+                "uuid": "de7737db-276c-4211-80a0-80d158c22f31",
+                "layout_name": "NovasFamilias",
+                "sort_order": 7,
+                "outcome": "header_only",
+                "outcome_label": "Somente cabeçalho",
+                "record_count": 0,
+                "skipped_count": 0,
+                "file_name": "NovasFamilias.xml",
+                "file_size": 115
+            },
+            {
+                "uuid": "170d6073-34f7-42ab-8fc1-f5fe4d4d31d1",
+                "layout_name": "SCFV",
+                "sort_order": 8,
+                "outcome": "header_only",
+                "outcome_label": "Somente cabeçalho",
+                "record_count": 0,
+                "skipped_count": 0,
+                "file_name": "SCFV.xml",
+                "file_size": 115
+            },
+            {
+                "uuid": "44c36de0-cd6b-4f72-87f7-4a48ce6e8362",
+                "layout_name": "CapacitacaoDivulgacao",
+                "sort_order": 9,
+                "outcome": "header_only",
+                "outcome_label": "Somente cabeçalho",
+                "record_count": 0,
+                "skipped_count": 0,
+                "file_name": "CapacitacaoDivulgacao.xml",
+                "file_size": 115
+            },
+            {
+                "uuid": "38a5ab8e-874c-457c-96a9-b126ee2d0957",
+                "layout_name": "UsuarioRede",
+                "sort_order": 10,
+                "outcome": "header_only",
+                "outcome_label": "Somente cabeçalho",
+                "record_count": 0,
+                "skipped_count": 0,
+                "file_name": "UsuarioRede.xml",
+                "file_size": 115
+            },
+            {
+                "uuid": "1a252be1-b7ff-41af-a708-d913d576ef0d",
+                "layout_name": "Familia",
+                "sort_order": 11,
+                "outcome": "header_only",
+                "outcome_label": "Somente cabeçalho",
+                "record_count": 0,
+                "skipped_count": 0,
+                "file_name": "Familia.xml",
+                "file_size": 115
+            }
+        ]
+    },
+    "leiautes_no_zip": {
+        "UnidadeSocial.xml": {
+            "bytes": 562,
+            "registros": 1,
+            "tem_cardug_no_cabecalho": true,
+            "tem_exercicio_2026": true,
+            "tem_mes_08": true
+        },
+        "EntidadeSocial.xml": {
+            "bytes": 956,
+            "registros": 1,
+            "tem_cardug_no_cabecalho": true,
+            "tem_exercicio_2026": true,
+            "tem_mes_08": true
+        },
+        "EquipamentoUnidade.xml": {
+            "bytes": 325,
+            "registros": 1,
+            "tem_cardug_no_cabecalho": true,
+            "tem_exercicio_2026": true,
+            "tem_mes_08": true
+        },
+        "EstruturaUnidadeSocial.xml": {
+            "bytes": 252,
+            "registros": 1,
+            "tem_cardug_no_cabecalho": true,
+            "tem_exercicio_2026": true,
+            "tem_mes_08": true
+        },
+        "ProfissionalSocial.xml": {
+            "bytes": 316,
+            "registros": 1,
+            "tem_cardug_no_cabecalho": true,
+            "tem_exercicio_2026": true,
+            "tem_mes_08": true
+        },
+        "RegistrosUnidade.xml": {
+            "bytes": 115,
+            "registros": 0,
+            "tem_cardug_no_cabecalho": true,
+            "tem_exercicio_2026": true,
+            "tem_mes_08": true
+        },
+        "NovasFamilias.xml": {
+            "bytes": 115,
+            "registros": 0,
+            "tem_cardug_no_cabecalho": true,
+            "tem_exercicio_2026": true,
+            "tem_mes_08": true
+        },
+        "SCFV.xml": {
+            "bytes": 115,
+            "registros": 0,
+            "tem_cardug_no_cabecalho": true,
+            "tem_exercicio_2026": true,
+            "tem_mes_08": true
+        },
+        "CapacitacaoDivulgacao.xml": {
+            "bytes": 115,
+            "registros": 0,
+            "tem_cardug_no_cabecalho": true,
+            "tem_exercicio_2026": true,
+            "tem_mes_08": true
+        },
+        "UsuarioRede.xml": {
+            "bytes": 115,
+            "registros": 0,
+            "tem_cardug_no_cabecalho": true,
+            "tem_exercicio_2026": true,
+            "tem_mes_08": true
+        },
+        "Familia.xml": {
+            "bytes": 115,
+            "registros": 0,
+            "tem_cardug_no_cabecalho": true,
+            "tem_exercicio_2026": true,
+            "tem_mes_08": true
+        }
+    },
+    "outcomes_persistidos": [
+        {
+            "layout_name": "CapacitacaoDivulgacao",
+            "outcome": "header_only",
+            "record_count": 0
+        },
+        {
+            "layout_name": "EntidadeSocial",
+            "outcome": "complete",
+            "record_count": 1
+        },
+        {
+            "layout_name": "EquipamentoUnidade",
+            "outcome": "complete",
+            "record_count": 1
+        },
+        {
+            "layout_name": "EstruturaUnidadeSocial",
+            "outcome": "complete",
+            "record_count": 1
+        },
+        {
+            "layout_name": "Familia",
+            "outcome": "header_only",
+            "record_count": 0
+        },
+        {
+            "layout_name": "NovasFamilias",
+            "outcome": "header_only",
+            "record_count": 0
+        },
+        {
+            "layout_name": "ProfissionalSocial",
+            "outcome": "complete",
+            "record_count": 1
+        },
+        {
+            "layout_name": "RegistrosUnidade",
+            "outcome": "header_only",
+            "record_count": 0
+        },
+        {
+            "layout_name": "SCFV",
+            "outcome": "header_only",
+            "record_count": 0
+        },
+        {
+            "layout_name": "UnidadeSocial",
+            "outcome": "complete",
+            "record_count": 1
+        },
+        {
+            "layout_name": "UsuarioRede",
+            "outcome": "header_only",
+            "record_count": 0
+        }
+    ]
+}

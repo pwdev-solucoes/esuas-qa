@@ -1,0 +1,35 @@
+{
+    "_cenario": "CA10/RN06 — a lista traz só o próprio município; show e download do pacote vizinho devolvem 404, não 403",
+    "index_so_o_meu": [
+        {
+            "id": 1,
+            "uuid": "b09d06e4-ca4d-4bbf-821d-d35d6cccd350",
+            "tenant_id": 1,
+            "exercise": 2026,
+            "reference_month": 7,
+            "reference_label": "07/2026",
+            "status": "completed",
+            "status_label": "Gerada",
+            "cardug_identifier": "004821",
+            "generated_with_previous_identifier": false,
+            "file_size": 8192,
+            "file_checksum": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "suggested_file_name": "remessa-assistencia-social-maceio-2026-07.zip",
+            "layout_count": 11,
+            "record_count": 12,
+            "pendency_count": 0,
+            "error_message": null,
+            "requested_by_label": "E2E Master [Master]",
+            "started_at": "2026-08-17T17:17:24.000000Z",
+            "finished_at": "2026-08-17T17:18:24.000000Z",
+            "created_at": "2026-08-17T17:18:24.000000Z"
+        }
+    ],
+    "show_do_vizinho": {
+        "http_status": 404
+    },
+    "download_do_vizinho": {
+        "http_status": 404
+    },
+    "defesa_em_profundidade": "BelongsToTenant (Global Scope) + EnsureTenantScope"
+}

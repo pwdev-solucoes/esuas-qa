@@ -1,0 +1,252 @@
+
+   PASS  Tests\Unit\FamilyFollowUpInvariantTest
+  ✓ it accepts the THREE legal state combinations (D03)                  0.69s  
+  ✓ it REFUSES an active row carrying discharge or cancellation columns… 0.05s  
+  ✓ it REFUSES an active row carrying discharge or cancellation columns… 0.05s  
+  ✓ it REFUSES an active row carrying discharge or cancellation columns… 0.05s  
+  ✓ it REFUSES an active row carrying discharge or cancellation columns… 0.05s  
+  ✓ it REFUSES a discharged row without date, without reason or carryin… 0.06s  
+  ✓ it REFUSES a discharged row without date, without reason or carryin… 0.05s  
+  ✓ it REFUSES a discharged row without date, without reason or carryin… 0.06s  
+  ✓ it REFUSES a cancelled row without timestamp, without reason or car… 0.05s  
+  ✓ it REFUSES a cancelled row without timestamp, without reason or car… 0.05s  
+  ✓ it REFUSES a cancelled row without timestamp, without reason or car… 0.05s  
+  ✓ it REFUSES a cancelled row without timestamp, without reason or car… 0.05s  
+  ✓ it is enforced by the Actions before every save (D03)                0.06s  
+  ✓ it lets the PARTIAL UNIQUE INDEX refuse a second ACTIVE row for the… 0.05s  
+  ✓ it produces ONE row when two simultaneous stores hit the same unit+… 0.05s  
+  ✓ it lets the index accept a NEW active row when the previous one is…  0.06s  
+  ✓ it scopes the unique index BY TENANT — the same family code in anot… 0.07s  
+  ✓ it refuses a FUTURE effective date inside the Update action, with a… 0.05s  
+  ✓ it refuses to EDIT a non-active follow-up inside the Update action…  0.05s  
+
+   PASS  Tests\Unit\FollowUpMonthsAndCoherenceTest
+  ✓ it derives the months in follow-up from admitted_on to evaluated_on… 0.03s  
+  ✓ it derives the months in follow-up from admitted_on to evaluated_on… 0.02s  
+  ✓ it derives the months in follow-up from admitted_on to evaluated_on… 0.02s  
+  ✓ it derives the months in follow-up from admitted_on to evaluated_on… 0.02s  
+  ✓ it derives the months in follow-up from admitted_on to evaluated_on… 0.03s  
+  ✓ it derives the months in follow-up from admitted_on to evaluated_on… 0.04s  
+  ✓ it derives the months in follow-up from admitted_on to evaluated_on… 0.03s  
+  ✓ it derives the months in follow-up from admitted_on to evaluated_on… 0.03s  
+  ✓ it returns NULL — never 0 — when there is no basis for the calculat… 0.02s  
+  ✓ it never persists months_in_follow_up — it is not a column (RN06/D0… 0.02s  
+  ✓ it makes the Resource read the SINGLE point of the calculation (RN0… 0.03s  
+  ✓ it marks ONLY significant_progress as conflicting with an exit reas… 0.02s  
+  ✓ it demands confirmation for the incoherent combination — and passes… 0.02s  
+  ✓ it does NOT demand confirmation when only ONE side of the combinati… 0.02s  
+  ✓ it does NOT demand confirmation when only ONE side of the combinati… 0.02s  
+  ✓ it does NOT demand confirmation when only ONE side of the combinati… 0.02s  
+  ✓ it does NOT demand confirmation when only ONE side of the combinati… 0.02s  
+  ✓ it does NOT demand confirmation when only ONE side of the combinati… 0.02s  
+  ✓ it reads the rule from the LOOKUP ITEM, never from the literal code… 0.03s  
+  ✓ it guards the discharge date on both ends, with stable error codes…  0.02s  
+  ✓ it lets ONLY an active follow-up be discharged or evaluated (RN01/R… 0.02s  
+  ✓ it admits not_applicable ONLY in referrals_effective (RN04)          0.02s  
+  ✓ it suggests not_applicable IF AND ONLY IF the referral list is empt… 0.02s  
+
+   PASS  Tests\Unit\FollowUpUsageServiceTest
+  ✓ it nasce sem consumidores declarados nos dois servicos (a US-ACOMP-… 0.03s  
+  ✓ it sem consumidores, nenhum servico esta em uso — a recusa sai como… 0.02s  
+  ✓ it sem consumidores, nenhuma razao esta em uso — a recusa sai como…  0.02s  
+  ✓ it reconhece o servico referenciado por um consumidor registrado     0.02s  
+  ✓ it reconhece a razao referenciada por um consumidor registrado       0.03s  
+  ✓ it ignora consumidor cuja tabela ainda nao existe, sem estourar      0.02s  
+  ✓ it devolve lista vazia quando nenhum uuid e informado                0.02s  
+
+   PASS  Tests\Feature\Client\AttendanceReportFollowUpTest
+  ✓ it reproduces the canonical scenario of §9 in the HTTP payload — 3…  0.13s  
+  ✓ it lights up families_in_follow_up inside counters and removes it f… 0.08s  
+  ✓ it declares the four profiles that depend on F6/F7 — never omitted,… 0.09s  
+  ✓ it keeps the four unavailable profiles declared even for a unit wit… 0.07s  
+  ✓ it exposes stale_follow_ups as a quantity and the configured thresh… 0.09s  
+  ✓ it carries the threshold from config so the cut can move without a…  0.08s  
+  ✓ it shows the operator only the units of the current assignment, wit… 0.09s  
+  ✓ it never counts follow-ups of another organization in any of the ne… 0.08s  
+  ✓ it persists absolutely nothing — identical row counts before and af… 0.09s  
+  ✓ it never leaks any citizen data through the new follow-up fields (D… 0.08s  
+  ✓ it never counts a cancelled follow-up in the HTTP payload (CA11/RN1… 0.08s  
+  ✓ it keeps the new blocks consistent when the report is narrowed to a… 0.08s  
+
+   PASS  Tests\Feature\Client\FamilyAccessFollowUpAxisTest
+  ✓ it opens the record for a unit that FOLLOWS the family, auditing vi… 0.10s  
+  ✓ it reaches the WHOLE record, not just the follow-up block, includin… 0.13s  
+  ✓ it keeps the access after the follow-up is DISCHARGED (CA03/RN02)    0.09s  
+  ✓ it does NOT grant access through a CANCELLED follow-up, denying wit… 0.09s  
+  ✓ it does NOT grant access through a soft-deleted follow-up (RN02/D05… 0.09s  
+  ✓ it denies the unit with NEITHER reference NOR follow-up, stating bo… 0.08s  
+  ✓ it does not let the follow-up replace the LGPD add-on (CA06/RN03)    0.09s  
+  ✓ it does not let the follow-up replace an ACTIVE unit assignment (CA… 0.08s  
+  ✓ it keeps the Master accessing by bypass, never by the follow-up axi… 0.08s  
+  ✓ it audits the FOUR access axes reachable without a referral (CA01/C… 0.10s  
+  ✓ it does not let following ONE family authorize reaching another one… 0.09s  
+  ✓ it keeps the organization isolation ahead of the follow-up axis (CA… 0.09s  
+  ✓ it lists the FOLLOWED family in the person search and opens it from… 0.10s  
+  ✓ it filters the follow-up axis by tenant_id, even with a numerically… 0.09s  
+  ✓ it reports the assigned units that follow the family in the decisio… 0.07s  
+
+   PASS  Tests\Feature\Client\FamilyFollowUpDischargeTest
+  ✓ it discharges the family WITH the results evaluation, in a single t… 0.09s  
+  ✓ it carimba a autoria do SERVIDOR e RECUSA estado e contexto vindos…  0.08s  
+  ✓ it REFUSES a discharge without the evaluation and leaves the follow… 0.08s  
+  ✓ it REFUSES a discharge whose descriptive record is too short — stil… 0.07s  
+  ✓ it REFUSES not_applicable in questions 1 and 3, and ACCEPTS it in q… 0.09s  
+  ✓ it derives months_in_follow_up and DISCARDS it when sent in the req… 0.08s  
+  ✓ it REFUSES a discharge date BEFORE the admission, writing nothing (… 0.08s  
+  ✓ it REFUSES a discharge date in the FUTURE (RN03)                     0.08s  
+  ✓ it REFUSES an exit reason that does not exist or is INACTIVE (RN02)  0.08s  
+  ✓ it asks for CONFIRMATION on the incoherent combination and saves it… 0.08s  
+  ✓ it does NOT ask for confirmation when only ONE side of the combinat… 0.09s  
+  ✓ it REFUSES to discharge what is already discharged or cancelled (RN… 0.08s  
+  ✓ it NEVER logs achieved_results in the activity trail (CA10/RN05/D06… 0.08s  
+  ✓ it saves a retroactive discharge in a remitted month AND returns th… 0.08s  
+  ✓ it does NOT warn when the month has no COMPLETED remittance (CA11/R… 0.09s  
+  ✓ it keeps the whole history in the record block, evaluations in crea… 0.09s  
+  ✓ it denies the discharge of a family of ANOTHER unit, without naming… 0.08s  
+  ✓ it CORRECTS the discharge date and reason WITHOUT creating a new ev… 0.09s  
+  ✓ it REFUSES to correct the discharge of a follow-up that is NOT disc… 0.07s  
+  ✓ it REFUSES to REOPEN or to rewrite the evaluation through the corre… 0.08s  
+  ✓ it REVALIDATES RN03 and RN10 when correcting the discharge (RN12)    0.09s  
+  ✓ it warns for BOTH the old and the new month when correcting into re… 0.10s  
+
+   PASS  Tests\Feature\Client\FamilyFollowUpEvaluationTest
+  ✓ it suggests not_applicable ONLY when the period has no referral (CA… 0.10s  
+  ✓ it exposes the FOUR questions with not_applicable ONLY in the secon… 0.08s  
+  ✓ it recalculates months and the remittance warning for the PROPOSED…  0.12s  
+  ✓ it lists the referrals of the period with outcome and counter-refer… 0.10s  
+  ✓ it cuts the referrals by PERIOD and by the follow-up UNIT (D11)      0.10s  
+  ✓ it ends the period at discharged_on when the follow-up is already d… 0.09s  
+  ✓ it registers a PERIODIC evaluation that ends NOTHING (CA08/RN08)     0.08s  
+  ✓ it REFUSES a periodic evaluation that tries to discharge or to forg… 0.09s  
+  ✓ it REQUIRES an evaluation date between the admission and today (RN0… 0.08s  
+  ✓ it REFUSES not_applicable in questions 1 and 3 of the periodic eval… 0.09s  
+  ✓ it REFUSES a periodic evaluation on a follow-up that is NOT active…  0.08s  
+  ✓ it has NO route to update or delete an evaluation — the URI answers… 0.08s  
+  ✓ it places a CORRECTION beside the previous evaluation, both listed…  0.09s  
+  ✓ it admits MORE THAN ONE discharge evaluation, and latestDischargeEv… 0.07s  
+  ✓ it denies the whole evaluation surface for a family of ANOTHER unit… 0.09s  
+
+   PASS  Tests\Feature\Client\FamilyFollowUpTest
+  ✓ it registers the family admission into PAIF, signed and dated (CA01… 0.09s  
+  ✓ it IGNORES authorship and state columns sent by the client (RN13/§7… 0.09s  
+  ✓ it offers ONLY the service of the unit TYPE and refuses the other o… 0.09s  
+  ✓ it lets two units follow the SAME family at the same time (CA03/RN0… 0.10s  
+  ✓ it lets the SAME unit follow the family in two DIFFERENT services (… 0.09s  
+  ✓ it refuses a SECOND active follow-up in the same unit and service,…  0.09s  
+  ✓ it accepts a NEW admission after a discharge, keeping the previous…  0.09s  
+  ✓ it refuses a FUTURE admission date on store — 422 WITHOUT error_cod… 0.07s  
+  ✓ it accepts TODAY at 23h in the app timezone — the boundary never re… 0.08s  
+  ✓ it saves a retroactive admission in a remitted month AND returns th… 0.08s  
+  ✓ it does NOT warn when the month remittance is pending or failed (CA… 0.08s  
+  ✓ it warns BEFORE the submit, in the options of a remitted month (CA0… 0.08s  
+  ✓ it blocks the registration in a unit type that offers NO service (C… 0.09s  
+  ✓ it reports family_without_unit BEFORE any other reason (RN08)        0.08s  
+  ✓ it refuses a unit where the operator has NO assignment on the admis… 0.08s  
+  ✓ it evaluates the assignment ON THE ADMISSION DATE, not today (RN02/… 0.08s  
+  ✓ it CANCELS the admission with a reason and KEEPS the row in the rec… 0.10s  
+  ✓ it frees the unit+service pair after the cancellation (RN05/RN11)    0.10s  
+  ✓ it answers 409 when cancelling an ALREADY cancelled follow-up — ide… 0.09s  
+  ✓ it refuses to CANCEL a DISCHARGED follow-up — that is corrected by…  0.07s  
+  ✓ it requires a reason to cancel (RN11)                                0.08s  
+  ✓ it NEVER logs the cancel_reason in the activity trail (D11)          0.09s  
+  ✓ it denies the WHOLE follow-up surface for a family of ANOTHER unit,… 0.10s  
+  ✓ it does not let FOLLOWING one family authorize opening a follow-up…  0.10s  
+  ✓ it EDITS an active follow-up, restamping updated_by (RN10/RN13)      0.08s  
+  ✓ it accepts the PATCH verb on the same action (§11)                   0.09s  
+  ✓ it refuses to EDIT a cancelled or discharged follow-up (RN10)        0.08s  
+  ✓ it refuses a FUTURE date on update (RN07/RN10)                       0.09s  
+  ✓ it revalidates RN05 on update, excluding the row being edited (RN10… 0.10s  
+  ✓ it returns TWO deduplicated warnings when the update crosses two re… 0.11s  
+  ✓ it keeps social_unit_id FROZEN when the family reference unit chang… 0.09s  
+  ✓ it hides cancel_reason and the action flags from a reader who canno… 0.10s  
+  ✓ it returns an EMPTY block for a family never followed, and filters…  0.10s  
+  ✓ it exposes can_edit/can_cancel on the LISTING, not only on the writ… 0.09s  
+  ✓ it shows the OTHER unit's line WITHOUT affordances, and its own WIT… 0.10s  
+
+   PASS  Tests\Feature\Client\FollowUpReportServiceTest
+  ✓ it conta as familias distintas com acompanhamento vigente em algum…  0.05s  
+  ✓ it conta o ingresso e o desligamento ocorridos no meio do mes (CA02… 0.03s  
+  ✓ it nao conta a familia desligada no mes anterior, mas conta naquele… 0.03s  
+  ✓ it conta o mes do desligamento mesmo apos a razao e o servico serem… 0.04s  
+  ✓ it conta 1 em cada unidade quando a familia e acompanhada por duas…  0.03s  
+  ✓ it conta 1 quando a familia e acompanhada em dois servicos da MESMA… 0.03s  
+  ✓ it conta as novas familias do mes (CA05)                             0.06s  
+  ✓ it conta o reingresso como nova familia (CA06/I2)                    0.04s  
+  ✓ it nao conta o acompanhamento cancelado em nenhum dos dois contador… 0.06s  
+  ✓ it nao conta o acompanhamento removido operacionalmente (deleted_at… 0.03s  
+  ✓ it reproduz o cenario canonico de conferencia do §9 (3 em acompanha… 0.05s  
+  ✓ it qualifica APENAS as novas familias, nunca todas as acompanhadas…  0.07s  
+  ✓ it conta a mesma familia em varios perfis — eles nao sao exclusivos… 0.04s  
+  ✓ it nao conta membro inativo nem removido no perfil de trabalho infa… 0.04s  
+  ✓ it conta o BPC mesmo com o programa inativado no catalogo global     0.04s  
+  ✓ it nao conta receives_pbf NULL e nao afirma que a familia nao receb… 0.04s  
+  ✓ it nao conta renda per capita nula em extrema pobreza (RN08)         0.04s  
+  ✓ it declara os quatro perfis sem fonte, com o motivo e a fase (CA09/… 0.03s  
+  ✓ it sinaliza os acompanhamentos vigentes ha mais de seis meses sem a… 0.09s  
+  ✓ it conta PROCESSOS, e nao familias, no ponto de atencao (D10)        0.05s  
+  ✓ it ignora atendimento cancelado e de outra unidade no cruzamento da… 0.04s  
+  ✓ it respeita o corte configurado em follow_up.stale_months (I5/D10)   0.03s  
+  ✓ it nao sinaliza acompanhamento desligado nem cancelado no ponto de…  0.04s  
+  ✓ it devolve zero DECLARADO para a unidade sem nenhum acompanhamento…  0.04s  
+  ✓ it curto-circuita sem tocar o banco quando o recorte de unidades e…  0.03s  
+  ✓ it nao conta acompanhamento de outro municipio (RN13/CA14)           0.03s  
+  ✓ it nao persiste absolutamente nada — a apuracao e derivada (RN09/D0… 0.04s  
+  ✓ it nao devolve nenhum identificador de familia no resultado (D11/RN… 0.04s  
+
+   PASS  Tests\Feature\Manager\FollowUpExitReasonTest
+  ✓ it lista exatamente as quatro razoes com os codigos do instrumento,… 0.04s  
+  ✓ it nunca expoe o id no payload da razao                              0.03s  
+  ✓ it marca a incoerencia com progresso significativo apenas na razao…  0.04s  
+  ✓ it nasce com requires_description inerte nas quatro razoes           0.03s  
+  ✓ it nao expoe rota de criacao de uma quinta razao                     0.04s  
+  ✓ it colhe as sete abilities das rotas da razao e nao cria store       0.07s  
+  ✓ it nao oferece escrita da razao ao guard client, mas mantem a leitu… 0.04s  
+  ✓ it recusa a exclusao de razao sem uso com o motivo de vinculo ao in… 0.04s  
+  ✓ it recusa a exclusao da razao ja usada em um desligamento            0.03s  
+  ✓ it recusa a exclusao em massa de razoes item a item, sem excluir na… 0.03s  
+  ✓ it mantem a razao inativada na leitura e no historico, tirando-a so… 0.05s  
+  ✓ it atualiza a razao e audita a alteracao com autor, valor antigo e…  0.04s  
+  ✓ it recusa renumerar uma razao para um codigo ja ocupado              0.04s  
+  ✓ it bloqueia quem nao tem a permissao de escrita da razao             0.04s  
+  ✓ it nao tem tenant_id nem BelongsToTenant na razao                    0.03s  
+  ✓ it roda o seeder de razoes duas vezes sem duplicar nem desfazer a e… 0.03s  
+
+   PASS  Tests\Feature\Manager\FollowUpServiceTest
+  ✓ it lista exatamente os dois servicos do bloco 24, com code e nome p… 0.04s  
+  ✓ it nunca expoe o id no payload do servico                            0.03s  
+  ✓ it traz o tipo de unidade que oferta cada servico, resolvido por co… 0.04s  
+  ✓ it filtra os servicos ofertados por um tipo de unidade (predicado d… 0.03s  
+  ✓ it nao expoe rota de criacao de um terceiro servico                  0.04s  
+  ✓ it colhe as sete abilities das rotas do servico e nao cria store     0.04s  
+  ✓ it nao oferece escrita ao guard client, mas mantem a leitura via sh… 0.05s  
+  ✓ it recusa a exclusao de servico sem uso com o motivo de vinculo ao…  0.04s  
+  ✓ it recusa a exclusao de servico em uso com o motivo de uso registra… 0.03s  
+  ✓ it recusa a exclusao em massa item a item, sem excluir nada          0.05s  
+  ✓ it atualiza o nome do servico sem tocar no code normativo            0.04s  
+  ✓ it recusa desvincular o servico do tipo de unidade (coluna NOT NULL… 0.04s  
+  ✓ it recusa dois servicos com o mesmo code                             0.04s  
+  ✓ it inativa e reativa servicos em massa sem removê-los da leitura     0.04s  
+  ✓ it audita a troca do tipo de unidade com autor, valor antigo e novo  0.04s  
+  ✓ it bloqueia quem nao tem a permissao de escrita do servico           0.05s  
+  ✓ it da ao ADMIN as sete permissoes e ao ADMIN_OPERADOR apenas leitur… 1.73s  
+  ✓ it nao da a nenhum papel do guard client permissao de escrita dos d… 1.77s  
+  ✓ it nao tem tenant_id nem BelongsToTenant no servico                  0.04s  
+  ✓ it roda o seeder de servicos duas vezes sem duplicar nem desfazer a… 0.03s  
+
+   PASS  Tests\Feature\TenantIsolation\FamilyFollowUpEvaluationIsolationTest
+  ✓ it answers 404 — never 403 — on ALL FIVE routes of another tenant (… 0.10s  
+  ✓ it never leaks a follow-up of ANOTHER tenant through MY family uuid… 0.08s  
+  ✓ it answers 404 when the follow-up belongs to ANOTHER family of the…  0.07s  
+  ✓ it scopes family_follow_up_evaluations by tenant_id even without th… 0.09s  
+  ✓ it blocks the request when the X-Tenant-UUID points at a tenant the… 0.07s  
+
+   PASS  Tests\Feature\TenantIsolation\FamilyFollowUpIsolationTest
+  ✓ it answers 404 — never 403 — for a family of ANOTHER tenant, on ALL… 0.09s  
+  ✓ it never leaks a follow-up of ANOTHER tenant through MY family uuid… 0.07s  
+  ✓ it answers 404 when the follow-up belongs to ANOTHER family of the…  0.07s  
+  ✓ it scopes the Model by tenant_id even without the route (BelongsToT… 0.08s  
+  ✓ it blocks the request when the X-Tenant-UUID points at a tenant the… 0.07s  
+
+  Tests:    222 passed (1246 assertions)
+  Duration: 18.49s
+

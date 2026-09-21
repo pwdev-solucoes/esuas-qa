@@ -1,0 +1,16 @@
+<!-- HU #10373 — CA06/RN09 — o outro município tem a unidade MDS 5902959008959 com as estruturas 010 e 011. Nenhuma delas aparece: só as duas linhas da unidade MDS 1955996997219, do meu município. O `query()` dispensa apenas o Global Scope de tenant; o SoftDeletingScope permanece -->
+<!-- Remessa GERADA de verdade via POST /api/client/siap-remittances; XML extraído do zip. -->
+<?xml version="1.0"?>
+<SIAP>
+    <Codigo>004821</Codigo>
+    <Exercicio>2026</Exercicio>
+    <Mes>07</Mes>
+    <EstruturaUnidadeSocial>
+        <NumeroMDS>1955996997219</NumeroMDS>
+        <Estrutura>1</Estrutura>
+    </EstruturaUnidadeSocial>
+    <EstruturaUnidadeSocial>
+        <NumeroMDS>1955996997219</NumeroMDS>
+        <Estrutura>17</Estrutura>
+    </EstruturaUnidadeSocial>
+</SIAP>

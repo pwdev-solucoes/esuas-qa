@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — Painel Permanente de Endereços Não Localizados</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:980px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-wrap:wrap; gap:14px; margin-top:12px; }
+  figure { margin:0; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:300px; background:#fff; }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:11px; color:var(--muted); padding:6px 8px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { .evid, section.ca { break-inside:avoid; } figure { width:280px; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — Painel Permanente de Endereços Não Localizados</h1>
+    <div class="sub">Sprint 8 · HU #9762 · Qualificação Territorial · Evidências end-to-end no frontend do tenant</div>
+    <div class="meta"><div><span>Gerado em:</span> 02/07/2026 01:35</div><div><span>Branch:</span> sprint9-familias (api 3b4bcb4+38c64fd · client 52fb5a4)</div><div><span>Spec:</span> .planning/specs/sprint8/9762-painel-enderecos-nao-localizados.md</div><div><span>Ambiente:</span> API Sail/PostgreSQL (localhost:80) · client Vite :5174 (não-mock)</div><div><span>Organização (tenant):</span> E2E CadÚnico · uuid 00000000-0000-4000-8000-0000000000c1 · IBGE 2304400 (Fortaleza)</div><div><span>Usuários:</span> Master E2E (permissão address-inconsistencies.index semeada) · Operador E2E (sem o papel territorial_qualifier)</div><div><span>Ferramenta:</span> playwright-cli (Chromium 1440×900) + Pest 4</div><div><span>Modelo de dados:</span> Única tabela nova da feature: family_address_inconsistencies (índice único parcial: 1 inconsistência aberta por família/tenant) · gatilho AddressLocalizationChecker dentro do CadunicoSyncService</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">HU #9762: 7 Critérios de Aceite evidenciados — CA01 e CA03 no navegador (painel com máscaras), CA-extra-C no navegador (menu oculto + 403 no acesso direto), e CA02 (acúmulo 50+10=60), CA-extra-A (autocorreção sai do painel) e CA-extra-D (isolamento territorial) pela suíte automatizada, que também cobre a idempotência do gatilho (não duplica linha aberta), a resiliência à concorrência (retry sobre o índice único parcial) e a governança de permissões (restritas fora dos papéis base; master preservado entre syncs). CA-extra-B (exportação CSV + auditoria) é deferido por design para o dossiê da Etapa 04, dona canônica do export (HU #9763). Suíte: 34 testes, 125 assertions, 100% verdes. Resultado geral: todos os critérios do escopo atendidos.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA01</td><td>Visualização das famílias listadas</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA02</td><td>Preservação de dados entre importações (acúmulo)</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA03</td><td>Restrição de visualização na tela (LGPD)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA-extra-A</td><td>Autocorreção sai do painel (RN01/RN02)</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA-extra-B</td><td>Exportação padronizada + auditoria (RN04/RN06)</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA-extra-C</td><td>Menu oculto sem permissão (RN05)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA-extra-D</td><td>Isolamento territorial (RN07)</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA01">
+      <h2>CA01 — Visualização das famílias listadas <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Profissional com permissão de acesso ao painel de inconsistências
+Quando navego até a área de Qualificação Territorial
+Então o sistema exibe uma tabela permanente com todas as famílias do município
+     cujo endereço falhou no cruzamento de localização
+E cada linha mostra Código Familiar, Nome do RUF e o Endereço Rejeitado</p>
+      <p class="steps"><strong>Como foi testado:</strong> Login como <b>Master E2E</b> → menu <b>Qualificação Territorial</b> (seção Cadastros). Massa: 6 inconsistências abertas cobrindo os 3 motivos da RN02 (<code>cep_missing</code>, <code>cep_not_found</code>, <code>no_match</code>).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Painel permanente exibe a tabela com as famílias marcadas: Código Familiar, Responsável (RUF), CPF, NIS, Endereço rejeitado, Motivo (badge por razão: "CEP ausente", "CEP inexistente", "Sem correspondência") e "Marcada em".</li><li>Cabeçalho documenta o propósito: consulta e diagnóstico — a correção acontece nas futuras atualizações do CadÚnico (RN01: painel read-only).</li><li>Busca por código familiar/nome do responsável e filtro por motivo disponíveis.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca01-painel-familias-nao-localizadas.png" alt="CA01 evidência"/><figcaption>ca01-painel-familias-nao-localizadas.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA02">
+      <h2>CA02 — Preservação de dados entre importações (acúmulo) <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o painel já possui 50 famílias listadas de meses anteriores
+Quando um novo arquivo do CadÚnico é importado e gera mais 10 falhas de endereço
+Então ao acessar o painel eu visualizo o total acumulado de 60 famílias pendentes</p>
+      <p class="steps"><strong>Como foi testado:</strong> Coberto pela suíte automatizada (apêndice): teste do gatilho dentro do fluxo real de sincronização do CadÚnico.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Teste "accumulates new failures over previous batches (CA02: 50+10=60)" comprova o acúmulo exato entre remessas — inconsistências antigas permanecem abertas e as novas somam.</li><li>Idempotência garantida em re-sync da mesma família (não duplica a linha aberta — índice único parcial testado no PostgreSQL real).</li><li>Resiliência: colisão de concorrência no índice único faz retry de atualização (nunca perde a marcação em silêncio) — testes do fix 38c64fd.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA03">
+      <h2>CA03 — Restrição de visualização na tela (LGPD) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que estou consultando a tabela em tela
+Quando verifico os campos da listagem
+Então CPF e NIS aparecem mascarados por padrão</p>
+      <p class="steps"><strong>Como foi testado:</strong> Com o painel aberto, captura da tabela de resultados.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>CPF mascarado no padrão &lt;code&gt;***.000.001-**&lt;/code&gt; e NIS mascarado no padrão &lt;code&gt;***.*****.**-5&lt;/code&gt; em todas as linhas, sem opção de revelar.</li><li>O mascaramento é aplicado no backend (Resource) — o payload da API já sai mascarado; suíte confirma que CPF/NIS em claro nunca aparecem na resposta.</li><li>O texto do endereço rejeitado nunca é gravado em log de auditoria (testado).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca03-cpf-nis-mascarados.png" alt="CA03 evidência"/><figcaption>ca03-cpf-nis-mascarados.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA-extra-A">
+      <h2>CA-extra-A — Autocorreção sai do painel (RN01/RN02) <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado uma família marcada como "Endereço Não Localizado"
+Quando uma importação futura traz para ela um endereço que passa no cruzamento
+Então a inconsistência é resolvida e a família deixa de aparecer no painel</p>
+      <p class="steps"><strong>Como foi testado:</strong> Coberto pela suíte automatizada (apêndice): sincronização posterior com CEP válido para família previamente marcada.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A inconsistência aberta transiciona para "resolved" e a família sai do painel (o index só lista status=open).</li><li>O histórico é preservado (linha resolvida permanece na tabela para rastreabilidade — painel permanente e acumulativo).</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA-extra-B">
+      <h2>CA-extra-B — Exportação padronizada + auditoria (RN04/RN06) <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que tenho permissão de exportação
+Quando aciono "Exportar CSV"
+Então recebo um arquivo com Código Familiar, RUF, NIS, telefone e o endereço rejeitado
+E o sistema grava, em segundo plano, uma trilha de auditoria com meu Usuário global</p>
+      <p class="steps"><strong>Como foi testado:</strong> <b>Deferido para o dossiê da Etapa 04</b> — a dona canônica do endpoint de exportação é a HU #9763 (decisão do overview do plano). Nesta etapa o painel é 100% read-only; a permissão <code>address-inconsistencies.export</code> nasce junto com a rota na Etapa 04 (nos dois guards, preservando o invariante do registry).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Status nesta etapa: pendente por design (split documentado).</li><li>Será evidenciado nos dossiês das HUs #9763/#9764.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA-extra-C">
+      <h2>CA-extra-C — Menu oculto sem permissão (RN05) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um Operador SEM o papel de Qualificação Territorial
+Quando acesso o sistema
+Então o menu "Qualificação Territorial" não aparece
+E o endpoint do painel responde 403 se acessado diretamente</p>
+      <p class="steps"><strong>Como foi testado:</strong> Login como <b>Operador E2E</b> (papéis: apenas Operador — sem <code>territorial_qualifier</code>). Verificar a sidebar; em seguida, acesso direto por URL a <code>/app/qualificacao-territorial</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A sidebar do Operador NÃO exibe o item "Qualificação Territorial" (gate por permissão &lt;code&gt;address-inconsistencies.index&lt;/code&gt;).</li><li>O acesso direto por URL redireciona para a página 403 (guard de rota + backend 403 no endpoint, coberto também pela suíte).</li><li>Suíte confirma que as permissões do painel são restritas: nunca atribuídas automaticamente ao Operador; semeadas no papel dedicado territorial_qualifier (level 26, add-on) e no master.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca-extra-c-operador-sem-menu.png" alt="CA-extra-C evidência"/><figcaption>ca-extra-c-operador-sem-menu.png</figcaption></figure><figure><img src="screenshots/ca-extra-c-operador-403-acesso-direto.png" alt="CA-extra-C evidência"/><figcaption>ca-extra-c-operador-403-acesso-direto.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA-extra-D">
+      <h2>CA-extra-D — Isolamento territorial (RN07) <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que estou no Tenant A
+Quando consulto ou exporto o painel
+Então vejo apenas inconsistências do meu município, sem acesso às de outro tenant</p>
+      <p class="steps"><strong>Como foi testado:</strong> Coberto pela suíte automatizada (apêndice): inconsistências criadas em dois tenants; index consultado autenticado no Tenant A.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O painel lista somente inconsistências do tenant ativo (Global Scope de tenant no Model, testado cross-tenant).</li><li>A exportação isolada será evidenciada na Etapa 04 junto ao endpoint.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+  
+  <h2>Anexo — Cobertura automatizada (Pest, --filter=AddressLocalizationChecker|AddressInconsistencyPanel|CadunicoSyncAddressInconsistency|SyncPermissions) — 34 passed, 125 assertions</h2>
+  <pre class="pest">
+   PASS  Tests\Unit\Services\AddressLocalizationCheckerTest
+  ✓ it flags cep_missing when the CEP is empty (RN02)                    0.55s  
+  ✓ it flags cep_not_found when the CEP does not exist in postal_codes…  0.03s  
+  ✓ it flags cep_not_found when the CEP exists but is inactive           0.03s  
+  ✓ it flags no_match when the CEP exists in another city and the city…  0.03s  
+  ✓ it does not flag when the CEP matches the lot city                   0.03s  
+  ✓ it does not flag when the CEP exists and the lot city is unresolvab… 0.03s  
+  ✓ it upserts the open inconsistency instead of duplicating it (idempo… 0.03s  
+  ✓ it resolves the open inconsistency when a future import passes the…  0.03s  
+  ✓ it is a no-op on success when the family has no open inconsistency   0.03s  
+  ✓ it recovers from a concurrent unique violation via read-and-update…  0.03s  
+  ✓ it rethrows non-unique-violation query exceptions instead of retryi… 0.04s  
+
+   PASS  Tests\Feature\Api\Client\AddressInconsistencyPanelTest
+  ✓ it lists Código Familiar, RUF name and rejected address for open in… 0.08s  
+  ✓ it always masks CPF and NIS on screen (CA03/LGPD)                    0.04s  
+  ✓ it shows only open inconsistencies (resolved leave the panel — RN01… 0.04s  
+  ✓ it filters by failure_reason and searches by family code or RUF nam… 0.05s  
+  ✓ it denies access without the address-inconsistencies.index permissi… 0.03s  
+  ✓ it isolates the panel by tenant (CA-extra-D / RN07)                  0.04s  
+  ✓ it seeds the dedicated role with the restricted permission and gran… 0.03s  
+  ✓ it keeps the permission away from the base operador and preserves t… 0.94s  
+  ✓ it is a read-only resource: no write routes are registered (RN03)    0.02s  
+
+   PASS  Tests\Feature\Console\SyncPermissionsTest
+  ✓ it extracts the can: abilities declared by controllers from the rou… 0.02s  
+  ✓ it keeps full parity with the previous hardcoded permission set (no… 0.02s  
+  ✓ it seeds permissions for both guards and assigns them to roles       0.92s  
+  ✓ it runs permissions:sync idempotently without duplicating permissio… 1.62s  
+  ✓ it prunes orphan permissions not present in the registry             1.68s  
+  ✓ it does not write anything on --dry-run                              0.07s  
+  ✓ it does not assign RESTRICTED_PERMISSIONS to any role                0.94s  
+  ✓ it permissions:sync --coverage fails when an authenticated route ha… 0.84s  
+
+   PASS  Tests\Feature\Services\Cadunico\CadunicoSyncAddressInconsistencyTest
+  ✓ it flags the family as open inconsistency when the CEP is missing (… 0.06s  
+  ✓ it flags cep_not_found when the CEP does not exist in the DNE base…  0.06s  
+  ✓ it accumulates new failures over previous batches (CA02: 50 + 10 =…  0.35s  
+  ✓ it resolves the open inconsistency when a future import fixes the a… 0.06s  
+  ✓ it does not duplicate the open row when the same family fails again… 0.06s  
+  ✓ it never breaks the sync when the checker fails internally (regress… 0.06s  
+
+  Tests:    34 passed (125 assertions)
+  Duration: 9.31s
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

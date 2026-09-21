@@ -1,0 +1,14 @@
+<!-- HU #10529 — CA11 (RN14) — o municipio vizinho tem profissional lotado (matricula 666002); o MEU arquivo traz exclusivamente a minha equipe: 1 linha, matricula 666001. Nem a matricula nem o CPF do vizinho aparecem. -->
+<!-- Remessa gerada de verdade; XML extraido do zip. CPF e nome mascarados (RN12). Dados fabricados. -->
+<?xml version="1.0"?>
+<SIAP>
+    <Codigo>004821</Codigo>
+    <Exercicio>2026</Exercicio>
+    <Mes>08</Mes>
+    <ProfissionalSocial>
+        <CPF>390.***.***-05</CPF>
+        <Nome>Maria S. L.</Nome>
+        <NumeroMDS>1234567890123</NumeroMDS>
+        <Matricula>666001</Matricula>
+    </ProfissionalSocial>
+</SIAP>

@@ -1,0 +1,46 @@
+{
+    "cenario": "CA12 / RN19 — a mesma pendência nos dois lugares, contada uma vez só",
+    "entidade": "72f5a434-f968-472f-9aa9-a1b0a27b2a0a",
+    "zona_de_bloqueio (data.blocking.pendencies)": {
+        "scope": "blocking",
+        "kind": "record_incomplete",
+        "field_name": "NumeroCNEAS",
+        "subject_type": "social_entity",
+        "subject_uuid": "72f5a434-f968-472f-9aa9-a1b0a27b2a0a",
+        "affected_count": 1,
+        "message_key": "siap_remittance.pendency.entity_incomplete",
+        "message": "This social entity is missing NumeroCNEAS, required by SIAP. Fix the entity record: until then, no remittance can be generated.",
+        "blocks_entire_remittance": true,
+        "affected_layouts": 11,
+        "resolution": {
+            "resource": "tenant-tce-parameters",
+            "requires_role": "master"
+        }
+    },
+    "lista_do_leiaute (data.layouts[EntidadeSocial].pendencies)": {
+        "scope": "blocking",
+        "kind": "record_incomplete",
+        "field_name": "NumeroCNEAS",
+        "subject_type": "social_entity",
+        "subject_uuid": "72f5a434-f968-472f-9aa9-a1b0a27b2a0a",
+        "affected_count": 1,
+        "message_key": "siap_remittance.pendency.entity_incomplete",
+        "message": "This social entity is missing NumeroCNEAS, required by SIAP. Fix the entity record: until then, no remittance can be generated.",
+        "blocks_entire_remittance": true
+    },
+    "contagem": {
+        "pendencias_listadas_no_leiaute_EntidadeSocial": 1,
+        "pendencias_na_zona_de_bloqueio": 1,
+        "summary": {
+            "layout_count": 11,
+            "record_count": 1,
+            "blocking_pendency_count": 1,
+            "layout_pendency_count": 17
+        },
+        "nota": "summary.layout_pendency_count soma exclusivamente os relatórios dos leiautes: promover a pendência para a zona de bloqueio NÃO cria pendência nova nem soma de novo (SiapPreCheckService, D08 da #10370)."
+    },
+    "blocks_entire_remittance": {
+        "na_zona_de_bloqueio": true,
+        "na_lista_do_leiaute": true
+    }
+}

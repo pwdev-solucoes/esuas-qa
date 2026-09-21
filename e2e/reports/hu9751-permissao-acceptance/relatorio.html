@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — HU #9751</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:980px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-wrap:wrap; gap:14px; margin-top:12px; }
+  figure { margin:0; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:300px; background:#fff; }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:11px; color:var(--muted); padding:6px 8px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { .evid, section.ca { break-inside:avoid; } figure { width:280px; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — HU #9751</h1>
+    <div class="sub">Gerenciar permissão de importação do CadÚnico de Profissionais · Sprint 8 · Evidências end-to-end no client</div>
+    <div class="meta"><div><span>Gerado em:</span> 30/06/2026</div><div><span>HU:</span> #9751 — Gerenciar permissão de importação do CadÚnico (Fluxo E / HU04 da spec)</div><div><span>Branch:</span> sprint8-cadunico</div><div><span>Spec:</span> .planning/specs/sprint8/cadunico-imports-importacao-cadastro-unico.md (§5 CA09/CA10, §7 Fluxo E, RN04)</div><div><span>Ambiente:</span> API Sail/PostgreSQL (:80) · fila cadunico · client Vite (:5175)</div><div><span>Organização (tenant):</span> E2E CadÚnico · IBGE 2304400 · uuid …c1</div><div><span>Mecanismo:</span> Sincronização de papéis: PUT client/professionals/{uuid}/roles (MASTER-only)</div><div><span>Ferramenta:</span> playwright-cli (Chromium) + Pest</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">História focada na governança de acesso: o Master concede e revoga a permissão de importação do CadÚnico a um Profissional, exclusivamente via papéis (RN04). Foram verificados os 2 critérios de aceite (CA09 atribuição, CA10 revogação), ambos dirigidos ao vivo no frontend do tenant (client) e reforçados pela suíte Pest. Para a demonstração foi provisionado um Perfil de Acesso atribuível "Operador CadÚnico" (papel client carregando cadunico-imports.*), espelhando a diretiva da spec de "perfis que o Master escolher para operadores". Resultado: CA09 e CA10 ATENDIDOS — o efeito da sincronização de papéis é imediato, sem novo login/seed, refletindo na visibilidade do módulo e no gate 403.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA09</td><td>Atribuição de permissão ao Profissional</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA10</td><td>Revogação de acesso</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA09">
+      <h2>CA09 — Atribuição de permissão ao Profissional <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Master no tenant, Quando acesso a tela de Detalhes de um profissional específico e vinculo ao seu cadastro o Perfil de Acesso que possui os direitos de "Importação do CadÚnico", Então ao salvar a alteração, o Usuário associado a esse profissional passa a ter acesso imediato ao módulo de importação do CADUNICO.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Logado como <b>Master</b> (CPF 52998224725), abrir <code>Cadastros › Profissionais › E2E Operador CadÚnico</code> → seção <b>Perfis de acesso</b> → botão <b>Gerenciar</b>. No drawer, marcar o perfil <code>Operador CadÚnico</code> (Perfil de Acesso que carrega <code>cadunico-imports.*</code>, ao lado do perfil base <code>Operador</code> já vinculado) e clicar <b>Salvar perfis</b>. Em seguida, sair e entrar como <b>Operador</b> (CPF 11144477735) para conferir o acesso ao módulo.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Drawer "Gerenciar perfis de acesso" oferece o Perfil de Acesso "Operador CadÚnico" como atribuível; ao marcá-lo e salvar, exibe o toast "Perfis de acesso atualizados com sucesso" e o profissional passa a contar "2 perfis".</li><li>Efeito imediato no backend (sem novo seed): o Usuário do profissional passou a ter &lt;code&gt;cadunico-imports.index&lt;/code&gt; e &lt;code&gt;cadunico-imports.store&lt;/code&gt;; o vínculo em user_tenant_role passou de [operador] para [operador, operador_cadunico].</li><li>Ao entrar como Operador, o item "Importações do CadÚnico" aparece no menu e a tela do módulo carrega normalmente (cabeçalho, "Nova importação" e tabela de histórico) — acesso imediato confirmado.</li><li>Pest (apêndice): "it syncs roles granting and revoking in diff" cobre a concessão por sincronização de papéis.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca09-atribuir-perfil.png" alt="CA09 evidência"/><figcaption>ca09-atribuir-perfil.png</figcaption></figure><figure><img src="screenshots/ca09-salvo-sucesso.png" alt="CA09 evidência"/><figcaption>ca09-salvo-sucesso.png</figcaption></figure><figure><img src="screenshots/ca09-operador-acesso.png" alt="CA09 evidência"/><figcaption>ca09-operador-acesso.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA10">
+      <h2>CA10 — Revogação de acesso <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Master no tenant, Quando acesso a área de Detalhes/Gerenciamento do profissional e removo/desvinculo o perfil correspondente às rotinas do CadÚnico, Então assim que as alterações são salvas, o acesso às telas de importação e ao histórico de lotes é bloqueado e ocultado imediatamente para o Usuário correspondente.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Logado como <b>Master</b>, reabrir o detalhe do profissional <code>E2E Operador CadÚnico</code> → <b>Gerenciar</b> → <b>desmarcar</b> o perfil <code>Operador CadÚnico</code> (mantendo o perfil base <code>Operador</code>) → <b>Salvar perfis</b>. Depois, sair e entrar como <b>Operador</b> para conferir o bloqueio: ausência do módulo no menu e acesso direto à rota <code>/app/cadunico-imports</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Ao desmarcar "Operador CadÚnico" e salvar, exibe o toast "Perfis de acesso atualizados com sucesso" e o profissional volta a contar "1 perfil".</li><li>Efeito imediato no backend: o Usuário perdeu &lt;code&gt;cadunico-imports.*&lt;/code&gt;; o vínculo em user_tenant_role voltou a [operador].</li><li>Ao entrar como Operador, o item "Importações do CadÚnico" some do menu (ocultado) e o acesso direto a &lt;code&gt;/app/cadunico-imports&lt;/code&gt; retorna a tela "403 — Acesso negado" — bloqueio imediato confirmado.</li><li>Pest (apêndice): "it syncs roles granting and revoking in diff" e "it hides the module from an operador without the permission (CA03)" cobrem a revogação e o gate por permissão.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca10-revogar-perfil.png" alt="CA10 evidência"/><figcaption>ca10-revogar-perfil.png</figcaption></figure><figure><img src="screenshots/ca10-operador-sem-modulo.png" alt="CA10 evidência"/><figcaption>ca10-operador-sem-modulo.png</figcaption></figure><figure><img src="screenshots/ca10-403.png" alt="CA10 evidência"/><figcaption>ca10-403.png</figcaption></figure></div>
+    </section>
+  
+  <h2>Anexo — Cobertura automatizada (Pest — ProfessionalRoleControllerTest + CadunicoImportControllerTest)</h2>
+  <pre class="pest">
+   PASS  Tests\Feature\Api\Client\ProfessionalRoleControllerTest
+  ✓ it lists current and assignable roles (CA01)                         0.58s  
+  ✓ it syncs roles granting and revoking in diff (CA02/CA03)             0.04s  
+  ✓ it is idempotent when the same set is resent (RN04)                  0.03s  
+  ✓ it revokes all roles when role_ids is empty (RN11)                   0.03s  
+  ✓ it rejects assigning a role equal to or above the master hierarchy…  0.03s  
+  ✓ it rejects assigning an inactive role (RN02)                         0.03s  
+  ✓ it returns 404 for a professional from another tenant                0.03s  
+  ✓ it forbids an operador from managing professional roles (MASTER-onl… 0.03s  
+
+   PASS  Tests\Feature\Api\Client\CadunicoImportControllerTest
+  ✓ it validates a well-formed CSV and returns an upload token (CA01)    0.07s  
+  ✓ it rejects a CSV from a different município (RN01)                   0.03s  
+  ✓ it rejects validation when the tenant has no município configured    0.03s  
+  ✓ it rejects a CSV with a divergent header (CA02)                      0.03s  
+  ✓ it blocks validation when an import is already active (RN11/CA07)    0.03s  
+  ✓ it confirms the import and queues stage 1 (HU02)                     0.03s  
+  ✓ it records the executor label with [Master] suffix when not a profe… 0.03s  
+  ✓ it rejects store with an unknown upload token                        0.03s  
+  ✓ it does not sync an import that is not completed                     0.03s  
+  ✓ it queues stage 2 when the import is completed (Etapa 2 manual)      0.03s  
+  ✓ it blocks sync when another batch is active in the tenant (RN11)     0.03s  
+  ✓ it lists only the tenant own history (CA12)                          0.04s  
+  ✓ it returns 404 for a cross-tenant import (CA12/RN10)                 0.03s  
+  ✓ it hides the module from an operador without the permission (CA03)   0.03s  
+  ✓ it stores a generic failure message without leaking exception detai… 0.03s  
+
+  Tests:    23 passed (77 assertions)
+  Duration: 1.46s
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

@@ -1,0 +1,8 @@
+<!-- CA07b — tablet (cod 4) com Quantidade 0 e QuantidadeUso 2. Esperado: a linha NAO consta (RN07) e uma informativa e emitida (RN06) -->
+<!-- Gerado pela remessa 07/2026 do tenant de teste. Conteudo do EquipamentoUnidade.xml do pacote, sem edicao. -->
+<?xml version="1.0"?>
+<SIAP>
+    <Codigo>004821</Codigo>
+    <Exercicio>2026</Exercicio>
+    <Mes>07</Mes>
+</SIAP>

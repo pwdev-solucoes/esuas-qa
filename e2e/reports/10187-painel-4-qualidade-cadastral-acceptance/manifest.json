@@ -1,0 +1,147 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — Painel 4: Qualidade Cadastral",
+    "subtitle": "HU #10187 · Dashboard do tenant · Evidências end-to-end no client",
+    "rows": [
+      [
+        "Gerado em",
+        "30/07/2026"
+      ],
+      [
+        "HU",
+        "#10187 — Painel 4: Qualidade Cadastral"
+      ],
+      [
+        "Branch",
+        "feature/10187-painel-4-qualidade-cadastral (api + client)"
+      ],
+      [
+        "Spec",
+        ".planning/specs/10187-painel-4-qualidade-cadastral.md"
+      ],
+      [
+        "Ambiente",
+        "API Sail/PostgreSQL+PostGIS · client :5174 (não-mock)"
+      ],
+      [
+        "Organização (tenant)",
+        "E2E CadÚnico · 34 integrantes ativos · 33 cidadãos"
+      ],
+      [
+        "Ferramenta",
+        "playwright-cli (Chromium) + Pest"
+      ]
+    ]
+  },
+  "summary": "8 critérios evidenciados: 4 por navegador dirigindo o client real (CA06 volume de cidadãos com pendência de documentação, RN06 os 3 indicadores de qualidade, e o RG01 nas modalidades padrão/dinâmico/limpar) e 4 por suíte automatizada (consistência dos Unipessoais com o KPI 4, duplicidade por registro, isolamento multi-tenant e gate de permissão). Todos atendidos. Suíte Pest do backend: 12 testes verdes (37 asserções).",
+  "cas": [
+    {
+      "id": "CA06",
+      "title": "Detecção de pendências civis (volume de cidadãos sem documentação)",
+      "status": "nav",
+      "gherkin": "Dado que existem pessoas sem CPF cadastrado na base importada\nQuando acesso o Painel 4 (aba \"Qualidade Cadastral\")\nEntão o sistema contabiliza e exibe o volume total de cidadãos com pendência de documentação básica (sem CPF ou sem NIS) no recorte territorial selecionado.",
+      "steps_html": "Login como Master, aba <b>Qualidade Cadastral</b>. Leitura do cartão <b>Pendência de Documentação</b> (em destaque de alerta).",
+      "results": [
+        "O cartão <b>Pendência de Documentação</b> exibe <b>19 cidadãos</b> (57,6% dos cidadãos) sem CPF ou sem NIS, em cor de alerta (vermelho).",
+        "Contagem de cidadãos DISTINTOS (dedupe por pessoa) — CA06 atendido."
+      ],
+      "images": [
+        "screenshots/ca06-rn06-indicadores.png"
+      ]
+    },
+    {
+      "id": "RN06",
+      "title": "Indicadores do Painel 4 (Unipessoais, Duplicidade, Pendência)",
+      "status": "nav",
+      "gherkin": "Dado um recorte com famílias e integrantes\nQuando o painel é calculado\nEntão \"Cadastros Unipessoais\" = famílias com exatamente 1 integrante ativo\nE \"Registros com Duplicidade\" = integrantes ativos com CPF ou NIS repetido\nE \"Pendência de Documentação\" = cidadãos distintos sem CPF ou sem NIS.",
+      "steps_html": "3 cartões + gráfico de barras comparando os indicadores (Apache ECharts).",
+      "results": [
+        "Cadastros Unipessoais 22 (22,9% das famílias), Registros com Duplicidade 5 (14,7% dos integrantes), Pendência de Documentação 19 (57,6%).",
+        "O gráfico \"Comparativo de Qualidade\" ilustra as três contagens (22 / 5 / 19)."
+      ],
+      "images": [
+        "screenshots/ca06-rn06-indicadores.png"
+      ]
+    },
+    {
+      "id": "RG01-a",
+      "title": "Filtro global por Bairro — comportamento padrão (\"Todos os Bairros\")",
+      "status": "nav",
+      "gherkin": "Dado que acabei de carregar a aba \"Qualidade Cadastral\"\nQuando nenhum bairro está selecionado\nEntão o filtro inicia em \"Todos os Bairros\"\nE os 3 indicadores refletem a consolidação municipal.",
+      "steps_html": "Ao abrir o dashboard, o filtro global (topo, à direita) inicia em <code>Todos os Bairros</code>.",
+      "results": [
+        "Filtro em \"Todos os Bairros\"; os 3 indicadores exibem a consolidação municipal."
+      ],
+      "images": [
+        "screenshots/ca06-rn06-indicadores.png"
+      ]
+    },
+    {
+      "id": "RG01-bc",
+      "title": "Filtro global por Bairro — recálculo dinâmico e \"Limpar Filtro\"",
+      "status": "nav",
+      "gherkin": "Dado que o filtro global está em \"Todos os Bairros\"\nQuando eu seleciono o bairro \"Itapoã\"\nEntão os 3 indicadores recalculam para as famílias do bairro (RN08)\nE ao acionar \"Limpar Filtro\" o painel volta à consolidação municipal.",
+      "steps_html": "Seleção do bairro <b>Itapoã</b> no filtro global; um único evento recalcula a barra fixa E o painel (RG01/RN09).",
+      "results": [
+        "Recálculo instantâneo: Unipessoais 22 → 1, Duplicidade 5 → 0, Pendência 19 → 2; barra fixa e painel exibem \"Recalculado por bairro: Itapoã\".",
+        "O KPI \"Cadastros Unipessoais\" da barra fixa mostra o mesmo valor do painel (consistência RN09).",
+        "O botão \"Limpar Filtro\" retorna imediatamente à visão municipal (Pendência volta a 19, filtro a \"Todos os Bairros\")."
+      ],
+      "images": [
+        "screenshots/rg01-bairro-itapoa.png"
+      ]
+    },
+    {
+      "id": "UNI",
+      "title": "Cadastros Unipessoais consistentes com o KPI 4 da barra fixa",
+      "status": "parc",
+      "gherkin": "Então \"Cadastros Unipessoais\" (Painel 4) é igual ao numerador do KPI 4 (Cadastros Unipessoais) da barra fixa (#10184) para o mesmo recorte.",
+      "steps_html": "Verificado na UI (barra fixa e painel mostram 22 / 1) e por teste automatizado (Pest).",
+      "results": [
+        "Na tela: KPI 4 da barra fixa e o cartão do painel exibem o mesmo número (22 no municipal, 1 em Itapoã).",
+        "RegistrationQualityTest: teste cruzado single_person == numerador do KPI 4 (RN09)."
+      ],
+      "images": [
+        "screenshots/rg01-bairro-itapoa.png"
+      ]
+    },
+    {
+      "id": "DUP",
+      "title": "Registros com Duplicidade — contagem por registro (CPF/NIS repetido)",
+      "status": "auto",
+      "gherkin": "Dado 3 integrantes ativos com o mesmo NIS e uma pessoa (CPF) em 2 famílias\nQuando os indicadores são calculados\nEntão \"Registros com Duplicidade\" conta por registro (3 do NIS + 2 do CPF = 5).",
+      "steps_html": "Coberto por testes automatizados (Pest) — ver apêndice.",
+      "results": [
+        "RegistrationQualityTest: duplicidade por NIS repetido (3 registros) e por CPF (2 registros, mesma pessoa em 2 famílias); vazios não contam como duplicidade."
+      ],
+      "images": []
+    },
+    {
+      "id": "ISO",
+      "title": "Isolamento multi-tenant",
+      "status": "auto",
+      "gherkin": "Dado um usuário vinculado ao Tenant A\nQuando ele solicita o Painel 4\nEntão apenas famílias/integrantes do Tenant A entram nos cálculos\nE um neighborhood_uuid fora do município do Tenant A retorna 422.",
+      "steps_html": "Coberto por teste automatizado (Pest) — ver apêndice.",
+      "results": [
+        "DashboardRegistrationQualityIsolationTest: famílias/integrantes do Tenant B nunca são contados para o Tenant A.",
+        "RegistrationQualityTest: 422 para bairro fora do município do tenant."
+      ],
+      "images": []
+    },
+    {
+      "id": "PERM",
+      "title": "Gate de permissão (sem dashboard.view-indicators → 403 / painel oculto)",
+      "status": "auto",
+      "gherkin": "Dado um usuário sem dashboard.view-indicators\nQuando ele chama o endpoint do Painel 4\nEntão recebe 403 (e o painel não é exibido).",
+      "steps_html": "Coberto por teste automatizado (Pest) — o endpoint reusa o gate da barra fixa (#10184).",
+      "results": [
+        "RegistrationQualityTest: operador sem o papel dedicado recebe 403; Master acessa sem add-on."
+      ],
+      "images": []
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Pest — RegistrationQuality + Isolamento)",
+    "file": "registration-quality.txt"
+  }
+}

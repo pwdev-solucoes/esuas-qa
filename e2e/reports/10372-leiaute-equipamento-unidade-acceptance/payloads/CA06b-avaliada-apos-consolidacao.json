@@ -1,0 +1,23 @@
+{
+    "cenario": "CA06b — duas aquisicoes (5/5 e 3/4) do mesmo equipamento: a avaliacao acontece sobre o par consolidado (8 total, 9 em uso) e emite UMA pendencia, nao uma por aquisicao",
+    "pendencias": [
+        {
+            "scope": "informative",
+            "kind": "inconsistent_data",
+            "field_name": "QuantidadeUso",
+            "subject_type": "social_unit",
+            "subject_uuid": "fba72438-9935-4cdb-b38c-563f7d76d024",
+            "affected_count": 1,
+            "message_key": "siap_remittance.pendency.equipment_quantity_inconsistent",
+            "message": "This unit has more equipment in use (QuantidadeUso) than the total reported for equipment 2 of the SIAP table. The record is still included in the remittance with the registered values; review the unit inventory.",
+            "blocks_entire_remittance": false
+        }
+    ],
+    "summary": {
+        "layout_count": 11,
+        "record_count": 2,
+        "blocking_pendency_count": 0,
+        "informative_pendency_count": 1,
+        "layout_pendency_count": 17
+    }
+}

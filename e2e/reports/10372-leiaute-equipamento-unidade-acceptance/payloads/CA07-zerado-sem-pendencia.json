@@ -1,0 +1,19 @@
+{
+    "cenario": "CA07 — vinculo com quantidade total 0",
+    "leiaute": {
+        "name": "EquipamentoUnidade",
+        "sort_order": 3,
+        "file_name": "EquipamentoUnidade.xml",
+        "outcome": "complete",
+        "record_count": 1,
+        "skipped_count": 0,
+        "pendencies": []
+    },
+    "summary": {
+        "layout_count": 11,
+        "record_count": 2,
+        "blocking_pendency_count": 0,
+        "informative_pendency_count": 0,
+        "layout_pendency_count": 17
+    }
+}

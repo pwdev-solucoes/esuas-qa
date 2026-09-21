@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — HU #9883 Construir camada a partir de busca específica</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — HU #9883 Construir camada a partir de busca específica</h1>
+    <div class="sub">Construtor de Camadas (rota admin /geo-layers) · módulo admin (Super Admin) · Evidências end-to-end no app real</div>
+    <div class="meta"><div><span>Gerado em:</span> 10/07/2026</div><div><span>História:</span> HU #9883 — Construir camada a partir de busca específica (Construtor de Camadas)</div><div><span>Critérios:</span> CA37, CA38, CA39, CA40 e CA41 (5 critérios)</div><div><span>Submódulos:</span> admin 0fe34af (branch develop) · api develop</div><div><span>Ambiente:</span> API Sail/PostgreSQL · admin Vite :5174 (não-mock) → http://localhost/api</div><div><span>Personas:</span> Administrador (CPF 44983702016, papel admin) · Operacional Global (papel admin_operador, criado p/ o teste)</div><div><span>Município de referência (preview):</span> Maceió Geo · IBGE 2704302 · malha + 1.620 setores homologados</div><div><span>Ferramenta:</span> playwright-cli (Chromium, viewport 1680×1050) + Pest</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">Os 5 critérios de aceite da HU #9883 sobre o Construtor de Camadas (rota admin /geo-layers — base estrutural do painel /georreferenciamento do client) foram verificados dirigindo o app admin real no navegador e reforçados pela suíte automatizada — todos ATENDIDOS. CA37: como Administrador, informando nome, descrição, um critério de busca (Extrema pobreza) e a forma de representação (Manchas/heatmap) e salvando, a camada é criada com status Rascunho e passa a constar no catálogo (POST /geo-layers 201). CA38: ao tentar salvar sem nome e sem critério, o sistema bloqueia e indica claramente os pendentes ("Informe o nome da camada." e "Informe ao menos um critério efetivo..."). CA39: ao salvar outra camada com o mesmo nome, o sistema bloqueia (422) e informa "Já existe uma camada com este nome." (unicidade case-insensitive). CA40: na camada em rascunho (modo edição), escolhendo o município de referência Maceió Geo e acionando a pré-visualização, o mapa (OpenLayers) exibe a representação (heatmap) sobre o município conforme os critérios — 6 famílias em extrema pobreza, com distribuição por setor censitário. CA41: como Operacional Global (só geo-layers.index/show), o catálogo mostra a lista com status e público de cada camada, sem os comandos de criação/edição/publicação (botão "Nova camada" oculto; menu de ações apenas "Ver detalhes"). Cobertura automatizada: Pest GeoLayerControllerTest (26 testes/150 asserções) cobre criar rascunho, bloqueio por obrigatórios, nome duplicado case-insensitive, preview WYSIWYG por tenant e o gate read-only do admin_operador (writes 403 — RN01).</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA37</td><td>Criação de camada válida (rascunho no catálogo)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA38</td><td>Bloqueio por dados obrigatórios</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA39</td><td>Nome duplicado</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA40</td><td>Pré-visualização sobre município de referência</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA41</td><td>Consulta sem permissão de edição (Operacional Global)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA37">
+      <h2>CA37 — Criação de camada válida (rascunho no catálogo) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Administrador e as bases geográficas primárias estão homologadas, Quando informo nome, descrição, critérios de busca e forma de representação e salvo, Então a camada é criada com status de rascunho e passa a constar no catálogo.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Como <b>Administrador</b> (44983702016), em Construtor de Camadas → <b>Nova camada</b>: informado nome "Famílias em Extrema Pobreza", descrição, critério <b>Extrema pobreza</b> e forma de representação <b>Manchas (mapa de calor)</b> → <b>Criar camada</b>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>POST /geo-layers responde 201 Created e a interface retorna ao catálogo.</li><li>A camada consta no catálogo com os critérios (Extrema pobreza + Manchas), status Rascunho e público Global (Todas as organizações).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca37-form-preenchido.png" alt="CA37 evidência"/><figcaption>ca37-form-preenchido.png</figcaption></figure><figure><img src="screenshots/ca37-camada-rascunho.png" alt="CA37 evidência"/><figcaption>ca37-camada-rascunho.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA38">
+      <h2>CA38 — Bloqueio por dados obrigatórios <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que estou criando uma camada, Quando tento salvar sem nome ou sem ao menos um critério de busca, Então o sistema bloqueia a ação e indica claramente os itens pendentes.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Em <b>Nova camada</b>, acionado <b>Criar camada</b> sem preencher nome e sem marcar nenhum critério.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O sistema bloqueia o salvamento (não envia o POST) e indica os pendentes: "Informe o nome da camada." no campo Nome e "Informe ao menos um critério efetivo — os critérios são aplicados em conjunto (interseção)..." no bloco de critérios.</li><li>Espelho no backend: StoreGeoLayerRequest + assertEffectiveCriteria retornam 422 com as mesmas mensagens.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca38-bloqueio-obrigatorios.png" alt="CA38 evidência"/><figcaption>ca38-bloqueio-obrigatorios.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA39">
+      <h2>CA39 — Nome duplicado <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que já existe uma camada com determinado nome, Quando tento salvar outra camada com o mesmo nome, Então o sistema bloqueia e informa que o nome já está em uso.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Em <b>Nova camada</b>, informado o nome já existente "Famílias em Extrema Pobreza" (+ 1 critério e representação) → <b>Criar camada</b>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>POST /geo-layers responde 422 e o sistema bloqueia, exibindo no campo Nome a mensagem "Já existe uma camada com este nome.".</li><li>A unicidade é case-insensitive (índice parcial lower(name) ignorando soft-deleted).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca39-nome-duplicado.png" alt="CA39 evidência"/><figcaption>ca39-nome-duplicado.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA40">
+      <h2>CA40 — Pré-visualização sobre município de referência <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que criei uma camada em rascunho, Quando aciono a pré-visualização escolhendo um município de referência, Então o sistema exibe a representação da camada sobre o mapa daquele município conforme os critérios definidos.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Aberta a camada rascunho em modo edição, selecionada a <b>Organização de referência</b> "Maceió Geo" no combobox e acionado <b>Pré-visualizar</b>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>POST /geo-layers/{uuid}/preview responde 200 e o mapa (OpenLayers) desenha a representação (heatmap) sobre a malha do município de Maceió, conforme o critério Extrema pobreza.</li><li>O resumo lateral indica 6 famílias encontradas e a distribuição por setor censitário — WYSIWYG: a camada é executada como o painel daquela organização a veria (agregados e pontos anônimos).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca40-previa.png" alt="CA40 evidência"/><figcaption>ca40-previa.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA41">
+      <h2>CA41 — Consulta sem permissão de edição (Operacional Global) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Operacional Global, Quando acesso o catálogo de camadas, Então visualizo a lista com status e público de cada camada, sem comandos de criação, edição ou publicação.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Reautenticado como <b>Operacional Global</b> (papel admin_operador) e aberto o catálogo Construtor de Camadas; aberto o menu de ações da linha.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O catálogo lista a camada com Status (Rascunho) e Público (Global) — porém o botão "Nova camada" fica oculto (gate v-can geo-layers.store).</li><li>O menu de ações da linha oferece apenas "Ver detalhes" — sem Editar, Publicar, Alterar público, Inativar ou Reativar (RN01: exclusividade do Administrador).</li><li>Backend (anexo): GeoLayerControllerTest confirma que o admin_operador tem acesso somente de leitura — toda escrita responde 403.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca41-operacional-somente-leitura.png" alt="CA41 evidência"/><figcaption>ca41-operacional-somente-leitura.png</figcaption></figure></div>
+    </section>
+  
+  <h2>Anexo — Cobertura automatizada — Pest GeoLayerControllerTest (CA37–CA41, RN01–RN08)</h2>
+  <pre class="pest">=== Cobertura automatizada — GeoLayerController (CA37-CA41 / RN01-RN08) ===
+(re-executado ao vivo em 10/07/2026 contra a stack Sail)
+
+   PASS  Tests\Feature\Api\Manager\GeoLayerControllerTest
+  ✓ it creates a layer as draft with normalized criteria and it shows u… 0.48s  
+  ✓ it blocks creation without name or without any criterion (CA38)      0.03s  
+  ✓ it rejects criteria outside the panel vocabulary (P3)                0.02s  
+  ✓ it blocks a duplicated name case-insensitively, but frees it after…  0.03s  
+  ✓ it filters the catalog by status and audience (CA51)                 0.04s  
+  ✓ it shows the layer detail with audience tenants and the full audit…  0.04s  
+  ✓ it updates the current definition of a published layer (CA47)        0.02s  
+  ✓ it keeps the unique name rule on update, ignoring the layer itself…  0.03s  
+  ✓ it does not expose DELETE — the missing verb answers 405 (P5/RN06)   0.02s  
+  ✓ it blocks publish while BOTH national bases are not homologated (CA… 0.03s  
+  ✓ it publishes globally: empty pivot means every active tenant, prese… 0.03s  
+  ✓ it publishes to selected tenants only (CA43/RN04)                    0.03s  
+  ✓ it requires the tenant list when publishing to a selected audience   0.03s  
+  ✓ it rejects publishing a layer that is not a draft (RN06)             0.03s  
+  ✓ it changes the audience of a published layer with immediate pivot s… 0.04s  
+  ✓ it only allows changing the audience of published layers (RN06)      0.02s  
+  ✓ it inactivates a published layer and rejects invalid transitions (C… 0.03s  
+  ✓ it reactivates an inactive layer back to the CONFIGURED audience (C… 0.03s  
+  ✓ it revalidates the RN03 gate on reactivation (CA44/CA49)             0.02s  
+  ✓ it rejects reactivating a layer that is not inactive (RN06)          0.03s  
+  ✓ it previews the layer under the single reference tenant — WYSIWYG,…  0.05s  
+  ✓ it never leaks another tenant of the same municipality into the pre… 0.05s  
+  ✓ it rejects the preview when the reference tenant has no homologated… 0.02s  
+  ✓ it requires a valid tenant_uuid on preview                           0.02s  
+  ✓ it gives the admin_operador read-only access — every write is 403 (… 1.08s  
+  ✓ it gives the ADMIN every geo-layers ability through the automatic h… 1.05s  
+  Tests:    26 passed (150 assertions)
+  Duration: 3.72s
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

@@ -1,0 +1,38 @@
+
+Running 32 tests using 5 workers
+
+  -   5 [desktop] › tests/e2e/landing.spec.ts:166:1 › CA02 — em viewport mobile o menu vira hambúrguer (Sheet)
+  ✓   4 [desktop] › tests/e2e/landing.spec.ts:84:1 › HERO-V5 — hero assimétrico com vitrine e faixa de indicadores (725ms)
+  ✓   3 [desktop] › tests/e2e/landing.spec.ts:34:1 › CA01 — página única com as 8 seções da estrutura v2 (764ms)
+  ✓   1 [desktop] › tests/e2e/landing.spec.ts:59:1 › BENEFITS-SHOWCASE — benefícios abrem com o Painel do Técnico e 5 cards uniformes (829ms)
+  ✓   2 [desktop] › tests/e2e/landing.spec.ts:116:1 › HOW-IT-WORKS-TIMELINE — 4 atos com 4 módulos cada e desfecho de resultado (933ms)
+  ✓   8 [desktop] › tests/e2e/landing.spec.ts:219:1 › LEAD-PANEL — painel territorial da seção de demonstração mantém copy e equipe (401ms)
+  ✓   7 [desktop] › tests/e2e/landing.spec.ts:202:1 › V2-FAQ — accordion nativo abre e fecha as perguntas (541ms)
+  ✓   9 [desktop] › tests/e2e/landing.spec.ts:246:1 › CA05 — envio válido exibe a mensagem exata de sucesso (modo mock) (699ms)
+  ✓  10 [desktop] › tests/e2e/landing.spec.ts:256:1 › L3 — honeypot preenchido é aceito em silêncio (proteção anti-bot) (534ms)
+  ✓  11 [desktop] › tests/e2e/landing.spec.ts:271:1 › CA06 — município vazio bloqueia envio e destaca o campo (458ms)
+  ✓  12 [desktop] › tests/e2e/landing.spec.ts:281:1 › V2-CONSENT — consentimento LGPD desmarcado bloqueia o envio (383ms)
+  ✓  13 [desktop] › tests/e2e/landing.spec.ts:292:1 › A11Y-FOCUS — foco visível por teclado nas superfícies clara e escura (343ms)
+  ✓  14 [desktop] › tests/e2e/landing.spec.ts:325:1 › A11Y-FAQ-KEYBOARD — perguntas do FAQ operáveis por Enter e Espaço, com foco visível (321ms)
+  ✓  15 [desktop] › tests/e2e/landing.spec.ts:348:1 › A11Y-HEADINGS — um único h1 e hierarquia sem salto de nível (282ms)
+  ✓  16 [desktop] › tests/e2e/landing.spec.ts:361:1 › FOOTER-DARK — footer escuro com 4 links rápidos, sem "Demonstração" (291ms)
+  ✓  17 [mobile] › tests/e2e/landing.spec.ts:34:1 › CA01 — página única com as 8 seções da estrutura v2 (220ms)
+  ✓  18 [mobile] › tests/e2e/landing.spec.ts:59:1 › BENEFITS-SHOWCASE — benefícios abrem com o Painel do Técnico e 5 cards uniformes (261ms)
+  -  21 [mobile] › tests/e2e/landing.spec.ts:183:1 › V2-NAV — âncoras do header e do CTA levam às 5 seções
+  ✓  19 [mobile] › tests/e2e/landing.spec.ts:84:1 › HERO-V5 — hero assimétrico com vitrine e faixa de indicadores (226ms)
+  ✓  22 [mobile] › tests/e2e/landing.spec.ts:202:1 › V2-FAQ — accordion nativo abre e fecha as perguntas (317ms)
+  ✓  23 [mobile] › tests/e2e/landing.spec.ts:219:1 › LEAD-PANEL — painel territorial da seção de demonstração mantém copy e equipe (258ms)
+  ✓  24 [mobile] › tests/e2e/landing.spec.ts:116:1 › HOW-IT-WORKS-TIMELINE — 4 atos com 4 módulos cada e desfecho de resultado (412ms)
+  ✓  20 [mobile] › tests/e2e/landing.spec.ts:166:1 › CA02 — em viewport mobile o menu vira hambúrguer (Sheet) (970ms)
+  ✓   6 [desktop] › tests/e2e/landing.spec.ts:183:1 › V2-NAV — âncoras do header e do CTA levam às 5 seções (3.3s)
+  ✓  27 [mobile] › tests/e2e/landing.spec.ts:271:1 › CA06 — município vazio bloqueia envio e destaca o campo (352ms)
+  ✓  28 [mobile] › tests/e2e/landing.spec.ts:281:1 › V2-CONSENT — consentimento LGPD desmarcado bloqueia o envio (361ms)
+  ✓  30 [mobile] › tests/e2e/landing.spec.ts:348:1 › A11Y-HEADINGS — um único h1 e hierarquia sem salto de nível (152ms)
+  ✓  29 [mobile] › tests/e2e/landing.spec.ts:325:1 › A11Y-FAQ-KEYBOARD — perguntas do FAQ operáveis por Enter e Espaço, com foco visível (208ms)
+  ✓  31 [mobile] › tests/e2e/landing.spec.ts:361:1 › FOOTER-DARK — footer escuro com 4 links rápidos, sem "Demonstração" (185ms)
+  ✓  25 [mobile] › tests/e2e/landing.spec.ts:246:1 › CA05 — envio válido exibe a mensagem exata de sucesso (modo mock) (1.4s)
+  ✓  32 [mobile] › tests/e2e/landing.spec.ts:292:1 › A11Y-FOCUS — foco visível por teclado nas superfícies clara e escura (185ms)
+  ✓  26 [mobile] › tests/e2e/landing.spec.ts:256:1 › L3 — honeypot preenchido é aceito em silêncio (proteção anti-bot) (2.7s)
+
+  2 skipped
+  30 passed (6.9s)

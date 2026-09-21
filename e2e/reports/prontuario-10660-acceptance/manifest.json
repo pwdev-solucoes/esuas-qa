@@ -1,0 +1,265 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — Cadastro de Pessoa no Painel do Tenant",
+    "subtitle": "Épico Prontuário SUAS F0 · HU #10660 · 12 critérios · evidências dirigidas no client",
+    "rows": [
+      [
+        "Gerado em",
+        "27/08/2026"
+      ],
+      [
+        "História",
+        "#10660 — Cadastro e vinculação de pessoa no Painel do Tenant (balcão)"
+      ],
+      [
+        "Spec",
+        ".planning/specs/10660-cadastro-pessoa-painel-tenant.md"
+      ],
+      [
+        "Branch",
+        "prontuario (api, client, admin)"
+      ],
+      [
+        "Ambiente",
+        "API Laravel :8090 (esuas_app) · PostgreSQL esuas_e2e · client vite preview :4174"
+      ],
+      [
+        "Organização (tenant)",
+        "E2E CadÚnico"
+      ],
+      [
+        "Ferramenta",
+        "playwright-cli (Chromium headless) + Pest 4"
+      ]
+    ]
+  },
+  "summary": "12 critérios de aceite, <b>todos os 12 evidenciados no navegador</b>. Nenhum critério reprovado e nenhum defeito encontrado. A suíte fecha <b>117 testes / 419 asserções</b>. Esta é a história de maior risco de privacidade do épico — a busca por CPF que atravessa a fronteira entre municípios — e por isso a verificação foi feita no <b>corpo bruto das respostas da API</b>, não apenas no que a tela desenha: para um CPF de fora, a resposta carrega apenas existência e um token criptografado, sem nome, nascimento, família ou município. A única exceção autorizada pela spec (o alerta de duplicidade sem CPF) foi verificada como confinada: não alcança a auditoria e só considera candidatas sem CPF. Detalhes em “Observações e ressalvas”.",
+  "cas": [
+    {
+      "id": "CA01",
+      "title": "Pessoa já no município (comportamento atual preservado)",
+      "status": "nav",
+      "gherkin": "Dado que sou Operacional do Tenant e a pessoa buscada já integra uma família do meu município\nQuando eu pesquisar pelo CPF dela\nEntão ela aparece no resultado com os dados que a pesquisa já apresenta hoje\n  E o comportamento atual da tela não muda",
+      "steps_html": "Tela <b>Pesquisa de Pessoas</b> → busca pelo CPF de integrante ativo de família do município.",
+      "results": [
+        "A pessoa aparece na tabela de resultados com todas as colunas de hoje: código familiar, CPF, NIS, nome, nascimento e idade, filiação 1 e município de cadastramento.",
+        "A ação “Visualizar Família” continua disponível na linha.",
+        "Nenhum aviso de privacidade ou fluxo adicional é introduzido — o caminho conhecido pela equipe não muda."
+      ],
+      "images": [
+        "screenshots/ca01-pessoa-do-municipio.png"
+      ]
+    },
+    {
+      "id": "CA02",
+      "title": "CPF existe no repositório, fora do município",
+      "status": "nav",
+      "gherkin": "Dado que o CPF pesquisado pertence a uma pessoa cadastrada, que não integra nenhuma família do meu município\nQuando eu pesquisar por esse CPF\nEntão o sistema informa que a pessoa já está cadastrada na plataforma\n  E não apresenta nome, endereço, família nem município de origem\n  E oferece a ação de vincular",
+      "steps_html": "Busca pelo CPF de pessoa que existe na plataforma mas não integra família deste município, com inspeção da <b>resposta crua da API</b> além da tela.",
+      "results": [
+        "A tela informa apenas a existência: “Esta pessoa já está cadastrada na plataforma.”",
+        "E declara a razão ao profissional: “Por proteção de dados (LGPD), nenhuma informação da pessoa é apresentada antes da vinculação: o sistema informa apenas que o CPF já existe.”",
+        "NA RESPOSTA DA API, o array <code>data</code> volta <b>vazio</b> e o bloco <code>global</code> carrega somente quatro campos: <code>exists</code>, <code>can_link</code>, <code>message</code> genérica e um <code>person_ref</code>.",
+        "<b>Não há nome, data de nascimento, nome da mãe, endereço, família, município de origem nem id</b> — verificado no corpo bruto da resposta, não apenas no que a tela desenha.",
+        "O <code>person_ref</code> é um token <b>criptografado</b> (formato iv/value/mac do Laravel): é opaco ao cliente e não pode ser revertido no navegador. É ele que permite seguir para a vinculação sem transportar identidade.",
+        "A ação “Vincular a família” é oferecida, como o critério exige."
+      ],
+      "images": [
+        "screenshots/ca02-existe-fora-do-municipio.png"
+      ]
+    },
+    {
+      "id": "CA03",
+      "title": "Vinculação exige confirmar a identidade",
+      "status": "nav",
+      "gherkin": "Dado que o sistema informou que o CPF já está cadastrado\nQuando eu acionar a vinculação\nEntão o sistema pede a data de nascimento ou o nome da mãe\n  E só conclui a vinculação se o dado informado coincidir com o registro existente\n  E, ao concluir, os dados da pessoa passam a ser visíveis no prontuário da minha família",
+      "steps_html": "<b>Vincular a família</b> → informar o código familiar da família receptora → escolher o segundo dado de confirmação → confirmar com o valor correto.",
+      "results": [
+        "O diálogo “Confirmar identidade” exige duas coisas: a família deste município que receberá a pessoa e “um segundo dado que confira com o cadastro”.",
+        "O segundo dado é uma escolha entre <b>Data de nascimento</b> e <b>Nome da mãe</b> — exatamente as duas opções previstas no critério.",
+        "Os campos de confirmação só são habilitados após a família ser localizada — a vinculação não pode ser tentada no vazio.",
+        "Com o dado correto: POST /families/{uuid}/members/link-global → <b>201 Created</b>.",
+        "O CONTRASTE É A PROVA: repetida a mesma busca, pelo mesmo CPF e pelo mesmo operador, a pessoa agora aparece com nome, nascimento e filiação. Antes da vinculação, só existência; depois, o dado completo.",
+        "Ela passa a constar da composição da família, com os dados visíveis no prontuário."
+      ],
+      "images": [
+        "screenshots/ca03-confirmar-identidade.png",
+        "screenshots/ca03-vinculada.png"
+      ]
+    },
+    {
+      "id": "CA04",
+      "title": "Confirmação de identidade que não coincide",
+      "status": "nav",
+      "gherkin": "Dado que o sistema informou que o CPF já está cadastrado\nQuando eu informar uma data de nascimento que não coincide\nEntão a vinculação não é concluída\n  E o sistema não revela qual é a data correta\n  E a tentativa é registrada na trilha de auditoria",
+      "steps_html": "Mesmo fluxo do CA03, informando uma data de nascimento propositalmente errada, com inspeção do corpo da resposta e da trilha.",
+      "results": [
+        "POST /link-global → <b>422</b>. A vinculação não é concluída.",
+        "A tela informa sem entregar nada: “O dado informado não confere. Verifique com a pessoa atendida.”",
+        "O CORPO DA RESPOSTA foi inspecionado e contém <b>apenas</b> <code>{\"message\": \"Não foi possível confirmar a identidade com o dado informado.\", \"error_code\": \"identity_not_confirmed\"}</code> — nenhum valor correto, nenhuma pista, nenhum campo extra.",
+        "A tentativa é auditada: description <code>person.identity_confirmation_failed</code>, com o usuário, o tenant, IP, horário e <code>attempted_field: \"birth_date\"</code> — registra QUAL campo foi tentado, e não o valor tentado.",
+        "O CPF do profissional é gravado mascarado na trilha (<code>***.444.777-**</code>)."
+      ],
+      "images": [
+        "screenshots/ca04-identidade-nao-confere.png"
+      ]
+    },
+    {
+      "id": "CA05",
+      "title": "Cadastrar pessoa nova",
+      "status": "nav",
+      "gherkin": "Dado que o CPF pesquisado não existe no repositório\nQuando eu cadastrar a pessoa informando CPF, nome completo, data de nascimento, nome da mãe e sexo\nEntão a pessoa é criada\n  E fica disponível para ser vinculada a uma família do meu município\n  E a criação consta da trilha de auditoria, identificando o município e o usuário",
+      "steps_html": "Busca por CPF inexistente → <b>Cadastrar nova pessoa</b> → preenchimento dos cinco campos → <b>Cadastrar</b>.",
+      "results": [
+        "Para CPF inexistente a tela é explícita e oferece o caminho: “Ninguém com este CPF está cadastrado na plataforma. É possível cadastrar a pessoa agora e seguir com o atendimento.”",
+        "POST /client/persons → <b>201 Created</b>.",
+        "A criação é auditada com a identificação exigida: description <code>person.created_by_tenant</code>, com <code>tenant_id</code> (o município), <code>user_id</code> (o usuário), <code>person_id</code>, <code>without_cpf</code>, IP e horário.",
+        "A pessoa fica disponível para vinculação: a busca pelo mesmo CPF passa a oferecer “Vincular a família”.",
+        "OBSERVAÇÃO COERENTE: a pessoa recém-criada já entra sob a mesma fronteira de privacidade — enquanto não for vinculada a uma família, seus dados não são reapresentados, nem ao profissional que acabou de digitá-los. É consequência direta da RN12 (pertencer ao município é ter vínculo), e não uma falha."
+      ],
+      "images": [
+        "screenshots/ca05-cpf-inexistente.png",
+        "screenshots/ca05-pessoa-criada.png"
+      ]
+    },
+    {
+      "id": "CA06",
+      "title": "Nome da mãe é exigido no cadastro pelo município",
+      "status": "nav",
+      "gherkin": "Dado que estou cadastrando uma pessoa nova\nQuando eu tentar salvar sem informar o nome da mãe\nEntão o cadastro não é salvo\n  E o sistema indica que o nome da mãe é necessário para a prestação de contas ao TCE-AL",
+      "steps_html": "Preenchimento de todos os campos exceto o nome da mãe → <b>Cadastrar</b>.",
+      "results": [
+        "O cadastro não é salvo: nenhuma requisição de criação é emitida.",
+        "A mensagem cita a razão exata que o critério exige: “Informe o nome da mãe: o dado é obrigatório <b>para a prestação de contas ao TCE-AL</b>.”",
+        "A justificativa já é apresentada de forma preventiva, antes da tentativa, no rodapé do campo: “Exigido para a prestação de contas ao TCE-AL.”"
+      ],
+      "images": [
+        "screenshots/ca06-nome-mae-exigido.png"
+      ]
+    },
+    {
+      "id": "CA07",
+      "title": "CPF já existente não cria segunda pessoa",
+      "status": "nav",
+      "gherkin": "Dado que estou cadastrando uma pessoa e informo um CPF já cadastrado\nQuando eu tentar salvar\nEntão nenhuma pessoa nova é criada\n  E o sistema oferece o caminho de vinculação da pessoa existente, com a confirmação de identidade",
+      "steps_html": "No formulário de cadastro, informar um CPF que já existe na base, com nome e demais dados diferentes, e tentar salvar.",
+      "results": [
+        "POST /client/persons → <b>409 Conflict</b>.",
+        "Nenhuma pessoa nova é criada — verificado em banco: o nome fictício usado na tentativa não existe, e o CPF continua com exatamente um registro.",
+        "O sistema não apenas recusa: <b>abre imediatamente o diálogo “Confirmar identidade”</b>, oferecendo o caminho de vinculação da pessoa existente — exatamente o que o critério pede.",
+        "Note que o CPF informado pertencia a pessoa DO município, e ainda assim nenhum dado dela foi apresentado na recusa: o caminho continua sendo confirmar identidade."
+      ],
+      "images": [
+        "screenshots/ca07-cpf-ja-existente.png"
+      ]
+    },
+    {
+      "id": "CA08",
+      "title": "Pessoa sem CPF, com alerta de duplicidade",
+      "status": "nav",
+      "gherkin": "Dado que estou cadastrando uma criança que ainda não tem CPF\nQuando eu informar nome, data de nascimento e nome da mãe, deixando o CPF vazio\nEntão o sistema apresenta as pessoas já cadastradas com nome e data de nascimento semelhantes\n  E exige que eu confirme que não se trata de duplicidade\n  E, ao confirmar, a pessoa é criada marcada como sem CPF",
+      "steps_html": "Marcar <b>Pessoa não tem CPF</b>, informar nome e nascimento coincidentes com pessoa já cadastrada sem CPF, e tentar salvar; depois confirmar a não-duplicidade.",
+      "results": [
+        "A criação é interrompida por uma checagem própria (POST /persons/check-duplicates) — e nenhuma requisição de criação a acompanha.",
+        "O alerta é apresentado: “Encontramos pessoas com nome e nascimento semelhantes.”, com a explicação “Sem CPF não há como o sistema garantir que se trata de outra pessoa. Confira com a pessoa atendida antes de continuar.”",
+        "As candidatas são listadas com <b>nome e data de nascimento</b> — a exceção de privacidade declarada na spec (§7.4), sem a qual a decisão “é a mesma pessoa?” não poderia ser tomada.",
+        "A confirmação é exigida de forma explícita, por aceite: “Confirmo que não é nenhuma dessas e é uma pessoa nova”.",
+        "Ao confirmar, POST /client/persons → 201 Created, e a pessoa é gravada com <code>cpf = NULL</code>; a trilha registra <code>without_cpf: true</code>.",
+        "A EXCEÇÃO NÃO VAZA PARA A AUDITORIA: a consulta é auditada como <code>person.duplicate_check_performed</code> com <b>apenas</b> <code>results_count</code>. Verificado: o nome exibido tem <b>zero ocorrências</b> em todo o activity_log.",
+        "O alcance do alerta é restrito por desenho (RN06): só entram candidatas <b>sem CPF</b> — quem tem CPF é resolvido pelo caminho da vinculação (CA07). Isso também estreita a superfície da exceção de privacidade."
+      ],
+      "images": [
+        "screenshots/ca08-alerta-duplicidade.png"
+      ]
+    },
+    {
+      "id": "CA09",
+      "title": "Completar campo vazio de pessoa existente",
+      "status": "nav",
+      "gherkin": "Dado que vinculei uma pessoa cujo nome da mãe está em branco\nQuando eu informar o nome da mãe\nEntão o dado é gravado\n  E a alteração consta da auditoria, identificando o município de origem da informação",
+      "steps_html": "Campo do nome da mãe, no detalhe do integrante dentro da composição familiar (mesmo controle evidenciado na #10620/CA06).",
+      "results": [
+        "PATCH /client/persons/{uuid}/mother-name → 200 OK; o dado é gravado no cadastro da PESSOA.",
+        "A auditoria identifica a origem municipal da informação: description <code>person.mother_name_filled_from_family_record</code>, com <code>{\"source\": \"family_record\", \"tenant_id\": …, \"family_id\": …, \"user_id\": …}</code>.",
+        "A mudança do dado é registrada em separado, com o valor anterior e o novo.",
+        "A tela avisa antes da ação: “O campo está vazio no cadastro da pessoa e pode ser completado pelo prontuário. A alteração fica registrada na trilha de auditoria.”",
+        "Cobertura correspondente: “it fills an empty field of a person linked to the municipality (CA09…)”."
+      ],
+      "images": [
+        "screenshots/ca10-nome-mae-nao-editavel.png"
+      ]
+    },
+    {
+      "id": "CA10",
+      "title": "Campo preenchido não é alterado pelo município",
+      "status": "nav",
+      "gherkin": "Dado que vinculei uma pessoa cujo nome da mãe já está preenchido\nQuando eu abrir os dados dela\nEntão o nome da mãe é apresentado\n  E não é oferecido para edição — a correção continua sendo ação do Painel de Administração Global",
+      "steps_html": "Detalhe da pessoa vinculada cujo cadastro já possui o nome da mãe.",
+      "results": [
+        "O nome da mãe é apresentado como texto.",
+        "Não há campo de edição nem botão de salvar — a edição não é oferecida.",
+        "A tela declara a regra: “Informado no cadastro de pessoas. O prontuário apresenta o dado e não o sobrescreve.”",
+        "A recusa também vale por payload: “it refuses to overwrite a field that is already filled (CA10/RN08)”."
+      ],
+      "images": [
+        "screenshots/ca10-nome-mae-nao-editavel.png"
+      ]
+    },
+    {
+      "id": "CA11",
+      "title": "Exclusão não é oferecida",
+      "status": "nav",
+      "gherkin": "Dado que cadastrei uma pessoa por engano\nQuando eu abrir os dados dela\nEntão não existe ação de excluir\n  E a correção se faz por edição dos dados",
+      "steps_html": "Varredura das ações disponíveis na tela onde os dados da pessoa são abertos.",
+      "results": [
+        "Verificação programática sobre todos os botões da página: <b>nenhuma</b> ação de excluir, remover, apagar ou deletar.",
+        "A única ação de saída é “Desvincular”, que — como provado no dossiê da #10620 — não apaga: registra status <code>unlinked</code> mantendo <code>deleted_at</code> nulo e a pessoa intacta.",
+        "A ausência é estrutural, não apenas visual: “it has no delete route for a person (CA11/RN07)” — não existe rota de exclusão a ser chamada."
+      ],
+      "images": [
+        "screenshots/ca11-sem-exclusao.png"
+      ]
+    },
+    {
+      "id": "CA12",
+      "title": "Busca por nome não atravessa municípios",
+      "status": "nav",
+      "gherkin": "Dado que existe pessoa cadastrada em outro município com nome semelhante ao que pesquiso\nQuando eu pesquisar por nome parcial no Painel do Tenant\nEntão ela não aparece no resultado\n  E somente a busca por CPF exato informa a existência fora do município",
+      "steps_html": "Busca por nome parcial que corresponde tanto a pessoa do município quanto a pessoa fora dele, com inspeção da resposta da API.",
+      "results": [
+        "O resultado traz <b>apenas</b> a pessoa do município. A pessoa correspondente que está fora não aparece.",
+        "Na resposta da API, o bloco <code>global</code> <b>não é retornado</b> para busca por nome — ele existe somente na busca por CPF exato.",
+        "Ou seja, a fronteira não é filtrada na tela: a informação de existência fora do município sequer é produzida por este caminho de busca."
+      ],
+      "images": [
+        "screenshots/ca12-busca-por-nome.png"
+      ]
+    }
+  ],
+  "notes": [
+    {
+      "title": "A fronteira entre municípios foi verificada na resposta da API, não só na tela",
+      "html": "<p>Este é o ponto de maior risco do épico: uma busca por CPF que atravessa a fronteira entre municípios. Filtrar o dado na interface não bastaria — bastaria abrir o inspetor do navegador para vê-lo. Por isso a verificação foi feita no <b>corpo bruto da resposta</b>.</p><p>O que a API devolve para um CPF de fora é apenas:</p><pre>\"data\": [],\n\"global\": { \"exists\": true, \"can_link\": true,\n             \"person_ref\": \"&lt;token criptografado&gt;\",\n             \"message\": \"Esta pessoa já está cadastrada na plataforma.\" }</pre><p>Nenhum nome, nascimento, nome da mãe, endereço, família, município de origem ou id. O <code>person_ref</code> é cifrado (formato iv/value/mac), então nem serve como identificador estável para correlacionar pessoas entre buscas. É ele que carrega a referência até a vinculação sem transportar identidade.</p>"
+    },
+    {
+      "title": "A exceção de privacidade do CA08 está confinada — e foi verificada nos dois lados",
+      "html": "<p>A spec (§7.4) autoriza <b>uma única</b> exceção à regra de não revelar dados de pessoa de outro município: o alerta de duplicidade para cadastro sem CPF, que precisa exibir nome e data de nascimento — sem eles, o profissional não tem como decidir se é a mesma pessoa.</p><p>Verificamos que a exceção não escapa desse caminho:</p><ul><li><b>Na auditoria:</b> a consulta é registrada como <code>person.duplicate_check_performed</code> com apenas <code>results_count</code>. O nome exibido na tela tem <b>zero ocorrências</b> em todo o <code>activity_log</code>.</li><li><b>No alcance:</b> por RN06, só entram candidatas <b>sem CPF</b>. Quem tem CPF é resolvido pelo caminho da vinculação com confirmação de identidade (CA07). A superfície da exceção é, portanto, menor do que o critério sozinho sugeriria.</li></ul><p>Nota metodológica: a primeira tentativa de provocar o alerta usou uma pessoa <b>com</b> CPF e não disparou nada. O comportamento estava correto — era o teste que estava errado.</p>"
+    },
+    {
+      "title": "A negativa do CA04 não entrega nada — nem no corpo, nem na trilha",
+      "html": "<p>Uma confirmação de identidade malsucedida é um caminho clássico de vazamento: a mensagem de erro pode revelar o valor correto, ou a auditoria pode gravar o valor tentado, que é dado pessoal digitado por um terceiro.</p><p>Nenhum dos dois acontece. O corpo do 422 traz somente <code>message</code> genérica e <code>error_code: identity_not_confirmed</code> — um código estável, adequado para o front detectar o caso sem depender do texto. E a trilha grava <code>attempted_field: \"birth_date\"</code>: registra <b>qual campo</b> foi tentado, nunca o valor tentado.</p><p>Some-se a isso que os CPFs aparecem mascarados na trilha (<code>***.444.777-**</code>) e que a própria consulta de existência é auditada (<code>person.global_existence_checked</code>, com <code>searched_cpf</code> igualmente mascarado). A auditoria de consulta exigida para esta história está presente.</p>"
+    },
+    {
+      "title": "Efeito colateral coerente: a pessoa recém-cadastrada some da vista de quem a cadastrou",
+      "html": "<p>Ao cadastrar uma pessoa nova pelo balcão, ela é criada — mas, como ainda não integra família alguma, volta a cair sob a fronteira de privacidade. O profissional que acabou de digitar nome e data de nascimento não os vê mais na busca seguinte: recebe apenas “Esta pessoa já está cadastrada na plataforma”.</p><p>É consequência direta e correta da RN12 — pertencer ao município é ter vínculo, não ter sido cadastrado por ele. E o caminho de saída está oferecido na mesma tela (“Vincular a família”), o que satisfaz o critério. Registra-se aqui porque é o tipo de comportamento que gera dúvida no primeiro atendimento, e vale estar previsto no treinamento da equipe.</p>"
+    },
+    {
+      "title": "Integridade da massa",
+      "html": "<p>Os critérios exigiram vincular uma pessoa de fora a uma família do município (CA03) e criar três pessoas pelo balcão (CA05 e CA08). Todas as alterações foram revertidas ao final: o vínculo foi removido e as três pessoas criadas foram excluídas em definitivo.</p><p>Estado confirmado: a pessoa de fora existe e voltou a ter <b>zero</b> vínculos, e a família de evidência tem novamente 3 integrantes ativos.</p>"
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Pest — PersonGlobal, LinkGlobal, Duplicates, ConfirmIdentity, PersonSearch)",
+    "file": "pest-10660.txt"
+  }
+}

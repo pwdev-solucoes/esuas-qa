@@ -1,0 +1,58 @@
+
+   PASS  Tests\Unit\Models\CboAccessProfileTest
+  ✓ it has correct fillable attributes                                   0.01s  
+  ✓ it casts is_active to boolean
+  ✓ it defaults is_active to true
+  ✓ it resolves route binding by uuid
+  ✓ it uses soft deletes
+  ✓ it uses HasUuid trait
+  ✓ it uses LogsActivity trait
+  ✓ it configures activity log with name cbo_access_profile and dirty-only logging
+  ✓ it is a global lookup — has no tenant_id and does not use BelongsToTenant
+
+   PASS  Tests\Feature\Api\CboAccessProfileControllerTest
+  ✓ it CA01: associa um CBO a um perfil funcional e resolve pelo codigo  0.34s  
+  ✓ it CA02: recusa conjunto sem o posto base Operacional do Tenant      0.02s  
+  ✓ it CA03: recusa entrada composta apenas por add-on LGPD              0.01s  
+  ✓ it CA04: recusa conjunto que contenha o posto Master                 0.02s  
+  ✓ it CA05: recusa perfil que conceda modulo vedado, nomeando o modulo… 0.02s  
+  ✓ it CA05: recusa perfil que conceda modulo vedado, nomeando o modulo… 0.02s  
+  ✓ it CA05: recusa perfil que conceda modulo vedado, nomeando o modulo… 0.02s  
+  ✓ it CA05: recusa perfil que conceda modulo vedado, nomeando o modulo… 0.13s  
+  ✓ it CA06: Operacional Global le o mapa mas recebe 403 ao alterar      0.03s  
+  ✓ it CA07: registra o diff do conjunto de papeis na trilha de auditor… 0.03s  
+  ✓ it CA08: CBO sem entrada no mapa responde o padrao minimo, sem erro  0.01s  
+  ✓ it CA08: CBO inexistente no catalogo retorna 404                     0.02s  
+  ✓ it RN01: recusa uma segunda entrada para o mesmo CBO                 0.02s  
+  ✓ it RN02: recusa mapear CBO inativa                                   0.05s  
+  ✓ it RN12: recusa papel do guard manager                               0.02s  
+  ✓ it RN12: recusa papel inativo                                        0.02s  
+  ✓ it RN13: remover a entrada e soft delete e permite remapear o CBO    0.02s  
+  ✓ it nega acesso a manager sem permissao                               0.01s  
+
+   PASS  Tests\Feature\Console\SyncPermissionsTest
+  ✓ it extracts the can: abilities declared by controllers from the rou… 0.03s  
+  ✓ it keeps full parity with the previous hardcoded permission set (no… 0.02s  
+  ✓ it seeds permissions for both guards and assigns them to roles       0.74s  
+  ✓ it runs permissions:sync idempotently without duplicating permissio… 1.21s  
+  ✓ it prunes orphan permissions not present in the registry             1.30s  
+  ✓ it does not write anything on --dry-run                              0.05s  
+  ✓ it does not assign RESTRICTED_PERMISSIONS to any role                0.69s  
+  ✓ it permissions:sync --coverage fails when an authenticated route ha… 0.63s  
+  ✓ it never mirrors any platform-versions ability into the client guar… 0.71s  
+  ✓ it never mirrors any cbo-access-profiles ability into the client gu… 0.91s  
+  ✓ it grants the Operacional Global read-only access to the CBO map (H… 0.71s  
+
+   PASS  Tests\Feature\Seeders\CboAccessProfileSeederTest
+  ✓ it seeds the 9 functional profiles at level 40 in the client guard   2.27s  
+  ✓ it seeds 39 map entries and deliberately leaves CBO 5153-20 out (RN… 2.08s  
+  ✓ it every seeded entry carries the operador base post and never the…  2.21s  
+  ✓ it no seeded functional profile grants a forbidden module (RN07)     2.08s  
+  ✓ it suggests family_viewer for exactly the 4 CBOs of the Anexo A cut  2.06s  
+  ✓ it marks every add-on as suggested and never a functional profile (… 2.08s  
+  ✓ it is idempotent — re-running duplicates nothing                     2.11s  
+  ✓ it resolves the seeded map through the API and falls back for the u… 2.10s  
+
+  Tests:    46 passed (302 assertions)
+  Duration: 25.06s
+

@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — HU #9748 (Upload + validação prévia do CadÚnico)</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:980px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-wrap:wrap; gap:14px; margin-top:12px; }
+  figure { margin:0; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:300px; background:#fff; }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:11px; color:var(--muted); padding:6px 8px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { .evid, section.ca { break-inside:avoid; } figure { width:280px; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — HU #9748 (Upload + validação prévia do CadÚnico)</h1>
+    <div class="sub">Sprint 8 · HU #9748 (fatia HU01) · Evidências end-to-end no client</div>
+    <div class="meta"><div><span>Gerado em:</span> 29/06/2026</div><div><span>Branch:</span> sprint8-cadunico</div><div><span>Spec:</span> .planning/specs/sprint8/9748-conformidade-upload-validacao.md</div><div><span>Ambiente:</span> API Sail/PostgreSQL (api-laravel.test-1, :80) · client Vite :5175 (não-mock)</div><div><span>Organização (tenant):</span> Organização E2E CadÚnico · IBGE 2304400 (Fortaleza/CE)</div><div><span>Massa de dados:</span> e2e/fixtures/cadunico/massa-dados/</div><div><span>Ferramenta:</span> playwright-cli (Chromium) + Pest</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">HU #9748 cobre o upload e a validação prévia do CSV do CadÚnico (CA01–CA03). Os 3 critérios foram evidenciados ao vivo no client (navegador): validação bem-sucedida com habilitação do 'Confirmar' (CA01), rejeição imediata de cabeçalho divergente e de arquivo de outro município (CA02), e bloqueio total do módulo para o Operacional sem permissão — ausência no menu e /403 no acesso direto (CA03). A suíte Pest (15 testes, 42 asserções, 100% verde) acompanha como apêndice, cobrindo também as regras de backend (RN01 município, RN11 concorrência, RN05 rótulo do executor, isolamento 404).</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA01</td><td>Sucesso na validação inicial</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA02</td><td>Rejeição de formato / layout divergente</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA03</td><td>Bloqueio de interface por falta de permissão</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA01">
+      <h2>CA01 — Sucesso na validação inicial <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Operacional do Tenant com a permissão de importação
+Quando faço upload de um CSV válido no layout oficial do CadÚnico
+Então o sistema confirma a validação estrutural
+E habilita o botão para confirmar o processamento do lote</p>
+      <p class="steps"><strong>Como foi testado:</strong> Logado como <b>Master</b>, abrir <code>Importações do CadÚnico</code> → <code>Nova importação</code> → selecionar <code>massa-cadunico-remessa1.csv</code> (layout oficial, município 2304400) → <code>Validar arquivo</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O sistema exibe "Arquivo validado" e a mensagem "Confirme para enviar o arquivo para processamento."</li><li>O botão "Confirmar importação" é habilitado.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca01-validado.png" alt="CA01 evidência"/><figcaption>ca01-validado.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA02">
+      <h2>CA02 — Rejeição de formato / layout divergente <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Operacional do Tenant com a permissão de importação
+Quando seleciono um arquivo que não é CSV ou com colunas divergentes
+Então o sistema rejeita o arquivo imediatamente
+E exibe mensagem clara com o motivo da rejeição</p>
+      <p class="steps"><strong>Como foi testado:</strong> Na mesma tela, validar (a) <code>massa-cadunico-cabecalho-invalido.csv</code> (colunas fora do layout) e (b) <code>massa-cadunico-municipio-divergente.csv</code> (IBGE de São Paulo, divergente do tenant). Backend reforça via Pest (mimes:csv, cabeçalho, município — RN01).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Cabeçalho divergente → "O cabeçalho do arquivo não corresponde ao layout oficial do CadÚnico. Colunas ausentes: cd_ibge, cod_familiar_fam, dat_atual_fam, num_nis_pessoa_atual, cod_parentesco_rf_pessoa, nom_pessoa, num_cpf_pessoa, dta_nasc_pessoa."</li><li>Município divergente (RN01) → "O arquivo é de outro município (IBGE 3550308) e não corresponde ao da organização (IBGE 2304400)."</li><li>Nenhum lote é criado; o botão de confirmação permanece indisponível.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca02-cabecalho-invalido.png" alt="CA02 evidência"/><figcaption>ca02-cabecalho-invalido.png</figcaption></figure><figure><img src="screenshots/ca02-municipio-divergente.png" alt="CA02 evidência"/><figcaption>ca02-municipio-divergente.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA03">
+      <h2>CA03 — Bloqueio de interface por falta de permissão <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Operacional do Tenant SEM a permissão de importação
+Quando acesso o Painel do Tenant
+Então a funcionalidade de importação do CadÚnico não está visível/habilitada para mim</p>
+      <p class="steps"><strong>Como foi testado:</strong> Sair, logar como <b>Operador</b> (sem o papel que carrega <code>cadunico-imports.*</code>). Conferir o menu lateral e tentar o acesso direto a <code>/app/cadunico-imports</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O item "Importações do CadÚnico" não aparece no menu lateral do Operador.</li><li>O acesso direto à rota redireciona para /403 "Acesso negado — Você não tem permissão para acessar esta página."</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca03-operador-sem-modulo.png" alt="CA03 evidência"/><figcaption>ca03-operador-sem-modulo.png</figcaption></figure><figure><img src="screenshots/ca03-operador-403.png" alt="CA03 evidência"/><figcaption>ca03-operador-403.png</figcaption></figure></div>
+    </section>
+  
+  <h2>Anexo — Cobertura automatizada (Pest — CadunicoImportControllerTest, 15 testes / 42 asserções)</h2>
+  <pre class="pest">
+   PASS  Tests\Feature\Api\Client\CadunicoImportControllerTest
+  ✓ it validates a well-formed CSV and returns an upload token (CA01)    0.57s  
+  ✓ it rejects a CSV from a different município (RN01)                   0.03s  
+  ✓ it rejects validation when the tenant has no município configured    0.03s  
+  ✓ it rejects a CSV with a divergent header (CA02)                      0.03s  
+  ✓ it blocks validation when an import is already active (RN11/CA07)    0.03s  
+  ✓ it confirms the import and queues stage 1 (HU02)                     0.04s  
+  ✓ it records the executor label with [Master] suffix when not a profe… 0.03s  
+  ✓ it rejects store with an unknown upload token                        0.03s  
+  ✓ it does not sync an import that is not completed                     0.04s  
+  ✓ it queues stage 2 when the import is completed (Etapa 2 manual)      0.03s  
+  ✓ it blocks sync when another batch is active in the tenant (RN11)     0.03s  
+  ✓ it lists only the tenant own history (CA12)                          0.04s  
+  ✓ it returns 404 for a cross-tenant import (CA12/RN10)                 0.03s  
+  ✓ it hides the module from an operador without the permission (CA03)   0.03s  
+  ✓ it stores a generic failure message without leaking exception detai… 0.05s  
+
+  Tests:    15 passed (42 assertions)
+  Duration: 1.46s
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

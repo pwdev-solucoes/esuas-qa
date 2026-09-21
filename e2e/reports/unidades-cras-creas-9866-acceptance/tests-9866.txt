@@ -1,0 +1,11 @@
+=== appendix: backend + frontend ===
+--- Pest: social units servidos como pontos anônimos (RN09) ---
+  ✓ it aggregates by sector, groups anonymous points and computes the b… 0.02s  
+  ✓ it serves the tenant social units as anonymous points with type_cod… 0.02s  
+  Tests:    53 passed (190 assertions)
+
+--- Vitest: useGeoPanel camada de unidades (pontos) ---
+ ✓ src/modules/geo-panel/composables/useGeoPanel.test.ts (24 tests) 7ms
+ Test Files  1 passed (1)
+      Tests  24 passed (24)
+   Duration  522ms (transform 49ms, setup 9ms, collect 58ms, tests 7ms, environment 259ms, prepare 47ms)

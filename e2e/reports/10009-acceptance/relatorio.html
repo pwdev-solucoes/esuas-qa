@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — Atualização de Identidade Visual e Representatividade da Persona (Maria)</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — Atualização de Identidade Visual e Representatividade da Persona (Maria)</h1>
+    <div class="sub">Ticket GLPI #10009 · Evidências end-to-end no client (spec ad-hoc a partir dos CAs do ticket)</div>
+    <div class="meta"><div><span>Gerado em:</span> 31/07/2026 01:18</div><div><span>Branch:</span> develop (client e admin)</div><div><span>Spec:</span> Ad-hoc — CAs extraídos do ticket GLPI #10009 (sem story formal em .planning/product/stories)</div><div><span>Ambiente:</span> API Sail/PostgreSQL · client :5174 · admin :5173</div><div><span>Organização (tenant):</span> Prefeitura Municipal de Modelo - AL (seed E2ESeeder)</div><div><span>Ferramenta:</span> playwright-cli (Chromium)</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">2 critérios de aceite avaliados. CA02 (substituição da persona nas telas de demonstração) está PARCIALMENTE atendido: a tela de login do client (organização/tenant) já exibe a nova Maria (pele escura, cabelo crespo), mas o asset equivalente no admin (Super Admin) ainda contém a ilustração antiga (pele mais clara, cabelo ondulado) — um resquício da versão anterior, mesmo não estando ativo na tela de login atual do admin (que usa outro asset, 'sassa-manager.png'). CA01 (avatar ilustrativo da Maria na aba Resumo de 'Visualizar Família') NÃO foi atendido: a tela real não possui nenhuma ilustração — é 100% dados tabulares, mesmo quando a Referência Familiar do registro se chama literalmente 'MARIA'.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA01</td><td>Visualização da nova persona no prontuário</td><td><span class="pill" style="background:#9b1c1c">NÃO ATENDIDO</span></td></tr>
+<tr><td class="caid">CA02</td><td>Substituição completa nos ambientes de simulação</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA01">
+      <h2>CA01 — Visualização da nova persona no prontuário <span class="pill" style="background:#9b1c1c">NÃO ATENDIDO</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o Master ou o profissional autorizado abre a tela cheia de "Visualizar Família" de exemplo, Quando a aba Resumo carrega os dados da Referência Familiar, Então o avatar ilustrativo da personagem Maria exibe as características de pele escura e cabelo crespo de forma clara e com alta qualidade gráfica.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Login como Master (52998224725) no client (<code>:5174</code>) → navegação para <code>/app/cadastros/familias/13d28843-bba2-4276-a53e-5a3d4a61cb7b</code> (família seed cuja Referência Familiar se chama literalmente "MARIA") → aba Resumo (selecionada por padrão).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A aba Resumo renderiza 4 blocos 100% textuais/tabulares (Dados da Referência Familiar, Endereço e Zona de Residência, Perfis de Vulnerabilidade Ativos, Resumo de Benefícios) — ver &lt;code&gt;ResumoTab.vue&lt;/code&gt;.</li><li>Não existe nenhum elemento de imagem, avatar ou ilustração nesta tela (nem no componente da aba, nem no header da página "Visualizar Família") — confirmado por leitura de código e por inspeção ao vivo do DOM renderizado.</li><li>Divergência: o Critério de Aceite descreve um elemento de UI (avatar ilustrativo) que não existe na implementação atual do módulo de famílias — não é possível evidenciar o critério como está descrito.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca01-resumo-sem-avatar.png" alt="CA01 evidência"/><figcaption>ca01-resumo-sem-avatar.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA02">
+      <h2>CA02 — Substituição completa nos ambientes de simulação <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que navego pelas telas de demonstração do MVP, Quando inspeciono os locais que utilizam a persona Maria para ilustrar o fluxo de atendimento, Então constato que a ilustração antiga foi 100% substituída pela nova versão representativa, sem deixar resquícios da imagem anterior.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Sessão anônima (sem login) → <code>/auth/login</code> no client (<code>:5174</code>) → inspeção da imagem hero (<code>AuthSplitLayout.vue</code>, asset <code>team-equipe.png</code>). Em paralelo, inspeção por código do asset equivalente no admin (<code>admin/src/assets/team-equipe.png</code>) e da tela de login do admin (<code>:5173</code>).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Client (tenant) — tela de login: a persona Maria (crachá "MARIA", à direita) exibe pele escura e cabelo crespo, conforme solicitado. Ilustração 100% substituída neste local.</li><li>Admin (Super Admin) — asset de origem &lt;code&gt;admin/src/assets/team-equipe.png&lt;/code&gt;: a persona Maria ainda tem pele mais clara e cabelo ondulado — a versão ANTIGA não foi substituída neste repositório/submódulo.</li><li>A tela de login do admin atualmente em execução não exibe esse asset (usa &lt;code&gt;sassa-manager.png&lt;/code&gt;, uma persona diferente, via override de branding), então o resquício não é visível ao usuário final agora — mas o arquivo desatualizado permanece no código-fonte do admin como fallback, caso o override de branding seja removido.</li><li>Conclusão: a substituição está confirmada no client, mas incompleta no admin (nível de código-fonte) — recomenda-se replicar o asset atualizado em &lt;code&gt;admin/src/assets/team-equipe.png&lt;/code&gt; antes de considerar o CA02 100% atendido.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca02-login-client-maria-nova.png" alt="CA02 evidência"/><figcaption>ca02-login-client-maria-nova.png</figcaption></figure><figure><img src="screenshots/ca02-admin-team-equipe-desatualizado.png" alt="CA02 evidência"/><figcaption>ca02-admin-team-equipe-desatualizado.png</figcaption></figure></div>
+    </section>
+  
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

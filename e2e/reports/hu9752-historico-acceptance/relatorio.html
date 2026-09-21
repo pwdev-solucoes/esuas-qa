@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — HU #9752</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:980px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-wrap:wrap; gap:14px; margin-top:12px; }
+  figure { margin:0; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:300px; background:#fff; }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:11px; color:var(--muted); padding:6px 8px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { .evid, section.ca { break-inside:avoid; } figure { width:280px; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — HU #9752</h1>
+    <div class="sub">Consultar histórico de importações realizadas · Sprint 8 · Evidências end-to-end no client</div>
+    <div class="meta"><div><span>Gerado em:</span> 30/06/2026</div><div><span>HU:</span> #9752 — Consultar histórico de importações realizadas (HU05 da spec)</div><div><span>Branch:</span> sprint8-cadunico</div><div><span>Spec:</span> .planning/specs/sprint8/cadunico-imports-importacao-cadastro-unico.md (§5 CA11/CA12, §7 Fluxo D, RN05/RN08/RN10)</div><div><span>Ambiente:</span> API Sail/PostgreSQL (:80) · fila cadunico · client Vite (:5175)</div><div><span>Organização (tenant):</span> CA11: E2E CadÚnico · CA12: PMA + PMM (usuário multi-tenant)</div><div><span>Dados:</span> CA11: 2 lotes reais no tenant E2E (remessa1/2). CA12: lotes próprios em PMA e PMM</div><div><span>Ferramenta:</span> playwright-cli (Chromium) + Pest</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">História de auditoria/gestão: o histórico de importações do CadÚnico do tenant, com data/hora, nome do arquivo, resultado estatístico e executor (RN05), isolado por município (RN10). Foram verificados os 2 critérios de aceite — CA11 (histórico auditável) dirigido ao vivo no client, e CA12 (isolamento multi-tenant) demonstrado na UI com um mesmo usuário vinculado a duas organizações (PMA e PMM): ao trocar a organização ativa, o histórico muda para os lotes do respectivo município, sem vazamento entre tenants — reforçado pela suíte Pest (listagem só do tenant + 404 cross-tenant). Resultado: CA11 e CA12 ATENDIDOS.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA11</td><td>Consulta ao histórico auditável</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA12</td><td>Garantia de isolamento multi-tenant</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA11">
+      <h2>CA11 — Consulta ao histórico auditável <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Master ou um Profissional com permissão, Quando visito o menu de Histórico de Importações, Então visualizo uma listagem cronológica indicando a data/hora, nome do arquivo, resultado estatístico e o nome do Profissional ou Usuário (RN05) que executou o procedimento.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Logado como <b>Master</b> (CPF 52998224725), acessar <code>Cadastros › Importações do CadÚnico</code>. Conferir a listagem e, em um lote, abrir <b>Mais ações › Ver detalhes</b> para inspecionar o resultado estatístico.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Listagem cronológica (mais recente no topo) com as colunas Arquivo, Tamanho, Processamento do arquivo, Sincronização das famílias, Concluída em e Ações.</li><li>Cada lote exibe o nome do arquivo (massa-cadunico-remessa1.csv / remessa2.csv) e o executor "Enviado por E2E Master CadÚnico [Master]" — RN05: o executor é Master sem cadastro de Profissional local, então o nome do Usuário Global recebe o sufixo [Master].</li><li>Status por etapa ("Concluída" / "Sincronizada") e data/hora de conclusão (ex.: 30/06/2026, 06:35).</li><li>No detalhe do lote, o "Resumo da sincronização" traz o resultado estatístico (RN08): Total analisado 5, Novas famílias 1, Atualizadas por data 2, Ignoradas por sincronização 1, Linhas com erro 0.</li><li>Pest (apêndice): "it records the executor label with [Master] suffix when not a professional" cobre a regra RN05.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca11-historico-lista.png" alt="CA11 evidência"/><figcaption>ca11-historico-lista.png</figcaption></figure><figure><img src="screenshots/ca11-detalhe-estatistico.png" alt="CA11 evidência"/><figcaption>ca11-detalhe-estatistico.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA12">
+      <h2>CA12 — Garantia de isolamento multi-tenant <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que estou consultando o histórico de importações, Quando a lista é carregada, Então o sistema exibe apenas os lotes processados no meu próprio município, impossibilitando a visualização de dados ou atividades de outros tenants da plataforma.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Demonstração com um <b>mesmo usuário vinculado a duas organizações</b> — o coordenador João Coordenador (CPF 15543849079), Master em <b>PMA</b> (Prefeitura de Arapiraca) e <b>PMM</b> (Prefeitura de Maceió). Ao logar, o sistema apresenta o gate <code>Selecione a organização</code>. Entrando em <b>PMA</b>, abrir <code>Importações do CadÚnico</code> e conferir o histórico; em seguida, trocar a sessão para <b>PMM</b> (re-login → selecionar a outra organização → o interceptor passa a enviar outro <code>X-Tenant-UUID</code>) e conferir o histórico novamente. Os dois conjuntos devem ser <b>disjuntos</b>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Em PMA, o histórico exibe somente os lotes de Arapiraca (arapiraca-cadunico-2026-05.csv e -06.csv).</li><li>Trocando a sessão para PMM, o mesmo usuário vê somente o lote de Maceió (maceio-cadunico-2026-06.csv) — nenhum lote de PMA aparece, e vice-versa.</li><li>Isolamento confirmado para o mesmo usuário em organizações diferentes: o histórico segue o tenant ativo (header X-Tenant-UUID → Global Scope BelongsToTenant), sem qualquer vazamento entre municípios (RN10).</li><li>Pest (apêndice): "it lists only the tenant own history (CA12)" confirma a listagem escopada e "it returns 404 for a cross-tenant import (CA12/RN10)" confirma o bloqueio de acesso, pela rota, a um lote de outro tenant.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca12-select-tenant.png" alt="CA12 evidência"/><figcaption>ca12-select-tenant.png</figcaption></figure><figure><img src="screenshots/ca12-pma-historico.png" alt="CA12 evidência"/><figcaption>ca12-pma-historico.png</figcaption></figure><figure><img src="screenshots/ca12-pmm-historico.png" alt="CA12 evidência"/><figcaption>ca12-pmm-historico.png</figcaption></figure></div>
+    </section>
+  
+  <h2>Anexo — Cobertura automatizada (Pest — CadunicoImportControllerTest)</h2>
+  <pre class="pest">
+   PASS  Tests\Feature\Api\Client\CadunicoImportControllerTest
+  ✓ it validates a well-formed CSV and returns an upload token (CA01)    0.61s  
+  ✓ it rejects a CSV from a different município (RN01)                   0.03s  
+  ✓ it rejects validation when the tenant has no município configured    0.03s  
+  ✓ it rejects a CSV with a divergent header (CA02)                      0.03s  
+  ✓ it blocks validation when an import is already active (RN11/CA07)    0.03s  
+  ✓ it confirms the import and queues stage 1 (HU02)                     0.03s  
+  ✓ it records the executor label with [Master] suffix when not a profe… 0.03s  
+  ✓ it rejects store with an unknown upload token                        0.03s  
+  ✓ it does not sync an import that is not completed                     0.03s  
+  ✓ it queues stage 2 when the import is completed (Etapa 2 manual)      0.03s  
+  ✓ it blocks sync when another batch is active in the tenant (RN11)     0.03s  
+  ✓ it lists only the tenant own history (CA12)                          0.04s  
+  ✓ it returns 404 for a cross-tenant import (CA12/RN10)                 0.03s  
+  ✓ it hides the module from an operador without the permission (CA03)   0.03s  
+  ✓ it stores a generic failure message without leaking exception detai… 0.04s  
+
+  Tests:    15 passed (42 assertions)
+  Duration: 1.15s
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

@@ -1,0 +1,127 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — HU #9868",
+    "subtitle": "Cadastramento Administrativo de Camadas Geográficas Globais (Painel Global) · Evidências end-to-end no admin",
+    "rows": [
+      [
+        "Gerado em",
+        "07/07/2026"
+      ],
+      [
+        "História",
+        "#9868 — Camadas Geográficas Globais (Painel Global)"
+      ],
+      [
+        "Recurso",
+        "/geo-layer-imports (frontend admin / Super Admin)"
+      ],
+      [
+        "Branch",
+        "api: fix/geo-sync-nao-destrutivo · admin: sprint9-revisao"
+      ],
+      [
+        "Ambiente",
+        "API Sail/PostgreSQL(PostGIS) · fila geo · admin :5174"
+      ],
+      [
+        "Base municipal",
+        "geojs-27-mun.json — 102 municípios de Alagoas (IBGE)"
+      ],
+      [
+        "Setores censitários",
+        "maceio_2704302_setores_CD2022.json — 1620 setores de Maceió (IBGE)"
+      ],
+      [
+        "Usuário",
+        "Super Admin (manager) — CPF 44983702016"
+      ],
+      [
+        "Ferramenta",
+        "playwright-cli (Chromium) + Pest"
+      ]
+    ]
+  },
+  "summary": "5 critérios de aceite (CA11, CA12, CA14, CA15, CA16) evidenciados dirigindo o frontend admin no navegador, do slate limpo à base nacional homologada. Fluxo real: bloqueio de setores sem base municipal (CA11) → rejeição de GeoJSON inválido (CA16) → importação e sincronização da geometria municipal de Alagoas, 102 municípios vinculados por código IBGE (CA14) → visualização do polígono de Maceió no mapa (CA15) → importação e sincronização dos 1620 setores censitários de Maceió, vinculados ao município e disponibilizados para consumo (CA12). 4 CAs com dupla evidência (UI + suíte Pest de 87 testes / 345 asserções, no anexo); CA15 por navegador.",
+  "cas": [
+    {
+      "id": "CA11",
+      "title": "Bloqueio de setores censitários sem base municipal homologada",
+      "status": "parc",
+      "gherkin": "Dado que a base nacional de geometrias municipais ainda NÃO foi cadastrada e homologada, quando o Administrador tenta processar o arquivo de malha de setores censitários, então o sistema o impede de continuar e apresenta a mensagem “Operação não permitida. A camada primária de geometrias municipais do Brasil deve ser cadastrada primeiro.”",
+      "steps_html": "Com o banco de camadas vazio (nenhuma geometria municipal homologada), abrir <b>Nova importação</b>, selecionar <b>Setores Censitários</b>, enviar <code>maceio_2704302_setores_CD2022.json</code> e clicar em <b>Importar</b>.",
+      "results": [
+        "O envio é bloqueado antes de qualquer processamento (guard no StoreGeoLayerImportRequest).",
+        "Mensagem exibida exatamente como especificada: “Operação não permitida. A camada primária de geometrias municipais do Brasil deve ser cadastrada primeiro.”",
+        "Nenhuma importação de setores é criada."
+      ],
+      "images": [
+        "screenshots/ca11-bloqueio-setores.png"
+      ]
+    },
+    {
+      "id": "CA12",
+      "title": "Carga de setores censitários após base homologada, vinculados aos municípios",
+      "status": "parc",
+      "gherkin": "Dado que a base nacional de geometrias municipais está homologada (completed + synced), quando o Administrador importa o arquivo GeoJSON de setores censitários do IBGE e conclui o processamento global, então o sistema vincula as divisões geográficas aos respectivos municípios e disponibiliza as camadas para consumo na Área do Cliente.",
+      "steps_html": "Com a base municipal homologada, importar <code>maceio_2704302_setores_CD2022.json</code> como <b>Setores Censitários</b> (GeoJSON); aguardar <b>Concluída</b> e acionar <b>Sincronizar</b>. Depois, no visualizador, ligar a <b>Camada de setores censitários</b> de Maceió.",
+      "results": [
+        "Importação processada: 1620 setores (feature_count = 1620), status Concluída.",
+        "Sincronização: created = 1620, matched = 1620, city_not_found = 0 — todos os setores vinculados a Maceió (IBGE 2704302, prefixo de 7 dígitos).",
+        "Camada disponível para consumo: os 1620 setores renderizam sobre o município no mapa."
+      ],
+      "images": [
+        "screenshots/ca12-setores-concluida-sincronizada.png",
+        "screenshots/ca12b-camada-setores-maceio.png"
+      ]
+    },
+    {
+      "id": "CA14",
+      "title": "Importação da geometria municipal (GeoJSON) vinculada por código IBGE",
+      "status": "parc",
+      "gherkin": "Dado o Painel Global, quando o Administrador envia um arquivo GeoJSON com as geometrias dos municípios e o processamento conclui com sucesso, então as geometrias municipais válidas são registradas e vinculadas aos respectivos municípios por meio do código IBGE.",
+      "steps_html": "Abrir <b>Nova importação</b>, selecionar <b>Geometrias Municipais</b>, enviar <code>geojs-27-mun.json</code> (102 municípios de Alagoas); aguardar <b>Concluída</b> e acionar <b>Sincronizar</b>.",
+      "results": [
+        "Processamento concluído: 102 features válidas.",
+        "Sincronização: created = 102, matched = 102, city_not_found = 0 — vínculo por cities.ibge_code (sem FK).",
+        "Base municipal homologada (Concluída + Sincronizada), habilitando a carga dos setores."
+      ],
+      "images": [
+        "screenshots/ca14-municipal-concluida-sincronizada.png"
+      ]
+    },
+    {
+      "id": "CA15",
+      "title": "Visualização da geometria municipal no mapa (validação visual)",
+      "status": "nav",
+      "gherkin": "Dado um município com geometria importada, quando o usuário abre a tela de visualização em mapa, então consegue consultar a representação geográfica do município e validar visualmente se a geometria foi carregada corretamente e corresponde ao município esperado.",
+      "steps_html": "Acessar <b>Visualizar geometrias</b>, buscar e selecionar <b>Maceió</b>; o mapa desenha o polígono municipal com enquadramento automático.",
+      "results": [
+        "Polígono de Maceió renderizado sobre o mapa base, com contorno fiel ao território do município.",
+        "Rodapé confirma o registro: Código IBGE 2704302 · Tipo Polygon · Centróide -9.5415688, -35.6868617.",
+        "Validação visual rápida atendida."
+      ],
+      "images": [
+        "screenshots/ca15-mapa-municipio-maceio.png"
+      ]
+    },
+    {
+      "id": "CA16",
+      "title": "Rejeição de GeoJSON inválido com status de falha e mensagem explicativa",
+      "status": "parc",
+      "gherkin": "Dado um arquivo GeoJSON inválido ou sem as informações necessárias, quando o Administrador tenta importá-lo, então a importação é rejeitada, o status indica falha, uma mensagem explicativa é apresentada e nenhuma geometria inválida é registrada.",
+      "steps_html": "Importar <code>invalido.geojson</code> (FeatureCollection com Feature sem <code>properties.id</code> e geometria Point) como <b>Geometrias Municipais</b> e abrir os detalhes do lote.",
+      "results": [
+        "Status da importação: Falhou.",
+        "Mensagem explicativa: “A Feature de índice 0 não possui properties.id (código IBGE).”",
+        "Nenhuma geometria registrada (city_geometries permanece em 0) — rejeição sem efeito colateral."
+      ],
+      "images": [
+        "screenshots/ca16-importacao-falha.png"
+      ]
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Pest — GeoLayerImport, GeoJsonValidation, SyncGeoLayer, ProcessGeoLayer, CensusSector): 87 testes / 345 asserções",
+    "file": "pest-geo.txt"
+  }
+}

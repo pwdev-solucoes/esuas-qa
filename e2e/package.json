@@ -1,0 +1,25 @@
+{
+  "name": "esuas-e2e",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Playwright E2E tests for eSUAS (API + Admin Super Admin)",
+  "scripts": {
+    "e2e": "playwright test",
+    "e2e:running": "playwright test",
+    "e2e:debug:cli": "PLAYWRIGHT_HTML_OPEN=never playwright test --debug=cli",
+    "e2e:headed": "playwright test --headed",
+    "e2e:debug": "playwright test --debug",
+    "e2e:ui": "playwright test --ui",
+    "e2e:report": "playwright show-report",
+    "e2e:local": "./scripts/start-stack.sh && playwright test; ./scripts/stop-stack.sh",
+    "stack:up": "./scripts/start-stack.sh",
+    "stack:down": "./scripts/stop-stack.sh",
+    "install:browsers": "playwright install --with-deps chromium"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0",
+    "@types/node": "^22.10.0",
+    "dotenv": "^16.4.7",
+    "typescript": "^5.7.2"
+  }
+}

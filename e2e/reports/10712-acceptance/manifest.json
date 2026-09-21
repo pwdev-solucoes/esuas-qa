@@ -1,0 +1,270 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — Códigos de Encaminhamento",
+    "subtitle": "Épico Prontuário SUAS · fase F2 · HU #10712 — catálogo global mantido no Painel de Administração Global",
+    "rows": [
+      [
+        "Gerado em",
+        "03/09/2026 18:05 · complementado em 04/09/2026 15:10"
+      ],
+      [
+        "HU",
+        "GLPI #10712 — Manter os códigos de encaminhamento no Painel Global"
+      ],
+      [
+        "Spec (contrato)",
+        ".planning/specs/10712-codigos-encaminhamento.md"
+      ],
+      [
+        "Branch",
+        "feature/10712-encaminhamentos"
+      ],
+      [
+        "Commits api/",
+        "6fb22cf (catálogo) · 5111221 (fix 1) · 8a67b27 (fix 2) · 684011c (testes de contrato)"
+      ],
+      [
+        "Commits admin/",
+        "561e802 (módulo) · f2b657c (correções da revisão)"
+      ],
+      [
+        "Ambiente",
+        "API Sail/PostgreSQL em localhost · Painel Global (Vite) :5175 · Painel do Tenant (Vite) :5174 · dados reais (não-mock)"
+      ],
+      [
+        "Ferramenta",
+        "playwright-cli (Chromium) + Pest 4"
+      ]
+    ]
+  },
+  "summary": "14 critérios de aceite (CA01–CA12 mais os técnicos CA08b e CA10b). 9 evidenciados por navegador na tela real com dados da API, 3 de forma combinada e 2 por suíte automatizada. Nenhum critério reprovado. A suíte específica da HU fecha com 53 testes e 280 asserções, todos verdes. Complemento de 04/09/2026: os três critérios que a geração original deferiu por dependerem de etapas seguintes da mesma fase — CA07 (tela de registro, #10713), CA08 (tabela de encaminhamentos, #10713) e CA09 (apuração de encaminhamentos, #10715) — foram fechados de ponta a ponta na interface, porque essas etapas já foram entregues.",
+  "cas": [
+    {
+      "id": "CA01",
+      "title": "Lista disponível com os códigos do instrumento",
+      "status": "nav",
+      "gherkin": "Dado que sou Administrador no Painel de Administração Global\nQuando eu consultar o cadastro de códigos de encaminhamento\nEntão vejo os itens da tabela do instrumento, agrupados por área de destino\n  E os códigos preservam as lacunas entre as faixas, sem renumeração",
+      "steps_html": "Login como Administrador, aceite dos documentos legais e navegação até <code>/app/referral-codes</code>.",
+      "results": [
+        "A lista abre agrupada por área de destino, com o cabeçalho de grupo 'ASSISTÊNCIA SOCIAL — 11 códigos'.",
+        "36 códigos semeados, cobrindo as sete áreas do instrumento.",
+        "O agrupamento é apresentação: nenhum código é renumerado e a ordenação segue o campo `code`."
+      ],
+      "images": [
+        "screenshots/ca01-ca06-lista-agrupada.png"
+      ]
+    },
+    {
+      "id": "CA02",
+      "title": "Regra de apuração visível nos três itens que contam",
+      "status": "nav",
+      "gherkin": "Dado que estou consultando o cadastro\nQuando eu abrir os itens de inclusão no CadÚnico, atualização cadastral e INSS para BPC\nEntão cada um indica para qual contador do leiaute 15.6 ele conta\n  E os demais itens não contam para nenhum",
+      "steps_html": "Leitura da coluna <b>Regra de apuração</b> na listagem.",
+      "results": [
+        "07 — 'Famílias encaminhadas para atualização cadastral no CadÚnico (leiaute 15.6)'.",
+        "08 — 'Famílias encaminhadas para inclusão no CadÚnico (leiaute 15.6)'.",
+        "09 — 'Indivíduos encaminhados ao BPC (leiaute 15.6)'.",
+        "Todos os demais exibem 'Não conta para contador específico', em estilo neutro — a distinção é visual, não só textual.",
+        "Confirmado no banco: exatamente três códigos têm `remittance_counter` preenchido."
+      ],
+      "images": [
+        "screenshots/ca01-ca06-lista-agrupada.png"
+      ]
+    },
+    {
+      "id": "CA03",
+      "title": "Item que conta indivíduos exige pessoa",
+      "status": "nav",
+      "gherkin": "Dado que estou consultando o item \"INSS, visando acesso ao BPC\"\nQuando eu abrir o detalhe\nEntão ele indica que o registro exige identificar a pessoa encaminhada\n  E os itens de CadÚnico não exigem, porque contam famílias",
+      "steps_html": "Leitura da coluna <b>Exige pessoa</b>.",
+      "results": [
+        "O código 09 (BPC) é o único com 'Sim'.",
+        "Os códigos 07 e 08 (CadÚnico) exibem '—', coerentes com contarem famílias e não indivíduos.",
+        "O texto de ajuda do formulário explicita a razão: 'o leiaute conta indivíduos, como no BPC; os itens de CadÚnico contam famílias e não exigem'."
+      ],
+      "images": [
+        "screenshots/ca01-ca06-lista-agrupada.png"
+      ]
+    },
+    {
+      "id": "CA04",
+      "title": "Item restrito ao tipo de unidade",
+      "status": "nav",
+      "gherkin": "Dado que estou consultando o item \"Encaminhamento do CRAS para o CREAS\"\nQuando eu abrir o detalhe\nEntão ele indica que só é oferecido a partir de unidade do tipo CRAS",
+      "steps_html": "Leitura da coluna <b>Restrição de unidade</b> nas linhas 13 e 14.",
+      "results": [
+        "13 — 'Centro de Referência de Assistência Social' (CRAS).",
+        "14 — 'Centro de Referência Especializado de Assistência Social' (CREAS).",
+        "Nenhum outro código tem restrição; a coluna exibe '—'.",
+        "A restrição sobrevive à exclusão do tipo de unidade: a relação usa `withTrashed()` e o contrato marca `is_deleted`, para a tela mostrar 'CRAS (excluído)' em vez de afirmar falsamente que não há restrição."
+      ],
+      "images": [
+        "screenshots/ca01-ca06-lista-agrupada.png"
+      ]
+    },
+    {
+      "id": "CA05",
+      "title": "Código não é gerado automaticamente e duplicado é recusado",
+      "status": "nav",
+      "gherkin": "Dado que estou cadastrando um item\nQuando eu informar os dados\nEntão o código é informado por mim\n  E o sistema recusa código já utilizado",
+      "steps_html": "'Novo Código de Encaminhamento' → informar código <code>08</code> (já existente), nome e área → Salvar.",
+      "results": [
+        "O campo Código é de preenchimento manual, com placeholder 'Ex: 08' — não há geração automática nem sugestão de próximo número.",
+        "O backend responde 422 e a mensagem 'O campo código já está sendo utilizado.' aparece no próprio campo, com borda destrutiva.",
+        "O formulário permanece aberto com os dados preenchidos; nada é criado.",
+        "O formato é validado em duas camadas: máscara de 2 dígitos no front e `regex:/^\\d{2}$/` no backend — '5' e 'abc' são recusados antes de virar dado sujo."
+      ],
+      "images": [
+        "screenshots/ca05-codigo-duplicado-422.png"
+      ]
+    },
+    {
+      "id": "CA06",
+      "title": "Nenhum código é criado para a lacuna de 01 a 04",
+      "status": "nav",
+      "gherkin": "Dado que a tabela recebida começa no código 05\nQuando eu consultar o cadastro\nEntão não existem itens de código 01 a 04\n  E a ausência é visível, não preenchida por suposição",
+      "steps_html": "Inspeção da listagem ordenada por código e conferência direta no banco.",
+      "results": [
+        "A lista começa em 05. Não há placeholder, marcador de 'faltando' nem numeração contínua.",
+        "Consulta ao banco: os 36 códigos são 05–15, 30–34, 40–42, 50–54, 60–61, 70–74 e 85–89 — nenhum 01–04.",
+        "As lacunas entre faixas também são preservadas, e o próprio filtro por área as torna explícitas ao rotular 'Saúde (30–34)'.",
+        "Teste automatizado assere a ausência de 01–04 por expressão regular, impedindo que uma futura 'correção' preencha a sequência."
+      ],
+      "images": [
+        "screenshots/ca01-ca06-lista-agrupada.png"
+      ]
+    },
+    {
+      "id": "CA07",
+      "title": "Códigos livres exigem descrição no registro",
+      "status": "parc",
+      "gherkin": "Dado que um profissional escolhe um dos códigos livres ao registrar um encaminhamento\nQuando ele tentar salvar sem informar o órgão de destino e o objetivo\nEntão o registro não é salvo, conforme a regra do item",
+      "steps_html": "Complemento de 04/09/2026, agora que a tela de registro da #10713 existe: no Painel do Tenant, aba <b>Encaminhamentos</b> do prontuário → <b>Registrar encaminhamento</b> → unidade de origem E2E CRAS Centro → código <b>85 — Outros — código livre 85</b> → tentar salvar sem preencher órgão de destino nem objetivo.",
+      "results": [
+        "Os cinco códigos livres são oferecidos no select do registro: <code>85</code> a <code>89</code>, rotulados “Outros — código livre”.",
+        "Com o código livre escolhido e os campos vazios, o registro <b>não é salvo</b>: a tela exibe “Informe o órgão ou a unidade de destino.” e “Descreva o objetivo do encaminhamento.”, cada uma no seu campo.",
+        "Nada é criado: a contagem de encaminhamentos permanece em 4 antes e depois da tentativa.",
+        "Os cinco códigos livres nascem com <code>requires_free_description = true</code> e área <code>free</code>, verificado por teste do seeder.",
+        "Observação levada ao PO (RN07a): a exigência é hoje redundante, porque órgão de destino e objetivo já são obrigatórios em todo encaminhamento. A coluna existe para o dia em que a obrigatoriedade geral for relaxada."
+      ],
+      "images": [
+        "screenshots/ca07-codigo-livre-exige-descricao.png"
+      ]
+    },
+    {
+      "id": "CA08",
+      "title": "Item em uso não é excluído",
+      "status": "parc",
+      "gherkin": "Dado que o item \"Para Conselho Tutelar\" já foi usado em encaminhamentos\nQuando eu tentar excluí-lo\nEntão a exclusão é recusada\n  E o sistema indica que ele pode ser inativado",
+      "steps_html": "Complemento de 04/09/2026, com a tabela <code>referrals</code> já criada pela #10713: no Painel Global, menu de ações do código <b>08 — Inclusão no CadÚnico</b> (usado por 2 encaminhamentos) → Excluir → confirmar. Complementado pela suíte <code>ReferralCodeUsageTest</code>.",
+      "results": [
+        "A exclusão é <b>recusada</b> e o diálogo passa a exibir a mensagem do backend: “Não é possível excluir um código já utilizado em encaminhamentos registrados. Inative-o para que deixe de ser oferecido em novos registros.”",
+        "O botão de confirmação <b>troca de “Excluir” para “Inativar”</b> — o sistema indica o caminho permitido, como o critério pede.",
+        "Nada é excluído: o cadastro segue com <b>36 códigos</b> e o 08 permanece com <code>deleted_at = null</code>.",
+        "A trava não depende da FK <code>RESTRICT</code>: como a exclusão é soft delete, a constraint não dispararia. É o serviço que fecha a porta.",
+        "A resposta 422 orienta a inativar em vez de excluir, preservando o histórico."
+      ],
+      "images": [
+        "screenshots/ca08-exclusao-recusada-codigo-em-uso.png"
+      ]
+    },
+    {
+      "id": "CA08b",
+      "title": "Exclusão em massa respeita o uso",
+      "status": "auto",
+      "gherkin": "Dado que selecionei três itens, um deles já usado em encaminhamentos\nQuando eu confirmar a exclusão em massa\nEntão nenhum dos três é excluído\n  E o sistema identifica qual está em uso",
+      "steps_html": "Coberto por teste de atomicidade em <code>ReferralCodeUsageTest</code>.",
+      "results": [
+        "A operação é atômica de verdade: com um item em uso, nenhum dos três é excluído.",
+        "A resposta devolve `in_use_uuids`, identificando quais bloquearam a operação."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA09",
+      "title": "Item inativado continua no histórico e na apuração",
+      "status": "nav",
+      "gherkin": "Dado que inativei um item já usado\nQuando eu consultar o histórico e a apuração do período em que ele foi usado\nEntão os encaminhamentos continuam listados e continuam contando",
+      "steps_html": "Complemento de 04/09/2026, agora que a apuração conta encaminhamentos (#10715): inativar o código <b>08</b> pelo Painel Global — usando o próprio botão “Inativar” oferecido pela recusa do CA08 — e em seguida consultar, no Painel do Tenant, a aba <b>Encaminhamentos</b> do prontuário e a tela de <b>Apuração de Atendimentos</b> do período.",
+      "results": [
+        "Inativado, o código 08 continua no cadastro com <code>deleted_at = null</code> — inativação não é exclusão.",
+        "<b>Histórico</b> — os dois encaminhamentos de 02/09/2026 registrados com “08 — Inclusão no CadÚnico” continuam listados na aba de Encaminhamentos da família, com situação Registrado.",
+        "<b>Apuração</b> — no recorte 09/2026, o E2E CRAS Centro mantém <b>Famílias encaminhadas para inclusão no CadÚnico = 1</b>: o código inativado <b>continua contando</b> no período em que foi usado.",
+        "O Model não tem Global Scope de <code>is_active</code> — teste assere que os únicos escopos globais são os de soft delete. É isso que garante que inativar um código não apague retroativamente o passado.",
+        "Ao final da evidência o código 08 foi reativado, restaurando os 36 códigos ativos."
+      ],
+      "images": [
+        "screenshots/ca09-codigo-08-inativado.png",
+        "screenshots/ca09-historico-mantem-codigo-inativado.png",
+        "screenshots/ca09-apuracao-conta-codigo-inativado.png"
+      ]
+    },
+    {
+      "id": "CA10",
+      "title": "Município não edita a lista",
+      "status": "auto",
+      "gherkin": "Dado que sou Master no Painel do Tenant\nQuando eu procurar onde alterar os códigos de encaminhamento\nEntão a ação não existe para mim",
+      "steps_html": "Evidenciado pela suíte, em duas camadas. <b>A captura da tela do Operacional Global não foi feita</b>: o usuário citado no guia de execução não está semeado neste banco de desenvolvimento. Registrado com transparência em vez de substituído por evidência aproximada.",
+      "results": [
+        "Backend: `referral-codes` está em `CLIENT_READ_ONLY_RESOURCES`, então o guard `client` recebe apenas leitura. Teste nominal por papel confirma que `CLIENT_OPERADOR` e `CLIENT_ADMIN` não possuem `store`, `update`, `destroy`, `bulk-*` — inclusive `bulk-destroy`, que escapa da regra genérica por terminar em '-destroy' e só é fechado por esse array.",
+        "Frontend: todas as ações de escrita são gated por `v-can` com os nomes exatos das abilities do controller, e a rota exige `referral-codes.index`.",
+        "Prova negativa executada durante a revisão: removendo `referral-codes` de `CLIENT_READ_ONLY_RESOURCES`, o teste fica vermelho — o gate é real, não decorativo."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA10b",
+      "title": "Escrita negada ao guard client no backend",
+      "status": "auto",
+      "gherkin": "Dado que estou autenticado com um token do guard `client`\nQuando eu chamar POST /api/referral-codes\nEntão a requisição é recusada pela autenticação (401)\n  E nenhum registro é criado",
+      "steps_html": "Coberto por teste de feature em <code>ReferralCodeControllerTest</code>.",
+      "results": [
+        "As rotas de escrita vivem em `manager.php`, sob o guard `manager`. Um token `client` recebe 401 antes de qualquer autorização.",
+        "A leitura (`index`/`show`) é compartilhada em `shared.php`, porque o tenant precisa do catálogo para popular o select do registro na #10713.",
+        "O Operacional Global recebe 403 na escrita — autenticado, mas sem a ability."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA11",
+      "title": "Alteração auditada",
+      "status": "nav",
+      "gherkin": "Dado que alterei a regra de apuração de um item\nQuando eu consultar a trilha de auditoria\nEntão a alteração consta, com autor e data",
+      "steps_html": "Edição <b>unitária</b> do código 09 (alteração do nome) → menu de ações → 'Ver histórico'. A edição precisa ser unitária: ações em massa são auditadas em evento próprio, sem subject, e por isso não aparecem na trilha do item.",
+      "results": [
+        "A entrada 'Alterado' registra autor ('E2E Super Admin'), data e hora, e o de/para do campo: 'INSS, visando acesso ao BPC → INSS, visando acesso ao BPC (revisado)'.",
+        "A entrada 'Criado' preserva o estado inicial completo do item.",
+        "O de/para vem de `attribute_changes`, que é onde o spatie/laravel-activitylog 5.0.0 grava as mudanças da trait — e não de `properties`, que guarda apenas os logs manuais.",
+        "O rodapé do painel avisa, de forma permanente, que ações em massa não aparecem na trilha individual — inclusive quando a trilha tem eventos, que é justamente quando a ausência confunde."
+      ],
+      "images": [
+        "screenshots/ca11-trilha-edicao-unitaria.png"
+      ]
+    },
+    {
+      "id": "CA12",
+      "title": "A área de destino agrupa a lista",
+      "status": "nav",
+      "gherkin": "Dado que o cadastro tem itens de sete áreas de destino\nQuando eu filtrar pela área \"Saúde\"\nEntão vejo apenas os itens da faixa 30 a 34",
+      "steps_html": "Filtros → Área de destino → 'Saúde (30–34)'.",
+      "results": [
+        "A lista passa a exibir somente o grupo 'SAÚDE — 5 códigos', com os itens 30, 31, 32, 33 e 34.",
+        "O filtro é do backend, não filtragem local: a requisição observada é `GET /api/referral-codes?page=1&per_page=15&filter[destination_area]=health&sort=code`.",
+        "As opções do filtro rotulam as faixas ('Saúde (30–34)'), o que torna as lacunas do instrumento explícitas já na escolha."
+      ],
+      "images": [
+        "screenshots/ca12-filtro-area-saude.png"
+      ]
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Pest 4, --filter=ReferralCode) — 53 testes, 280 asserções, todos verdes",
+    "file": "pest-referral-codes.txt"
+  },
+  "notes": [
+    {
+      "title": "Complemento de 04/09/2026 — os três critérios deferidos foram fechados",
+      "html": "A geração original, de 03/09/2026, deferiu três critérios por dependerem de artefatos que ainda não existiam: CA07 exigia a tela de registro do encaminhamento, CA08 exigia a tabela de encaminhamentos para haver consumidor real, e a metade da apuração do CA09 exigia que os contadores de encaminhamento existissem. Os três eram anexo tardio previsto na própria spec, não lacuna de implementação.<br><br><b>As três dependências já foram entregues</b> — a tela e a tabela pela HU #10713, e os contadores pela #10715, ambas da mesma fase F2. O registro de consumidores do serviço de uso já traz a entrada <code>referrals</code>, e o próprio código anota que “o CA08 da #10712 está fechado EM PRODUÇÃO por esta linha”. Os três critérios foram então exercidos na interface, em comportamento de produção, com o ambiente restaurado ao final: o código 08 voltou a ativo e nenhum encaminhamento foi criado ou removido."
+    }
+  ]
+}

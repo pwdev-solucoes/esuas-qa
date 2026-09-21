@@ -1,0 +1,27 @@
+{
+    "_leitura": "CA08 — o campo `resolution` da pendência bloqueante é o que o cartão do painel lê. scope = \"global\" faz o SiapBlockingIssueCallout.vue esconder o botão de atalho e exibir \"Este ajuste é feito em cadastro de apoio global e não está ao alcance do município: acione o administrador da plataforma.\" Nenhum atalho é oferecido porque o município não corrige o dado.",
+    "resolution": {
+        "scope": "global",
+        "resource": "social-unit-structures",
+        "requires_role": null
+    },
+    "message_key": "siap_remittance.pendency.structure_code_unmapped",
+    "affected_layouts": 11,
+    "pendencia_completa": {
+        "scope": "blocking",
+        "kind": "domain_unmapped",
+        "field_name": "Estrutura",
+        "subject_type": "social_unit",
+        "subject_uuid": "f373b9b5-c5b1-4a38-9fc8-baf1e6341c5a",
+        "affected_count": 1,
+        "message_key": "siap_remittance.pendency.structure_code_unmapped",
+        "message": "O código de estrutura \"099\" registrado nesta unidade não consta da tabela de estruturas do SIAP. Há duas saídas: corrigir o código no cadastro de apoio de estruturas de unidade, no Painel de Administração Global — acione o administrador da plataforma —, ou desvincular esta estrutura da unidade, o que está ao alcance do município. Enquanto nenhuma das duas for feita, nenhuma remessa pode ser gerada.",
+        "blocks_entire_remittance": true,
+        "affected_layouts": 11,
+        "resolution": {
+            "scope": "global",
+            "resource": "social-unit-structures",
+            "requires_role": null
+        }
+    }
+}

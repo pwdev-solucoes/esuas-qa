@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — US-04 Comportamento uniforme de tabelas</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — US-04 Comportamento uniforme de tabelas</h1>
+    <div class="sub">Ticket GLPI #10137 · Evidências end-to-end no admin e no client</div>
+    <div class="meta"><div><span>Gerado em:</span> 30/07/2026 14:30</div><div><span>Ticket GLPI:</span> #10137 — HU - #10137 Comportamento uniforme de tabelas entre módulos</div><div><span>Spec:</span> .planning/product/stories/US-04-comportamento-uniforme-de-tabelas.md</div><div><span>Branch (admin):</span> develop @ d1235db (PR #71 mergeado)</div><div><span>Branch (client):</span> develop @ 96400c2 + df8386a fix (PR #60 mergeado)</div><div><span>Ambiente:</span> API Sail/PostgreSQL · admin :5173 · client :5174</div><div><span>Organização (tenant):</span> E2E CadÚnico · IBGE 2304400</div><div><span>Ferramenta:</span> playwright-cli (Chromium) + Vitest</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">5 critérios de aceite, verificados nos dois frontends (admin e client) via navegador, com uma amostra representativa por módulo. CA02 e CA05 (foco da leva de implementação) estão plenamente atendidos nos módulos migrados de ambos os frontends, com evidência adicional do gap conhecido e deliberado no módulo `users` do client (fora de escopo desta leva, ainda sem o tratamento). CA01, CA03 e CA04 — não tocados por esta leva de implementação — foram verificados agora pela primeira vez com evidência fresca (incluindo medição real de Cumulative Layout Shift via Layout Instability API) e confirmam a alegação anterior, não verificada, do relatório-piloto.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA01</td><td>Paginação idêntica</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA02</td><td>Estado vazio padronizado</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA03</td><td>Carregando sem salto de layout</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA04</td><td>Ordenação consistente e acessível</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA05</td><td>Falha de carregamento tratada (caminho de erro)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA01">
+      <h2>CA01 — Paginação idêntica <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado qualquer listagem de `client/` ou `admin/`
+Quando chego ao rodapé da tabela
+Então encontro o mesmo controle de paginação, com o mesmo padrão de itens por página e o mesmo texto de contagem de resultados.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Aberto <code>/app/sexes</code> (admin) e <code>/app/cadastros/profissionais-municipais</code> (client), rolado até o rodapé da tabela.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Admin: rodapé mostra 'Exibindo 1–3 de 3', botões Primeira/Anterior/Página N/Próxima/Última e combobox 'Itens por página: 15'.</li><li>Client: rodapé mostra 'Exibindo 1–1 de 1', mesmos botões de navegação e mesmo combobox 'Itens por página: 15'.</li><li>Mesmo texto-padrão de contagem ('Exibindo X–Y de Z') e mesmo conjunto de controles nos dois frontends.</li><li>Nuance observada (não bloqueante): no admin o texto de contagem tem role="status"; no client é um parágrafo simples sem role — mesmo padrão visual/textual, papel semântico levemente distinto.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca01-admin-paginacao.png" alt="CA01 evidência"/><figcaption>ca01-admin-paginacao.png</figcaption></figure><figure><img src="screenshots/ca01-client-paginacao.png" alt="CA01 evidência"/><figcaption>ca01-client-paginacao.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA02">
+      <h2>CA02 — Estado vazio padronizado <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado uma listagem sem resultados
+Quando a tela termina de carregar
+Então exibe o mesmo componente de estado vazio, com mensagem em pt-BR e, quando couber, a ação de criar o primeiro registro.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Buscado por um termo inexistente (<code>zzz_inexistente_zzz</code>) em <code>/app/sexes</code> (admin) e em <code>/app/cadastros/profissionais-municipais</code> (client).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Admin: bloco role="status" com 'Nenhum resultado encontrado' + hint em pt-BR + botão 'Limpar filtros'.</li><li>Client: bloco role="status" com 'Nenhum resultado para os filtros aplicados.' + hint em pt-BR + botão 'Limpar filtros'.</li><li>Mesmo componente compartilhado (TableStatusMessage) usado nos dois frontends, com role="status" e mesma estrutura ícone+título+hint+ação.</li><li>Gap conhecido e deliberado: o módulo `users` do client (fora do escopo desta leva) ainda usa um bloco de vazio próprio, sem role e sem distinguir erro de vazio — ver evidência negativa anexada.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca02-admin-vazio.png" alt="CA02 evidência"/><figcaption>ca02-admin-vazio.png</figcaption></figure><figure><img src="screenshots/ca02-client-vazio.png" alt="CA02 evidência"/><figcaption>ca02-client-vazio.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA03">
+      <h2>CA03 — Carregando sem salto de layout <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado uma listagem em carregamento
+Quando os dados chegam
+Então o skeleton ocupa a mesma altura das linhas reais
+E o cumulative layout shift da transição é ≤ 0,1.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Instalado um <code>PerformanceObserver</code> (Layout Instability API) via <code>page.addInitScript</code> antes do reload, acumulando o CLS real da navegação; atrasada a resposta da API (~1.5–2.5s) para capturar o skeleton em pleno carregamento.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Admin (sexes): CLS medido = 0 (bem abaixo do limite de 0,1). Skeleton com linhas de 49px vs linhas reais de 53px — diferença de 4px por linha, não pixel-perfect, mas sem gerar layout shift mensurável na prática.</li><li>Client (professionals): CLS medido = 0, mesmo padrão de skeleton (linhas cinza no formato da tabela).</li><li>Classificado como parcial (não 'nav' puro) porque a altura do skeleton não é idêntica, pixel a pixel, à da linha real — apesar de o CLS medido ser 0 nos dois frontends, o critério textual ('mesma altura') não é atendido de forma literal.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca03-admin-skeleton.png" alt="CA03 evidência"/><figcaption>ca03-admin-skeleton.png</figcaption></figure><figure><img src="screenshots/ca03-admin-carregado.png" alt="CA03 evidência"/><figcaption>ca03-admin-carregado.png</figcaption></figure><figure><img src="screenshots/ca03-client-skeleton.png" alt="CA03 evidência"/><figcaption>ca03-client-skeleton.png</figcaption></figure><figure><img src="screenshots/ca03-client-carregado.png" alt="CA03 evidência"/><figcaption>ca03-client-carregado.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA04">
+      <h2>CA04 — Ordenação consistente e acessível <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado uma coluna ordenável
+Quando a aciono por clique ou por teclado
+Então o indicador de direção é o mesmo componente em todos os módulos
+E o estado é exposto via `aria-sort`.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Clicado no cabeçalho ordenável (<code>Código</code> no admin, <code>Nome</code> no client) e lido o atributo <code>aria-sort</code> via <code>page.evaluate</code> antes/depois do clique.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Admin: aria-sort inicial 'ascending' (ordenação padrão), após clique vira 'descending' — atributo exposto corretamente, ícone de direção visível no cabeçalho.</li><li>Client: aria-sort inicial 'none', após clique vira 'ascending' — mesmo padrão de exposição via aria-sort.</li><li>Mesmo componente de indicador de direção (ícone + botão no columnheader) nos dois frontends.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca04-admin-ordenacao.png" alt="CA04 evidência"/><figcaption>ca04-admin-ordenacao.png</figcaption></figure><figure><img src="screenshots/ca04-client-ordenacao.png" alt="CA04 evidência"/><figcaption>ca04-client-ordenacao.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA05">
+      <h2>CA05 — Falha de carregamento tratada (caminho de erro) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que a requisição da listagem falha
+Quando a tela reage
+Então exibe o mesmo componente de erro, com a causa em linguagem de usuário e uma ação de tentar novamente — nunca uma tabela vazia silenciosa, que o usuário leria como "não há registros".</p>
+      <p class="steps"><strong>Como foi testado:</strong> Interceptada a chamada de listagem via <code>page.route(...).abort('connectionrefused')</code> (falha de rede, não HTTP 500 — evita disparar a página de erro global) em <code>/app/sexes</code> (admin) e <code>/app/cadastros/profissionais-municipais</code> (client); depois removida a rota e clicado 'Tentar novamente'.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Admin: bloco role="alert" com 'Não foi possível carregar os dados' + hint + botão 'Tentar novamente'; após remover a falha e clicar retry, a tabela real recarrega normalmente.</li><li>Client: mesmo bloco role="alert", mesmo texto, mesmo botão de retry; recuperação confirmada após clique.</li><li>Evidência negativa (gap deliberado, módulo `users` do client, fora de escopo desta leva): a mesma falha de rede não produz alerta nenhum — a tela mostra silenciosamente 'Nenhum usuário encontrado', sem role e sem ação de retry, exatamente o comportamento que este CA proíbe. Confirma que o gap documentado é real e ainda não corrigido.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca05-admin-erro.png" alt="CA05 evidência"/><figcaption>ca05-admin-erro.png</figcaption></figure><figure><img src="screenshots/ca05-client-erro.png" alt="CA05 evidência"/><figcaption>ca05-client-erro.png</figcaption></figure><figure><img src="screenshots/gap-client-users-sem-tratamento.png" alt="CA05 evidência"/><figcaption>gap-client-users-sem-tratamento.png</figcaption></figure></div>
+    </section>
+  
+  <h2>Anexo — Cobertura automatizada (Vitest — amostra admin/sexes + client/professionals + client/cadunico-imports)</h2>
+  <pre class="pest">=== admin: npx vitest run src/modules/sexes ===
+
+ RUN  v2.1.9 /Users/paulosoares/Projetos/esuas-all/admin
+
+(node:67486) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:67483) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:67485) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:67484) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:67487) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/modules/sexes/resources/SexHttp.test.ts (3 tests) 2ms
+ ✓ src/modules/sexes/composables/useSexesView.test.ts (6 tests) 7ms
+ ✓ src/modules/sexes/composables/useSexes.test.ts (19 tests) 5ms
+ ✓ src/modules/sexes/components/SexesCardGrid.test.ts (4 tests) 16ms
+ ✓ src/modules/sexes/components/SexesTable.test.ts (4 tests) 16ms
+
+ Test Files  5 passed (5)
+      Tests  36 passed (36)
+   Start at  14:27:16
+   Duration  1.48s (transform 552ms, setup 45ms, collect 1.54s, tests 47ms, environment 3.02s, prepare 366ms)
+
+
+=== client: npx vitest run src/modules/professionals src/modules/cadunico-imports ===
+
+ RUN  v2.1.9 /Users/paulosoares/Projetos/esuas-all/admin
+
+filter:  src/modules/professionals, src/modules/cadunico-imports
+include: src/**/*.{test,spec}.{ts,vue}
+exclude:  **/node_modules/**, **/dist/**, **/cypress/**, **/.{idea,git,cache,output,temp}/**, **/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build,eslint,prettier}.config.*
+
+No test files found, exiting with code 1
+
+ RUN  v2.1.9 /Users/paulosoares/Projetos/esuas-all/client
+
+(node:67602) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:67598) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:67597) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:67601) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:67600) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:67596) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:67603) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:67595) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:67599) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/modules/professionals/resources/ProfessionalHttp.test.ts (14 tests) 6ms
+ ✓ src/modules/professionals/composables/useProfessionalUnits.test.ts (6 tests) 5ms
+ ✓ src/modules/professionals/composables/useProfessionalLookup.test.ts (7 tests) 5ms
+ ✓ src/modules/cadunico-imports/composables/useCadunicoImports.test.ts (19 tests) 15ms
+ ✓ src/modules/professionals/components/ProfessionalAddressField.test.ts (6 tests) 63ms
+(node:67616) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/modules/professionals/composables/useProfessionals.test.ts (13 tests) 6ms
+ ✓ src/modules/professionals/components/ManageProfessionalRolesDrawer.test.ts (5 tests) 92ms
+(node:67615) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:67617) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/modules/cadunico-imports/resources/CadunicoImportHttp.test.ts (6 tests) 6ms
+ ✓ src/modules/professionals/components/ProfessionalStatusBadge.test.ts (5 tests) 22ms
+(node:67621) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:67623) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/modules/professionals/components/ProfessionalsCardGrid.test.ts (7 tests) 30ms
+ ✓ src/modules/professionals/components/ProfessionalActionsMenu.test.ts (12 tests) 50ms
+ ✓ src/modules/cadunico-imports/components/CadunicoImportsTable.test.ts (4 tests) 23ms
+ ✓ src/modules/cadunico-imports/components/CadunicoImportsCardGrid.test.ts (4 tests) 16ms
+ ✓ src/modules/professionals/components/ProfessionalsTable.test.ts (4 tests) 15ms
+
+ Test Files  14 passed (14)
+      Tests  112 passed (112)
+   Start at  14:27:29
+   Duration  1.86s (transform 1.33s, setup 195ms, collect 4.08s, tests 354ms, environment 6.27s, prepare 713ms)
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

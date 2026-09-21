@@ -1,0 +1,30 @@
+  ✓ it filters by remittance counter and by restricted unit type uuid (… 0.04s  
+  ✓ it rejects filter values outside the enums with 422                  0.03s  
+  ✓ it blocks write without permission                                   0.03s  
+  ✓ it gives the admin_operador read-only access — every write is 403 (… 1.84s  
+  ✓ it lets the ADMIN role exercise all eight abilities end to end       1.49s  
+  ✓ it rejects client-guard tokens on every write route with 401, creat… 0.04s  
+  ✓ it keeps the shared read alive for the client guard — the tenant se… 0.03s  
+
+   PASS  Tests\Feature\Api\ReferralCodeUsageTest
+  ✓ it refuses to delete a code in use with 422, guiding deactivation (… 0.06s  
+  ✓ it still soft deletes a code NOT referenced by any consumer (CA08)   0.03s  
+  ✓ it deletes normally while CONSUMERS is empty — referrals does not e… 0.03s  
+  ✓ it ignores a registered consumer whose table does not exist yet (Sc… 0.04s  
+  ✓ it bulk destroy is ATOMIC: one item in use blocks all three and is…  0.05s  
+  ✓ it bulk destroys unused codes, logging the bulk event with author (… 0.03s  
+
+   PASS  Tests\Feature\Seeders\ReferralCodeSeederTest
+  ✓ it seeds the seven ranges of the instrument, zero-padded, never fil… 0.06s  
+  ✓ it groups each range under its destination area (RN03/CA12)          0.06s  
+  ✓ it marks EXACTLY three items with a remittance counter — 07, 08 and… 0.07s  
+  ✓ it marks EXACTLY one item requiring an identified person — the BPC…  0.08s  
+  ✓ it marks EXACTLY two items restricted by unit type — 13 to CRAS, 14… 0.10s  
+  ✓ it marks the five free codes 85–89 with the free area and the descr… 0.08s  
+  ✓ it is idempotent — running the seeder twice does not duplicate nor…  0.10s  
+  ✓ it guarantees the social unit types when run standalone (RN06 depen… 0.08s  
+  ✓ it resolves CRAS/CREAS ids even when the unit types are soft-delete… 0.08s  
+
+  Tests:    53 passed (280 assertions)
+  Duration: 7.64s
+

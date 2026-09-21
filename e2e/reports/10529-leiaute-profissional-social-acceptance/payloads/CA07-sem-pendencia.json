@@ -1,0 +1,109 @@
+{
+    "_leitura": "CA07 — profissional cadastrado sem lotacao fica fora do arquivo SEM gerar pendencia: apos a geracao, a unica pendencia persistida e a informativa FIXA da Folha de Pagamento (CA09/D07), que acompanha qualquer arquivo com linha. Nenhuma pendencia cita a matricula 555002.",
+    "linhas_no_xml": 1,
+    "pendencias_persistidas": [
+        {
+            "message_key": "siap_remittance.pendency.payroll_cross_reference",
+            "scope": "informative",
+            "subject_uuid": null,
+            "field_name": null
+        },
+        {
+            "message_key": "siap_remittance.pendency.no_data_source",
+            "scope": "layout",
+            "subject_uuid": null,
+            "field_name": null
+        },
+        {
+            "message_key": "siap_remittance.pendency.no_data_source",
+            "scope": "layout",
+            "subject_uuid": null,
+            "field_name": null
+        },
+        {
+            "message_key": "siap_remittance.pendency.no_data_source",
+            "scope": "layout",
+            "subject_uuid": null,
+            "field_name": null
+        },
+        {
+            "message_key": "siap_remittance.pendency.no_data_source",
+            "scope": "layout",
+            "subject_uuid": null,
+            "field_name": null
+        },
+        {
+            "message_key": "siap_remittance.pendency.field_without_source",
+            "scope": "layout",
+            "subject_uuid": null,
+            "field_name": "NIS"
+        },
+        {
+            "message_key": "siap_remittance.pendency.field_without_source",
+            "scope": "layout",
+            "subject_uuid": null,
+            "field_name": "ValorRenda"
+        },
+        {
+            "message_key": "siap_remittance.pendency.field_without_source",
+            "scope": "layout",
+            "subject_uuid": null,
+            "field_name": "Alfabetizado"
+        },
+        {
+            "message_key": "siap_remittance.pendency.field_without_source",
+            "scope": "layout",
+            "subject_uuid": null,
+            "field_name": "SituacaoEscolar"
+        },
+        {
+            "message_key": "siap_remittance.pendency.field_without_source",
+            "scope": "layout",
+            "subject_uuid": null,
+            "field_name": "DoencaGrave"
+        },
+        {
+            "message_key": "siap_remittance.pendency.field_without_source",
+            "scope": "layout",
+            "subject_uuid": null,
+            "field_name": "SaudeDeficiencia"
+        },
+        {
+            "message_key": "siap_remittance.pendency.field_without_source",
+            "scope": "layout",
+            "subject_uuid": null,
+            "field_name": "Escolaridade"
+        },
+        {
+            "message_key": "siap_remittance.pendency.field_without_source",
+            "scope": "layout",
+            "subject_uuid": null,
+            "field_name": "ZonaResidencia"
+        },
+        {
+            "message_key": "siap_remittance.pendency.field_without_source",
+            "scope": "layout",
+            "subject_uuid": null,
+            "field_name": "TipoResidencia"
+        },
+        {
+            "message_key": "siap_remittance.pendency.field_without_source",
+            "scope": "layout",
+            "subject_uuid": null,
+            "field_name": "DomicilioAreaRisco"
+        },
+        {
+            "message_key": "siap_remittance.pendency.field_without_source",
+            "scope": "layout",
+            "subject_uuid": null,
+            "field_name": "DomicilioVulnerabilidade"
+        },
+        {
+            "message_key": "siap_remittance.pendency.field_without_source",
+            "scope": "layout",
+            "subject_uuid": null,
+            "field_name": "Especificidades"
+        }
+    ],
+    "pendencias_nao_informativas": 16
+}

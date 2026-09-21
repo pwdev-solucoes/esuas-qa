@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — US-ACOMP-06</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  section.note { border:1px solid var(--line); border-left:4px solid #b06a00; border-radius:6px; padding:10px 14px; margin:10px 0; background:#fffdf7; font-size:13px; }
+  section.note h3 { margin:0 0 6px; font-size:13.5px; color:#8a5200; }
+  section.note p { margin:6px 0; }
+  section.note ul { margin:6px 0 6px 18px; padding:0; }
+  section.note pre { background:var(--bg); border:1px solid var(--line); border-radius:4px; padding:8px; overflow-x:auto; font-size:11px; white-space:pre-wrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — US-ACOMP-06</h1>
+    <div class="sub">Épico HU-PRONT-ACOMP (fase F3) · GLPI #10888 · Acesso ao prontuário pela unidade que recebeu o encaminhamento</div>
+    <div class="meta"><div><span>Gerado em:</span> 16/09/2026 00:49</div><div><span>História:</span> US-ACOMP-06 — Acesso ao prontuário pela unidade que recebeu o encaminhamento (GLPI #10888)</div><div><span>Spec:</span> .planning/specs/US-ACOMP-06-acesso-pelo-encaminhamento-recebido.md</div><div><span>Branch:</span> feature/acomp-06-07-encaminhamento-recebido (a partir de develop)</div><div><span>Commits (api):</span> 1b00897 (eixo de acesso) · 998138e (regressão do §17-P6)</div><div><span>Spec E2E:</span> e2e/tests/client/referral-received-access.spec.ts (5 critérios no navegador)</div><div><span>Ambiente:</span> Stack Sail · API em :80 · client (Vite) em :5175 · base de desenvolvimento semeada por E2ESeeder</div><div><span>Organização (tenant):</span> E2E CadÚnico</div><div><span>Perfis usados:</span> Operacional do tenant com add-on LGPD, lotado no E2E CRAS Centro (unidade de destino); Master apenas para preparar a massa</div><div><span>Ferramenta:</span> Playwright (project chromium-tenant) + Pest 4</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">Dezessete critérios: treze numerados e quatro extras. Cinco evidenciados no navegador (CA01, CA02, CA03, CA05 e CA04/CA11, com seis prints) e os demais cobertos pela suíte automatizada, onde o cenário exige um segundo município, duas unidades do mesmo tipo, um segundo operador ou a leitura da trilha de auditoria. Os prints NÃO foram capturados à mão: saem do próprio caso de teste que assevera o critério, de modo que, se a asserção cair, não há imagem. A suíte do eixo de acesso fecha com 60 testes e 348 asserções, e a suíte completa da API com 4607 testes, sem falhas. Nenhum critério em falha. Esta entrega fecha a metade do CA07 que o dossiê da US-ACOMP-07 declarou pendente por design. Uma ressalva de produto, levantada pela revisão de código, está declarada nas observações: o eixo também amplia a escrita, inclusive a troca da unidade de referência — comportamento herdado, fixado por teste e submetido ao PO.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA01</td><td>Unidade encaminhada acessa (happy path)</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA02</td><td>O ingresso no acompanhamento passa a ser possível sem o Master</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA03</td><td>Prontuário inteiro</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA04</td><td>Desfecho registrado encerra o acesso</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA05</td><td>Quem assumiu continua acessando depois do desfecho</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA06</td><td>Encaminhamento para órgão externo não dá acesso</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA07</td><td>Encaminhamento cancelado não dá acesso</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA08</td><td>Encaminhamento para outro CREAS não me alcança</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA09</td><td>Add-on continua obrigatório</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA10</td><td>Sem lotação vigente não acessa</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA11</td><td>Negativa contempla os três eixos</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA12</td><td>Auditoria distingue os motivos de concessão</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA13</td><td>Isolamento entre municípios inalterado</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA-extra-A</td><td>A pesquisa de pessoas enxerga a família encaminhada</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA-extra-B</td><td>O eixo não vaza para outro tenant</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA-extra-C</td><td>Desfecho revertido reabre o acesso</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA-extra-D</td><td>Via fora do domínio é recusada</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA01">
+      <h2>CA01 — Unidade encaminhada acessa (happy path) <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou CLIENT_OPERADOR com CLIENT_FAMILY_VIEWER e lotação vigente no "CREAS"
+E que a família Silva é referenciada no "CRAS Centro" e não é acompanhada pelo "CREAS"
+E que existe referrals (Silva, origem "CRAS Centro", código "13", destination_social_unit_id = "CREAS",
+     status 'registered', outcome 'awaiting_return')
+Quando eu chamar GET /api/client/families/{silva}/details
+Então recebo 200
+E activity_log grava record_opened com access_granted_via = 'referral_received'</p>
+      <p class="steps"><strong>Como foi testado:</strong> No navegador, o operador lotado apenas na unidade de <b>destino</b> abre o prontuário da família referenciada em outra unidade. O <code>activity_log</code> é verificado pela suíte automatizada.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O prontuário abre: o título "Visualizar Família" é exibido e nenhum painel de negativa aparece (acesso restrito, família não encontrada ou sem lotação vigente).</li><li>Pest: “opens the record for the DESTINATION unit of an open referral, auditing via referral_received”, que confere o &lt;code&gt;access_granted_via&lt;/code&gt; e o &lt;code&gt;social_unit_id&lt;/code&gt; da unidade de referência.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca01-a-unidade-de-destino-abre-o-prontuario-da-familia-referencia.png" alt="CA01 evidência"/><figcaption>ca01-a-unidade-de-destino-abre-o-prontuario-da-familia-referencia.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA02">
+      <h2>CA02 — O ingresso no acompanhamento passa a ser possível sem o Master <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado o contexto do CA01 e um serviço PAEFI oferecido pelo tipo CREAS
+Quando eu chamar POST /api/client/families/{silva}/follow-ups
+     com social_unit_uuid = {creas}, follow_up_service_uuid = {paefi}
+Então recebo 201
+E um novo GET …/details grava access_granted_via = 'follow_up' (D04)</p>
+      <p class="steps"><strong>Como foi testado:</strong> Pelo próprio operador, sem intervenção do Master: aba Acompanhamento → registrar ingresso na unidade de destino. É a circularidade que motivou a HU — antes, só o Master conseguia fazer este primeiro lançamento.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O ingresso é aceito (201) e a linha vigente passa a exibir a unidade.</li><li>Pest prova a ordem da decisão (D04): com acompanhamento &lt;b&gt;e&lt;/b&gt; encaminhamento abertos, a via auditada é &lt;code&gt;follow_up&lt;/code&gt;, o eixo mais estável, e não &lt;code&gt;referral_received&lt;/code&gt;.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca02-o-ingresso-no-acompanhamento-passa-a-ser-possivel-sem-o-mast.png" alt="CA02 evidência"/><figcaption>ca02-o-ingresso-no-acompanhamento-passa-a-ser-possivel-sem-o-mast.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA03">
+      <h2>CA03 — Prontuário inteiro <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado o contexto do CA01
+Quando eu chamar members, intake, social-programs, age-profile, attendances, referrals e follow-ups da família Silva
+Então todas respondem 200
+E enxergo registros feitos por qualquer unidade</p>
+      <p class="steps"><strong>Como foi testado:</strong> Navegação pelas abas do prontuário e conferência de que o encaminhamento registrado pela unidade de <b>origem</b> é visível para a unidade de destino.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>As abas abrem sem negativa.</li><li>O encaminhamento da origem aparece com o destino correto e o desfecho "Aguardando retorno".</li><li>Pest cobre as demais rotas do prontuário uma a uma.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca03-o-acesso-e-ao-prontuario-inteiro-incluindo-o-que-a-unidade-d.png" alt="CA03 evidência"/><figcaption>ca03-o-acesso-e-ao-prontuario-inteiro-incluindo-o-que-a-unidade-d.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA04">
+      <h2>CA04 — Desfecho registrado encerra o acesso <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado o contexto do CA01
+Quando eu chamar POST …/referrals/{r}/counter-references com outcome = 'not_attended'
+Então recebo 201
+E sem acompanhamento aberto, o próximo GET …/details retorna 403 com error_code = "unit_not_assigned"
+E a mensagem não contém nome de unidade</p>
+      <p class="steps"><strong>Como foi testado:</strong> Com o desfecho lançado e o acompanhamento cancelado, o operador recarrega o prontuário.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O acesso cessa na requisição seguinte: a tela passa a exibir o painel de acesso restrito.</li><li>O &lt;code&gt;error_code&lt;/code&gt; permanece &lt;code&gt;unit_not_assigned&lt;/code&gt; — contrato consumido pelo frontend.</li><li>Na tela foi usado o desfecho "Atendido" (o mesmo caminho); a suíte cobre &lt;code&gt;not_attended&lt;/code&gt; literal, além de &lt;code&gt;closed_without_response&lt;/code&gt;, cancelado, soft-deletado e FK nula.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca04-sem-acompanhamento-e-com-o-desfecho-lancado-a-negativa-decla.png" alt="CA04 evidência"/><figcaption>ca04-sem-acompanhamento-e-com-o-desfecho-lancado-a-negativa-decla.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA05">
+      <h2>CA05 — Quem assumiu continua acessando depois do desfecho <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que registrei o ingresso no PAEFI do "CREAS" (CA02) e depois o desfecho 'attended'
+Quando eu abrir o prontuário
+Então recebo 200
+E activity_log grava access_granted_via = 'follow_up', não 'referral_received'</p>
+      <p class="steps"><strong>Como foi testado:</strong> O operador lança o desfecho do encaminhamento e reabre o prontuário, ainda com o acompanhamento vigente.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O prontuário continua abrindo, agora sustentado pelo acompanhamento.</li><li>Pest confirma que a via auditada passa a ser &lt;code&gt;follow_up&lt;/code&gt;.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca05-quem-assumiu-o-caso-continua-acessando-depois-do-desfecho.png" alt="CA05 evidência"/><figcaption>ca05-quem-assumiu-o-caso-continua-acessando-depois-do-desfecho.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA06">
+      <h2>CA06 — Encaminhamento para órgão externo não dá acesso <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o "CRAS Centro" registrou encaminhamento "05" da família Silva, destination_social_unit_id NULL
+Quando eu, lotado no "CREAS", abrir o prontuário
+Então recebo 403 unit_not_assigned</p>
+      <p class="steps"><strong>Como foi testado:</strong> Critério de backend: o eixo lê apenas a chave estrangeira, nunca o texto do destino.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Pest: “does NOT grant access through an external referral (destination FK NULL)”.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA07">
+      <h2>CA07 — Encaminhamento cancelado não dá acesso <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um encaminhamento "13" para o "CREAS" sobre a família Souza com status = 'cancelled'
+Quando eu, lotado no "CREAS", abrir o prontuário
+Então recebo 403 unit_not_assigned</p>
+      <p class="steps"><strong>Como foi testado:</strong> Critério de backend.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Pest: “does NOT grant access through a CANCELLED referral”.</li><li>Um caso dedicado varre todos os desfechos: só &lt;code&gt;registered&lt;/code&gt; + &lt;code&gt;awaiting_return&lt;/code&gt; concede.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA08">
+      <h2>CA08 — Encaminhamento para outro CREAS não me alcança <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um encaminhamento "13" da família Silva com destination_social_unit_id = "CREAS Norte"
+E que sou lotado apenas no "CREAS Sul"
+Quando eu abrir o prontuário
+Então recebo 403 unit_not_assigned</p>
+      <p class="steps"><strong>Como foi testado:</strong> Critério de backend: exige duas unidades do mesmo tipo, cenário que a massa da tela não possui.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Pest: “does not let a referral to ANOTHER CREAS reach me”.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA09">
+      <h2>CA09 — Add-on continua obrigatório <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Operacional lotado no "CREAS" de destino, SEM CLIENT_FAMILY_VIEWER
+Quando eu abrir o prontuário
+Então recebo 403 com details_access_denied
+E activity_log grava record_access_denied com reason = 'missing_addon'
+E referral_social_unit_ids do outcome é []</p>
+      <p class="steps"><strong>Como foi testado:</strong> Critério de backend.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Pest: “does not let the referral replace the LGPD add-on”.</li><li>&lt;b&gt;Ressalva declarada:&lt;/b&gt; o 403 chega pelo gate de rota, &lt;i&gt;antes&lt;/i&gt; do controller, então o registro &lt;code&gt;record_access_denied&lt;/code&gt; com motivo &lt;code&gt;missing_addon&lt;/code&gt; não é alcançável por HTTP — comportamento pré-existente, idêntico ao da US-ACOMP-04. O teste prova o invariante consultando o ponto único de decisão diretamente.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA10">
+      <h2>CA10 — Sem lotação vigente não acessa <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que minha lotação no "CREAS" foi encerrada (end_date &lt;= hoje)
+E que o "CREAS" é destino de encaminhamento sem desfecho sobre a Silva
+Quando eu abrir o prontuário
+Então recebo 403 com error_code = "no_active_assignment"</p>
+      <p class="steps"><strong>Como foi testado:</strong> Critério de backend.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Pest: “does not let the referral replace an ACTIVE unit assignment”.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA11">
+      <h2>CA11 — Negativa contempla os três eixos <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Operacional lotado apenas no "CRAS Rural"
+E que a Silva é referenciada no "CRAS Centro", acompanhada e encaminhada ao "CREAS"
+Quando eu abrir o prontuário
+Então recebo 403 unit_not_assigned
+E a mensagem (pt_BR) contém "referenciada", "acompanhada", "encaminhada" e "Master"
+E não contém "CRAS Centro", "CREAS", "CRAS Rural" nem ":unit"</p>
+      <p class="steps"><strong>Como foi testado:</strong> O texto exibido na tela é lido e verificado palavra a palavra, nos dois sentidos: o que deve conter e o que <b>não</b> pode conter.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A mensagem declara os três eixos e orienta procurar o gestor Master.</li><li>Nenhum nome de unidade aparece — é a garantia de LGPD do critério: a negativa não revela onde a família é atendida a quem não tem acesso a ela.</li><li>Pest repete a asserção nos dois idiomas.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca11-sem-acompanhamento-e-com-o-desfecho-lancado-a-negativa-decla.png" alt="CA11 evidência"/><figcaption>ca11-sem-acompanhamento-e-com-o-desfecho-lancado-a-negativa-decla.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA12">
+      <h2>CA12 — Auditoria distingue os motivos de concessão <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que abriram o prontuário da mesma família: um pela referência, um pelo acompanhamento,
+     um pelo encaminhamento recebido e o Master (e, noutra família sem unidade, um pela transição)
+Quando eu consultar activity_log (log_name 'family_access', event 'record_opened')
+Então access_granted_via traz exatamente {'unit_assignment','follow_up','referral_received','master_bypass','transition'}</p>
+      <p class="steps"><strong>Como foi testado:</strong> Critério de backend.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Pest: “audits the FIVE distinct access vias, exactly”, comparando o conjunto com a lista fechada de vias.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA13">
+      <h2>CA13 — Isolamento entre municípios inalterado <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou usuário do município A
+Quando eu tentar acessar o prontuário de família do município B
+Então recebo 404</p>
+      <p class="steps"><strong>Como foi testado:</strong> Critério de backend: exige um segundo município.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Pest: “keeps the organization isolation ahead of the referral axis”, comparando o corpo do 404 com o de um identificador inexistente.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA-extra-A">
+      <h2>CA-extra-A — A pesquisa de pessoas enxerga a família encaminhada <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado o contexto do CA01
+Quando eu chamar GET /api/client/person-search por um integrante da Silva
+Então ele aparece no resultado
+E depois do desfecho (CA04) deixa de aparecer</p>
+      <p class="steps"><strong>Como foi testado:</strong> Critério de backend — é o recorte por consulta, que usa o mesmo predicado do eixo.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Pest: “lists the REFERRED family in the person search, opens it from there, and drops it after the outcome”.</li><li>A revisão de código extraiu o SQL gerado e confirmou a correlação correta com a família, sem vazar registros de terceiros.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA-extra-B">
+      <h2>CA-extra-B — O eixo não vaza para outro tenant <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um encaminhamento do tenant B cuja destination_social_unit_id é numericamente igual à minha unidade de lotação no tenant A
+Quando eu, do tenant A, abrir a família do tenant B
+Então recebo 404
+E o predicado filtra referrals.tenant_id explicitamente</p>
+      <p class="steps"><strong>Como foi testado:</strong> Critério de backend, adversarial.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Pest: “filters the referral axis by tenant_id, even with a numerically identical destination_social_unit_id”.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA-extra-C">
+      <h2>CA-extra-C — Desfecho revertido reabre o acesso <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado o CA04 concluído (acesso encerrado)
+Quando o "CRAS Centro" chamar PATCH …/referrals/{r}/outcome com outcome = 'awaiting_return'
+Então o próximo GET …/details do "CREAS" retorna 200 via 'referral_received'
+E activity_log 'referral' registra a reversão com causer_id</p>
+      <p class="steps"><strong>Como foi testado:</strong> Critério de backend. Também é exercitado na prática: é assim que o spec de navegador devolve a massa ao ponto de partida a cada execução.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Pest: “REOPENS the access when the origin unit reverts the outcome to awaiting_return, with the reversal audited”.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA-extra-D">
+      <h2>CA-extra-D — Via fora do domínio é recusada <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Quando FamilyAccessAuditService::recordOpened for chamado com accessGrantedVia = 'qualquer'
+Então lança InvalidArgumentException e nada é gravado</p>
+      <p class="steps"><strong>Como foi testado:</strong> Critério de backend (teste unitário).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A guarda roda &lt;b&gt;antes&lt;/b&gt; de qualquer escrita, e o teste confirma que o registro de auditoria fica vazio após a exceção.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+  
+  <h2>Observações e ressalvas</h2>
+  <section class="note"><h3>Fecha a metade que o dossiê da US-ACOMP-07 declarou pendente</h3><p>O CA07 da <b>US-ACOMP-07 (#10887)</b> foi entregue como <i>PARCIAL — metade deferida à US-ACOMP-06</i>: lá se provou que a unidade de destino é gravada no encaminhamento, mas não que ela passa a enxergar o prontuário, porque o eixo de acesso ainda não existia. <b>Esta entrega fecha essa metade</b> — é exatamente o que o CA01 deste dossiê mostra.</p></section><section class="note"><h3>Direção do trânsito invertida na evidência de tela (e por quê)</h3><p>A spec narra o trânsito CRAS → CREAS. A massa de teste, porém, <b>não tem nenhum profissional lotado no CREAS</b>, e sem lotação não há como exercitar o eixo pela interface. A evidência de tela usa, por isso, o sentido inverso: família referenciada no CREAS e encaminhamento de código <b>14 (CREAS → CRAS)</b>, com destino no CRAS onde o operador tem lotação vigente. <b>O eixo provado é o mesmo</b>; muda apenas o sentido. A direção literal da spec está coberta pela suíte automatizada.</p></section><section class="note"><h3>Achado da revisão: o eixo amplia a ESCRITA, ao contrário do que a RN11 afirma</h3><p>A revisão de código constatou que o guard de acesso é o gate único de várias rotas de escrita do prontuário — inclusive <code>PUT …/reference-unit</code>. Consequência: enquanto o encaminhamento estiver sem desfecho, a unidade de destino pode editar o prontuário e <b>assumir a unidade de referência da família</b>, tirando o acesso de quem encaminhou.</p><p>Não há auto-escalada (para criar o encaminhamento já é preciso ter acesso à família) e o eixo do acompanhamento, entregue antes, já tinha a mesma propriedade — é herdado, não introduzido aqui. <b>Nenhum comportamento foi alterado nesta entrega</b>: o fato foi fixado por um teste de regressão dedicado, que documenta a cadeia inteira (escrita → troca da unidade de referência → a origem perde o acesso), e registrado como pendência <b>§17-P6</b> na spec. <b>Decisão de produto para o PO:</b> se a troca da unidade de referência não puder ser feita por quem só recebeu um encaminhamento, a trava é exigir os eixos de referência ou acompanhamento nessa rota específica.</p></section><section class="note"><h3>Outras decisões pendentes declaradas na spec (§17)</h3><p><b>P1:</b> o acesso cessa imediatamente com o desfecho — a unidade que registrou “não atendido” não consegue reconsultar para justificar. <b>P4:</b> um encaminhamento esquecido em aberto mantém o acesso indefinidamente; a consulta §8.4 da spec dá visibilidade por unidade. Nenhuma das duas está no escopo desta entrega.</p></section><section class="note"><h3>Migrations, índice e permissões</h3><p>Esta HU não tem migration própria (a coluna e o índice vieram da US-ACOMP-07): o diff de <code>database/migrations</code> é vazio. O <code>EXPLAIN</code> confirma que o predicado do eixo usa o índice parcial <code>referrals_destination_access_idx</code> com varredura apenas por índice, tanto na decisão quanto no recorte da pesquisa de pessoas. Nenhuma permissão nova.</p></section>
+  
+  <h2>Anexo — Cobertura automatizada (Pest, --filter=FamilyAccess)</h2>
+  <pre class="pest">
+   PASS  Tests\Unit\Services\FamilyAccessAuditServiceTest
+  ✓ it writes one family_access/record_opened entry with the RN05 prope… 0.68s  
+  ✓ it accepts the referral_received via and records it as access_grant… 0.03s  
+  ✓ it rejects an access_granted_via outside GRANT_VIAS before writing…  0.04s  
+  ✓ it writes the denial with a closed-domain reason and no PII in the…  0.03s  
+  ✓ it labels the professional name as "&lt;Nome&gt; [Master]" when the Master has…  0.02s  
+  ✓ it prefers the local professional name over the master label when t… 0.03s  
+
+   PASS  Tests\Unit\Services\FamilyAccessServiceTest
+  ✓ it detects the master role only in the tenant where it was granted   0.06s  
+  ✓ it detects the view-details permission per tenant, via the dedicate… 0.05s  
+  ✓ it stops counting a revoked (force-deleted) role as a grant          0.05s  
+  ✓ it resolves the active professional and denies inactive/soft-delete… 0.06s  
+
+   PASS  Tests\Feature\Client\FamilyAccessFollowUpAxisTest
+  ✓ it opens the record for a unit that FOLLOWS the family, auditing vi… 0.14s  
+  ✓ it reaches the WHOLE record, not just the follow-up block, includin… 0.17s  
+  ✓ it keeps the access after the follow-up is DISCHARGED (CA03/RN02)    0.09s  
+  ✓ it does NOT grant access through a CANCELLED follow-up, denying wit… 0.09s  
+  ✓ it does NOT grant access through a soft-deleted follow-up (RN02/D05… 0.09s  
+  ✓ it denies the unit with NEITHER reference NOR follow-up, stating bo… 0.09s  
+  ✓ it does not let the follow-up replace the LGPD add-on (CA06/RN03)    0.09s  
+  ✓ it does not let the follow-up replace an ACTIVE unit assignment (CA… 0.09s  
+  ✓ it keeps the Master accessing by bypass, never by the follow-up axi… 0.08s  
+  ✓ it audits the FOUR access axes reachable without a referral (CA01/C… 0.12s  
+  ✓ it does not let following ONE family authorize reaching another one… 0.09s  
+  ✓ it keeps the organization isolation ahead of the follow-up axis (CA… 0.09s  
+  ✓ it lists the FOLLOWED family in the person search and opens it from… 0.10s  
+  ✓ it filters the follow-up axis by tenant_id, even with a numerically… 0.10s  
+  ✓ it reports the assigned units that follow the family in the decisio… 0.08s  
+
+   PASS  Tests\Feature\Client\FamilyAccessReferralAxisTest
+  ✓ it opens the record for the DESTINATION unit of an open referral, a… 0.11s  
+  ✓ it closes the access on the NEXT request after the destination unit… 0.12s  
+  ✓ it lets the destination unit register the follow-up admission WITHO… 0.12s  
+  ✓ it keeps the access through follow_up after the outcome is register… 0.12s  
+  ✓ it reaches the WHOLE record, including entries made by the origin u… 0.13s  
+  ✓ it does NOT grant access through an external referral (destination…  0.09s  
+  ✓ it does NOT grant access through a CANCELLED referral (CA07/RN04)    0.08s  
+  ✓ it grants ONLY through registered + awaiting_return: any outcome de… 0.08s  
+  ✓ it grants ONLY through registered + awaiting_return: any outcome de… 0.09s  
+  ✓ it grants ONLY through registered + awaiting_return: any outcome de… 0.08s  
+  ✓ it does NOT grant access through a soft-deleted referral (DoD/D05)   0.09s  
+  ✓ it does not let a referral to ANOTHER CREAS reach me (CA08/RN01)     0.08s  
+  ✓ it does not let the referral replace the LGPD add-on (CA09/RN06)     0.10s  
+  ✓ it does not let the referral replace an ACTIVE unit assignment (CA1… 0.09s  
+  ✓ it denies the unit with NEITHER reference, NOR follow-up, NOR recei… 0.10s  
+  ✓ it audits the FIVE distinct access vias, exactly (CA12/RN07/D03)     0.12s  
+  ✓ it keeps the organization isolation ahead of the referral axis (CA1… 0.09s  
+  ✓ it filters the referral axis by tenant_id, even with a numerically…  0.09s  
+  ✓ it lists the REFERRED family in the person search, opens it from th… 0.11s  
+  ✓ it REOPENS the access when the origin unit reverts the outcome to a… 0.11s  
+  ✓ it reports the assigned units that received the referral in the dec… 0.07s  
+  ✓ it keeps the Master accessing by bypass, never by the referral axis… 0.07s  
+  ✓ it DOCUMENTA: o eixo do encaminhamento hoje TAMBEM abre a escrita,…  0.11s  
+  ✓ it does not let receiving ONE family authorize reaching another one… 0.09s  
+
+   PASS  Tests\Feature\Family\FamilyAccessByUnitTest
+  ✓ it opens the record for a professional assigned to the reference un… 0.09s  
+  ✓ it answers a family of another unit as ACCESS DENIED, stating the r… 0.09s  
+  ✓ it reaches every unit where the professional is assigned, and none…  0.10s  
+  ✓ it hides families of other units from the person search, keeping th… 0.09s  
+  ✓ it blocks every record for a professional whose assignment is close… 0.08s  
+  ✓ it keeps the Master free from the unit cut, auditing the bypass (CA… 0.07s  
+  ✓ it does not let the unit assignment replace the LGPD add-on (CA06/R… 0.08s  
+  ✓ it keeps a family without reference unit visible during the transit… 0.08s  
+  ✓ it starts cutting as soon as the family receives a unit outside the… 0.09s  
+
+   PASS  Tests\Feature\TenantIsolation\FamilyAccessTenantIsolationTest
+  ✓ it treats a family of another organization as a nonexistent record,… 0.09s  
+  ✓ it never lists people of another organization in the person search,… 0.08s  
+
+  Tests:    60 passed (348 assertions)
+  Duration: 6.65s
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

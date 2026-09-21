@@ -1,0 +1,7 @@
+MAT-CA02 | cbo=2516-05 | papeis=operador, pf_tecnico_referencia | prontuario_familiar=NAO
+MAT-CA03 | cbo=2516-05 | papeis=family_viewer, operador, pf_tecnico_referencia | prontuario_familiar=SIM
+MAT-CA04 | cbo=2516-05 | papeis=operador | prontuario_familiar=NAO
+
+--- CA06: nada criado ---
+MAT-CA06 existe=NAO
+usuario 20000000370 existe=NAO

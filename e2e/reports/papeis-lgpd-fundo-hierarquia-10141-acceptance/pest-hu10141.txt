@@ -1,0 +1,122 @@
+
+   PASS  Tests\Feature\Database\RoleSeederTest
+  ✓ it coloca os add-ons LGPD nos levels 910/920/930 (CA01)              0.31s  
+  ✓ it mantem todo add-on acima de 900 e abaixo do operador na hierarqu… 0.01s  
+  ✓ it nao deixa nenhum posto real na faixa reservada aos add-ons (CA01… 0.01s  
+  ✓ it reaplica os novos levels a papeis pre-existentes (re-seed idempo… 0.02s  
+
+   PASS  Tests\Unit\Services\Client\UserTenantRoleSyncServiceTest
+  ✓ it aceita conjunto vazio — "sem papel algum" nao e o estado proibid… 0.02s  
+  ✓ it aceita conjunto so com posto base (RN02)                          0.01s  
+  ✓ it aceita add-on empilhado sobre posto base (CA02)                   0.01s  
+  ✓ it rejeita conjunto composto so por add-ons (CA03)                   0.01s  
+  ✓ it rejeita conjunto com varios add-ons e nenhum posto base (CA03)    0.01s  
+  ✓ it aceita nomes de papel alem de models (mesma decisao)              0.01s  
+  ✓ it activeRolesFor devolve so os papeis ativos do usuario naquele te… 0.04s  
+  ✓ it activeRolesFor devolve colecao vazia quando o usuario nao tem vi… 0.01s  
+
+   PASS  Tests\Feature\Api\UserTenantRoleControllerTest
+  ✓ it creates a user tenant role binding                                0.04s  
+  ✓ it allows the same user to have multiple roles in the same tenant    0.02s  
+  ✓ it rejects a duplicate (user, tenant, role)                          0.01s  
+  ✓ it rejects binding when user is a manager                            0.01s  
+  ✓ it rejects binding when role guard is not client                     0.01s  
+  ✓ it lists tenant-role bindings for a specific user (admin scope)      0.02s  
+  ✓ it deletes a tenant-role binding (admin scope, nested route)         0.01s  
+  ✓ it creates a tenant-role binding via nested route                    0.01s  
+  ✓ it rejects nested-route delete when binding belongs to another user  0.01s  
+  ✓ it validates required fields                                         0.01s  
+  ✓ it requires authentication                                           0.01s  
+  ✓ it store sincroniza model_has_roles do usuario com o UTR criado      0.01s  
+  ✓ it store acumula roles no model_has_roles quando user tem multiplos… 0.02s  
+  ✓ it store recusa add-on isolado para usuario sem posto base no tenan… 0.01s  
+  ✓ it store aceita add-on empilhado sobre um posto base existente (CA0… 0.01s  
+  ✓ it store avalia o posto base por tenant, nao globalmente (CA03)      0.01s  
+  ✓ it update recusa trocar o unico posto base por um add-on (CA04)      0.02s  
+  ✓ it update aceita trocar um add-on por outro papel quando o posto ba… 0.02s  
+  ✓ it destroy recusa remover o ultimo posto base mantendo um add-on (C… 0.01s  
+  ✓ it destroyForUser recusa remover o ultimo posto base mantendo um ad… 0.01s  
+  ✓ it destroy permite remover o add-on, deixando so o posto base (CA04… 0.01s  
+  ✓ it destroy permite esvaziar o conjunto (nenhum papel restante nao v… 0.01s  
+  ✓ it destroy via nested route remove o role do model_has_roles quando… 0.01s  
+
+   PASS  Tests\Feature\Api\Client\ProfessionalRoleControllerTest
+  ✓ it lists current and assignable roles (CA01)                         0.03s  
+  ✓ it syncs roles granting and revoking in diff (CA02/CA03)             0.02s  
+  ✓ it is idempotent when the same set is resent (RN04)                  0.02s  
+  ✓ it revokes all roles when role_ids is empty (RN11)                   0.02s  
+  ✓ it rejects assigning a role equal to or above the master hierarchy…  0.02s  
+  ✓ it rejects assigning an inactive role (RN02)                         0.02s  
+  ✓ it returns 404 for a professional from another tenant                0.02s  
+  ✓ it aceita empilhar um add-on sobre o posto base (CA02 — sem regress… 0.02s  
+  ✓ it recusa um conjunto composto so por add-ons (CA03/CA05)            0.02s  
+  ✓ it recusa remover o ultimo posto base mantendo o add-on (CA04/CA05)  0.02s  
+  ✓ it continua permitindo revogar TODOS os perfis (conjunto vazio nao…  0.02s  
+  ✓ it forbids an operador from managing professional roles (MASTER-onl… 0.02s  
+
+   PASS  Tests\Feature\Api\Client\UserControllerTest
+  ✓ it lista apenas usuarios com role hierarquicamente abaixo no tenant… 0.02s  
+  ✓ it nao lista usuarios de outros tenants                              0.02s  
+  ✓ it store rejeita criar user com role hierarquicamente acima          0.01s  
+  ✓ it store rejeita criar user com role no mesmo level                  0.02s  
+  ✓ it store aceita criar user com role abaixo e cria vinculo no tenant  0.02s  
+  ✓ it update rejeita promover target para role acima do meu             0.02s  
+  ✓ it store rejeita criar user com add-on isolado como unico role (RN0… 0.02s  
+  ✓ it update rejeita trocar o unico role do target para um add-on isol… 0.02s  
+  ✓ it destroy exige permission users.destroy                            0.02s  
+  ✓ it destroy exige hierarquia mesmo com permission                     0.02s  
+  ✓ it destroy permite com permission + hierarquia ok                    0.02s  
+  ✓ it rejeita request sem header X-Tenant-UUID                          0.01s  
+  ✓ it bloqueia manager autenticado no guard errado                      0.01s  
+  ✓ it aplica filter[full_name] via query string                         0.02s  
+  ✓ it respeita hierarquia mesmo quando filter casa user de role acima   0.02s  
+  ✓ it rejeita sort em campo nao permitido                               0.02s  
+
+   PASS  Tests\Feature\Console\AuditAddonOnlyRolesCommandTest
+  ✓ it lista o profissional que so tem add-ons, com tenant, CPF mascara… 0.02s  
+  ✓ it nao expoe o CPF completo — so os 2 ultimos digitos (LGPD)         0.01s  
+  ✓ it ignora quem tem posto base, mesmo com add-on empilhado            0.01s  
+  ✓ it avalia o conjunto por tenant — posto base em outro tenant nao sa… 0.01s  
+  ✓ it nao considera vinculos soft-deletados                             0.01s  
+  ✓ it detecta violação quando só o posto base foi soft-deletado e o ad… 0.01s  
+  ✓ it e SOMENTE LEITURA: nao altera user_tenant_role, users nem grava…  0.01s  
+  ✓ it informa base integra quando nao ha nenhum vinculo                 0.01s  
+
+   PASS  Tests\Unit\Services\FamilyAccessServiceTest
+  ✓ it detects the master role only in the tenant where it was granted   0.02s  
+  ✓ it detects the view-details permission per tenant, via the dedicate… 0.02s  
+  ✓ it stops counting a revoked (force-deleted) role as a grant          0.02s  
+  ✓ it resolves the active professional and denies inactive/soft-delete… 0.02s  
+
+   PASS  Tests\Unit\Services\Client\RoleServiceTest
+  ✓ it listAssignable retorna apenas roles abaixo do meu level no guard… 0.01s  
+  ✓ it listAssignable omite roles no mesmo level (estritamente menor)    0.01s  
+  ✓ it listAssignable ignora roles do guard manager/web                  0.01s  
+  ✓ it listAssignable omite roles inativos (HU #9358 CA01)               0.01s  
+  ✓ it listAssignable 403 se user sem role no tenant                     0.01s  
+
+   PASS  Tests\Unit\Services\Client\TenantServiceTest
+  ✓ it listForUser retorna tenants vinculados ordenados por trade_name   0.01s  
+  ✓ it listForUser anexa currentRole (role do user naquele tenant)       0.01s  
+  ✓ it listForUser retorna collection vazia quando user nao tem vinculo… 0.01s  
+  ✓ it listForUser nao retorna tenants de outros users                   0.01s  
+  ✓ it listForUser exclui tenants inativos da listagem (RN05/RN06)       0.01s  
+  ✓ it listForUser retorna collection vazia quando todos os vinculos sa… 0.01s  
+
+   PASS  Tests\Feature\Policies\ClientUserPolicyStackedRolesTest
+  ✓ it resolves the SENIOR role (operador, level 30) even when the fami… 0.02s  
+  ✓ it resolves the SENIOR role even when the family_viewer add-on is i… 0.02s  
+  ✓ it an operador stacked with family_viewer still CANNOT create anoth… 0.02s  
+  ✓ it an operador stacked with family_viewer still CANNOT update anoth… 0.02s  
+
+   PASS  Tests\Unit\Services\TenantPermissionResolverTest
+  ✓ it unions permissions of stacked roles in the same tenant without d… 0.02s  
+  ✓ it isolates the permission set between tenants (no cross-tenant uni… 0.02s  
+  ✓ it only resolves permissions of the client guard, never the manager… 0.02s  
+  ✓ it stops counting a revoked (force-deleted) binding as a grant       0.02s  
+  ✓ it groups bindings by tenant with roles and deduplicated permission… 0.02s  
+  ✓ it recognizes only registered client-guard permission names as scop… 0.02s  
+
+  Tests:    96 passed (260 assertions)
+  Duration: 1.86s
+

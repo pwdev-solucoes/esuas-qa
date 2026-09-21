@@ -1,0 +1,76 @@
+
+   PASS  Tests\Unit\Services\FamilyAccessAuditServiceTest
+  ✓ it writes one family_access/record_opened entry with the RN05 prope… 0.68s  
+  ✓ it accepts the referral_received via and records it as access_grant… 0.03s  
+  ✓ it rejects an access_granted_via outside GRANT_VIAS before writing…  0.04s  
+  ✓ it writes the denial with a closed-domain reason and no PII in the…  0.03s  
+  ✓ it labels the professional name as "<Nome> [Master]" when the Master has…  0.02s  
+  ✓ it prefers the local professional name over the master label when t… 0.03s  
+
+   PASS  Tests\Unit\Services\FamilyAccessServiceTest
+  ✓ it detects the master role only in the tenant where it was granted   0.06s  
+  ✓ it detects the view-details permission per tenant, via the dedicate… 0.05s  
+  ✓ it stops counting a revoked (force-deleted) role as a grant          0.05s  
+  ✓ it resolves the active professional and denies inactive/soft-delete… 0.06s  
+
+   PASS  Tests\Feature\Client\FamilyAccessFollowUpAxisTest
+  ✓ it opens the record for a unit that FOLLOWS the family, auditing vi… 0.14s  
+  ✓ it reaches the WHOLE record, not just the follow-up block, includin… 0.17s  
+  ✓ it keeps the access after the follow-up is DISCHARGED (CA03/RN02)    0.09s  
+  ✓ it does NOT grant access through a CANCELLED follow-up, denying wit… 0.09s  
+  ✓ it does NOT grant access through a soft-deleted follow-up (RN02/D05… 0.09s  
+  ✓ it denies the unit with NEITHER reference NOR follow-up, stating bo… 0.09s  
+  ✓ it does not let the follow-up replace the LGPD add-on (CA06/RN03)    0.09s  
+  ✓ it does not let the follow-up replace an ACTIVE unit assignment (CA… 0.09s  
+  ✓ it keeps the Master accessing by bypass, never by the follow-up axi… 0.08s  
+  ✓ it audits the FOUR access axes reachable without a referral (CA01/C… 0.12s  
+  ✓ it does not let following ONE family authorize reaching another one… 0.09s  
+  ✓ it keeps the organization isolation ahead of the follow-up axis (CA… 0.09s  
+  ✓ it lists the FOLLOWED family in the person search and opens it from… 0.10s  
+  ✓ it filters the follow-up axis by tenant_id, even with a numerically… 0.10s  
+  ✓ it reports the assigned units that follow the family in the decisio… 0.08s  
+
+   PASS  Tests\Feature\Client\FamilyAccessReferralAxisTest
+  ✓ it opens the record for the DESTINATION unit of an open referral, a… 0.11s  
+  ✓ it closes the access on the NEXT request after the destination unit… 0.12s  
+  ✓ it lets the destination unit register the follow-up admission WITHO… 0.12s  
+  ✓ it keeps the access through follow_up after the outcome is register… 0.12s  
+  ✓ it reaches the WHOLE record, including entries made by the origin u… 0.13s  
+  ✓ it does NOT grant access through an external referral (destination…  0.09s  
+  ✓ it does NOT grant access through a CANCELLED referral (CA07/RN04)    0.08s  
+  ✓ it grants ONLY through registered + awaiting_return: any outcome de… 0.08s  
+  ✓ it grants ONLY through registered + awaiting_return: any outcome de… 0.09s  
+  ✓ it grants ONLY through registered + awaiting_return: any outcome de… 0.08s  
+  ✓ it does NOT grant access through a soft-deleted referral (DoD/D05)   0.09s  
+  ✓ it does not let a referral to ANOTHER CREAS reach me (CA08/RN01)     0.08s  
+  ✓ it does not let the referral replace the LGPD add-on (CA09/RN06)     0.10s  
+  ✓ it does not let the referral replace an ACTIVE unit assignment (CA1… 0.09s  
+  ✓ it denies the unit with NEITHER reference, NOR follow-up, NOR recei… 0.10s  
+  ✓ it audits the FIVE distinct access vias, exactly (CA12/RN07/D03)     0.12s  
+  ✓ it keeps the organization isolation ahead of the referral axis (CA1… 0.09s  
+  ✓ it filters the referral axis by tenant_id, even with a numerically…  0.09s  
+  ✓ it lists the REFERRED family in the person search, opens it from th… 0.11s  
+  ✓ it REOPENS the access when the origin unit reverts the outcome to a… 0.11s  
+  ✓ it reports the assigned units that received the referral in the dec… 0.07s  
+  ✓ it keeps the Master accessing by bypass, never by the referral axis… 0.07s  
+  ✓ it DOCUMENTA: o eixo do encaminhamento hoje TAMBEM abre a escrita,…  0.11s  
+  ✓ it does not let receiving ONE family authorize reaching another one… 0.09s  
+
+   PASS  Tests\Feature\Family\FamilyAccessByUnitTest
+  ✓ it opens the record for a professional assigned to the reference un… 0.09s  
+  ✓ it answers a family of another unit as ACCESS DENIED, stating the r… 0.09s  
+  ✓ it reaches every unit where the professional is assigned, and none…  0.10s  
+  ✓ it hides families of other units from the person search, keeping th… 0.09s  
+  ✓ it blocks every record for a professional whose assignment is close… 0.08s  
+  ✓ it keeps the Master free from the unit cut, auditing the bypass (CA… 0.07s  
+  ✓ it does not let the unit assignment replace the LGPD add-on (CA06/R… 0.08s  
+  ✓ it keeps a family without reference unit visible during the transit… 0.08s  
+  ✓ it starts cutting as soon as the family receives a unit outside the… 0.09s  
+
+   PASS  Tests\Feature\TenantIsolation\FamilyAccessTenantIsolationTest
+  ✓ it treats a family of another organization as a nonexistent record,… 0.09s  
+  ✓ it never lists people of another organization in the person search,… 0.08s  
+
+  Tests:    60 passed (348 assertions)
+  Duration: 6.65s
+

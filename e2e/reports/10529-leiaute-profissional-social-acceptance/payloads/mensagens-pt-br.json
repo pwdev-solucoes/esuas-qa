@@ -1,0 +1,13 @@
+{
+    "_leitura": "Textos pt-BR desta HU, como o municipio os le. A recusa (blocked_professional_incomplete) conta LOTACOES e aponta o cadastro de Profissionais Municipais — ao contrario das #10372/#10373, ESTA recusa o municipio resolve sozinho. As duas informativas nao bloqueiam.",
+    "blocked_professional_incomplete_singular": "A remessa SIAP não pode ser gerada: 1 lotação de profissional está sem matrícula ou CPF no formato exigido pelo SIAP. Corrija o cadastro de Profissionais Municipais — veja quais dados faltam na conferência prévia.",
+    "blocked_professional_incomplete_plural": "A remessa SIAP não pode ser gerada: 3 lotações de profissionais estão sem matrícula ou CPF no formato exigido pelo SIAP. Corrija o cadastro de Profissionais Municipais — veja quais dados faltam na conferência prévia.",
+    "pendency_professional_incomplete": "Esta lotação de profissional está sem Matricula utilizável, exigido pelo SIAP. Corrija o cadastro do profissional municipal — está ao alcance do próprio município: enquanto isso, nenhuma remessa pode ser gerada.",
+    "pendency_payroll_cross_reference": "O TCE-AL só aceita o leiaute ProfissionalSocial se os CPFs e as matrículas informados também constarem da remessa de Folha de Pagamento (leiautes Servidor e Vínculo), produzida fora do SigSUAS. Não é uma inconsistência do seu cadastro — é a natureza do cruzamento: a geração da remessa permanece disponível.",
+    "pendency_parallel_professional_registry": "Profissionais com lotação vigente no período que existem apenas no cadastro de Profissionais do prontuário: 3. Esse cadastro não guarda matrícula, então eles não serão informados neste leiaute — para entrarem na remessa, cadastre-os em Profissionais Municipais. A geração da remessa permanece disponível.",
+    "resolution_do_bloqueio": {
+        "scope": "tenant",
+        "resource": "tenant-professionals",
+        "requires_role": null
+    }
+}

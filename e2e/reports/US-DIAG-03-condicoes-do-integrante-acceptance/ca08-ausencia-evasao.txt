@@ -1,0 +1,101 @@
+CA08 — "Evasao nao e perguntada": a AUSENCIA como evidencia (D08/RN09)
+=======================================================================
+
+1) Nenhuma coluna de evasao nas duas tabelas da HU
+---------------------------------------------------
+family_member_conditions:
+   - id
+   - uuid
+   - tenant_id
+   - family_id
+   - family_member_id
+   - own_income
+   - is_literate
+   - schooling_level_id
+   - schooling_source
+   - schooling_confirmed_at
+   - school_situation_id
+   - has_serious_illness
+   - disability_type_id
+   - created_by
+   - updated_by
+   - created_at
+   - updated_at
+   - deleted_at
+family_member_pregnancies:
+   - id
+   - uuid
+   - tenant_id
+   - family_id
+   - family_member_id
+   - recorded_on
+   - notes
+   - created_by
+   - updated_by
+   - created_at
+   - updated_at
+   - deleted_at
+
+2) Nenhum enum, classe, rota ou chave de payload com esse nome
+--------------------------------------------------------------
+$ grep -rniE 'evas(ao|ão)|dropout|school_dropout' api/app api/database api/routes
+   app/Enums/SiapNewFamilyProfile.php:46:    case SCHOOL_DROPOUT   = 'profile_school_dropout';    // PerfilEvasaoEscolar
+   app/Enums/SiapNewFamilyProfile.php:70:            self::BF_NONCOMPLIANCE, self::SCHOOL_DROPOUT, self::TEEN_PREGNANCY => true,
+   app/Enums/SiapNewFamilyProfile.php:81:     *    (descumprimento do PBF, evasão escolar, gravidez na adolescência);
+   app/Enums/SiapNewFamilyProfile.php:90:            self::BF_NONCOMPLIANCE, self::SCHOOL_DROPOUT, self::TEEN_PREGNANCY => null,
+   app/Enums/SiapNewFamilyProfile.php:104:            self::SCHOOL_DROPOUT   => 'Famílias com integrante em situação de evasão escolar',
+   app/Enums/FollowUpOutcomeClassification.php:23: * "evasão", "recusa da família"), o desligamento é RECUSADO em 422
+   app/Models/FollowUpExitReason.php:14: * (US-ACOMP-01 · RN02): `'1'` Avaliação técnica, `'2'` Evasão ou recusa da
+   app/Models/SchoolSituation.php:15: * Os códigos '3' e '4' são a fonte do perfil de evasão escolar da US-DIAG-05;
+   app/Models/SchoolSituation.php:16: * o '5' ("Não sei") NÃO é evasão. A derivação mora naquela HU — esta classe
+   app/Models/FamilyMemberCondition.php:43: * ⚠️ NÃO existe atributo de evasão escolar (D08/RN09). O perfil do 15.7 é
+   app/Http/Resources/Client/FamilyMemberConditionResource.php:39: * ⚠️ NÃO EXISTE — e não deve passar a existir — chave de EVASÃO ESCOLAR
+   app/Http/Resources/Client/FamilyMemberConditionResource.php:112:            // RN02 — NÃO obrigatório no leiaute. Fonte do perfil de evasão
+   app/Http/Resources/Client/FamilyMemberConditionResource.php:113:            // (US-DIAG-05) — que é DERIVADO; aqui não há campo de evasão (D08).
+   app/Http/Requests/Client/UpdateFamilyMemberConditionsRequest.php:51: * ⚠️ NÃO EXISTE campo de evasão escolar (D08/RN09), nem chave de payload com
+   app/Http/Controllers/Api/Manager/SchoolSituationController.php:23: * evasão escolar; o '5' ("Não sei") NÃO é evasão. A derivação mora naquela HU —
+   app/Services/FollowUp/DischargeFamilyFollowUpAction.php:200:     * `true` só no código `'2'` — Evasão ou recusa da família) e no ENUM
+   app/Services/FollowUp/FollowUpReportService.php:47: *    A F6 (US-DIAG-05) ACENDEU TRÊS deles — descumprimento (Q7e), evasão
+   app/Services/FollowUp/FollowUpReportService.php:125:     * Faixa da evasão escolar (RN04): integrante de 4 a 17 anos COMPLETOS no
+   app/Services/FollowUp/FollowUpReportService.php:144:     * Os códigos de `school_situations` que caracterizam EVASÃO (RN04/CA04):
+   app/Services/FollowUp/FollowUpReportService.php:147:     * ⚠️ O '5' ("Não sei") NÃO é evasão e `school_situation_id IS NULL`
+   app/Services/FollowUp/FollowUpReportService.php:154:    private const SCHOOL_DROPOUT_SITUATION_CODES = ['3', '4'];
+   app/Services/FollowUp/FollowUpReportService.php:319:            SiapNewFamilyProfile::SCHOOL_DROPOUT->value   => [],
+   app/Services/FollowUp/FollowUpReportService.php:410:            // Q7f (§8.2/RN04/CA04/CA05) — EVASÃO ESCOLAR, DERIVADA.
+   app/Services/FollowUp/FollowUpReportService.php:411:            // NÃO existe campo de evasão em lugar nenhum (D08/RN09 da
+   app/Services/FollowUp/FollowUpReportService.php:422:            SiapNewFamilyProfile::SCHOOL_DROPOUT->value => $this->familySet(
+   app/Services/FollowUp/FollowUpReportService.php:423:                $this->schoolDropoutFamilyIds($tenantId, $familyIds, $lastDay),
+   app/Services/FollowUp/FollowUpReportService.php:438:     * {@see self::SCHOOL_AGE_MAX} anos em situação de evasão (§8.2).
+   app/Services/FollowUp/FollowUpReportService.php:442:     * evasão de quem não compõe mais a família. `c.deleted_at IS NULL` fecha
+   app/Services/FollowUp/FollowUpReportService.php:451:    private function schoolDropoutFamilyIds(int $tenantId, array $familyIds, string $lastDay)
+   app/Services/FollowUp/FollowUpReportService.php:464:            ->whereIn('s.code', self::SCHOOL_DROPOUT_SITUATION_CODES)
+   app/Services/Family/RegisterFamilyMemberConditionsAction.php:208:            // a escolha. ⚠️ É a fonte do perfil de EVASÃO (US-DIAG-05), que é
+   app/Services/Family/RegisterFamilyMemberConditionsAction.php:209:            // derivado — aqui não existe nem campo nem enum de evasão (D08).
+   app/Services/AddressInconsistency/AddressInconsistencyExportService.php:148:     * O trim remove só ESPAÇOS comuns (evasão do tipo `" =cmd"`) — TAB e CR
+   app/Services/Siap/Layouts/NovasFamiliasLayout.php:26:            'PerfilEvasaoEscolar'    => ['type' => 'numeric', 'size' => 8, 'required' => true],
+   database/migrations/2026_09_17_120000_create_family_member_conditions_table.php:50: * ⚠️ NÃO EXISTE coluna de evasão escolar (D08/RN09), nem aqui nem em lugar
+   database/migrations/2026_09_17_120000_create_family_member_conditions_table.php:110:            // RN02 — NÃO obrigatório no leiaute. Fonte do perfil de evasão
+   database/migrations/2026_09_17_100002_create_school_situations_table.php:15: * do perfil de evasão escolar da US-DIAG-05 (RN04 daquela HU); o '5'
+   database/migrations/2026_09_17_100002_create_school_situations_table.php:16: * ("Não sei") NÃO é evasão — é ausência de conhecimento declarada. A derivação
+   database/seeders/FollowUpExitReasonSeeder.php:18: * no código `'2'`** (Evasão ou recusa da Família): é a razão cuja combinação
+   database/seeders/FollowUpExitReasonSeeder.php:48:                'name' => 'Evasão ou recusa da Família',
+   database/migrations/2026_09_08_100001_create_follow_up_exit_reasons_table.php:23: *    Semeada `true` APENAS no código `'2'` (evasão/recusa da família).
+   database/seeders/SchoolSituationSeeder.php:16: * do perfil de evasão escolar da US-DIAG-05. O '5' ("Não sei") NÃO é evasão —
+   database/seeders/SchoolSituationSeeder.php:17: * é ausência de conhecimento declarada, e tratá-lo como evasão inventaria um
+   database/factories/FamilyMemberConditionFactory.php:96:     * Situação escolar declarada — fonte do perfil de evasão da US-DIAG-05.
+   database/factories/FamilyMemberConditionFactory.php:97:     * ⚠️ O perfil é DERIVADO daqui; NÃO existe campo de evasão (D08/RN09).
+   routes/api/client.php:871:        // ⚠️ NAO EXISTE rota, campo ou payload de EVASAO ESCOLAR (D08/RN09):
+
+Os unicos acertos sao o PERFIL DERIVADO do leiaute 15.7 (calculado na apuracao,
+US-DIAG-05, a partir de `school_situations.code` 3 e 4) e comentarios que
+declaram justamente que o campo nao existe. Nenhum campo coletado, nenhuma
+coluna, nenhuma chave de payload.
+
+3) Nenhuma rota de evasao no client
+------------------------------------
+   rotas com evasao/dropout: 0
+
+4) A tela: o drawer completo do integrante esta em
+   screenshots/ca08-drawer-sem-campo-de-evasao.png — sao SETE campos
+   (renda, alfabetizado, escolaridade, situacao escolar, doenca grave,
+   tipo de deficiencia e gestacao) e nenhum pergunta sobre evasao.

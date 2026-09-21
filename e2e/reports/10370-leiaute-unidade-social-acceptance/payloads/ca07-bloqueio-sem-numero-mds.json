@@ -1,0 +1,80 @@
+{
+    "hu": "#10370 (US-SIAP-03)",
+    "criterio": "CA07",
+    "cenario": "unidade \"CRAS Alto do Cruzeiro\" sem o número MDS informado",
+    "unidade": {
+        "uuid": "0391cf46-b734-49c6-a43a-20441abdceaf",
+        "name": "CRAS Alto do Cruzeiro",
+        "mds_number": null
+    },
+    "post_siap_remittances": {
+        "status": 422,
+        "body": {
+            "message": "The SIAP remittance cannot be generated: 1 social unit has an incomplete record for SIAP. Check the missing data in the pre-check screen.",
+            "errors": {
+                "social_units": [
+                    "The SIAP remittance cannot be generated: 1 social unit has an incomplete record for SIAP. Check the missing data in the pre-check screen."
+                ]
+            }
+        }
+    },
+    "remessas_criadas": 0,
+    "pre_check_blocking": {
+        "can_generate": false,
+        "pendencies": [
+            {
+                "scope": "blocking",
+                "kind": "record_incomplete",
+                "field_name": "NumeroMDS",
+                "subject_type": "social_unit",
+                "subject_uuid": "0391cf46-b734-49c6-a43a-20441abdceaf",
+                "affected_count": 1,
+                "message_key": "siap_remittance.pendency.unit_incomplete",
+                "message": "This social unit is missing NumeroMDS, required by SIAP. Fix the unit record: until then, no remittance can be generated.",
+                "blocks_entire_remittance": true,
+                "affected_layouts": 11,
+                "resolution": {
+                    "resource": "tenant-tce-parameters",
+                    "requires_role": "master"
+                }
+            }
+        ]
+    },
+    "pre_check_layout_unidade": {
+        "name": "UnidadeSocial",
+        "sort_order": 1,
+        "file_name": "UnidadeSocial.xml",
+        "outcome": "header_only",
+        "record_count": 0,
+        "skipped_count": 1,
+        "pendencies": [
+            {
+                "scope": "blocking",
+                "kind": "record_incomplete",
+                "field_name": "NumeroMDS",
+                "subject_type": "social_unit",
+                "subject_uuid": "0391cf46-b734-49c6-a43a-20441abdceaf",
+                "affected_count": 1,
+                "message_key": "siap_remittance.pendency.unit_incomplete",
+                "message": "This social unit is missing NumeroMDS, required by SIAP. Fix the unit record: until then, no remittance can be generated.",
+                "blocks_entire_remittance": true
+            }
+        ]
+    },
+    "pendencia_localizada": {
+        "scope": "blocking",
+        "kind": "record_incomplete",
+        "field_name": "NumeroMDS",
+        "subject_type": "social_unit",
+        "subject_uuid": "0391cf46-b734-49c6-a43a-20441abdceaf",
+        "affected_count": 1,
+        "message_key": "siap_remittance.pendency.unit_incomplete",
+        "message": "This social unit is missing NumeroMDS, required by SIAP. Fix the unit record: until then, no remittance can be generated.",
+        "blocks_entire_remittance": true,
+        "affected_layouts": 11,
+        "resolution": {
+            "resource": "tenant-tce-parameters",
+            "requires_role": "master"
+        }
+    }
+}

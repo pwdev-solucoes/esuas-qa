@@ -1,0 +1,2 @@
+== CA05 — GET /api/client/professionals/role-suggestion (CBO 5153-20, sem mapa) ==
+{"data":{"cbo":{"uuid":"90f15e2a-d17f-471f-881e-da52a37896e5","code":"5153-20","name":"Conselheiro tutelar"},"has_mapping":false,"roles":[{"id":4,"uuid":"f8dd30de-d7f9-45d1-af4a-87e0376bd81b","name":"operador","label":"Operador","level":30,"group":"base","preselected":true,"source":"base_post"}]},"meta":{"fallback":"minimum_base_post","message":"Esta ocupa\u00e7\u00e3o n\u00e3o possui perfil sugerido. O profissional recebe apenas o posto base Operacional do Tenant."}}

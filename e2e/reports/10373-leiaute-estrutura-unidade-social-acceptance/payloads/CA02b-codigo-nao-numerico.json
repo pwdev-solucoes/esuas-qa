@@ -1,0 +1,56 @@
+{
+    "_leitura": "CA02b — código \"EST\", não numérico. É o caso mais grave dos dois: até esta HU a linha simplesmente SUMIA do arquivo (continue mudo no rows()) e o município declarava ao Tribunal menos estrutura do que tem, sem saber. Agora cai na MESMA recusa do CA02.",
+    "unidade_uuid": "78a9c7a4-6fba-4ae2-b0e2-87991aba3d8d",
+    "http_status": 422,
+    "resposta_do_post": {
+        "message": "A remessa SIAP não pode ser gerada: 1 estrutura vinculada às unidades está com código fora da tabela de estruturas do SIAP. Há duas saídas: corrigir o código no cadastro de apoio de estruturas de unidade, no Painel de Administração Global — acione o administrador da plataforma —, ou desvincular a estrutura da unidade. Veja quais na conferência prévia.",
+        "errors": {
+            "social_unit_structures": [
+                "A remessa SIAP não pode ser gerada: 1 estrutura vinculada às unidades está com código fora da tabela de estruturas do SIAP. Há duas saídas: corrigir o código no cadastro de apoio de estruturas de unidade, no Painel de Administração Global — acione o administrador da plataforma —, ou desvincular a estrutura da unidade. Veja quais na conferência prévia."
+            ]
+        }
+    },
+    "blocking": {
+        "can_generate": false,
+        "pendencies": [
+            {
+                "scope": "blocking",
+                "kind": "domain_unmapped",
+                "field_name": "Estrutura",
+                "subject_type": "social_unit",
+                "subject_uuid": "78a9c7a4-6fba-4ae2-b0e2-87991aba3d8d",
+                "affected_count": 1,
+                "message_key": "siap_remittance.pendency.structure_code_unmapped",
+                "message": "O código de estrutura \"EST\" registrado nesta unidade não consta da tabela de estruturas do SIAP. Há duas saídas: corrigir o código no cadastro de apoio de estruturas de unidade, no Painel de Administração Global — acione o administrador da plataforma —, ou desvincular esta estrutura da unidade, o que está ao alcance do município. Enquanto nenhuma das duas for feita, nenhuma remessa pode ser gerada.",
+                "blocks_entire_remittance": true,
+                "affected_layouts": 11,
+                "resolution": {
+                    "scope": "global",
+                    "resource": "social-unit-structures",
+                    "requires_role": null
+                }
+            }
+        ]
+    },
+    "layout": {
+        "name": "EstruturaUnidadeSocial",
+        "sort_order": 4,
+        "file_name": "EstruturaUnidadeSocial.xml",
+        "outcome": "partial",
+        "record_count": 1,
+        "skipped_count": 1,
+        "pendencies": [
+            {
+                "scope": "blocking",
+                "kind": "domain_unmapped",
+                "field_name": "Estrutura",
+                "subject_type": "social_unit",
+                "subject_uuid": "78a9c7a4-6fba-4ae2-b0e2-87991aba3d8d",
+                "affected_count": 1,
+                "message_key": "siap_remittance.pendency.structure_code_unmapped",
+                "message": "O código de estrutura \"EST\" registrado nesta unidade não consta da tabela de estruturas do SIAP. Há duas saídas: corrigir o código no cadastro de apoio de estruturas de unidade, no Painel de Administração Global — acione o administrador da plataforma —, ou desvincular esta estrutura da unidade, o que está ao alcance do município. Enquanto nenhuma das duas for feita, nenhuma remessa pode ser gerada.",
+                "blocks_entire_remittance": true
+            }
+        ]
+    }
+}

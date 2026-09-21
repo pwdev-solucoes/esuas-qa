@@ -1,0 +1,86 @@
+=== admin: npx vitest run src/modules/sexes ===
+
+ RUN  v2.1.9 /Users/paulosoares/Projetos/esuas-all/admin
+
+(node:67486) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:67483) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:67485) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:67484) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:67487) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/modules/sexes/resources/SexHttp.test.ts (3 tests) 2ms
+ ✓ src/modules/sexes/composables/useSexesView.test.ts (6 tests) 7ms
+ ✓ src/modules/sexes/composables/useSexes.test.ts (19 tests) 5ms
+ ✓ src/modules/sexes/components/SexesCardGrid.test.ts (4 tests) 16ms
+ ✓ src/modules/sexes/components/SexesTable.test.ts (4 tests) 16ms
+
+ Test Files  5 passed (5)
+      Tests  36 passed (36)
+   Start at  14:27:16
+   Duration  1.48s (transform 552ms, setup 45ms, collect 1.54s, tests 47ms, environment 3.02s, prepare 366ms)
+
+
+=== client: npx vitest run src/modules/professionals src/modules/cadunico-imports ===
+
+ RUN  v2.1.9 /Users/paulosoares/Projetos/esuas-all/admin
+
+filter:  src/modules/professionals, src/modules/cadunico-imports
+include: src/**/*.{test,spec}.{ts,vue}
+exclude:  **/node_modules/**, **/dist/**, **/cypress/**, **/.{idea,git,cache,output,temp}/**, **/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build,eslint,prettier}.config.*
+
+No test files found, exiting with code 1
+
+ RUN  v2.1.9 /Users/paulosoares/Projetos/esuas-all/client
+
+(node:67602) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:67598) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:67597) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:67601) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:67600) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:67596) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:67603) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:67595) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:67599) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/modules/professionals/resources/ProfessionalHttp.test.ts (14 tests) 6ms
+ ✓ src/modules/professionals/composables/useProfessionalUnits.test.ts (6 tests) 5ms
+ ✓ src/modules/professionals/composables/useProfessionalLookup.test.ts (7 tests) 5ms
+ ✓ src/modules/cadunico-imports/composables/useCadunicoImports.test.ts (19 tests) 15ms
+ ✓ src/modules/professionals/components/ProfessionalAddressField.test.ts (6 tests) 63ms
+(node:67616) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/modules/professionals/composables/useProfessionals.test.ts (13 tests) 6ms
+ ✓ src/modules/professionals/components/ManageProfessionalRolesDrawer.test.ts (5 tests) 92ms
+(node:67615) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:67617) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/modules/cadunico-imports/resources/CadunicoImportHttp.test.ts (6 tests) 6ms
+ ✓ src/modules/professionals/components/ProfessionalStatusBadge.test.ts (5 tests) 22ms
+(node:67621) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:67623) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/modules/professionals/components/ProfessionalsCardGrid.test.ts (7 tests) 30ms
+ ✓ src/modules/professionals/components/ProfessionalActionsMenu.test.ts (12 tests) 50ms
+ ✓ src/modules/cadunico-imports/components/CadunicoImportsTable.test.ts (4 tests) 23ms
+ ✓ src/modules/cadunico-imports/components/CadunicoImportsCardGrid.test.ts (4 tests) 16ms
+ ✓ src/modules/professionals/components/ProfessionalsTable.test.ts (4 tests) 15ms
+
+ Test Files  14 passed (14)
+      Tests  112 passed (112)
+   Start at  14:27:29
+   Duration  1.86s (transform 1.33s, setup 195ms, collect 4.08s, tests 354ms, environment 6.27s, prepare 713ms)
+

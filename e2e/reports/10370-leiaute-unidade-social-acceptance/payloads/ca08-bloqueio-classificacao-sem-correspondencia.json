@@ -1,0 +1,80 @@
+{
+    "hu": "#10370 (US-SIAP-03)",
+    "criterio": "CA08",
+    "cenario": "unidade com tipo de código \"777\" (Unidade Móvel de Abordagem), sem correspondência na escala do Manual — ajuste no Painel de Administração Global",
+    "unidade": {
+        "uuid": "7403dd4e-32dd-4b70-bdec-a90a14de3fc8",
+        "name": "Unidade Móvel Centro",
+        "mds_number": "2704302000888"
+    },
+    "post_siap_remittances": {
+        "status": 422,
+        "body": {
+            "message": "The SIAP remittance cannot be generated: 1 social unit has an incomplete record for SIAP. Check the missing data in the pre-check screen.",
+            "errors": {
+                "social_units": [
+                    "The SIAP remittance cannot be generated: 1 social unit has an incomplete record for SIAP. Check the missing data in the pre-check screen."
+                ]
+            }
+        }
+    },
+    "remessas_criadas": 0,
+    "pre_check_blocking": {
+        "can_generate": false,
+        "pendencies": [
+            {
+                "scope": "blocking",
+                "kind": "record_incomplete",
+                "field_name": "ClassificacaoUnidadeSocial",
+                "subject_type": "social_unit",
+                "subject_uuid": "7403dd4e-32dd-4b70-bdec-a90a14de3fc8",
+                "affected_count": 1,
+                "message_key": "siap_remittance.pendency.unit_type_unmapped",
+                "message": "The classification of this unit (ClassificacaoUnidadeSocial) has no counterpart in the SIAP table. The fix is made in the social unit types support register, in the Global Administration Panel. Until then, no remittance can be generated.",
+                "blocks_entire_remittance": true,
+                "affected_layouts": 11,
+                "resolution": {
+                    "resource": "tenant-tce-parameters",
+                    "requires_role": "master"
+                }
+            }
+        ]
+    },
+    "pre_check_layout_unidade": {
+        "name": "UnidadeSocial",
+        "sort_order": 1,
+        "file_name": "UnidadeSocial.xml",
+        "outcome": "header_only",
+        "record_count": 0,
+        "skipped_count": 1,
+        "pendencies": [
+            {
+                "scope": "blocking",
+                "kind": "record_incomplete",
+                "field_name": "ClassificacaoUnidadeSocial",
+                "subject_type": "social_unit",
+                "subject_uuid": "7403dd4e-32dd-4b70-bdec-a90a14de3fc8",
+                "affected_count": 1,
+                "message_key": "siap_remittance.pendency.unit_type_unmapped",
+                "message": "The classification of this unit (ClassificacaoUnidadeSocial) has no counterpart in the SIAP table. The fix is made in the social unit types support register, in the Global Administration Panel. Until then, no remittance can be generated.",
+                "blocks_entire_remittance": true
+            }
+        ]
+    },
+    "pendencia_localizada": {
+        "scope": "blocking",
+        "kind": "record_incomplete",
+        "field_name": "ClassificacaoUnidadeSocial",
+        "subject_type": "social_unit",
+        "subject_uuid": "7403dd4e-32dd-4b70-bdec-a90a14de3fc8",
+        "affected_count": 1,
+        "message_key": "siap_remittance.pendency.unit_type_unmapped",
+        "message": "The classification of this unit (ClassificacaoUnidadeSocial) has no counterpart in the SIAP table. The fix is made in the social unit types support register, in the Global Administration Panel. Until then, no remittance can be generated.",
+        "blocks_entire_remittance": true,
+        "affected_layouts": 11,
+        "resolution": {
+            "resource": "tenant-tce-parameters",
+            "requires_role": "master"
+        }
+    }
+}

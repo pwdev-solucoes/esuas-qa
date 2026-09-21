@@ -1,0 +1,7 @@
+== Invariante 8.5 (spec §8.5) — Postgres dev (container api-laravel.test-1) — 2026-09-15T21:19:58Z ==
+SELECT r.id FROM referrals r JOIN referral_codes rc ON rc.id = r.referral_code_id JOIN social_units su ON su.id = r.destination_social_unit_id WHERE rc.destination_unit_type_id IS NULL OR su.tenant_id <> r.tenant_id OR su.id = r.social_unit_id;
+linhas: 0
+referrals total: 4
+referrals com destination_social_unit_id preenchido: 0 (RN06/D09: encaminhamentos anteriores ao ajuste NÃO ganham FK)
+
+Na suíte: o último 'it' de tests/Feature/Api/Client/ReferralDestinationUnitTest.php assere 0 linhas após carga mista (interno via API + PATCH, externo, factory toDestinationUnit, legado) e a contraprova (linha forjada por query builder → 1).

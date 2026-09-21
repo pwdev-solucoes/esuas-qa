@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — US-07 Papéis LGPD de ação única no fundo da hierarquia</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — US-07 Papéis LGPD de ação única no fundo da hierarquia</h1>
+    <div class="sub">Ticket GLPI #10141 · Evidência 100% automatizada (Pest) — feature sem UI própria</div>
+    <div class="meta"><div><span>Gerado em:</span> 30/07/2026</div><div><span>Ticket GLPI:</span> #10141 — HU - #10141 Papéis LGPD de ação única no fundo da hierarquia</div><div><span>Spec:</span> .planning/product/stories/US-07-add-ons-lgpd-exigem-posto-base.md</div><div><span>Branch:</span> feature/papeis-lgpd-fundo-hierarquia (api/)</div><div><span>Commits:</span> 560b923, 47b12ee, b81d565, e11356e</div><div><span>Ambiente:</span> API Sail/PostgreSQL — Pest 4, memory_limit=1G</div><div><span>Ferramenta:</span> Pest (100% automatizado — regra de backend puro, sem tela dedicada)</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">8 critérios de aceite, todos verificados por suíte automatizada (Pest) — esta HU altera apenas regra de hierarquia de papéis e um comando de saneamento no backend, sem componente de UI próprio (o drawer de perfis que consome o erro 422 já existia e não muda). 96 testes relevantes rodados nesta passada, todos verdes. Inclui as duas correções feitas na revisão do PR #92 (bug de soft-delete no comando de saneamento e fechamento de um bypass real da RN02 via UserService::create/update, fora do escopo literal dos CAs mas necessário para o propósito da HU).</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA01</td><td>Add-ons no fundo da hierarquia</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA02</td><td>Empilhar add-on sobre posto continua permitido</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA03</td><td>Add-on isolado é recusado (caminho de erro)</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA04</td><td>Remover o último posto base é recusado (caminho de erro)</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA05</td><td>Regra vale nos dois pontos de mutação</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA06</td><td>Resolução de "o papel" fica correta por estrutura</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA07</td><td>União de permissões preservada</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA08</td><td>Base legada saneada</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA01">
+      <h2>CA01 — Add-ons no fundo da hierarquia <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado o RoleSeeder executado
+Quando consulto os levels
+Então client_family_viewer = 910, client_territorial_qualifier = 920 e client_geo_panel_viewer = 930
+E todos são &gt; 900 e &gt; client_operador (30).</p>
+      <p class="steps"><strong>Como foi testado:</strong> <code>tests/Feature/Database/RoleSeederTest.php</code> + verificação direta na base de dev real após <code>db:seed --class=RoleSeeder</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>4 testes verdes confirmando os 3 levels exatos e a faixa reservada 900+.</li><li>Consulta real na base de dev (guard client, level &gt;= 900): family_viewer=910, territorial_qualifier=920, geo_panel_viewer=930 — nenhum outro papel na faixa.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA02">
+      <h2>CA02 — Empilhar add-on sobre posto continua permitido <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um profissional com o posto operador
+Quando o Master atribui family_viewer
+Então a atribuição é aceita
+E o profissional passa a abrir o prontuário familiar detalhado.</p>
+      <p class="steps"><strong>Como foi testado:</strong> <code>UserTenantRoleControllerTest</code> (store) + <code>ProfessionalRoleControllerTest</code> (syncRoles).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>'store aceita add-on empilhado sobre um posto base existente (CA02)' — verde.</li><li>'aceita empilhar um add-on sobre o posto base (CA02 — sem regressão)' — verde, união Spatie confirmada com operador + family_viewer.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA03">
+      <h2>CA03 — Add-on isolado é recusado (caminho de erro) <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um profissional sem nenhum posto base no tenant
+Quando o Master tenta salvar um conjunto de perfis contendo apenas add-ons
+Então a operação é recusada com 422 e mensagem em pt-BR explicando a exigência
+E nenhuma linha é criada em user_tenant_role.</p>
+      <p class="steps"><strong>Como foi testado:</strong> <code>UserTenantRoleControllerTest</code> (store) + <code>ProfessionalRoleControllerTest</code> (syncRoles) + <code>UserControllerTest</code> (via /api/client/users, achado da revisão do PR #92).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>'store recusa add-on isolado para usuário sem posto base no tenant (CA03)' — verde, assertDatabaseMissing + Spatie vazio.</li><li>'recusa um conjunto composto só por add-ons (CA03/CA05)' — verde, UTR/Spatie/activity_log inalterados.</li><li>'store rejeita criar user com add-on isolado como único role (RN02, GLPI #10141)' — verde, 422 via UserService::create — fecha o bypass encontrado na revisão do PR.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA04">
+      <h2>CA04 — Remover o último posto base é recusado (caminho de erro) <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um profissional com operador + family_viewer
+Quando o Master remove operador mantendo family_viewer
+Então a operação é recusada com 422 — o estado proibido do CA03 não pode ser alcançado por remoção.</p>
+      <p class="steps"><strong>Como foi testado:</strong> <code>UserTenantRoleControllerTest</code> (destroy/destroyForUser/update) + <code>ProfessionalRoleControllerTest</code> (syncRoles) + <code>UserControllerTest</code> (update, achado da revisão).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>'destroy recusa remover o último posto base mantendo um add-on (CA04)' — verde.</li><li>'destroyForUser recusa ...' — verde.</li><li>'update rejeita trocar o único role do target para um add-on isolado (RN02, GLPI #10141)' — verde, fecha o mesmo bypass via UserService::update.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA05">
+      <h2>CA05 — Regra vale nos dois pontos de mutação <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que user_tenant_role é mutado tanto por UserTenantRoleController quanto por ProfessionalService::syncRoles
+Quando tento criar o estado proibido por qualquer um dos dois caminhos
+Então ambos recusam — a validação não pode viver só no drawer de perfis.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Verificação estrutural + testes cruzados: um único método (<code>UserTenantRoleSyncService::assertResultingSetHasBasePost()</code>) chamado pelos dois pontos do ticket.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Confirmado por leitura de código: implementação única, sem duplicação de regra.</li><li>Ambos os caminhos devolvem a mesma chave de mensagem (user_tenant_role.validation.base_post_required), asserido nos dois arquivos de teste.</li><li>Achado adicional na revisão do PR #92 (fora do escopo literal deste CA, mas do mesmo espírito): o mesmo método também passou a ser chamado por UserService::create/update, terceiro ponto de mutação que não constava nos CAs originais mas permitia o mesmo estado proibido por outro caminho — fechado e testado (ver CA03/CA04).</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA06">
+      <h2>CA06 — Resolução de "o papel" fica correta por estrutura <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um profissional com operador (30) + family_viewer (910)
+Quando consulto /auth/me, o seletor de tenants e a hierarquia de CRUD
+Então o papel resolvido é operador nos três
+E as exclusões por nome permanecem no código, com os testes de regressão das HUs #9760/#9761 verdes.</p>
+      <p class="steps"><strong>Como foi testado:</strong> <code>FamilyAccessServiceTest</code>, <code>RoleServiceTest</code>, <code>TenantServiceTest</code>, <code>ClientUserPolicyStackedRolesTest</code> — nenhum código de produção destes pontos foi alterado (só o level mudou).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>19 testes de regressão verdes, sem alteração de ClientUserPolicy::roleFor/TenantService::listForUser/TenantPermissionResolver.</li><li>Exclusão por nome (RoleCode::addOnRoleNames()) confirmada intacta e ainda necessária como defesa em profundidade independente do valor numérico do level.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA07">
+      <h2>CA07 — União de permissões preservada <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado o mesmo profissional
+Quando o TenantPermissionResolver calcula as permissões efetivas
+Então families.view-details continua concedida — add-on entra na união de permissões, muda apenas a posição na hierarquia.</p>
+      <p class="steps"><strong>Como foi testado:</strong> <code>tests/Unit/Services/TenantPermissionResolverTest.php</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>6 testes verdes; união de permissões de papéis empilhados confirmada sem deduplicação indevida.</li><li>Ordem de agrupamento por level ajustada (posto base antes do add-on) — efeito esperado e desejado da RN01, sem mudança de código de produção do resolver.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA08">
+      <h2>CA08 — Base legada saneada <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado profissionais existentes que hoje possuem apenas um add-on
+Quando executo o comando de saneamento antes da migração de levels
+Então cada caso é listado com tenant, CPF mascarado e papel
+E nenhum usuário perde acesso silenciosamente nem fica impedido de autenticar.</p>
+      <p class="steps"><strong>Como foi testado:</strong> <code>tests/Feature/Console/AuditAddonOnlyRolesCommandTest.php</code> (8 testes, incluindo o caso de soft-delete corrigido na revisão) + execução real do comando <code>roles:audit-addon-only</code> na base de dev.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>8 testes verdes: listagem, mascaramento de CPF (só 2 últimos dígitos), escopo por tenant, soft-delete corretamente ignorado, prova de somente-leitura (snapshot antes/depois idêntico).</li><li>Achado da revisão do PR #92: o comando usava withoutGlobalScopes() (removia também o SoftDeletingScope), o que poderia mascarar uma violação real se um posto base fosse soft-deletado deixando só o add-on ativo — corrigido para withoutGlobalScope(BelongsToTenantScope::class); novo teste discrimina esse caso.</li><li>Execução real na base de dev (após o fix): 2 casos encontrados — Maceió Geo e Arapiraca Geo, ambos com apenas geo_panel_viewer — nenhum registro alterado. Pendência operacional: tratar esses 2 casos com produto/operação antes do deploy do RoleSeeder atualizado.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+  
+  <h2>Anexo — Suíte Pest completa dos arquivos relevantes aos 8 CAs (96 testes, 260 assertions)</h2>
+  <pre class="pest">
+   PASS  Tests\Feature\Database\RoleSeederTest
+  ✓ it coloca os add-ons LGPD nos levels 910/920/930 (CA01)              0.31s  
+  ✓ it mantem todo add-on acima de 900 e abaixo do operador na hierarqu… 0.01s  
+  ✓ it nao deixa nenhum posto real na faixa reservada aos add-ons (CA01… 0.01s  
+  ✓ it reaplica os novos levels a papeis pre-existentes (re-seed idempo… 0.02s  
+
+   PASS  Tests\Unit\Services\Client\UserTenantRoleSyncServiceTest
+  ✓ it aceita conjunto vazio — "sem papel algum" nao e o estado proibid… 0.02s  
+  ✓ it aceita conjunto so com posto base (RN02)                          0.01s  
+  ✓ it aceita add-on empilhado sobre posto base (CA02)                   0.01s  
+  ✓ it rejeita conjunto composto so por add-ons (CA03)                   0.01s  
+  ✓ it rejeita conjunto com varios add-ons e nenhum posto base (CA03)    0.01s  
+  ✓ it aceita nomes de papel alem de models (mesma decisao)              0.01s  
+  ✓ it activeRolesFor devolve so os papeis ativos do usuario naquele te… 0.04s  
+  ✓ it activeRolesFor devolve colecao vazia quando o usuario nao tem vi… 0.01s  
+
+   PASS  Tests\Feature\Api\UserTenantRoleControllerTest
+  ✓ it creates a user tenant role binding                                0.04s  
+  ✓ it allows the same user to have multiple roles in the same tenant    0.02s  
+  ✓ it rejects a duplicate (user, tenant, role)                          0.01s  
+  ✓ it rejects binding when user is a manager                            0.01s  
+  ✓ it rejects binding when role guard is not client                     0.01s  
+  ✓ it lists tenant-role bindings for a specific user (admin scope)      0.02s  
+  ✓ it deletes a tenant-role binding (admin scope, nested route)         0.01s  
+  ✓ it creates a tenant-role binding via nested route                    0.01s  
+  ✓ it rejects nested-route delete when binding belongs to another user  0.01s  
+  ✓ it validates required fields                                         0.01s  
+  ✓ it requires authentication                                           0.01s  
+  ✓ it store sincroniza model_has_roles do usuario com o UTR criado      0.01s  
+  ✓ it store acumula roles no model_has_roles quando user tem multiplos… 0.02s  
+  ✓ it store recusa add-on isolado para usuario sem posto base no tenan… 0.01s  
+  ✓ it store aceita add-on empilhado sobre um posto base existente (CA0… 0.01s  
+  ✓ it store avalia o posto base por tenant, nao globalmente (CA03)      0.01s  
+  ✓ it update recusa trocar o unico posto base por um add-on (CA04)      0.02s  
+  ✓ it update aceita trocar um add-on por outro papel quando o posto ba… 0.02s  
+  ✓ it destroy recusa remover o ultimo posto base mantendo um add-on (C… 0.01s  
+  ✓ it destroyForUser recusa remover o ultimo posto base mantendo um ad… 0.01s  
+  ✓ it destroy permite remover o add-on, deixando so o posto base (CA04… 0.01s  
+  ✓ it destroy permite esvaziar o conjunto (nenhum papel restante nao v… 0.01s  
+  ✓ it destroy via nested route remove o role do model_has_roles quando… 0.01s  
+
+   PASS  Tests\Feature\Api\Client\ProfessionalRoleControllerTest
+  ✓ it lists current and assignable roles (CA01)                         0.03s  
+  ✓ it syncs roles granting and revoking in diff (CA02/CA03)             0.02s  
+  ✓ it is idempotent when the same set is resent (RN04)                  0.02s  
+  ✓ it revokes all roles when role_ids is empty (RN11)                   0.02s  
+  ✓ it rejects assigning a role equal to or above the master hierarchy…  0.02s  
+  ✓ it rejects assigning an inactive role (RN02)                         0.02s  
+  ✓ it returns 404 for a professional from another tenant                0.02s  
+  ✓ it aceita empilhar um add-on sobre o posto base (CA02 — sem regress… 0.02s  
+  ✓ it recusa um conjunto composto so por add-ons (CA03/CA05)            0.02s  
+  ✓ it recusa remover o ultimo posto base mantendo o add-on (CA04/CA05)  0.02s  
+  ✓ it continua permitindo revogar TODOS os perfis (conjunto vazio nao…  0.02s  
+  ✓ it forbids an operador from managing professional roles (MASTER-onl… 0.02s  
+
+   PASS  Tests\Feature\Api\Client\UserControllerTest
+  ✓ it lista apenas usuarios com role hierarquicamente abaixo no tenant… 0.02s  
+  ✓ it nao lista usuarios de outros tenants                              0.02s  
+  ✓ it store rejeita criar user com role hierarquicamente acima          0.01s  
+  ✓ it store rejeita criar user com role no mesmo level                  0.02s  
+  ✓ it store aceita criar user com role abaixo e cria vinculo no tenant  0.02s  
+  ✓ it update rejeita promover target para role acima do meu             0.02s  
+  ✓ it store rejeita criar user com add-on isolado como unico role (RN0… 0.02s  
+  ✓ it update rejeita trocar o unico role do target para um add-on isol… 0.02s  
+  ✓ it destroy exige permission users.destroy                            0.02s  
+  ✓ it destroy exige hierarquia mesmo com permission                     0.02s  
+  ✓ it destroy permite com permission + hierarquia ok                    0.02s  
+  ✓ it rejeita request sem header X-Tenant-UUID                          0.01s  
+  ✓ it bloqueia manager autenticado no guard errado                      0.01s  
+  ✓ it aplica filter[full_name] via query string                         0.02s  
+  ✓ it respeita hierarquia mesmo quando filter casa user de role acima   0.02s  
+  ✓ it rejeita sort em campo nao permitido                               0.02s  
+
+   PASS  Tests\Feature\Console\AuditAddonOnlyRolesCommandTest
+  ✓ it lista o profissional que so tem add-ons, com tenant, CPF mascara… 0.02s  
+  ✓ it nao expoe o CPF completo — so os 2 ultimos digitos (LGPD)         0.01s  
+  ✓ it ignora quem tem posto base, mesmo com add-on empilhado            0.01s  
+  ✓ it avalia o conjunto por tenant — posto base em outro tenant nao sa… 0.01s  
+  ✓ it nao considera vinculos soft-deletados                             0.01s  
+  ✓ it detecta violação quando só o posto base foi soft-deletado e o ad… 0.01s  
+  ✓ it e SOMENTE LEITURA: nao altera user_tenant_role, users nem grava…  0.01s  
+  ✓ it informa base integra quando nao ha nenhum vinculo                 0.01s  
+
+   PASS  Tests\Unit\Services\FamilyAccessServiceTest
+  ✓ it detects the master role only in the tenant where it was granted   0.02s  
+  ✓ it detects the view-details permission per tenant, via the dedicate… 0.02s  
+  ✓ it stops counting a revoked (force-deleted) role as a grant          0.02s  
+  ✓ it resolves the active professional and denies inactive/soft-delete… 0.02s  
+
+   PASS  Tests\Unit\Services\Client\RoleServiceTest
+  ✓ it listAssignable retorna apenas roles abaixo do meu level no guard… 0.01s  
+  ✓ it listAssignable omite roles no mesmo level (estritamente menor)    0.01s  
+  ✓ it listAssignable ignora roles do guard manager/web                  0.01s  
+  ✓ it listAssignable omite roles inativos (HU #9358 CA01)               0.01s  
+  ✓ it listAssignable 403 se user sem role no tenant                     0.01s  
+
+   PASS  Tests\Unit\Services\Client\TenantServiceTest
+  ✓ it listForUser retorna tenants vinculados ordenados por trade_name   0.01s  
+  ✓ it listForUser anexa currentRole (role do user naquele tenant)       0.01s  
+  ✓ it listForUser retorna collection vazia quando user nao tem vinculo… 0.01s  
+  ✓ it listForUser nao retorna tenants de outros users                   0.01s  
+  ✓ it listForUser exclui tenants inativos da listagem (RN05/RN06)       0.01s  
+  ✓ it listForUser retorna collection vazia quando todos os vinculos sa… 0.01s  
+
+   PASS  Tests\Feature\Policies\ClientUserPolicyStackedRolesTest
+  ✓ it resolves the SENIOR role (operador, level 30) even when the fami… 0.02s  
+  ✓ it resolves the SENIOR role even when the family_viewer add-on is i… 0.02s  
+  ✓ it an operador stacked with family_viewer still CANNOT create anoth… 0.02s  
+  ✓ it an operador stacked with family_viewer still CANNOT update anoth… 0.02s  
+
+   PASS  Tests\Unit\Services\TenantPermissionResolverTest
+  ✓ it unions permissions of stacked roles in the same tenant without d… 0.02s  
+  ✓ it isolates the permission set between tenants (no cross-tenant uni… 0.02s  
+  ✓ it only resolves permissions of the client guard, never the manager… 0.02s  
+  ✓ it stops counting a revoked (force-deleted) binding as a grant       0.02s  
+  ✓ it groups bindings by tenant with roles and deduplicated permission… 0.02s  
+  ✓ it recognizes only registered client-guard permission names as scop… 0.02s  
+
+  Tests:    96 passed (260 assertions)
+  Duration: 1.86s
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

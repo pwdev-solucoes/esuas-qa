@@ -1,0 +1,149 @@
+
+   PASS  Tests\Unit\DiagDomainsSeedTest
+  ✓ it semeia exatamente os nove tipos de residencia do 15.11, sem renu… 0.44s  
+  ✓ it semeia cada tipo de residencia com o codigo e o nome exatos da §… 0.02s  
+  ✓ it semeia cada tipo de residencia com o codigo e o nome exatos da §… 0.02s  
+  ✓ it semeia cada tipo de residencia com o codigo e o nome exatos da §… 0.02s  
+  ✓ it semeia cada tipo de residencia com o codigo e o nome exatos da §… 0.02s  
+  ✓ it semeia cada tipo de residencia com o codigo e o nome exatos da §… 0.02s  
+  ✓ it semeia cada tipo de residencia com o codigo e o nome exatos da §… 0.02s  
+  ✓ it semeia cada tipo de residencia com o codigo e o nome exatos da §… 0.02s  
+  ✓ it semeia cada tipo de residencia com o codigo e o nome exatos da §… 0.02s  
+  ✓ it semeia cada tipo de residencia com o codigo e o nome exatos da §… 0.02s  
+  ✓ it semeia exatamente os nove niveis de escolaridade do 15.10, sem r… 0.02s  
+  ✓ it semeia cada nivel de escolaridade com o codigo e o nome exatos d… 0.02s  
+  ✓ it semeia cada nivel de escolaridade com o codigo e o nome exatos d… 0.03s  
+  ✓ it semeia cada nivel de escolaridade com o codigo e o nome exatos d… 0.03s  
+  ✓ it semeia cada nivel de escolaridade com o codigo e o nome exatos d… 0.06s  
+  ✓ it semeia cada nivel de escolaridade com o codigo e o nome exatos d… 0.02s  
+  ✓ it semeia cada nivel de escolaridade com o codigo e o nome exatos d… 0.02s  
+  ✓ it semeia cada nivel de escolaridade com o codigo e o nome exatos d… 0.02s  
+  ✓ it semeia cada nivel de escolaridade com o codigo e o nome exatos d… 0.02s  
+  ✓ it semeia cada nivel de escolaridade com o codigo e o nome exatos d… 0.02s  
+  ✓ it semeia exatamente as cinco situacoes escolares do 15.10, sem ren… 0.02s  
+  ✓ it semeia cada situacao escolar com o codigo e o nome exatos da §4.… 0.02s  
+  ✓ it semeia cada situacao escolar com o codigo e o nome exatos da §4.… 0.02s  
+  ✓ it semeia cada situacao escolar com o codigo e o nome exatos da §4.… 0.04s  
+  ✓ it semeia cada situacao escolar com o codigo e o nome exatos da §4.… 0.02s  
+  ✓ it semeia cada situacao escolar com o codigo e o nome exatos da §4.… 0.02s  
+  ✓ it semeia exatamente os dez tipos de deficiencia do 15.10, sem renu… 0.02s  
+  ✓ it semeia cada tipo de deficiencia com o codigo e o nome exatos da…  0.02s  
+  ✓ it semeia cada tipo de deficiencia com o codigo e o nome exatos da…  0.02s  
+  ✓ it semeia cada tipo de deficiencia com o codigo e o nome exatos da…  0.02s  
+  ✓ it semeia cada tipo de deficiencia com o codigo e o nome exatos da…  0.02s  
+  ✓ it semeia cada tipo de deficiencia com o codigo e o nome exatos da…  0.02s  
+  ✓ it semeia cada tipo de deficiencia com o codigo e o nome exatos da…  0.02s  
+  ✓ it semeia cada tipo de deficiencia com o codigo e o nome exatos da…  0.02s  
+  ✓ it semeia cada tipo de deficiencia com o codigo e o nome exatos da…  0.02s  
+  ✓ it semeia cada tipo de deficiencia com o codigo e o nome exatos da…  0.02s  
+  ✓ it semeia cada tipo de deficiencia com o codigo e o nome exatos da…  0.02s  
+  ✓ it NAO semeia "transtorno ou doenca mental" entre os tipos de defic… 0.02s  
+  ✓ it nao cria coluna is_active nem deleted_at em nenhum dos quatro do… 0.02s  
+  ✓ it nao cria coluna is_active nem deleted_at em nenhum dos quatro do… 0.02s  
+  ✓ it nao cria coluna is_active nem deleted_at em nenhum dos quatro do… 0.01s  
+  ✓ it nao cria coluna is_active nem deleted_at em nenhum dos quatro do… 0.02s  
+  ✓ it nao cria tenant_id em nenhum dos quatro dominios — sao lookups G… 0.02s  
+  ✓ it nao cria tenant_id em nenhum dos quatro dominios — sao lookups G… 0.01s  
+  ✓ it nao cria tenant_id em nenhum dos quatro dominios — sao lookups G… 0.01s  
+  ✓ it nao cria tenant_id em nenhum dos quatro dominios — sao lookups G… 0.03s  
+  ✓ it preserva is_active e deleted_at em education_levels (D02 vale so… 0.02s  
+  ✓ it mapeia cada um dos seis graus do CadUnico para o nivel exato da…  0.04s  
+  ✓ it mapeia cada um dos seis graus do CadUnico para o nivel exato da…  0.02s  
+  ✓ it mapeia cada um dos seis graus do CadUnico para o nivel exato da…  0.02s  
+  ✓ it mapeia cada um dos seis graus do CadUnico para o nivel exato da…  0.02s  
+  ✓ it mapeia cada um dos seis graus do CadUnico para o nivel exato da…  0.02s  
+  ✓ it mapeia cada um dos seis graus do CadUnico para o nivel exato da…  0.02s  
+  ✓ it cobre as SEIS linhas de education_levels, sem nenhuma NULL apos…  0.02s  
+  ✓ it é idempotente: rodar os seeders duas vezes nao duplica item nem…  0.03s  
+  ✓ it deixa os niveis 6..9 do leiaute INALCANCAVEIS pelo de-para — Ach… 0.02s  
+  ✓ it nao inventa correspondencia quando os niveis do leiaute ainda na… 0.02s  
+
+   PASS  Tests\Feature\Api\Manager\DiagDomainsTest
+  ✓ it lista cada dominio com exatamente as opcoes do Manual, nos dois…  0.12s  
+  ✓ it lista cada dominio com exatamente as opcoes do Manual, nos dois…  0.04s  
+  ✓ it lista cada dominio com exatamente as opcoes do Manual, nos dois…  0.04s  
+  ✓ it lista cada dominio com exatamente as opcoes do Manual, nos dois…  0.04s  
+  ✓ it lista cada dominio com exatamente as opcoes do Manual, nos dois…  0.04s  
+  ✓ it lista cada dominio com exatamente as opcoes do Manual, nos dois…  0.04s  
+  ✓ it lista cada dominio com exatamente as opcoes do Manual, nos dois…  0.04s  
+  ✓ it lista cada dominio com exatamente as opcoes do Manual, nos dois…  0.04s  
+  ✓ it abre um item de cada dominio pelo uuid, nos dois guards (CA01/CA… 0.05s  
+  ✓ it abre um item de cada dominio pelo uuid, nos dois guards (CA01/CA… 0.04s  
+  ✓ it abre um item de cada dominio pelo uuid, nos dois guards (CA01/CA… 0.04s  
+  ✓ it abre um item de cada dominio pelo uuid, nos dois guards (CA01/CA… 0.04s  
+  ✓ it abre um item de cada dominio pelo uuid, nos dois guards (CA01/CA… 0.04s  
+  ✓ it abre um item de cada dominio pelo uuid, nos dois guards (CA01/CA… 0.04s  
+  ✓ it abre um item de cada dominio pelo uuid, nos dois guards (CA01/CA… 0.05s  
+  ✓ it abre um item de cada dominio pelo uuid, nos dois guards (CA01/CA… 0.04s  
+  ✓ it apresenta as nove opcoes de tipo de residencia do leiaute 15.11…  0.04s  
+  ✓ it apresenta as dez opcoes de tipo de deficiencia, sem "transtorno…  0.04s  
+  ✓ it responde 405 a POST, PUT, PATCH e DELETE em cada dominio, nos do… 0.06s  
+  ✓ it responde 405 a POST, PUT, PATCH e DELETE em cada dominio, nos do… 0.05s  
+  ✓ it responde 405 a POST, PUT, PATCH e DELETE em cada dominio, nos do… 0.05s  
+  ✓ it responde 405 a POST, PUT, PATCH e DELETE em cada dominio, nos do… 0.05s  
+  ✓ it responde 405 a POST, PUT, PATCH e DELETE em cada dominio, nos do… 0.05s  
+  ✓ it responde 405 a POST, PUT, PATCH e DELETE em cada dominio, nos do… 0.05s  
+  ✓ it responde 405 a POST, PUT, PATCH e DELETE em cada dominio, nos do… 0.05s  
+  ✓ it responde 405 a POST, PUT, PATCH e DELETE em cada dominio, nos do… 0.05s  
+  ✓ it registra SOMENTE verbos de leitura na tabela de rotas de cada do… 0.04s  
+  ✓ it registra SOMENTE verbos de leitura na tabela de rotas de cada do… 0.04s  
+  ✓ it registra SOMENTE verbos de leitura na tabela de rotas de cada do… 0.04s  
+  ✓ it registra SOMENTE verbos de leitura na tabela de rotas de cada do… 0.03s  
+  ✓ it mantem manager.php sem nenhuma rota para os quatro dominios (D03… 0.04s  
+  ✓ it traz o de-para para a escolaridade do leiaute no payload do grau… 0.04s  
+  ✓ it traz o de-para para a escolaridade do leiaute no payload do grau… 0.04s  
+  ✓ it indica no show para qual nivel do leiaute o grau corresponde (CA… 0.04s  
+  ✓ it apresenta null explicito quando o grau nao tem correspondencia (… 0.04s  
+  ✓ it grava o de-para pelo PUT do grau de instrucao e o audita com ant… 0.05s  
+  ✓ it aceita null para desfazer a correspondencia, e audita (CA09/D05)  0.04s  
+  ✓ it recusa 422 um nivel de escolaridade inexistente no de-para (§10)  0.04s  
+  ✓ it mantem a manutencao do de-para exclusiva do guard manager (RN10/… 0.05s  
+
+   PASS  Tests\Feature\Seeders\DiagDomainsDatabaseSeederTest
+  ✓ it semeia os quatro dominios e o de-para completo pelo DatabaseSeed… 7.79s  
+
+  Tests:    97 passed (371 assertions)
+  Duration: 11.82s
+
+
+===================================================================
+ANEXO COMPLEMENTAR - CA05 (pendencia domain_unmapped)
+Comando: pest tests/Feature/Client/AttendanceReportDiagnosisTest.php --filter="de-para|escolaridade|global|pendenc"
+===================================================================
+
+   PASS  Tests\Feature\Client\AttendanceReportDiagnosisTest
+  ✓ it aponta o Painel Global quando o grau de instrucao nao tem de-par… 0.58s  
+  ✓ it nao inventa pendencia de configuracao quando todo grau tem de-pa… 0.08s  
+
+  Tests:    2 passed (5 assertions)
+  Duration: 0.71s
+
+
+===================================================================
+ANEXO COMPLEMENTAR - CA06/CA07/CA08 (sonda HTTP ao vivo na API em execucao)
+===================================================================
+Sonda HTTP ao vivo — API Sail em http://localhost (guard manager e client)
+Data: 17/09/2026 18:02
+
+RECURSO                METODO   HTTP   OBSERVACAO
+------------------------------------------------------------------
+residence-types        POST     405    rota inexistente (CA06/CA07/CA08)
+residence-types        PUT      405    rota inexistente (CA06/CA07/CA08)
+residence-types        PATCH    405    rota inexistente (CA06/CA07/CA08)
+residence-types        DELETE   405    rota inexistente (CA06/CA07/CA08)
+residence-types        GET      401    leitura existe (401 = exige autenticacao, rota presente)
+schooling-levels       POST     405    rota inexistente (CA06/CA07/CA08)
+schooling-levels       PUT      405    rota inexistente (CA06/CA07/CA08)
+schooling-levels       PATCH    405    rota inexistente (CA06/CA07/CA08)
+schooling-levels       DELETE   405    rota inexistente (CA06/CA07/CA08)
+schooling-levels       GET      401    leitura existe (401 = exige autenticacao, rota presente)
+school-situations      POST     405    rota inexistente (CA06/CA07/CA08)
+school-situations      PUT      405    rota inexistente (CA06/CA07/CA08)
+school-situations      PATCH    405    rota inexistente (CA06/CA07/CA08)
+school-situations      DELETE   405    rota inexistente (CA06/CA07/CA08)
+school-situations      GET      401    leitura existe (401 = exige autenticacao, rota presente)
+disability-types       POST     405    rota inexistente (CA06/CA07/CA08)
+disability-types       PUT      405    rota inexistente (CA06/CA07/CA08)
+disability-types       PATCH    405    rota inexistente (CA06/CA07/CA08)
+disability-types       DELETE   405    rota inexistente (CA06/CA07/CA08)
+disability-types       GET      401    leitura existe (401 = exige autenticacao, rota presente)

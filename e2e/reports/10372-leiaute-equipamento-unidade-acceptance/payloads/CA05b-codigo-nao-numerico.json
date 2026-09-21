@@ -1,0 +1,36 @@
+{
+    "cenario": "CA05b — tipo de equipamento com codigo nao numerico (\"XPTO\")",
+    "unidade_uuid": "057af3ec-1cf4-4cd4-9677-a54897ad5c09",
+    "POST /siap-remittances": {
+        "status": 422,
+        "body": {
+            "message": "The SIAP remittance cannot be generated: 1 equipment type linked to the social units has a code outside the SIAP equipment table. The fix is made in the social unit equipment support register, in the Global Administration Panel — contact the platform administrator. Check which ones in the pre-check screen.",
+            "errors": {
+                "social_unit_equipments": [
+                    "The SIAP remittance cannot be generated: 1 equipment type linked to the social units has a code outside the SIAP equipment table. The fix is made in the social unit equipment support register, in the Global Administration Panel — contact the platform administrator. Check which ones in the pre-check screen."
+                ]
+            }
+        }
+    },
+    "GET  /pre-check.blocking": {
+        "can_generate": false,
+        "pendencies": [
+            {
+                "scope": "blocking",
+                "kind": "domain_unmapped",
+                "field_name": "Equipamento",
+                "subject_type": "social_unit",
+                "subject_uuid": "057af3ec-1cf4-4cd4-9677-a54897ad5c09",
+                "affected_count": 1,
+                "message_key": "siap_remittance.pendency.equipment_code_unmapped",
+                "message": "The equipment code \"XPTO\" registered in this unit is not listed in the SIAP equipment table. The fix is made in the social unit equipment support register, in the Global Administration Panel — it is out of the municipality reach: contact the platform administrator. Until then, no remittance can be generated.",
+                "blocks_entire_remittance": true,
+                "affected_layouts": 11,
+                "resolution": {
+                    "resource": "tenant-tce-parameters",
+                    "requires_role": "master"
+                }
+            }
+        ]
+    }
+}

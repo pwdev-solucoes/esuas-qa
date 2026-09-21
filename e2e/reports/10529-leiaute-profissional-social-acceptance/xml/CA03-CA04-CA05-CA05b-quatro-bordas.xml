@@ -1,0 +1,24 @@
+<!-- HU #10529 — CA03/CA04/CA05/CA05b — as QUATRO bordas da RN05 (sobreposicao com 08/2026) numa unica remessa: -->
+<!--   entra  matricula 111001 — lotacao INICIADA em 20/08/2026 (CA03) -->
+<!--   entra  matricula 111002 — lotacao ENCERRADA em 05/08/2026 (CA04) -->
+<!--   fora   matricula 222002 — encerrada em 30/06/2026, antes do mes (CA05) -->
+<!--   fora   matricula 222003 — iniciada em 02/09/2026, depois do mes (CA05b) -->
+<!-- Remessa gerada de verdade; XML extraido do zip. CPF e nome mascarados (RN12). Dados fabricados. -->
+<?xml version="1.0"?>
+<SIAP>
+    <Codigo>004821</Codigo>
+    <Exercicio>2026</Exercicio>
+    <Mes>08</Mes>
+    <ProfissionalSocial>
+        <CPF>914.***.***-70</CPF>
+        <Nome>Antonio C. M.</Nome>
+        <NumeroMDS>1234567890123</NumeroMDS>
+        <Matricula>111001</Matricula>
+    </ProfissionalSocial>
+    <ProfissionalSocial>
+        <CPF>806.***.***-92</CPF>
+        <Nome>Josefa B. T.</Nome>
+        <NumeroMDS>1234567890123</NumeroMDS>
+        <Matricula>111002</Matricula>
+    </ProfissionalSocial>
+</SIAP>

@@ -1,0 +1,165 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — US-SCFV-03",
+    "subtitle": "Épico HU-PRONT-SCFV (fase F4) · Contadores do leiaute 15.8 na apuração — o leiaute fecha por completo",
+    "rows": [
+      [
+        "Gerado em",
+        "09/09/2026"
+      ],
+      [
+        "História",
+        "US-SCFV-03 — Ligar os contadores do leiaute 15.8 à apuração"
+      ],
+      [
+        "Spec",
+        ".planning/specs/US-SCFV-03-contadores-do-scfv-na-apuracao.md"
+      ],
+      [
+        "Branch",
+        "feature/scfv-prontuario-bloco-16"
+      ],
+      [
+        "Commits (api/)",
+        "dee05cf (apuração) · 4f7826b (integração)"
+      ],
+      [
+        "Commits (client/)",
+        "59eec11"
+      ],
+      [
+        "Commits (e2e/)",
+        "f23c679"
+      ],
+      [
+        "Ambiente",
+        "Stack E2E Docker · API em :8090 · client em :4174 · base recém-semeada"
+      ],
+      [
+        "Perfil usado",
+        "Master do município (a tela exige attendance-reports.view)"
+      ],
+      [
+        "Ferramenta",
+        "Playwright (Chromium) + Pest 4"
+      ]
+    ]
+  },
+  "summary": "Dezesseis critérios de aceite. Seis evidenciados no navegador (CA01, CA04, CA05, CA13, CA14 e o zero declarado, com quatro prints — três critérios compartilham a captura geral da tela, cada um com sua própria legenda) e onze cobertos pela suíte automatizada. A suíte fecha com 88 testes e 438 asserções no filtro AttendanceReport|Scfv, sem regressão nas fases anteriores (Participation 176, FollowUp 221, isolamento 93). Os 37 cenários Playwright — cobrindo as seis histórias das fases F3 e F4 — passam contra base recém-semeada. Nenhum critério em falha e nenhuma migration criada. Com esta entrega o leiaute 15.8 fecha por completo — o segundo dos seis leiautes de execução a ficar pronto.",
+  "criteria": [
+    {
+      "id": "CA01",
+      "title": "Contadores de faixa etária",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "scfv03-a-sete-contadores.png"
+      ]
+    },
+    {
+      "id": "CA02",
+      "title": "Famílias contam uma vez",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "CA03",
+      "title": "Grupo do PAIF conta como grupo, mas não nas faixas etárias",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "CA04",
+      "title": "Idosos conta pelo serviço, não pela idade",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "scfv03-b-idosos-pelo-servico.png"
+      ]
+    },
+    {
+      "id": "CA05",
+      "title": "Idoso em SCFV de adultos pode não contar em faixa alguma",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "scfv03-c-idoso-fora-de-faixa.png"
+      ]
+    },
+    {
+      "id": "CA06",
+      "title": "Pessoas com deficiência incluem os grupos do PAIF e do PAEFI",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "CA07",
+      "title": "Idade apurada no último dia do mês",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "CA08",
+      "title": "Pessoa em dois grupos conta uma vez",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "CA09",
+      "title": "Ingresso e desligamento no meio do mês contam",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "CA10",
+      "title": "Desligada no mês anterior não conta",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "CA11",
+      "title": "Participação cancelada não conta",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "CA12",
+      "title": "Ausência de informação de deficiência não vira negativa",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "CA13",
+      "title": "Participação vigente há muito tempo é sinalizada",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "scfv03-a-sete-contadores.png"
+      ]
+    },
+    {
+      "id": "CA14",
+      "title": "O oitavo contador segue vindo da F1",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "scfv03-a-sete-contadores.png"
+      ]
+    },
+    {
+      "id": "CA15",
+      "title": "Operacional vê apenas as suas unidades",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "CA16",
+      "title": "Isolamento entre municípios",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "Extra",
+      "title": "Zero declarado",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "scfv03-e-zero-declarado.png"
+      ]
+    }
+  ]
+}

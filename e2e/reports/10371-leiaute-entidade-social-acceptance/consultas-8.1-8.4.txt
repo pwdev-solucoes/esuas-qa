@@ -1,0 +1,75 @@
+Consultas de apoio §8.1–§8.4 da spec — dimensionamento do impacto da HU #10371
+================================================================================
+Executadas em 13/08/2026 no banco de DESENVOLVIMENTO local (container api-pgsql-1,
+database "esuas"), via: docker exec api-laravel.test-1 php artisan tinker <arquivo>
+
+AVISO — ESTE NÃO É O DIMENSIONAMENTO
+--------------------------------------------------------------------------------
+A base local tem ZERO entidades socioassistenciais cadastradas (e zero unidades),
+em 2 tenants de teste. Os números abaixo apenas confirmam que as consultas rodam e
+que o lookup já expressa a escala do SIAP (códigos 005 Paralisada e 006 Extinta
+presentes após o seeder da etapa 01). Eles NÃO dimensionam nada: nenhuma linha de
+`social_entities` existe para ser contada.
+
+O dimensionamento real — quantas entidades e quantos municípios ficariam
+bloqueados hoje e quantas entidades precisam ser reclassificadas antes da primeira
+remessa — depende de rodar estas mesmas quatro consultas em STAGING (ou em produção,
+em janela de leitura). A §8 da spec já determina isso: "Rodar em staging — as bases
+locais das HUs #10369 e #10370 estavam vazias nas três tentativas". Continua valendo:
+esta é a quarta base local vazia seguida.
+
+O risco #1 da §17 da spec permanece SEM medida: toda entidade em 002 Pendente,
+003 Suspensa ou 004 Inativa passa a IMPEDIR a remessa até ser reclassificada pelo
+município, e nenhuma entidade anterior à #10369 tem o vínculo preenchido. É item
+para o PO decidir antes do deploy.
+
+SAÍDA CRUA
+--------------------------------------------------------------------------------
+{
+    "8.1 entidades que bloqueariam a remessa, por motivo": [],
+    "8.2 municipios impedidos de gerar a remessa": [
+        {
+            "municipios_bloqueados": 0
+        }
+    ],
+    "8.3 distribuicao das situacoes — quantas precisam ser reclassificadas": [
+        {
+            "code": "001",
+            "name": "Ativa",
+            "entidades": 0
+        },
+        {
+            "code": "002",
+            "name": "Pendente",
+            "entidades": 0
+        },
+        {
+            "code": "003",
+            "name": "Suspensa",
+            "entidades": 0
+        },
+        {
+            "code": "004",
+            "name": "Inativa",
+            "entidades": 0
+        },
+        {
+            "code": "005",
+            "name": "Paralisada",
+            "entidades": 0
+        },
+        {
+            "code": "006",
+            "name": "Extinta",
+            "entidades": 0
+        }
+    ],
+    "8.4 enderecos que estouram 255 caracteres": [],
+    "contexto": {
+        "banco": "esuas",
+        "tenants": 2,
+        "social_entities (total)": 0,
+        "social_entities (ativas)": 0,
+        "social_units (ativas)": 0
+    }
+}

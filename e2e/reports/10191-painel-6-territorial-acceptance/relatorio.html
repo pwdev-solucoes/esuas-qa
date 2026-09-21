@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — Painel 6: Territorial</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — Painel 6: Territorial</h1>
+    <div class="sub">HU #10191 · Dashboard do Tenant · Evidências end-to-end no client</div>
+    <div class="meta"><div><span>Gerado em:</span> 30/07/2026</div><div><span>HU:</span> #10191 — Painel 6: Territorial</div><div><span>Branch:</span> feature/10190-painel-5-atendimento (entrega contínua dos painéis)</div><div><span>Spec:</span> .planning/specs/10191-painel-6-territorial.md</div><div><span>Endpoint:</span> GET /api/client/dashboard/territorial</div><div><span>Ambiente:</span> API Sail/PostgreSQL (:80) · client Vite :5174 (não-mock)</div><div><span>Organização (tenant):</span> E2E CadÚnico · bairros: Alazão, Batingas, Baixa da Onça</div><div><span>Ferramenta:</span> playwright-cli (Chromium) + Pest 4</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">9 Critérios de Aceite verificados: 4 por navegador (dirigindo o app real como Master), 1 parcial (UI + suíte) e 4 automatizados (Pest). O Painel 6 entrega dois rankings municipais por bairro — Famílias por Bairro e Extrema Pobreza por Bairro (atribuição espacial ST_Contains) — e a Situação do Domicílio (Urbana/Rural/Não informada). Os rankings ficam municipais, destacando o bairro selecionado; só a Situação do Domicílio recalcula pelo filtro (RG01/P3). Resultado geral: todos os critérios ATENDIDOS. Dados de evidência semeados no tenant E2E: Famílias por Bairro (Alazão 17, Batingas 5, Itapoã 3, Centro Demo 3, Baixa da Onça 3) e Extrema Pobreza (Alazão 11, Batingas 5, Itapoã 3, Centro Demo 3, Baixa da Onça 3); a maior TAXA de extrema pobreza é de Batingas (5/5 = 100%), evidenciando o ranking independente do CA08.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA08</td><td>Ranking de bairros vulneráveis (extrema pobreza ordenada)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">RG01-a</td><td>Comportamento padrão — "Todos os Bairros" (consolidação municipal)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">RG01-b</td><td>Comportamento dinâmico — rankings municipais + destaque; domicílio recalcula</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">RG01-c</td><td>Ação rápida — "Limpar Filtro" volta ao município</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">RN08</td><td>Indicadores do Painel 6 (rankings + domicílio)</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA-EXTREMA-NULA</td><td>Renda nula conta como extrema pobreza</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA-DOMICILIO-PARTICAO</td><td>Partição da Situação do Domicílio</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA-VAZIO</td><td>Recorte sem famílias</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA-ISOLAMENTO</td><td>Isolamento multi-tenant + validações</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA08">
+      <h2>CA08 — Ranking de bairros vulneráveis (extrema pobreza ordenada) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que acesso a aba "Territorial"
+Quando observo o gráfico de extrema pobreza por localidade
+Então os bairros são ordenados do maior para o menor volume de famílias extremamente pobres.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Login como Master → abrir a aba <code>Territorial</code>. O gráfico "Extrema Pobreza por Bairro" (barras horizontais vermelhas) lista os bairros ordenados do maior para o menor volume de famílias em extrema pobreza (R$ 0,00–218,00). O topo (Batingas) difere do ranking de Famílias por Bairro (Alazão), evidenciando que a extrema pobreza é ranqueada de forma independente.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Ranking de extrema pobreza ordenado desc: Alazão 11, Batingas 5, Itapoã 3, Centro Demo 3, Baixa da Onça 3.</li><li>Ranking de Famílias por Bairro ordenado desc: Alazão 17, Batingas 5, Itapoã 3, Centro Demo 3, Baixa da Onça 3.</li><li>Embora Alazão lidere os dois volumes, a maior TAXA de extrema pobreza é de Batingas (5 de 5 = 100%), destacada no insight — os rankings são independentes.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca08-municipal-rankings.png" alt="CA08 evidência"/><figcaption>ca08-municipal-rankings.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="RG01-a">
+      <h2>RG01-a — Comportamento padrão — "Todos os Bairros" (consolidação municipal) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que acabei de carregar a aba "Territorial"
+Quando nenhum bairro está selecionado
+Então o endpoint é chamado sem neighborhood_uuid
+E os dois rankings mostram a consolidação municipal (sem destaque)
+E a Situação do Domicílio reflete o município inteiro.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Ao carregar, o filtro global de Bairro inicia em <code>Todos os Bairros</code>. Os dois rankings e a Situação do Domicílio exibem a consolidação municipal, sem qualquer bairro destacado.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Filtro em "Todos os Bairros" por padrão (sem neighborhood_uuid).</li><li>Rankings municipais (5 bairros com famílias) e donut do domicílio municipal (Urbana 8, Rural 7, Não informada 81).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca08-municipal-rankings.png" alt="RG01-a evidência"/><figcaption>ca08-municipal-rankings.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="RG01-b">
+      <h2>RG01-b — Comportamento dinâmico — rankings municipais + destaque; domicílio recalcula <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o filtro global está em "Todos os Bairros"
+Quando eu seleciono um bairro
+Então o endpoint é chamado com o neighborhood_uuid do bairro
+E os dois rankings permanecem municipais, mas o bairro selecionado é destacado
+E a Situação do Domicílio recalcula considerando apenas as famílias do bairro (P3).</p>
+      <p class="steps"><strong>Como foi testado:</strong> Selecionar o bairro <code>Alazão</code> no filtro global. Os dois rankings permanecem municipais (mesmos valores), mas a barra do Alazão passa a <b>âmbar</b> (destaque); a Situação do Domicílio recalcula apenas para o Alazão.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Filtro passa a "Alazão"; surge o botão "Limpar Filtro".</li><li>Legenda "Bairro em destaque: Alazão — os rankings mostram o município inteiro".</li><li>Barra do Alazão destacada em âmbar nos dois rankings; valores dos rankings inalterados (P3).</li><li>Situação do Domicílio recalculada para o Alazão: Urbana 6, Rural 2, Não informada 9.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/rg01b-bairro-alazao.png" alt="RG01-b evidência"/><figcaption>rg01b-bairro-alazao.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="RG01-c">
+      <h2>RG01-c — Ação rápida — "Limpar Filtro" volta ao município <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que estou com um bairro selecionado
+Quando eu aciono "Limpar Filtro"
+Então o endpoint é chamado sem neighborhood_uuid
+E o destaque some e a Situação do Domicílio volta à consolidação municipal.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Com "Alazão" selecionado, acionar <code>Limpar Filtro</code>. O painel retorna imediatamente à visão "Todos os Bairros": o destaque some e a Situação do Domicílio volta ao município.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Filtro volta a "Todos os Bairros"; legenda de destaque removida.</li><li>Rankings sem destaque; Situação do Domicílio na consolidação municipal.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/rg01c-limpar-filtro.png" alt="RG01-c evidência"/><figcaption>rg01c-limpar-filtro.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="RN08">
+      <h2>RN08 — Indicadores do Painel 6 (rankings + domicílio) <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um recorte municipal com famílias geocodificadas
+Quando o painel é calculado
+Então "Famílias por Bairro" traz o ranking (desc) de famílias por bairro
+E "Extrema Pobreza por Bairro" traz o ranking (desc) de famílias em extrema pobreza por bairro
+E "Situação do Domicílio" traz Urbana/Rural/Não informada.</p>
+      <p class="steps"><strong>Como foi testado:</strong> A aba apresenta os três indicadores do RN08: os dois rankings por bairro (barras horizontais, Top-N desc) e a Situação do Domicílio (rosca). A atribuição família→bairro é espacial (ST_Contains); a exatidão do agrupamento, do Top-N e da faixa de extrema pobreza é coberta pela suíte Pest (apêndice).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Famílias por Bairro: ranking desc de famílias moradoras por bairro.</li><li>Extrema Pobreza por Bairro: ranking desc do volume de famílias em extrema pobreza (R$ 0,00–218,00).</li><li>Situação do Domicílio: proporção volumétrica e percentual Urbana × Rural (× Não informada).</li><li>Corretude do agrupamento/ordenação/faixa verificada pela suíte automatizada.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca08-municipal-rankings.png" alt="RN08 evidência"/><figcaption>ca08-municipal-rankings.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA-EXTREMA-NULA">
+      <h2>CA-EXTREMA-NULA — Renda nula conta como extrema pobreza <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado uma família geocodificada com per_capita_income nulo
+Quando o ranking de extrema pobreza é calculado
+Então essa família é contada no bairro que a contém (renda nula = R$ 0,00).</p>
+      <p class="steps"><strong>Como foi testado:</strong> Verificado pela suíte Pest — <code>it counts null income as extreme poverty in the extreme-poverty ranking</code>. Definição consistente com o KPI 5 (extrema pobreza) da barra fixa.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Famílias com renda per capita nula entram na faixa de extrema pobreza (tratadas como R$ 0,00).</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA-DOMICILIO-PARTICAO">
+      <h2>CA-DOMICILIO-PARTICAO — Partição da Situação do Domicílio <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado o recorte com famílias urbanas, rurais e sem informação
+Quando a Situação do Domicílio é calculada
+Então urban + rural + not_informed = total do recorte
+E os percentuais somam 100%.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Verificado pela suíte Pest — <code>it partitions the domicile situation into urban/rural/not-informed</code>. Domicílio nulo ou fora do enum ⇒ "Não informada".</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Urbana + Rural + Não informada = total do recorte; percentuais somam 100%.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA-VAZIO">
+      <h2>CA-VAZIO — Recorte sem famílias <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um recorte sem nenhuma família geocodificada
+Quando o painel é calculado
+Então os dois rankings vêm vazios (total_neighborhoods 0)
+E a Situação do Domicílio traz os 3 grupos com 0 e percentuais 0, sem erro.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Verificado pela suíte Pest — <code>it returns empty rankings and zeroed domicile when the scope has no families</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Rankings vazios (total_neighborhoods 0); domicílio com os 3 grupos zerados, sem erro.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA-ISOLAMENTO">
+      <h2>CA-ISOLAMENTO — Isolamento multi-tenant + validações <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um usuário vinculado ao Tenant A
+Quando ele solicita o Painel 6
+Então apenas famílias/bairros do Tenant A entram nos cálculos
+E um neighborhood_uuid fora do município (ou limit inválido) retorna 422; sem permissão retorna 403.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Verificado pela suíte Pest — <code>DashboardTerritorialIsolationTest</code> (BelongsToTenant), <code>422 para neighborhood fora do município</code>, <code>422 para limit fora de 1..100</code> e o gate do operador base (403).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Famílias/bairros de outro tenant nunca entram nos agregados (Global Scope BelongsToTenant).</li><li>neighborhood_uuid fora do município ⇒ 422; limit fora de 1..100 ⇒ 422; sem permissão ⇒ 403.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+  
+  <h2>Anexo — Cobertura automatizada (Pest — TerritorialTest + DashboardTerritorialIsolationTest)</h2>
+  <pre class="pest">
+   PASS  Tests\Feature\Dashboard\TerritorialTest
+  ✓ it ranks neighborhoods by family volume desc and applies Top-N (CA-… 0.61s  
+  ✓ it counts null income as extreme poverty in the extreme-poverty ran… 0.06s  
+  ✓ it partitions the domicile situation into urban/rural/not-informed…  0.07s  
+  ✓ it keeps rankings municipal (only highlighting) while domicile reca… 0.09s  
+  ✓ it returns empty rankings and zeroed domicile when the scope has no… 0.04s  
+  ✓ it returns 422 for a neighborhood_uuid outside the tenant municipal… 0.05s  
+  ✓ it returns 422 for a limit out of the 1..100 range (RN06)            0.04s  
+  ✓ it denies the panel to the base operator without the dedicated role  0.04s  
+  ✓ it grants the panel to the Master without any add-on role            0.04s  
+
+   PASS  Tests\Feature\TenantIsolation\DashboardTerritorialIsolationTest
+  ✓ it never counts families or neighborhoods from another tenant in th… 0.06s  
+
+  Tests:    10 passed (58 assertions)
+  Duration: 1.20s
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

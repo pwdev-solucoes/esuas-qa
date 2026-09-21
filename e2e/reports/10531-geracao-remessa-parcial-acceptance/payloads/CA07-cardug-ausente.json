@@ -1,0 +1,13 @@
+{
+    "_cenario": "CA07 — código da Unidade Gestora não informado: 422 apontando os parâmetros TCE/AL da Organização",
+    "response_422": {
+        "message": "The SIAP remittance cannot be generated: provide the managing unit identifier (CARDUG) in the TCE/AL parameters.",
+        "errors": {
+            "cardug_identifier": [
+                "The SIAP remittance cannot be generated: provide the managing unit identifier (CARDUG) in the TCE/AL parameters."
+            ]
+        }
+    },
+    "mensagem_pt_br": "A remessa SIAP não pode ser gerada: informe o identificador da Unidade Gestora (CARDUG) nos parâmetros TCE/AL.",
+    "siap_remittances_count": 0
+}

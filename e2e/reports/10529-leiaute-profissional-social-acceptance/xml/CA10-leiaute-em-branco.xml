@@ -1,0 +1,8 @@
+<!-- HU #10529 — CA10 (RN11) — municipio sem lotacao vigente: o leiaute sai SO com Codigo, Exercicio e Mes (outcome persistido: header_only). Enviar em branco nao e o mesmo que nao enviar. -->
+<!-- Remessa gerada de verdade; XML extraido do zip. Sem dado pessoal neste cenario. -->
+<?xml version="1.0"?>
+<SIAP>
+    <Codigo>004821</Codigo>
+    <Exercicio>2026</Exercicio>
+    <Mes>08</Mes>
+</SIAP>

@@ -1,0 +1,85 @@
+Consultas de apoio §8.1–§8.4 da spec .planning/specs/10372-leiaute-equipamento-unidade.md
+HU #10372 (US-SIAP-05) — leiaute EquipamentoUnidade
+Executado em: 2026-08-13 16:41:24
+Base: PostgreSQL LOCAL de desenvolvimento (container api-pgsql-1, db esuas).
+
+!! RESSALVA OBRIGATORIA — A BASE LOCAL NAO E REPRESENTATIVA !!
+A spec manda rodar EM STAGING (§8, nota). Nao ha acesso a staging nesta execucao.
+Inventario da base local, ANTES de qualquer consulta:
+
+ tenants | social_units | social_unit_equipments | inventarios 
+---------+--------------+------------------------+-------------
+       3 |            0 |                     14 |           0
+(1 row)
+
+Com 0 unidades e 0 linhas de inventario, as consultas §8.2, §8.3 e §8.4 devolvem VAZIO
+por ausencia de dado, e NAO por ausencia de problema. Nenhum numero abaixo pode ser
+lido como dimensionamento do impacto em producao — nem como ausencia dele.
+
+===============================================================================
+§8.1 — Tipos de equipamento com codigo fora da Tabela 35 (o que bloquearia)
+       E *a* consulta desta HU (D04/§17.1): cada linha com municipios_afetados > 0
+       e um conjunto de municipios impedido de prestar contas por dado que so o
+       Super Admin corrige.
+===============================================================================
+ id | code | name | is_active | municipios_afetados | vinculos 
+----+------+------+-----------+---------------------+----------
+(0 rows)
+
+
+Conferencia complementar — os 14 codigos que HA na base local (§3.1 da spec):
+ code |              name              | is_active 
+------+--------------------------------+-----------
+ 001  | Antena Parabólica              | t
+ 002  | Computador Desktop             | t
+ 003  | Computador Portátil            | t
+ 004  | Tablet                         | t
+ 005  | Copiadora                      | t
+ 006  | Impressora                     | t
+ 007  | Impressora Multifuncional      | t
+ 008  | Scanner                        | t
+ 009  | Leitor de DVD / Blu-ray        | t
+ 010  | Aparelho de som                | t
+ 011  | Aparelho de Televisão          | t
+ 012  | Lousa Digital                  | t
+ 013  | Projetor Multimídia (datashow) | t
+ 014  | Veículo Próprio                | t
+(14 rows)
+
+
+===============================================================================
+§8.2 — Inventarios com quantidade em uso maior que a total (informativas), apos consolidacao
+===============================================================================
+ tenant_id | social_unit_id | code | total | em_uso 
+-----------+----------------+------+-------+--------
+(0 rows)
+
+
+===============================================================================
+§8.3 — Quantas linhas a consolidacao economiza (dimensiona a RN02)
+===============================================================================
+ tenant_id | registros_de_inventario | linhas_no_leiaute 
+-----------+-------------------------+-------------------
+(0 rows)
+
+
+===============================================================================
+§8.4 — Vinculos com quantidade zerada (linhas que deixarao de sair)
+===============================================================================
+ tenant_id | vinculos_zerados | zerados_mas_com_uso 
+-----------+------------------+---------------------
+(0 rows)
+
+
+===============================================================================
+LEITURA DO RESULTADO — o que estas consultas provam e o que NAO provam
+===============================================================================
+PROVAM: os 14 tipos semeados na base local estao TODOS dentro de 1..14, item a item,
+        como a §3.1 da spec afirmou. Nenhum deles bloquearia a remessa.
+NAO PROVAM: que producao esteja igual. O risco desta HU nao esta no seed — esta no
+        CRUD do Painel Global, onde o Super Admin cria e edita codigos livremente, e o
+        seeder usa firstOrCreate (nao updateOrCreate), de modo que um codigo alterado
+        a mao NAO e corrigido ao re-semear.
+PENDENCIA PARA O PO (§17.1): a §8.1 PRECISA ser rodada em staging/producao ANTES do
+        deploy. Qualquer linha com municipios_afetados > 0 e um municipio que sera
+        impedido de gerar a remessa por dado que ele nao controla.

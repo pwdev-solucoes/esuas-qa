@@ -1,0 +1,332 @@
+{
+  "hu": "#10373",
+  "user_story": "US-SIAP-06",
+  "epico": "HU-SIAP-AS",
+  "titulo": "Leiaute EstruturaUnidadeSocial — Tabela 36, bloqueio por codigo fora do dominio e fim da omissao silenciosa",
+  "spec": ".planning/specs/10373-leiaute-estrutura-unidade-social.md",
+  "gerado_em": "2026-08-13T17:40:42",
+  "branch": "feature/10373-leiaute-estrutura-unidade-social",
+  "commits": {
+    "api": [
+      "d225b7a"
+    ],
+    "client": "nao tocado (D07)",
+    "admin": "nao tocado (D07)"
+  },
+  "lgpd": "Leiaute sem dado pessoal. Os dois campos sao NumeroMDS da unidade e codigo da estrutura; o subject_uuid das pendencias e de UNIDADE, nao de pessoa. Nenhum PII em qualquer artefato deste dossie — conferido arquivo a arquivo.",
+  "suites": {
+    "api": "php -d memory_limit=1G vendor/bin/pest --filter=Siap — 195 testes, 1007 assercoes, verdes; suite cheia 3348 passed / 26 skipped / 0 failed",
+    "client": "nao aplicavel — client/ nao foi tocado (D07)"
+  },
+  "criterios": [
+    {
+      "id": "CA01",
+      "titulo": "Estruturas das unidades no leiaute (happy path)",
+      "evidencias": [
+        {
+          "arquivo": "xml/CA01-sete-linhas.xml",
+          "presente": true
+        },
+        {
+          "arquivo": "pest-10373.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "CA02",
+      "titulo": "Bloqueio por código fora da Tabela 36 (RN04 — D02)",
+      "evidencias": [
+        {
+          "arquivo": "payloads/CA02-bloqueio-codigo-fora-tabela36.json",
+          "presente": true
+        },
+        {
+          "arquivo": "payloads/mensagens-pt-br.json",
+          "presente": true
+        },
+        {
+          "arquivo": "screenshots/CA02-recusa-da-geracao.png",
+          "presente": true
+        },
+        {
+          "arquivo": "pest-10373.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "CA02b",
+      "titulo": "Código não numérico cai na mesma recusa",
+      "evidencias": [
+        {
+          "arquivo": "payloads/CA02b-codigo-nao-numerico.json",
+          "presente": true
+        },
+        {
+          "arquivo": "pest-10373.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "CA03",
+      "titulo": "Estrutura de item inativado continua na remessa (RN05)",
+      "evidencias": [
+        {
+          "arquivo": "xml/CA03-item-inativado-continua-saindo.xml",
+          "presente": true
+        },
+        {
+          "arquivo": "pest-10373.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "CA03b",
+      "titulo": "Estrutura de perfil escolar informada quando a unidade a possui (RN04b)",
+      "evidencias": [
+        {
+          "arquivo": "xml/CA03b-quadra-de-esportes.xml",
+          "presente": true
+        },
+        {
+          "arquivo": "pest-10373.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "CA03c",
+      "titulo": "Estrutura própria do município bloqueia — e a mensagem oferece AS DUAS saídas (RN08 — D03)",
+      "evidencias": [
+        {
+          "arquivo": "payloads/CA03c-duas-saidas.json",
+          "presente": true
+        },
+        {
+          "arquivo": "payloads/mensagens-pt-br.json",
+          "presente": true
+        },
+        {
+          "arquivo": "screenshots/CA02-CA03c-recusa-e-duas-saidas.png",
+          "presente": true
+        },
+        {
+          "arquivo": "pest-10373.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "CA03d",
+      "titulo": "Estrutura fora da tabela SEM vínculo não gera pendência (D08)",
+      "evidencias": [
+        {
+          "arquivo": "payloads/CA03d-sem-pendencia.json",
+          "presente": true
+        },
+        {
+          "arquivo": "xml/CA03d-remessa-gerada-normalmente.xml",
+          "presente": true
+        },
+        {
+          "arquivo": "pest-10373.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "CA04",
+      "titulo": "Unidade sem estrutura não gera linha",
+      "evidencias": [
+        {
+          "arquivo": "xml/CA04-unidade-sem-estrutura.xml",
+          "presente": true
+        },
+        {
+          "arquivo": "payloads/CA04-sem-pendencia.json",
+          "presente": true
+        },
+        {
+          "arquivo": "pest-10373.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "CA05",
+      "titulo": "Município sem nenhuma estrutura registrada — leiaute em branco (RN07)",
+      "evidencias": [
+        {
+          "arquivo": "xml/CA05-leiaute-em-branco.xml",
+          "presente": true
+        },
+        {
+          "arquivo": "payloads/CA05-header-only.json",
+          "presente": true
+        },
+        {
+          "arquivo": "pest-10373.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "CA06",
+      "titulo": "Isolamento entre municípios (RN09)",
+      "evidencias": [
+        {
+          "arquivo": "xml/CA06-isolamento-entre-municipios.xml",
+          "presente": true
+        },
+        {
+          "arquivo": "pest-10373.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "CA07",
+      "titulo": "A pendência aparece nas duas zonas (D03)",
+      "evidencias": [
+        {
+          "arquivo": "payloads/CA07-duas-zonas.json",
+          "presente": true
+        },
+        {
+          "arquivo": "screenshots/CA07-duas-zonas.png",
+          "presente": true
+        },
+        {
+          "arquivo": "screenshots/CA07-lista-do-leiaute.png",
+          "presente": true
+        },
+        {
+          "arquivo": "pest-10373.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "CA08",
+      "titulo": "O cartão de impedimento aponta o lugar certo — sem atalho (D03)",
+      "evidencias": [
+        {
+          "arquivo": "payloads/CA08-cartao-sem-atalho.json",
+          "presente": true
+        },
+        {
+          "arquivo": "screenshots/CA08-cartao-sem-atalho.png",
+          "presente": true
+        },
+        {
+          "arquivo": "pest-10373.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "RN04d",
+      "titulo": "Nenhuma estrutura vinculada é omitida em silêncio — o coração da HU",
+      "evidencias": [
+        {
+          "arquivo": "pest-10373.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "TOCTOU",
+      "titulo": "O bloqueio é reavaliado dentro do job",
+      "evidencias": [
+        {
+          "arquivo": "pest-10373.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "REGRESSÃO",
+      "titulo": "Os quatro bloqueios anteriores e a pendência informativa continuam como estavam",
+      "evidencias": [
+        {
+          "arquivo": "pest-10373.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "CLIENT",
+      "titulo": "Payload completo da conferência prévia — o que a tela do tenant consome",
+      "evidencias": [
+        {
+          "arquivo": "payloads/pre-check-completo.json",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "§8",
+      "titulo": "Dimensionamento do impacto — consultas §8.1 a §8.3",
+      "evidencias": [
+        {
+          "arquivo": "consultas-8.1-8.3.txt",
+          "presente": true
+        }
+      ]
+    }
+  ],
+  "achados_reportados_nao_corrigidos": [
+    {
+      "id": "ACHADO 1",
+      "titulo": "Falta a redacao propria de estruturas no cartao de impedimento — o fallback generico cobriu, exatamente como projetado",
+      "onde": [
+        "client/src/modules/siap-remittances/components/SiapBlockingIssueCallout.vue:52 (RESOURCES_WITH_COPY)",
+        "client/src/locales/pt-br/siap-remittances.json (preflight.blocking_consequence)"
+      ],
+      "severidade": "baixa — social-unit-structures nao existia como causa de bloqueio quando 97229a9 foi escrito; o fallback entregou texto GENERICO E CORRETO em vez de ESPECIFICO E ERRADO",
+      "encaminhamento": "follow-up de baixo risco no client/ (2 linhas); a D07 proibe tocar client/ nesta HU",
+      "situacao": "SEGUE ABERTO em 18/08/2026: a linha de consequencia do cartao continua sendo o fallback generico. A recaptura mostrou um efeito concreto — a linha de encaminhamento contradiz a segunda saida oferecida pela propria mensagem (desvincular a estrutura, que E do alcance do municipio)."
+    },
+    {
+      "id": "ACHADO 2",
+      "titulo": "SocialUnitStructure USA LogsActivity e audita o code — a lacuna prevista pela §14 nao existe",
+      "onde": [
+        "api/app/Models/SocialUnitStructure.php"
+      ],
+      "severidade": "nenhuma — achado POSITIVO",
+      "encaminhamento": "nada a fazer; a lacuna do SocialUnitEquipment (#10372) segue aberta"
+    },
+    {
+      "id": "ACHADO 3",
+      "titulo": "Quinto leiaute a bloquear — o efeito acumulado dos cinco motivos de recusa nunca foi avaliado com o PO",
+      "onde": [
+        "api/app/Services/Siap/SiapGenerationGuard.php"
+      ],
+      "severidade": "alta — risco de produto, nao de codigo",
+      "encaminhamento": "revisao de conjunto com o PO antes que os 11 leiautes bloqueiem (§17.1)"
+    }
+  ],
+  "duvidas_abertas_do_artefato_do_po": [
+    "RN05 — item inativado continuar saindo NAO foi confirmado com a area de negocio (vale igual para a RN08 da #10372)",
+    "RN04c — a Tabela 36 nao tem item para atendimento individualizado nem para acessibilidade; questao para o TCE-AL",
+    "Estruturas proprias do municipio — a §8.1 responde, mas so em staging; na base local 0 de 0",
+    "Conferencia dos 21 codigos — FEITA (§3.1 da spec + §8.1): o seed esta correto, item a item"
+  ],
+  "ressalva_dimensionamento": "As consultas §8.1–§8.3 foram rodadas na base LOCAL (21 estruturas do seed, 0 vinculos, 1 unidade social). O resultado 0/0/0 significa AUSENCIA DE DADO, nao ausencia de risco. A spec exige staging; repetir antes do deploy.",
+  "atualizado_em": "2026-08-18T05:49:00",
+  "recaptura": {
+    "motivo": "A conferencia previa passou a identificar o registro pelo nome depois da entrega original; as capturas anteriores nao demonstravam a identificacao da unidade pedida pelos CA02 e CA03c.",
+    "telas_refeitas": [
+      "screenshots/CA02-recusa-da-geracao.png",
+      "screenshots/CA02-CA03c-recusa-e-duas-saidas.png",
+      "screenshots/CA07-lista-do-leiaute.png",
+      "screenshots/CA07-duas-zonas.png",
+      "screenshots/CA08-cartao-sem-atalho.png"
+    ],
+    "branch_verificada": "staging (api 22fa09a · client 9dde38c)",
+    "observacao_nova": "A mensagem oferece duas saidas (corrigir o codigo no cadastro global OU desvincular a estrutura da unidade, ao alcance do municipio), mas a linha de encaminhamento afirma que o ajuste nao esta ao alcance do municipio. Contradicao sobre a segunda saida; e a linha generica do ACHADO 1."
+  }
+}

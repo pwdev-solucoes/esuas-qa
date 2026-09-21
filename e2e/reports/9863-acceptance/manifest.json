@@ -1,0 +1,164 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — HU #9863 · Filtragem Combinada e Legenda Dinâmica de Vulnerabilidades",
+    "subtitle": "Sprint 9 · Painel de Georreferenciamento do Tenant · Evidências end-to-end no client",
+    "rows": [
+      ["Gerado em", "05/07/2026"],
+      ["Branch", "sprint9-heatmap-vulnerabilidades (client b9a1b73 + fixes 820320b, f193594, bfafbf7; api/admin intocados)"],
+      ["Spec", ".planning/specs/sprint9/9863-filtragem-vulnerabilidades-legenda.md"],
+      ["Ambiente", "API e2e :8090 (esuas_app / esuas_e2e, PostGIS) · client build preview :4173"],
+      ["Organização (tenant)", "E2E CadÚnico · Fortaleza · IBGE 2304400"],
+      ["Ferramenta", "playwright-cli (Chromium) + Pest 4"]
+    ]
+  },
+  "summary": "6 critérios de aceite (CA03–CA08) evidenciados por navegador, mais 5 regressões de RNs já entregues (RN01, RN03, RN09, RN10 e paridade Leaflet). A entrega é 100% client (zero mudança de backend): a busca avançada passa a renderizar mancha de calor real (OpenLayers Heatmap) com paleta quente (vulnerabilidades RN04) ou fria (alertas de atualização RN05), legenda dinâmica de densidade multi-fonte, setores zerados no estado neutro e gradiente das camadas custom derivado do estilo do Construtor (fecha débito HU-CAM). O ciclo de revisão rendeu 3 correções antes do aceite: carga de setores no mount (CA06 frio), legenda acima dos panes do Leaflet e isolamento do stacking context do mapa. Resultado geral: todos os critérios atendidos. Regressão backend: Pest geo-panel 51 testes / 186 asserções verdes; suíte completa 2722 passed (única falha = MinioConnectivityTest, pré-existente catalogada). Client: ESLint 0 erros, build vue-tsc limpo, Vitest 113 arquivos / 908 testes verdes.",
+  "cas": [
+    {
+      "id": "CA03",
+      "title": "Aplicação de filtro com legenda dinâmica (PO)",
+      "status": "nav",
+      "gherkin": "Dado que estou no painel com o papel autorizado e seleciono a vulnerabilidade \"Ocorrência de Trabalho Infantil\" e aplico, Quando o mapa renderiza as manchas de calor, Então o sistema exibe no canto da tela uma barra de legenda dinâmica explicando os níveis de adensamento representados pelas cores quentes (amarelo/vermelho).",
+      "steps_html": "Login master → <code>/app/georreferenciamento</code> → Busca avançada → marcar <b>Trabalho infantil</b> → Buscar → Aplicar no mapa.",
+      "results": [
+        "Mancha de calor renderizada (sem rótulos numéricos por ponto) sobre o endereço da família com marcação de trabalho infantil.",
+        "Legenda dinâmica no canto inferior-esquerdo do mapa: título \"Busca aplicada — 1 filtro(s)\", barra de gradiente quente (azul→verde→amarelo→laranja→vermelho), extremos \"Baixa densidade\" / \"Alta densidade\" e leitura \"pico: 1 família(s)/ponto\".",
+        "Chip \"Trabalho infantil\" na faixa de filtros ativos."
+      ],
+      "images": ["screenshots/ca03-trabalho-infantil-legenda-quente.png"]
+    },
+    {
+      "id": "CA04",
+      "title": "Cruzamento cumulativo — interseção estrita (PO)",
+      "status": "parc",
+      "gherkin": "Dado que marco \"Extrema Pobreza\" e \"Pessoas com Deficiência\" juntos e aplico, Quando o mapa se atualiza, Então a intensidade máxima de calor destaca estritamente os perímetros onde residem famílias que atendem a ambos os critérios simultaneamente.",
+      "steps_html": "Busca avançada → marcar <b>Extrema pobreza</b> + <b>Pessoas com deficiência</b> → Buscar → Aplicar no mapa. Conferência no banco: 2 famílias satisfazem AMBOS os critérios (interseção AND).",
+      "results": [
+        "Calor projetado SOMENTE nos 2 pontos da interseção (semântica AND estrita do backend — premissa P1 da spec, herdada da HU-GEO-01/RN18).",
+        "Legenda atualizada para \"Busca aplicada — 2 filtro(s)\".",
+        "Resumo analítico coerente: \"Famílias nos filtros ativos: 2\", distribuição por setor \"Setor Fixture 001 - Oeste: 2\" — mesmo conjunto do mapa.",
+        "Cobertura automatizada da interseção AND (todas as combinações de critérios) na suíte Pest do apêndice."
+      ],
+      "images": ["screenshots/ca04-intersecao-pobreza-deficiencia.png", "screenshots/ca04-resumo-por-setor.png"]
+    },
+    {
+      "id": "CA05",
+      "title": "Paleta fria dedicada para alertas de atualização (RN05)",
+      "status": "nav",
+      "gherkin": "Dado que seleciono apenas \"Cadastros Vencidos\" (sem vulnerabilidades), Quando aplico a busca, Então a mancha de calor usa a paleta fria (azuis/roxo) e a legenda exibe o gradiente frio, distinto do quente.",
+      "steps_html": "Busca avançada → desmarcar vulnerabilidades → selecionar <b>Cadastros vencidos (mais de 24 meses)</b> → Buscar → Aplicar no mapa.",
+      "results": [
+        "5 famílias com cadastro vencido projetadas como manchas FRIAS (azul→azul-escuro→roxo), visivelmente distintas das cores quentes da RN04.",
+        "Gradiente da legenda confirmado no DOM: linear-gradient #93c5fd → #3b82f6 → #1e40af → #6d28d9 (constante única de heat-palettes.ts).",
+        "Paleta fria só é ativada quando os critérios efetivos são exclusivamente de atualização cadastral (premissa P2)."
+      ],
+      "images": ["screenshots/ca05-cadastros-vencidos-paleta-fria.png"]
+    },
+    {
+      "id": "CA06",
+      "title": "Estado inicial neutro com setores zerados (RN02/RN07)",
+      "status": "nav",
+      "gherkin": "Dado que abro o painel sem aplicar nenhum filtro, Então o mapa mostra apenas as delimitações do município, sem manchas de calor; o alerta instrutivo está visível e a legenda está oculta; a faixa de resumo lista os setores censitários com contagem zero; e o indicador \"Famílias com Endereço Inconsistente\" mostra o total real do município.",
+      "steps_html": "Abrir <code>/app/georreferenciamento</code> sem interação prévia (o cache de setores agora carrega no mount — correção da revisão) → expandir o Resumo analítico.",
+      "results": [
+        "Mapa limpo com apenas o limite municipal de Fortaleza; nenhuma mancha de calor.",
+        "Alerta instrutivo visível: \"Selecione ao menos uma vulnerabilidade ou alerta para projetar dados no mapa\".",
+        "Legenda de densidade AUSENTE (verificado no DOM: geo-heat-legend inexistente).",
+        "Resumo analítico lista os 3 setores censitários do município com contagem 0 (Setor Fixture 001/002/003).",
+        "Indicador fixo \"Famílias com Endereço Inconsistente: 3\" — total real do município, visível mesmo sem filtros."
+      ],
+      "images": ["screenshots/ca06-estado-neutro-setores-zerados.png", "screenshots/ca06-resumo-setores-zerados.png"]
+    },
+    {
+      "id": "CA07",
+      "title": "Camada custom heatmap honra a paleta configurada (fecha débito HU-CAM)",
+      "status": "nav",
+      "gherkin": "Dado que ligo uma camada publicada do Construtor com representação \"heatmap\" e cor configurada, Quando a camada renderiza, Então o gradiente do calor deriva da cor/paleta da camada (não o default do OpenLayers) e a legenda ganha uma entrada com o nome da camada e seu gradiente.",
+      "steps_html": "Sidebar <b>Camadas</b> → ligar \"Famílias beneficiárias do PBF\" (camada do Construtor, <code>style.color = #163c84</code>).",
+      "results": [
+        "Manchas renderizadas em gradiente clara→#163c84 (interpolação a partir da cor configurada no Construtor), não mais o gradiente default do OpenLayers.",
+        "Gradiente confirmado no DOM: linear-gradient rgb(220,226,237) → rgb(162,177,206) → rgb(104,128,175) → rgb(22,60,132) — último degrau = #163c84 exato.",
+        "Legenda ganha entrada nomeada \"Famílias beneficiárias do PBF\" com o gradiente da camada (legenda multi-fonte, premissa P6).",
+        "Débito de gradiente do dossiê HU-CAM formalmente fechado em e2e/reports/hu-cam-acceptance/debito-gradiente-fechamento.md."
+      ],
+      "images": ["screenshots/ca07-camada-custom-paleta-configurada.png"]
+    },
+    {
+      "id": "CA08",
+      "title": "Isolamento por setor censitário mantém o calor (RN08)",
+      "status": "nav",
+      "gherkin": "Dado que aplico \"Extrema Pobreza\" combinada com um setor censitário específico, Quando a busca é aplicada, Então o mapa executa fly-to no perímetro do setor, o calor aparece apenas dentro do conjunto filtrado pelo setor e a faixa de resumo isola as estatísticas daquele setor.",
+      "steps_html": "Busca avançada → <b>Extrema pobreza</b> + Setor censitário <code>230440005000001 — Setor Fixture 001 - Oeste</code> → Buscar → Aplicar no mapa.",
+      "results": [
+        "Fly-to automático para o bounding box do resultado do setor selecionado.",
+        "Calor restrito às famílias do recorte (4 famílias em extrema pobreza no setor Oeste).",
+        "Resumo analítico isolado: distribuição exibe APENAS \"Setor Fixture 001 - Oeste: 4\", ocultando os demais setores.",
+        "Chips ativos: \"Extrema pobreza\" + \"Setor Fixture 001 - Oeste\"."
+      ],
+      "images": ["screenshots/ca08-setor-flyto-calor.png", "screenshots/ca08-resumo-isolado-setor.png"]
+    },
+    {
+      "id": "RN01",
+      "title": "Regressão — Isolamento multi-tenant terrestre",
+      "status": "parc",
+      "gherkin": "Dado que o mesmo usuário acessa outra organização (tenant) sem município homologado, Quando abre o painel, Então nenhum dado, coordenada ou distribuição de Fortaleza é exibido — cada município enxerga apenas o próprio território.",
+      "steps_html": "Logout → login master → selecionar a organização <b>Saraiva e Ramires</b> (tenant 2, sem município configurado) → abrir o painel.",
+      "results": [
+        "Painel exibe \"Município indisponível para o painel\" e nada é projetado — zero vazamento de dados do tenant 1 (Fortaleza).",
+        "Cobertura automatizada de isolamento (queries tenant-scoped, EnsureTenantScope) na suíte Pest do apêndice."
+      ],
+      "images": ["screenshots/rn01-tenant2-municipio-indisponivel.png"]
+    },
+    {
+      "id": "RN03",
+      "title": "Regressão — Controles de movimentação cartográfica (zoom/pan)",
+      "status": "nav",
+      "gherkin": "Dado que estou no painel, Quando uso os botões de aproximação e distanciamento, Então o mapa aplica zoom in/out; o arrasto (pan) é nativo do engine.",
+      "steps_html": "Toolbar do mapa → <b>Aproximar</b> (2×) → <b>Afastar</b>. Pan por arrasto é gesto nativo do OpenLayers/Leaflet.",
+      "results": [
+        "Zoom in e zoom out funcionais pela toolbar, com a busca aplicada preservada (calor e legenda intactos)."
+      ],
+      "images": ["screenshots/rn03-zoom-in-controles.png", "screenshots/rn03-zoom-out-controles.png"]
+    },
+    {
+      "id": "RN09",
+      "title": "Regressão — Marcadores CRAS/CREAS sobre o calor",
+      "status": "nav",
+      "gherkin": "Dado que a busca está aplicada, Quando ligo a camada \"CRAS e CREAS\" na sidebar, Então os marcadores fixos das unidades aparecem sobre o mapa como referência frente às manchas de calor.",
+      "steps_html": "Sidebar <b>Camadas</b> → ligar <b>CRAS e CREAS</b> com a busca de calor ativa.",
+      "results": [
+        "Marcador (pin) da unidade socioassistencial sobreposto ao mapa junto das manchas de calor e da legenda — referência de alcance dos serviços atuais."
+      ],
+      "images": ["screenshots/rn09-cras-creas-marcadores.png"]
+    },
+    {
+      "id": "RN10",
+      "title": "Regressão — Governança pelo perfil do Profissional",
+      "status": "nav",
+      "gherkin": "Dado um operador sem o papel geo_panel_viewer, Quando acessa o sistema, Então o menu Georreferenciamento não aparece e o acesso direto à rota é bloqueado (403).",
+      "steps_html": "Login como operador (CPF 111***, sem papel add-on) → conferir sidebar → <code>goto /app/georreferenciamento</code>.",
+      "results": [
+        "Menu \"Georreferenciamento\" ausente na sidebar do operador.",
+        "Acesso direto à rota redireciona para a página 403 (acesso negado)."
+      ],
+      "images": ["screenshots/rn10-operador-sem-menu.png", "screenshots/rn10-operador-403.png"]
+    },
+    {
+      "id": "REG-LEAFLET",
+      "title": "Regressão — Paridade mínima no engine Leaflet",
+      "status": "nav",
+      "gherkin": "Dado que a busca está aplicada, Quando troco o provedor para Leaflet, Então o calor degrada para círculos difusos com a cor do último degrau da paleta ativa e a legenda permanece idêntica e visível.",
+      "steps_html": "Toolbar → provedor <b>Leaflet</b> com a busca quente (2 filtros) aplicada. Nota: durante a captura foi detectado e corrigido um defeito de empilhamento (legenda sob os panes do Leaflet) — commits <code>f193594</code> (wrapper z-[1050]) e <code>bfafbf7</code> (<code>isolate</code> no container do mapa, contendo o z localmente). Verificação adicional: abrir a Busca avançada com a legenda visível no Leaflet fora do fullscreen.",
+      "results": [
+        "Engine Leaflet ativo (build-then-swap sem quebra), círculos difusos na cor do último degrau da paleta quente e opacidade proporcional ao peso.",
+        "Legenda dinâmica visível e idêntica sobre o mapa Leaflet (wrapper z-[1050] contido por stacking context local via isolate).",
+        "Modal de busca/exportação segue corretamente ACIMA da legenda fora do fullscreen (hit-test no ponto da legenda retorna o backdrop z-[80] do modal).",
+        "Débitos registrados (aceitos): paridade plena de heatmap no Leaflet permanece aproximação; export PDF indisponível neste engine (herdado da HU-GEO-01); toolbar/sidebar com z-20 sob panes do Leaflet documentado em plan.done.md para ticket."
+      ],
+      "images": ["screenshots/rn-leaflet-paridade-minima.png", "screenshots/reg-modal-sobre-legenda-leaflet.png"]
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Pest, --filter=GeoPanel — 51 testes / 186 asserções; suíte completa 2722 passed, única falha pré-existente catalogada MinioConnectivityTest)",
+    "file": "pest-geo-panel.txt"
+  }
+}

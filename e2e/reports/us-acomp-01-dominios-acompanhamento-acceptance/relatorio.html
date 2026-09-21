@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — US-ACOMP-01</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  section.note { border:1px solid var(--line); border-left:4px solid #b06a00; border-radius:6px; padding:10px 14px; margin:10px 0; background:#fffdf7; font-size:13px; }
+  section.note h3 { margin:0 0 6px; font-size:13.5px; color:#8a5200; }
+  section.note p { margin:6px 0; }
+  section.note ul { margin:6px 0 6px 18px; padding:0; }
+  section.note pre { background:var(--bg); border:1px solid var(--line); border-radius:4px; padding:8px; overflow-x:auto; font-size:11px; white-space:pre-wrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — US-ACOMP-01</h1>
+    <div class="sub">Épico HU-PRONT-ACOMP (fase F3) · Domínios do acompanhamento familiar no Painel de Administração Global</div>
+    <div class="meta"><div><span>Gerado em:</span> 08/09/2026 17:47</div><div><span>História:</span> US-ACOMP-01 — Manter os domínios do acompanhamento no Painel Global</div><div><span>Spec:</span> .planning/specs/US-ACOMP-01-dominios-do-acompanhamento-painel-global.md</div><div><span>Branch:</span> feature/acomp-prontuario-bloco-24 (api/ e admin/), a partir de develop</div><div><span>Commits:</span> 7ceef05 · 3300ae3 · b336587 · 3c8785b · 1a01cec · 7e4150f · dabe881</div><div><span>Ambiente:</span> Stack E2E Docker · API em :8090 · admin (vite preview) em :4173 · base semeada por E2ESeeder</div><div><span>Perfil usado:</span> Super Admin (RoleCode ADMIN, guard manager) — “E2E Super Admin”</div><div><span>Ferramenta:</span> playwright-cli (Chrome) + Pest 4</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">Sete critérios de aceite, todos atendidos. Seis evidenciados no navegador (CA01, CA02, CA03, CA05, CA06 e CA07 — seis prints) e um coberto apenas pela suíte automatizada (CA04). A suíte Pest dos domínios fecha com 43 testes e 235 asserções, e os 8 cenários Playwright de e2e/tests/lookups/follow-up-domains.spec.ts passam contra a mesma stack. O CA06 recebeu, depois da entrega da US-ACOMP-05, o teste que faltava sobre a apuração. Nenhum critério em falha.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA01</td><td>Serviços disponíveis, com o nome por extenso do MDS</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA02</td><td>Vínculo com o tipo de unidade visível na listagem e no detalhe</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA03</td><td>Razões de desligamento com os códigos do instrumento, sem renumeração</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA04</td><td>Município não edita as listas</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA05</td><td>Item em uso não é excluído — a recusa orienta a inativar</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA06</td><td>Item inativado continua no histórico e na apuração</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA07</td><td>Alteração do vínculo auditada, com autor e data</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA01">
+      <h2>CA01 — Serviços disponíveis, com o nome por extenso do MDS <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Administrador no Painel de Administração Global
+Quando eu consultar o cadastro de serviços de acompanhamento
+Então vejo PAIF e PAEFI, com o nome por extenso de cada um.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Autenticado como Super Admin, abrir <code>/app/follow-up-services</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A listagem traz exatamente dois serviços: PAIF e PAEFI.</li><li>Cada linha mostra o nome por extenso do MDS — Serviço de Proteção e Atendimento Integral à Família e Serviço de Proteção e Atendimento Especializado a Famílias e Indivíduos.</li><li>Asserção negativa: a tela não oferece nenhum botão “Novo”, “Criar” ou “Adicionar” — a lista é fechada e a API não publica store.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca01-servicos-listagem.png" alt="CA01 evidência"/><figcaption>ca01-servicos-listagem.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA02">
+      <h2>CA02 — Vínculo com o tipo de unidade visível na listagem e no detalhe <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que estou consultando os serviços
+Quando eu abrir o detalhe de cada um
+Então PAIF consta vinculado ao tipo de unidade CRAS
+E PAEFI consta vinculado ao tipo CREAS.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Na listagem, conferir a coluna de tipo de unidade; abrir <b>Editar</b> no PAIF para ver o campo no detalhe.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Na listagem: PAIF → CRAS e PAEFI → CREAS.</li><li>No detalhe, o campo Unidade que oferta traz “CRAS — Centro de Referência de Assistência Social”.</li><li>O texto de apoio do campo declara a regra e avisa que trocar o vínculo muda o que os municípios conseguem registrar, e que a alteração fica na trilha.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca02-servico-detalhe-vinculo-cras.png" alt="CA02 evidência"/><figcaption>ca02-servico-detalhe-vinculo-cras.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA03">
+      <h2>CA03 — Razões de desligamento com os códigos do instrumento, sem renumeração <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que estou consultando o cadastro de razões de desligamento
+Quando eu abrir a lista
+Então vejo as quatro razões, com os códigos 1 a 4 do instrumento
+E os códigos não foram renumerados.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Abrir <code>/app/follow-up-exit-reasons</code> e extrair a coluna de código da tabela.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Quatro razões listadas, na ordem do código: ["1","2","3","4"].</li><li>Os códigos do instrumento foram preservados — nenhum foi renumerado.</li><li>A coluna de coerência mostra “Incoerente com progresso” apenas no código 2 (Evasão ou recusa da Família) — a regra que a US-ACOMP-03 vai consumir.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca03-razoes-codigos-1-a-4.png" alt="CA03 evidência"/><figcaption>ca03-razoes-codigos-1-a-4.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA04">
+      <h2>CA04 — Município não edita as listas <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Master no Painel do Tenant
+Quando eu procurar onde alterar serviços ou razões de desligamento
+Então a ação não existe para mim.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Coberto pela suíte Pest — ver apêndice. Não há evidência de navegador porque o critério é a <b>ausência</b> de uma rota no guard <code>client</code>, e o Painel do Tenant não tem tela para estes cadastros.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>As rotas de escrita vivem sob auth:manager: um token do guard client responde 401, não 404 — o 404 do padrão multi-tenant vale para registro de outra organização, não para guard errado.</li><li>A leitura continua respondendo 200 via shared.php, porque o tenant precisa da lista para os selects da US-ACOMP-02 e da US-ACOMP-03.</li><li>Nenhum papel do guard client carrega permissão de escrita: os dois recursos entraram em PermissionRegistry::CLIENT_READ_ONLY_RESOURCES.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA05">
+      <h2>CA05 — Item em uso não é excluído — a recusa orienta a inativar <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que a razão “Evasão ou recusa da Família” já foi usada em desligamentos
+Quando eu tentar excluí-la
+Então a exclusão é recusada
+E o sistema indica que ela pode ser inativada.</p>
+      <p class="steps"><strong>Como foi testado:</strong> No menu de ações de um serviço, acionar <b>Excluir</b> e observar simultaneamente a resposta HTTP e o que a tela mostra.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O DELETE responde 422 Unprocessable Content.</li><li>A tela declara: “Este serviço faz parte do bloco 24 do instrumento Prontuário SUAS e não pode ser excluído. Ele pode ser inativado, deixando de ser oferecido em novos acompanhamentos.”</li><li>O diálogo ainda oferece o caminho correto como ação — botão Inativar serviço —, em vez de apenas negar.</li><li>Nesta fase o motivo é *_layout_bound / *_instrument_bound; o ramo *_in_use passa a valer quando a US-ACOMP-02 criar a tabela consumidora.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca05-servico-exclusao-recusada.png" alt="CA05 evidência"/><figcaption>ca05-servico-exclusao-recusada.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA06">
+      <h2>CA06 — Item inativado continua no histórico e na apuração <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que inativei uma razão já usada
+Quando eu consultar os desligamentos registrados com ela
+Então continuam listados com essa razão
+E continuam contando no período em que ocorreram.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Inativar a razão de código 4 e reconferir a listagem.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Após a inativação, os quatro códigos seguem listados: ["1","2","3","4"] — o item não some do histórico.</li><li>O status passa a Inativa, retirando-o da oferta em registros novos.</li><li>A segunda metade do critério — “continuam contando no período” — agora está evidenciada: a apuração da US-ACOMP-05 foi entregue e a Q5 do leiaute 15.6 não junta is_active de nenhum lookup. O teste conta o mes do desligamento mesmo apos a razao e o servico serem inativados registra um desligamento em 05/08/2026, inativa a razão e o serviço depois do fato, e confirma que agosto/2026 segue contando a família.</li><li>Quem recusa lookup inativo é a ESCRITA, nunca a leitura da apuração — a mesma assimetria já firmada na RN12 da fase F1 e na RN11 da fase F2.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca06-razao-inativada-continua-listada.png" alt="CA06 evidência"/><figcaption>ca06-razao-inativada-continua-listada.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA07">
+      <h2>CA07 — Alteração do vínculo auditada, com autor e data <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que alterei o tipo de unidade vinculado a um serviço
+Quando eu consultar a trilha de auditoria
+Então a alteração consta, com autor e data.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Editar o PAIF trocando <b>Unidade que oferta</b> de CRAS para CREAS, salvar, e abrir <b>Ver histórico</b>. A alteração foi revertida após a captura.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O PATCH responde 200 e o banco confirma a troca.</li><li>A trilha registra: Alterado · 08/09/2026, 17:46 · E2E Super Admin · Unidade que oferta: CRAS — Centro de Referência de Assistência Social → CREAS — Centro de Referência Especializado de Assistência Social.</li><li>Autor, data e o antes/depois do vínculo — que é o evento mais sensível da história, porque muda o que os municípios conseguem registrar.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca07-trilha-troca-de-vinculo.png" alt="CA07 evidência"/><figcaption>ca07-trilha-troca-de-vinculo.png</figcaption></figure></div>
+    </section>
+  
+  <h2>Observações e ressalvas</h2>
+  <section class="note"><h3>O que este dossiê não prova</h3><p>O ramo <code>*_in_use</code> do <b>CA05</b> continua sem exercício em produção <i>por decisão declarada</i>: os dois serviços de uso nascem com a lista de consumidores vazia (<code>CONSUMERS = []</code>), e é a US-ACOMP-02/03 que vai registrá-los. Hoje a exclusão já é recusada — pelo motivo <code>*_instrument_bound</code>, que vale para todo item do bloco 24 —, então o desfecho do critério (recusa + orientação a inativar) se verifica; o que não se verifica é o caminho específico do uso registrado. Está declarado, não escondido.</p><p>A ressalva que este dossiê trazia sobre o <b>CA06</b> foi fechada: a apuração da <b>US-ACOMP-05</b> existe e o critério passou a ter teste próprio (ver o anexo).</p></section><section class="note"><h3>Divergências entre a spec e o código real, já corrigidas na spec</h3><p>Três nomes da especificação não sobreviveram ao molde real do projeto e foram corrigidos: a permissão da trilha é <code>view-activity</code> (não <code>.activity</code>, que é o nome da <i>rota</i>); um único <code>bulk-update</code> cobre ativar e inativar em massa; e o guard <code>client</code> responde <b>401</b> nas rotas de escrita, não 404. São <b>14 permissões</b> no total (7 por recurso), não 16.</p></section><section class="note"><h3>Arquivos que o plano não previa e a execução exigiu</h3><p>Três arquivos precisaram ser tocados além do previsto, todos por razões de segurança ou de harness: <code>PermissionRegistry</code> (sem a entrada em <code>CLIENT_READ_ONLY_RESOURCES</code>, o Operacional do Tenant herdaria a escrita dos dois cadastros); <code>RoleSeeder</code> (sem ela o Operacional Global ficava com zero permissões e tomava 403 no GET); e <code>E2ESeeder</code> (sem ela as telas abririam vazias no harness e os cenários E2E cairiam todos em <i>skip</i>).</p></section><section class="note"><h3>Débitos técnicos declarados</h3><ul><li>Teste do <code>CardGrid</code> do módulo de serviços — nunca iniciado.</li><li>Asserção da mensagem de validação da sigla — removida para destravar o gate; diagnosticada depois (a mensagem só renderiza após interação, não ao montar o campo já vazio).</li></ul></section>
+  
+  <h2>Anexo — Cobertura automatizada (Pest 4) — 43 testes e 235 asserções dos domínios, mais o teste da apuração que fecha o CA06</h2>
+  <pre class="pest">
+   PASS  Tests\Unit\FollowUpUsageServiceTest
+  ✓ it nasce sem consumidores declarados nos dois servicos (a US-ACOMP-… 1.72s  
+  ✓ it sem consumidores, nenhum servico esta em uso — a recusa sai como… 0.05s  
+  ✓ it sem consumidores, nenhuma razao esta em uso — a recusa sai como…  0.02s  
+  ✓ it reconhece o servico referenciado por um consumidor registrado     0.02s  
+  ✓ it reconhece a razao referenciada por um consumidor registrado       0.02s  
+  ✓ it ignora consumidor cuja tabela ainda nao existe, sem estourar      0.03s  
+  ✓ it devolve lista vazia quando nenhum uuid e informado                0.02s  
+
+   PASS  Tests\Feature\Manager\FollowUpExitReasonTest
+  ✓ it lista exatamente as quatro razoes com os codigos do instrumento,… 0.07s  
+  ✓ it nunca expoe o id no payload da razao                              0.03s  
+  ✓ it marca a incoerencia com progresso significativo apenas na razao…  0.03s  
+  ✓ it nasce com requires_description inerte nas quatro razoes           0.03s  
+  ✓ it nao expoe rota de criacao de uma quinta razao                     0.03s  
+  ✓ it colhe as sete abilities das rotas da razao e nao cria store       0.05s  
+  ✓ it nao oferece escrita da razao ao guard client, mas mantem a leitu… 0.03s  
+  ✓ it recusa a exclusao de razao sem uso com o motivo de vinculo ao in… 0.03s  
+  ✓ it recusa a exclusao da razao ja usada em um desligamento            0.03s  
+  ✓ it recusa a exclusao em massa de razoes item a item, sem excluir na… 0.04s  
+  ✓ it mantem a razao inativada na leitura e no historico, tirando-a so… 0.08s  
+  ✓ it atualiza a razao e audita a alteracao com autor, valor antigo e…  0.03s  
+  ✓ it recusa renumerar uma razao para um codigo ja ocupado              0.03s  
+  ✓ it bloqueia quem nao tem a permissao de escrita da razao             0.03s  
+  ✓ it nao tem tenant_id nem BelongsToTenant na razao                    0.02s  
+  ✓ it roda o seeder de razoes duas vezes sem duplicar nem desfazer a e… 0.02s  
+
+   PASS  Tests\Feature\Manager\FollowUpServiceTest
+  ✓ it lista exatamente os dois servicos do bloco 24, com code e nome p… 0.04s  
+  ✓ it nunca expoe o id no payload do servico                            0.03s  
+  ✓ it traz o tipo de unidade que oferta cada servico, resolvido por co… 0.03s  
+  ✓ it filtra os servicos ofertados por um tipo de unidade (predicado d… 0.03s  
+  ✓ it nao expoe rota de criacao de um terceiro servico                  0.03s  
+  ✓ it colhe as sete abilities das rotas do servico e nao cria store     0.03s  
+  ✓ it nao oferece escrita ao guard client, mas mantem a leitura via sh… 0.04s  
+  ✓ it recusa a exclusao de servico sem uso com o motivo de vinculo ao…  0.03s  
+  ✓ it recusa a exclusao de servico em uso com o motivo de uso registra… 0.03s  
+  ✓ it recusa a exclusao em massa item a item, sem excluir nada          0.03s  
+  ✓ it atualiza o nome do servico sem tocar no code normativo            0.03s  
+  ✓ it recusa desvincular o servico do tipo de unidade (coluna NOT NULL… 0.03s  
+  ✓ it recusa dois servicos com o mesmo code                             0.04s  
+  ✓ it inativa e reativa servicos em massa sem removê-los da leitura     0.03s  
+  ✓ it audita a troca do tipo de unidade com autor, valor antigo e novo  0.04s  
+  ✓ it bloqueia quem nao tem a permissao de escrita do servico           0.04s  
+  ✓ it da ao ADMIN as sete permissoes e ao ADMIN_OPERADOR apenas leitur… 0.83s  
+  ✓ it nao da a nenhum papel do guard client permissao de escrita dos d… 0.96s  
+  ✓ it nao tem tenant_id nem BelongsToTenant no servico                  0.03s  
+  ✓ it roda o seeder de servicos duas vezes sem duplicar nem desfazer a… 0.03s  
+
+  Tests:    43 passed (235 assertions)
+  Duration: 5.33s
+
+
+
+────────────────────────────────────────────────────────────────────────
+Complemento do CA06 — a apuração ignora `is_active` dos lookups
+(US-ACOMP-05 · FollowUpReportService, Q5 do leiaute 15.6)
+────────────────────────────────────────────────────────────────────────
+php vendor/bin/pest tests/Feature/Client/FollowUpReportServiceTest.php --filter="inativados"
+
+   PASS  Tests\Feature\Client\FollowUpReportServiceTest
+  ✓ it conta o mes do desligamento mesmo apos a razao e o servico serem… 0.32s  
+
+  Tests:    1 passed (2 assertions)
+  Duration: 0.38s
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

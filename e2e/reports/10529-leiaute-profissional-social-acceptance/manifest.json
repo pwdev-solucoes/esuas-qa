@@ -1,0 +1,363 @@
+{
+  "hu": "#10529",
+  "user_story": "US-SIAP-07",
+  "epico": "HU-SIAP-AS",
+  "titulo": "Leiaute ProfissionalSocial — a equipe de cada unidade, o bloqueio de matricula/CPF e o fim de mais uma omissao silenciosa",
+  "spec": ".planning/specs/10529-leiaute-profissional-social.md",
+  "gerado_em": "2026-08-14T12:35:00",
+  "atualizado_em": "2026-08-14T13:05:00 — capturas de CA08, CA09 e CA12 anexadas; ACHADO 1 corrigido pelo que a captura mostrou | 2026-08-18T06:03 — capturas de CA08 e CA09 refeitas contra a staging; ACHADO 1 CORRIGIDO",
+  "branch": "feature/10529-leiaute-profissional-social",
+  "commits": {
+    "api": [
+      "f5b9fda",
+      "dd4ece1"
+    ],
+    "client": "nao tocado (D10)",
+    "admin": "nao tocado (D10)"
+  },
+  "lgpd": {
+    "natureza": "UNICO leiaute do epico que carrega dado pessoal: o ProfissionalSocial.xml traz CPF e nome completo de servidores por exigencia do Manual (item 15.5). Este dossie fica versionado no repositorio, entao o tratamento e diferente de todos os anteriores.",
+    "mascaramento_aplicado": true,
+    "criterio_de_mascaramento": "CPF mascarado como 390.***.***-05 (3 primeiros + 2 ultimos digitos) e nome como 'Maria S. L.' (primeiro nome + iniciais), preservando o formato para os criterios continuarem legiveis. Aplicado a TODO artefato — XML, payloads, relatorio e PDF — ANTES de tocar o disco (a rotina de gravacao do harness recusava qualquer conteudo com CPF integro). O mascaramento e no ARTEFATO, nao na geracao: o sistema nao muda de comportamento para o dossie, e o Pest prova os formatos reais (CPF com 11 digitos, regex por linha).",
+    "dados": "FABRICADOS — CPFs validos porem ficticios (gerados por algoritmo de digito verificador) e nomes inventados; nenhuma copia de base real. Os payloads da conferencia nao carregam PII por desenho (RN15) — o CA13 e exatamente essa prova, feita por busca literal sobre a resposta CRUA antes de qualquer mascara.",
+    "verificacao": "Varredura automatica na gravacao de cada artefato + varredura final do dossie (grep de CPFs de 11 digitos e dos nomes fabricados) — nenhuma ocorrencia sem mascara.",
+    "screenshots": "As 3 capturas (CA08 x2, CA09/CA12) foram conferidas VISUALMENTE, uma a uma, antes do commit: nenhum CPF e nenhum nome de pessoa em tela — apenas contagens e mensagens sem sujeito, vindas de dados fabricados. Gate de bloqueio do commit, nao observacao. | ATUALIZADO 18/08/2026: com a conferencia previa passando a nomear o registro pendente, a captura do CA08 passa a exibir um nome de profissional em tela. O nome e FABRICADO (\"E2E Operador CadUnico\", usuario de teste do ambiente) e nenhum CPF aparece em tela. A captura do CA09 segue sem sujeito, porque o aviso da Folha de Pagamento fala da remessa e nao de um registro."
+  },
+  "suites": {
+    "api": "php -d memory_limit=1G vendor/bin/pest --filter=Siap — 222 testes, 1216 assercoes, verdes (pest-10529.txt); suite cheia 3375 passed / 26 skipped / 0 failed",
+    "client": "nao aplicavel — client/ nao foi tocado (D10)"
+  },
+  "criterios": [
+    {
+      "id": "CA01",
+      "titulo": "Profissionais lotados no leiaute (happy path) — 5 linhas com os 4 campos",
+      "evidencias": [
+        {
+          "arquivo": "xml/CA01-cinco-linhas.xml",
+          "presente": true
+        },
+        {
+          "arquivo": "pest-10529.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "CA02",
+      "titulo": "Profissional lotado em duas unidades gera duas linhas — MDS de cada unidade, mesma matricula",
+      "evidencias": [
+        {
+          "arquivo": "xml/CA02-duas-unidades-mesma-matricula.xml",
+          "presente": true
+        },
+        {
+          "arquivo": "pest-10529.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "CA03",
+      "titulo": "Lotacao iniciada no meio do mes consta (RN05/D08)",
+      "evidencias": [
+        {
+          "arquivo": "xml/CA03-CA04-CA05-CA05b-quatro-bordas.xml",
+          "presente": true
+        },
+        {
+          "arquivo": "pest-10529.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "CA04",
+      "titulo": "Lotacao encerrada no meio do mes consta (RN05/D08)",
+      "evidencias": [
+        {
+          "arquivo": "xml/CA03-CA04-CA05-CA05b-quatro-bordas.xml",
+          "presente": true
+        },
+        {
+          "arquivo": "pest-10529.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "CA05",
+      "titulo": "Lotacao encerrada antes do mes NAO consta",
+      "evidencias": [
+        {
+          "arquivo": "xml/CA03-CA04-CA05-CA05b-quatro-bordas.xml",
+          "presente": true
+        },
+        {
+          "arquivo": "pest-10529.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "CA05b",
+      "titulo": "Lotacao iniciada depois do mes NAO consta",
+      "evidencias": [
+        {
+          "arquivo": "xml/CA03-CA04-CA05-CA05b-quatro-bordas.xml",
+          "presente": true
+        },
+        {
+          "arquivo": "pest-10529.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "CA06",
+      "titulo": "Profissional inativado depois do mes de referencia consta (RN06/D09) — soft delete filtra (CA06b)",
+      "evidencias": [
+        {
+          "arquivo": "xml/CA06-inativado-depois-do-mes.xml",
+          "presente": true
+        },
+        {
+          "arquivo": "pest-10529.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "CA07",
+      "titulo": "Profissional sem lotacao nao consta e nao gera pendencia (RN09)",
+      "evidencias": [
+        {
+          "arquivo": "xml/CA07-sem-lotacao-fora.xml",
+          "presente": true
+        },
+        {
+          "arquivo": "payloads/CA07-sem-pendencia.json",
+          "presente": true
+        },
+        {
+          "arquivo": "pest-10529.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "CA08",
+      "titulo": "Bloqueio por profissional sem matricula — a primeira recusa resolvivel pelo proprio municipio",
+      "evidencias": [
+        {
+          "arquivo": "payloads/CA08-recusa-matricula-vazia.json",
+          "presente": true
+        },
+        {
+          "arquivo": "payloads/mensagens-pt-br.json",
+          "presente": true
+        },
+        {
+          "arquivo": "screenshots/CA08-recusa-da-geracao-apos-correcao.png",
+          "presente": true,
+          "mascaramento": "conferida visualmente — nenhum CPF nem nome em tela (RN12); dados fabricados"
+        },
+        {
+          "arquivo": "screenshots/CA08-impedimento-matricula.png",
+          "presente": true,
+          "mascaramento": "conferida visualmente — nenhum CPF nem nome em tela (RN12); dados fabricados. A linha de resolucao do cartao exibe o texto do CARDUG — ver ACHADO 1"
+        },
+        {
+          "arquivo": "pest-10529.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "CA08b",
+      "titulo": "Matricula fora do formato bloqueia e NUNCA e sanitizada nem truncada (D04/D05)",
+      "evidencias": [
+        {
+          "arquivo": "payloads/CA08b-recusa-matricula-alfanumerica.json",
+          "presente": true
+        },
+        {
+          "arquivo": "xml/D05-matricula-literal.xml",
+          "presente": true
+        },
+        {
+          "arquivo": "pest-10529.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "CA08c",
+      "titulo": "Bloqueio por CPF ausente ou invalido (D04)",
+      "evidencias": [
+        {
+          "arquivo": "payloads/CA08c-recusa-cpf-ausente.json",
+          "presente": true
+        },
+        {
+          "arquivo": "pest-10529.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "CA09",
+      "titulo": "Aviso informativo sobre a remessa de Folha de Pagamento (D07/RN08) — primeira pendencia sem sujeito",
+      "evidencias": [
+        {
+          "arquivo": "payloads/CA09-informativa-folha.json",
+          "presente": true
+        },
+        {
+          "arquivo": "screenshots/CA09-CA12-zona-informativa.png",
+          "presente": true,
+          "mascaramento": "conferida visualmente — nenhum CPF nem nome em tela (RN12); dados fabricados"
+        },
+        {
+          "arquivo": "pest-10529.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "CA09b",
+      "titulo": "Sem linhas, sem aviso",
+      "evidencias": [
+        {
+          "arquivo": "payloads/CA09b-sem-linhas-sem-aviso.json",
+          "presente": true
+        },
+        {
+          "arquivo": "pest-10529.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "CA10",
+      "titulo": "Municipio sem profissional lotado — leiaute so com cabecalho (RN11)",
+      "evidencias": [
+        {
+          "arquivo": "xml/CA10-leiaute-em-branco.xml",
+          "presente": true
+        },
+        {
+          "arquivo": "pest-10529.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "CA11",
+      "titulo": "Isolamento entre municipios (RN14)",
+      "evidencias": [
+        {
+          "arquivo": "xml/CA11-isolamento-entre-municipios.xml",
+          "presente": true
+        },
+        {
+          "arquivo": "pest-10529.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "CA12",
+      "titulo": "Aviso do cadastro paralelo com a contagem, sem CPF nem nome (D06/RN13)",
+      "evidencias": [
+        {
+          "arquivo": "payloads/CA12-cadastro-paralelo.json",
+          "presente": true
+        },
+        {
+          "arquivo": "screenshots/CA09-CA12-zona-informativa.png",
+          "presente": true,
+          "mascaramento": "conferida visualmente — o aviso exibe APENAS a contagem (3), nenhum CPF nem nome (RN12/D06); dados fabricados"
+        },
+        {
+          "arquivo": "pest-10529.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "CA13",
+      "titulo": "A pendencia nao carrega PII (RN15) — payload completo do pre-check, evidencia de primeira classe",
+      "evidencias": [
+        {
+          "arquivo": "payloads/CA13-pre-check-completo-sem-pii.json",
+          "presente": true
+        },
+        {
+          "arquivo": "pest-10529.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "TOCTOU",
+      "titulo": "O bloqueio e reavaliado dentro do job",
+      "evidencias": [
+        {
+          "arquivo": "pest-10529.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "REGRESSAO",
+      "titulo": "Os cinco bloqueios anteriores e as informativas continuam como estavam; o profissional entra por ULTIMO na ordem do guard",
+      "evidencias": [
+        {
+          "arquivo": "pest-10529.txt",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": "§8",
+      "titulo": "Dimensionamento do impacto — consultas §8.1 a §8.3",
+      "evidencias": [
+        {
+          "arquivo": "consultas-8.1-8.3.txt",
+          "presente": true
+        }
+      ]
+    }
+  ],
+  "achados_reportados_nao_corrigidos": [
+    {
+      "id": "ACHADO 1",
+      "titulo": "O cartao de impedimento exibe a linha de resolucao do CARDUG para a pendencia de profissionais — texto de OUTRA pendencia, NAO o fallback generico que o planejamento previa",
+      "evidencia": "screenshots/CA08-impedimento-matricula.png e CA08-recusa-da-geracao.png — a ultima linha do cartao vermelho diz 'Somente o Master da organizacao pode informar este codigo. Solicite a correcao nos Parametros TCE/AL.', contradizendo a propria mensagem da pendencia ('esta ao alcance do proprio municipio') e apontando para a tela errada",
+      "causa": "verificada por leitura (read-only): em SiapBlockingIssueCallout.vue, tenant-professionals nao tem rota em ROUTES -> target null -> canFollow false; o template cai no ramo v-else-if scope==='tenant', que renderiza a chave i18n blocking_ask_master (locales/pt-br/siap-remittances.json:53). A redacao dessa chave e ESPECIFICA do CARDUG (escrita quando ele era o unico bloqueio de escopo tenant, requires_role master) — o ramo tenant-sem-rota nao tem fallback neutro, ele reusa a copia do CARDUG para qualquer recurso tenant novo",
+      "onde": [
+        "client/src/modules/siap-remittances/components/SiapBlockingIssueCallout.vue (ROUTES + ramo v-else-if scope tenant)",
+        "client/src/locales/pt-br/siap-remittances.json (blocking_ask_master)",
+        "api/app/Http/Controllers/Api/Client/SiapRemittancePreCheckController.php (resolutionFor — scope tenant, resource tenant-professionals)"
+      ],
+      "severidade": "maior que a prevista no planejamento — nao e ausencia de atalho nem fallback generico aceitavel: e ORIENTACAO ERRADA ao operador (manda falar com o Master e ir aos Parametros TCE/AL quando a correcao e no cadastro de Profissionais Municipais, ao alcance dele). Mesma classe de defeito que o proprio componente documenta ter corrigido na #10372, reintroduzida por outra porta",
+      "encaminhamento": "follow-up no client/ (a D10 proibe corrigir nesta HU): (1) rota+redacao proprias de tenant-professionals; (2) tornar neutro o texto do ramo tenant-sem-rota, ou condiciona-lo a requires_role, para o proximo recurso tenant nao herdar de novo a copia do CARDUG",
+      "situacao": "CORRIGIDO — confirmado na recaptura de 18/08/2026. O cartao passou a orientar a correcao no cadastro de Profissionais Municipais, do proprio municipio, e o atalho \"Abrir o cadastro do profissional\" aponta para a ficha correta. As duas pontas (texto e destino) foram endereçadas."
+    }
+  ],
+  "duvidas_abertas_do_artefato_do_po": [
+    "RN05 — o criterio temporal (sobreposicao com o mes) e INFERENCIA desta cadeia de HUs; pendente de confirmacao com o TCE-AL. Se o Tribunal esperar a posicao de um dia especifico, CA03-CA05 mudam. Referencias 13/14 valem como a posicao de dezembro (decisao local da etapa 01, documentada no referenceWindow())",
+    "Profissional terceirizado ou de entidade conveniada nao tem matricula municipal — hoje nao e cadastrado em INV-048 e nao aparece; se estiver em INV-050, a informativa do CA12 da o unico sinal. Decisao de produto pendente",
+    "O debito dos dois cadastros de profissionais (INV-048 x INV-050) deixa de ser invisivel com a D06, mas nao deixa de existir — o tamanho real so aparece com a §8.3 em staging; se for grande, migrar INV-050 -> INV-048 e HU propria e urgente"
+  ],
+  "ressalva_dimensionamento": "As consultas §8.1-§8.3 foram rodadas na base LOCAL (tenant_professionals=0, social_tenant_professional_assignments=0, social_professionals=0): as tres devolveram 0 linhas por AUSENCIA DE DADO, nao por ausencia de problema — setima HU seguida com a base local vazia. As duas perguntas de dimensionamento (quantas matriculas fora do formato Numerico 16*, o risco 1; e quantos profissionais vivem so no cadastro paralelo, a duvida do artefato) SEGUEM SEM RESPOSTA EM NUMERO REAL e precisam rodar em STAGING antes do deploy (DoD da spec, §16). Os numeros dos XMLs e payloads deste dossie sao DADOS FABRICADOS pelos cenarios de teste.",
+  "recaptura": {
+    "branch_verificada": "staging (api 22fa09a · client 9dde38c)",
+    "telas_refeitas": [
+      "screenshots/CA08-recusa-da-geracao-apos-correcao.png",
+      "screenshots/CA08-impedimento-matricula.png",
+      "screenshots/CA09-CA12-zona-informativa.png"
+    ],
+    "motivo": "A conferencia previa passou a identificar o registro pelo nome e a linha de resolucao do cartao passou a ser a do proprio recurso."
+  }
+}

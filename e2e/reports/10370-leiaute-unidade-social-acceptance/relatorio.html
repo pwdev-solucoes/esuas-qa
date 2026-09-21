@@ -1,0 +1,625 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — HU #10370 (US-SIAP-03)</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  section.note { border:1px solid var(--line); border-left:4px solid #b06a00; border-radius:6px; padding:10px 14px; margin:10px 0; background:#fffdf7; font-size:13px; }
+  section.note h3 { margin:0 0 6px; font-size:13.5px; color:#8a5200; }
+  section.note p { margin:6px 0; }
+  section.note ul { margin:6px 0 6px 18px; padding:0; }
+  section.note pre { background:var(--bg); border:1px solid var(--line); border-radius:4px; padding:8px; overflow-x:auto; font-size:11px; white-space:pre-wrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — HU #10370 (US-SIAP-03)</h1>
+    <div class="sub">Compor o leiaute UnidadeSocial com as unidades socioassistenciais do município</div>
+    <div class="meta"><div><span>Gerado em:</span> 13/08/2026 · CA07–CA09 recapturados em 18/08/2026 contra a staging</div><div><span>Ticket GLPI:</span> #10370 · US-SIAP-03 · épico HU-SIAP-AS</div><div><span>Spec (contrato):</span> .planning/specs/10370-leiaute-unidade-social.md (CA01–CA11)</div><div><span>Branch:</span> feature/10370-leiaute-unidade-social (api) — evidência de tela reconferida na staging (api 22fa09a · client c45b2ad)</div><div><span>Commits:</span> api bcce4ab (composição do leiaute) · api 881dc0c (bloqueio por unidade incompleta)</div><div><span>Ambiente (XML e payloads):</span> API Laravel/Pest 4 sobre PostgreSQL — cenários montados por Pest e remessa gerada de verdade (zip + XML)</div><div><span>Ambiente (screenshots):</span> Sail :8000 + client Vite :5175 (não-mock) · organização “E2E CadÚnico” · perfil Master · referência 08/2026</div><div><span>Ferramenta:</span> Pest 4 (php -d memory_limit=1G vendor/bin/pest) + playwright-cli (Chromium 1440×900) + psql</div><div><span>Origem normativa:</span> Manual de Referência do SIAP (2026, 2ª ed.) — item 15.1, leiaute UnidadeSocial</div><div><span>Natureza da evidência:</span> XML gerado (CA01–CA06, CA10, CA11) · payload de recusa + conferência prévia (CA07–CA09) · Pest em todos</div><div><span>LGPD:</span> este leiaute não tem dado pessoal de cidadão; endereço e nome de unidade são institucionais. A pendência gravada identifica a unidade por uuid; o NOME é derivado na resposta da conferência e nunca persistido (decisão da US-SIAP-02)</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">11 critérios avaliados, 11 atendidos — nenhum reprovado. Esta HU é atípica no formato da evidência: oito critérios (CA01–CA06, CA10 e CA11) falam do CONTEÚDO do UnidadeSocial.xml, e a evidência de primeira classe deles é o próprio trecho do arquivo — cada XML embutido neste relatório foi extraído do zip de uma remessa realmente gerada pelo endpoint POST client/siap-remittances, e está preservado em xml/. Três critérios (CA07, CA08 e CA09) são de bloqueio e têm manifestação em tela: além do payload do 422 e da conferência prévia (em payloads/), foram capturados no painel de Remessas SIAP do client — ver os prints nas seções CA07, CA08, CA09. Suíte anexa: 99 testes (407 asserções) em --filter=Siap, todos verdes.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA01</td><td>Unidades do município no leiaute (happy path)</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA02</td><td>Unidade paralisada entra na remessa</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA03</td><td>Unidade extinta no exercício da referência</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA04</td><td>Unidade extinta em exercício anterior</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA05</td><td>Classificação traduzida para o domínio do SIAP</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA06</td><td>Endereço longo é abreviado sem perder o essencial</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA07</td><td>Bloqueio por unidade sem número MDS</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA08</td><td>Bloqueio por classificação sem correspondência no SIAP</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA09</td><td>Bloqueio por endereço sem CEP</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA10</td><td>Município sem unidades</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA11</td><td>Isolamento entre municípios</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA01">
+      <h2>CA01 — Unidades do município no leiaute (happy path) <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que meu município tem 3 unidades socioassistenciais cadastradas, todas completas
+Quando a remessa da referência 08/2026 for gerada
+Então o leiaute UnidadeSocial traz 3 linhas
+E cada linha apresenta NumeroMDS, NomeUnidadeSocial, TipoLocalizacao, EnderecoUnidadeSocial,
+  CEP, SituacaoUnidadeSocial e ClassificacaoUnidadeSocial</p>
+      <p class="steps"><strong>Como foi testado:</strong> Três unidades completas (CRAS urbano, CREAS urbano e Centro POP <b>rural</b>) no tenant; <code>POST client/siap-remittances</code> com <code>exercise=2026</code> e <code>reference_month=8</code>; o <code>UnidadeSocial.xml</code> abaixo foi <b>extraído do zip da remessa realmente gerada</b>, não montado à mão.<div class="filecap">xml/ca01-tres-unidades-completas.xml</div><pre class="xml">&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;SIAP&gt;
+    &lt;Codigo&gt;004821&lt;/Codigo&gt;
+    &lt;Exercicio&gt;2026&lt;/Exercicio&gt;
+    &lt;Mes&gt;08&lt;/Mes&gt;
+    &lt;UnidadeSocial&gt;
+        &lt;NumeroMDS&gt;2704302000123&lt;/NumeroMDS&gt;
+        &lt;NomeUnidadeSocial&gt;CRAS Alto do Cruzeiro&lt;/NomeUnidadeSocial&gt;
+        &lt;TipoLocalizacao&gt;1&lt;/TipoLocalizacao&gt;
+        &lt;EnderecoUnidadeSocial&gt;Rua, das Flores, 123, Centro, Maceió&lt;/EnderecoUnidadeSocial&gt;
+        &lt;CEP&gt;57000000&lt;/CEP&gt;
+        &lt;SituacaoUnidadeSocial&gt;1&lt;/SituacaoUnidadeSocial&gt;
+        &lt;ClassificacaoUnidadeSocial&gt;1&lt;/ClassificacaoUnidadeSocial&gt;
+    &lt;/UnidadeSocial&gt;
+    &lt;UnidadeSocial&gt;
+        &lt;NumeroMDS&gt;2704302000456&lt;/NumeroMDS&gt;
+        &lt;NomeUnidadeSocial&gt;CREAS Centro&lt;/NomeUnidadeSocial&gt;
+        &lt;TipoLocalizacao&gt;1&lt;/TipoLocalizacao&gt;
+        &lt;EnderecoUnidadeSocial&gt;Avenida, Fernandes Lima, 900, Farol, Maceió&lt;/EnderecoUnidadeSocial&gt;
+        &lt;CEP&gt;57055000&lt;/CEP&gt;
+        &lt;SituacaoUnidadeSocial&gt;1&lt;/SituacaoUnidadeSocial&gt;
+        &lt;ClassificacaoUnidadeSocial&gt;2&lt;/ClassificacaoUnidadeSocial&gt;
+    &lt;/UnidadeSocial&gt;
+    &lt;UnidadeSocial&gt;
+        &lt;NumeroMDS&gt;2704302000789&lt;/NumeroMDS&gt;
+        &lt;NomeUnidadeSocial&gt;Centro POP Maceió&lt;/NomeUnidadeSocial&gt;
+        &lt;TipoLocalizacao&gt;2&lt;/TipoLocalizacao&gt;
+        &lt;EnderecoUnidadeSocial&gt;Rua, do Sol, 45, Jacintinho, Maceió&lt;/EnderecoUnidadeSocial&gt;
+        &lt;CEP&gt;57040000&lt;/CEP&gt;
+        &lt;SituacaoUnidadeSocial&gt;1&lt;/SituacaoUnidadeSocial&gt;
+        &lt;ClassificacaoUnidadeSocial&gt;3&lt;/ClassificacaoUnidadeSocial&gt;
+    &lt;/UnidadeSocial&gt;
+&lt;/SIAP&gt;</pre></p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O arquivo traz exatamente 3 blocos &lt;UnidadeSocial&gt; — um por unidade cadastrada (RN01).</li><li>Os 7 campos do item 15.1 do Manual aparecem nas 3 linhas, nenhum omitido: NumeroMDS, NomeUnidadeSocial, TipoLocalizacao, EnderecoUnidadeSocial, CEP, SituacaoUnidadeSocial e ClassificacaoUnidadeSocial.</li><li>TipoLocalizacao distingue urbana (1) das duas primeiras e rural (2) do Centro POP — o campo é lido do cadastro, não fixado (RN05).</li><li>O cabeçalho carrega o CARDUG 004821, o exercício 2026 e o mês 08, como a #10367 fixou.</li><li>Teste: “it brings every unit of the municipality with the seven fields of the Manual (CA01)” — assere substr_count($xml, '&lt;UnidadeSocial&gt;') === 3 e a presença dos 7 campos em cada linha.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA02">
+      <h2>CA02 — Unidade paralisada entra na remessa <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que uma das unidades está com situação "paralisada" no cadastro
+Quando a remessa for gerada
+Então essa unidade consta do leiaute com SituacaoUnidadeSocial=2, e não é omitida</p>
+      <p class="steps"><strong>Como foi testado:</strong> Unidade “CRAS Benedito Bentes” com <code>social_unit_status.code = '002'</code> (Paralisada); remessa gerada na referência 08/2026.<div class="filecap">xml/ca02-unidade-paralisada.xml</div><pre class="xml">&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;SIAP&gt;
+    &lt;Codigo&gt;004821&lt;/Codigo&gt;
+    &lt;Exercicio&gt;2026&lt;/Exercicio&gt;
+    &lt;Mes&gt;08&lt;/Mes&gt;
+    &lt;UnidadeSocial&gt;
+        &lt;NumeroMDS&gt;2704302000222&lt;/NumeroMDS&gt;
+        &lt;NomeUnidadeSocial&gt;CRAS Benedito Bentes&lt;/NomeUnidadeSocial&gt;
+        &lt;TipoLocalizacao&gt;1&lt;/TipoLocalizacao&gt;
+        &lt;EnderecoUnidadeSocial&gt;Rua, das Flores, 123, Centro, Maceió&lt;/EnderecoUnidadeSocial&gt;
+        &lt;CEP&gt;57000000&lt;/CEP&gt;
+        &lt;SituacaoUnidadeSocial&gt;2&lt;/SituacaoUnidadeSocial&gt;
+        &lt;ClassificacaoUnidadeSocial&gt;1&lt;/ClassificacaoUnidadeSocial&gt;
+    &lt;/UnidadeSocial&gt;
+&lt;/SIAP&gt;</pre></p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A unidade paralisada CONSTA do arquivo — a remessa não a omite (RN02).</li><li>SituacaoUnidadeSocial = 2, o código do Manual para “paralisada”.</li><li>Teste: “it keeps the paralysed unit inside the remittance (CA02)”.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA03">
+      <h2>CA03 — Unidade extinta no exercício da referência <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que uma unidade teve activity_end_date registrado em março de 2026
+Quando a remessa da referência 08/2026 for gerada
+Então essa unidade consta do leiaute com SituacaoUnidadeSocial=3</p>
+      <p class="steps"><strong>Como foi testado:</strong> “CRAS Vergel”, <code>activity_end_date = 2026-03-10</code>, referência <b>08/2026</b>. O mesmo arquivo cobre CA03 e CA04 — as três unidades abaixo diferem só pela data de encerramento.<div class="filecap">xml/ca03-ca04-extincao-por-exercicio.xml</div><pre class="xml">&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;SIAP&gt;
+    &lt;Codigo&gt;004821&lt;/Codigo&gt;
+    &lt;Exercicio&gt;2026&lt;/Exercicio&gt;
+    &lt;Mes&gt;08&lt;/Mes&gt;
+    &lt;UnidadeSocial&gt;
+        &lt;NumeroMDS&gt;2704302000333&lt;/NumeroMDS&gt;
+        &lt;NomeUnidadeSocial&gt;CRAS Vergel (extinto em marco/2026)&lt;/NomeUnidadeSocial&gt;
+        &lt;TipoLocalizacao&gt;1&lt;/TipoLocalizacao&gt;
+        &lt;EnderecoUnidadeSocial&gt;Rua, das Flores, 123, Centro, Maceió&lt;/EnderecoUnidadeSocial&gt;
+        &lt;CEP&gt;57000000&lt;/CEP&gt;
+        &lt;SituacaoUnidadeSocial&gt;3&lt;/SituacaoUnidadeSocial&gt;
+        &lt;ClassificacaoUnidadeSocial&gt;1&lt;/ClassificacaoUnidadeSocial&gt;
+    &lt;/UnidadeSocial&gt;
+    &lt;UnidadeSocial&gt;
+        &lt;NumeroMDS&gt;2704302000444&lt;/NumeroMDS&gt;
+        &lt;NomeUnidadeSocial&gt;CRAS Poço (extinto em novembro/2024)&lt;/NomeUnidadeSocial&gt;
+        &lt;TipoLocalizacao&gt;1&lt;/TipoLocalizacao&gt;
+        &lt;EnderecoUnidadeSocial&gt;Rua, do Ouro, 77, Poço, Maceió&lt;/EnderecoUnidadeSocial&gt;
+        &lt;CEP&gt;57000000&lt;/CEP&gt;
+        &lt;SituacaoUnidadeSocial&gt;4&lt;/SituacaoUnidadeSocial&gt;
+        &lt;ClassificacaoUnidadeSocial&gt;1&lt;/ClassificacaoUnidadeSocial&gt;
+    &lt;/UnidadeSocial&gt;
+    &lt;UnidadeSocial&gt;
+        &lt;NumeroMDS&gt;2704302000555&lt;/NumeroMDS&gt;
+        &lt;NomeUnidadeSocial&gt;CRAS Trapiche (lookup 003, data de 2024 — D04)&lt;/NomeUnidadeSocial&gt;
+        &lt;TipoLocalizacao&gt;1&lt;/TipoLocalizacao&gt;
+        &lt;EnderecoUnidadeSocial&gt;Rua, da Paz, 15, Trapiche, Maceió&lt;/EnderecoUnidadeSocial&gt;
+        &lt;CEP&gt;57000000&lt;/CEP&gt;
+        &lt;SituacaoUnidadeSocial&gt;4&lt;/SituacaoUnidadeSocial&gt;
+        &lt;ClassificacaoUnidadeSocial&gt;1&lt;/ClassificacaoUnidadeSocial&gt;
+    &lt;/UnidadeSocial&gt;
+&lt;/SIAP&gt;</pre></p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A unidade encerrada dentro do exercício da referência sai com SituacaoUnidadeSocial = 3 (1ª linha do arquivo, NumeroMDS 2704302000333).</li><li>O valor é DERIVADO da data comparada ao exercício (D04), não copiado do código do lookup.</li><li>Teste: “it emits the unit extinct within the reference exercise as 3 (CA03)”.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA04">
+      <h2>CA04 — Unidade extinta em exercício anterior <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que uma unidade teve activity_end_date registrado em novembro de 2024
+Quando a remessa da referência 08/2026 for gerada
+Então essa unidade consta do leiaute com SituacaoUnidadeSocial=4</p>
+      <p class="steps"><strong>Como foi testado:</strong> “CRAS Poço”, <code>activity_end_date = 2024-11-20</code>, referência <b>08/2026</b>. A terceira unidade do arquivo é o caso da <b>D04</b>: o município marcou o lookup como “extinta no ano atual” (<code>003</code>) mas encerrou em 2024 — a data vence o código.<div class="filecap">xml/ca03-ca04-extincao-por-exercicio.xml</div><pre class="xml">&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;SIAP&gt;
+    &lt;Codigo&gt;004821&lt;/Codigo&gt;
+    &lt;Exercicio&gt;2026&lt;/Exercicio&gt;
+    &lt;Mes&gt;08&lt;/Mes&gt;
+    &lt;UnidadeSocial&gt;
+        &lt;NumeroMDS&gt;2704302000333&lt;/NumeroMDS&gt;
+        &lt;NomeUnidadeSocial&gt;CRAS Vergel (extinto em marco/2026)&lt;/NomeUnidadeSocial&gt;
+        &lt;TipoLocalizacao&gt;1&lt;/TipoLocalizacao&gt;
+        &lt;EnderecoUnidadeSocial&gt;Rua, das Flores, 123, Centro, Maceió&lt;/EnderecoUnidadeSocial&gt;
+        &lt;CEP&gt;57000000&lt;/CEP&gt;
+        &lt;SituacaoUnidadeSocial&gt;3&lt;/SituacaoUnidadeSocial&gt;
+        &lt;ClassificacaoUnidadeSocial&gt;1&lt;/ClassificacaoUnidadeSocial&gt;
+    &lt;/UnidadeSocial&gt;
+    &lt;UnidadeSocial&gt;
+        &lt;NumeroMDS&gt;2704302000444&lt;/NumeroMDS&gt;
+        &lt;NomeUnidadeSocial&gt;CRAS Poço (extinto em novembro/2024)&lt;/NomeUnidadeSocial&gt;
+        &lt;TipoLocalizacao&gt;1&lt;/TipoLocalizacao&gt;
+        &lt;EnderecoUnidadeSocial&gt;Rua, do Ouro, 77, Poço, Maceió&lt;/EnderecoUnidadeSocial&gt;
+        &lt;CEP&gt;57000000&lt;/CEP&gt;
+        &lt;SituacaoUnidadeSocial&gt;4&lt;/SituacaoUnidadeSocial&gt;
+        &lt;ClassificacaoUnidadeSocial&gt;1&lt;/ClassificacaoUnidadeSocial&gt;
+    &lt;/UnidadeSocial&gt;
+    &lt;UnidadeSocial&gt;
+        &lt;NumeroMDS&gt;2704302000555&lt;/NumeroMDS&gt;
+        &lt;NomeUnidadeSocial&gt;CRAS Trapiche (lookup 003, data de 2024 — D04)&lt;/NomeUnidadeSocial&gt;
+        &lt;TipoLocalizacao&gt;1&lt;/TipoLocalizacao&gt;
+        &lt;EnderecoUnidadeSocial&gt;Rua, da Paz, 15, Trapiche, Maceió&lt;/EnderecoUnidadeSocial&gt;
+        &lt;CEP&gt;57000000&lt;/CEP&gt;
+        &lt;SituacaoUnidadeSocial&gt;4&lt;/SituacaoUnidadeSocial&gt;
+        &lt;ClassificacaoUnidadeSocial&gt;1&lt;/ClassificacaoUnidadeSocial&gt;
+    &lt;/UnidadeSocial&gt;
+&lt;/SIAP&gt;</pre></p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>“CRAS Poço” (2704302000444) sai com SituacaoUnidadeSocial = 4 — encerramento em exercício anterior.</li><li>“CRAS Trapiche” (2704302000555) também sai com 4, apesar de o cadastro dizer '003' (extinta no ano atual): declarar 3 em 2026 afirmaria ao Tribunal uma extinção que não ocorreu naquele exercício (D04).</li><li>O arquivo tem exatamente um 3 e dois 4 — verificado por contagem no gerador da evidência.</li><li>Testes: “it emits the unit extinct in a previous exercise as 4 (CA04)” e “it lets the end date override the status code chosen in the lookup (CA04b / D04)”.</li><li>Contraponto registrado (D05): extinta SEM data, ou com encerramento POSTERIOR ao exercício, não é arbitrada — vira pendência bloqueante (“it turns the extinct unit without a usable end date into a blocking pendency (CA04c / D05)”).</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA05">
+      <h2>CA05 — Classificação traduzida para o domínio do SIAP <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que uma unidade está cadastrada como CREAS e outra como Centro POP
+Quando a remessa for gerada
+Então a primeira consta com ClassificacaoUnidadeSocial=2 e a segunda com 3</p>
+      <p class="steps"><strong>Como foi testado:</strong> Duas unidades no mesmo tenant: uma com <code>social_unit_types.code = '002'</code> (CREAS) e outra com <code>'003'</code> (Centro POP).<div class="filecap">xml/ca05-classificacao-creas-centro-pop.xml</div><pre class="xml">&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;SIAP&gt;
+    &lt;Codigo&gt;004821&lt;/Codigo&gt;
+    &lt;Exercicio&gt;2026&lt;/Exercicio&gt;
+    &lt;Mes&gt;08&lt;/Mes&gt;
+    &lt;UnidadeSocial&gt;
+        &lt;NumeroMDS&gt;2704302000456&lt;/NumeroMDS&gt;
+        &lt;NomeUnidadeSocial&gt;CREAS Centro&lt;/NomeUnidadeSocial&gt;
+        &lt;TipoLocalizacao&gt;1&lt;/TipoLocalizacao&gt;
+        &lt;EnderecoUnidadeSocial&gt;Avenida, Fernandes Lima, 900, Farol, Maceió&lt;/EnderecoUnidadeSocial&gt;
+        &lt;CEP&gt;57000000&lt;/CEP&gt;
+        &lt;SituacaoUnidadeSocial&gt;1&lt;/SituacaoUnidadeSocial&gt;
+        &lt;ClassificacaoUnidadeSocial&gt;2&lt;/ClassificacaoUnidadeSocial&gt;
+    &lt;/UnidadeSocial&gt;
+    &lt;UnidadeSocial&gt;
+        &lt;NumeroMDS&gt;2704302000789&lt;/NumeroMDS&gt;
+        &lt;NomeUnidadeSocial&gt;Centro POP Maceió&lt;/NomeUnidadeSocial&gt;
+        &lt;TipoLocalizacao&gt;1&lt;/TipoLocalizacao&gt;
+        &lt;EnderecoUnidadeSocial&gt;Rua, do Sol, 45, Jacintinho, Maceió&lt;/EnderecoUnidadeSocial&gt;
+        &lt;CEP&gt;57000000&lt;/CEP&gt;
+        &lt;SituacaoUnidadeSocial&gt;1&lt;/SituacaoUnidadeSocial&gt;
+        &lt;ClassificacaoUnidadeSocial&gt;3&lt;/ClassificacaoUnidadeSocial&gt;
+    &lt;/UnidadeSocial&gt;
+&lt;/SIAP&gt;</pre></p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>CREAS Centro → ClassificacaoUnidadeSocial = 2.</li><li>Centro POP Maceió → ClassificacaoUnidadeSocial = 3.</li><li>A tradução é feita por match explícito em SiapDomainMap (escala 1..5 e 99), e não pelo código do cadastro: código sem correspondência vira pendência bloqueante em vez de valor inválido (CA08).</li><li>Testes: “it translates the unit classification to the SIAP domain (CA05)” e “it maps social unit types to the SIAP classification” (unitário).</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA06">
+      <h2>CA06 — Endereço longo é abreviado sem perder o essencial <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o endereço de uma unidade, com ponto de referência e complemento, passa de 255 caracteres
+Quando a remessa for gerada
+Então EnderecoUnidadeSocial cabe em 255 caracteres, tendo sido suprimido primeiro o ponto de
+  referência e, se ainda necessário, o complemento
+E o logradouro, o número, o bairro e o município continuam presentes</p>
+      <p class="steps"><strong>Como foi testado:</strong> Duas unidades no mesmo arquivo: <b>A</b> com ponto de referência de 300 caracteres (só o ponto precisa sair) e <b>B</b> com ponto de 100 + complemento de 250 (os dois precisam sair). O <b>antes</b> é a composição completa da RN09 (tipo de logradouro, logradouro, número, complemento, ponto de referência, bairro, município); o <b>depois</b> é o valor que foi ao arquivo.<div class="filecap">xml/ca06-endereco-antes-depois.txt</div><pre class="sql">HU #10370 — CA06: endereço longo abreviado sem perder o essencial (RN09 / D06)
+====================================================================================================
+
+CENÁRIO A — ponto de referência de 300 caracteres
+
+ANTES  (346 caracteres, composição completa da RN09)
+  Rua, das Flores, 123, Sala 4, PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP, Centro, Maceió
+
+DEPOIS (44 caracteres, valor de EnderecoUnidadeSocial no XML)
+  Rua, das Flores, 123, Sala 4, Centro, Maceió
+
+  ✓ cabe em 255                     : sim
+  ✓ ponto de referência suprimido   : sim
+  ✓ complemento preservado (coube)  : sim
+  ✓ logradouro preservado           : sim
+  ✓ número preservado               : sim
+  ✓ bairro preservado               : sim
+  ✓ município preservado            : sim
+
+----------------------------------------------------------------------------------------------------
+
+CENÁRIO B — ponto de referência de 100 + complemento de 250 caracteres
+
+ANTES  (384 caracteres, composição completa da RN09)
+  Rua, do Ouro, 77, CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC, PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP, Poço, Maceió
+
+DEPOIS (30 caracteres, valor de EnderecoUnidadeSocial no XML)
+  Rua, do Ouro, 77, Poço, Maceió
+
+  ✓ cabe em 255                     : sim
+  ✓ ponto de referência suprimido   : sim
+  ✓ complemento suprimido (não coube): sim
+  ✓ logradouro preservado           : sim
+  ✓ número preservado               : sim
+  ✓ bairro preservado               : sim
+  ✓ município preservado            : sim
+
+----------------------------------------------------------------------------------------------------</pre><div class="filecap">xml/ca06-endereco-suprimido.xml</div><pre class="xml">&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;SIAP&gt;
+    &lt;Codigo&gt;004821&lt;/Codigo&gt;
+    &lt;Exercicio&gt;2026&lt;/Exercicio&gt;
+    &lt;Mes&gt;08&lt;/Mes&gt;
+    &lt;UnidadeSocial&gt;
+        &lt;NumeroMDS&gt;2704302000666&lt;/NumeroMDS&gt;
+        &lt;NomeUnidadeSocial&gt;CRAS Flores&lt;/NomeUnidadeSocial&gt;
+        &lt;TipoLocalizacao&gt;1&lt;/TipoLocalizacao&gt;
+        &lt;EnderecoUnidadeSocial&gt;Rua, das Flores, 123, Sala 4, Centro, Maceió&lt;/EnderecoUnidadeSocial&gt;
+        &lt;CEP&gt;57000000&lt;/CEP&gt;
+        &lt;SituacaoUnidadeSocial&gt;1&lt;/SituacaoUnidadeSocial&gt;
+        &lt;ClassificacaoUnidadeSocial&gt;1&lt;/ClassificacaoUnidadeSocial&gt;
+    &lt;/UnidadeSocial&gt;
+    &lt;UnidadeSocial&gt;
+        &lt;NumeroMDS&gt;2704302000777&lt;/NumeroMDS&gt;
+        &lt;NomeUnidadeSocial&gt;CRAS Poço&lt;/NomeUnidadeSocial&gt;
+        &lt;TipoLocalizacao&gt;1&lt;/TipoLocalizacao&gt;
+        &lt;EnderecoUnidadeSocial&gt;Rua, do Ouro, 77, Poço, Maceió&lt;/EnderecoUnidadeSocial&gt;
+        &lt;CEP&gt;57000000&lt;/CEP&gt;
+        &lt;SituacaoUnidadeSocial&gt;1&lt;/SituacaoUnidadeSocial&gt;
+        &lt;ClassificacaoUnidadeSocial&gt;1&lt;/ClassificacaoUnidadeSocial&gt;
+    &lt;/UnidadeSocial&gt;
+&lt;/SIAP&gt;</pre></p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Cenário A: 346 caracteres antes → 44 depois. O ponto de referência sumiu; o complemento “Sala 4” PERMANECE, porque a string já coube sem ele ser tocado.</li><li>Cenário B: 384 caracteres antes → 30 depois. Ponto de referência E complemento suprimidos, nessa ordem.</li><li>Nos dois casos logradouro, número, bairro e município continuam presentes — que é a exigência literal do critério e o que o corte cego em 255 destruiria (o truncamento devolveria os 255 primeiros caracteres, sem bairro nem município no fim).</li><li>A supressão acontece ANTES do truncamento (D06); SiapValueFormatter::text() permanece só como rede de segurança — no caso patológico (logradouro de 300 caracteres) o valor sai com exatamente 255, coberto por “it never lets the address exceed 255 characters, not even in the worst case (CA06c)”.</li><li>Testes: “it suppresses the reference point first and keeps the complement (CA06)”, “it also suppresses the complement when the reference point is not enough (CA06b)” e “it emits the unit address in the Manual order, with street number and territorial unit”.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA07">
+      <h2>CA07 — Bloqueio por unidade sem número MDS <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que a unidade "CRAS Alto do Cruzeiro" está sem o número MDS informado
+Quando eu solicitar a geração da remessa
+Então a remessa não é gerada
+E a conferência prévia aponta pendência impeditiva no leiaute UnidadeSocial identificando essa
+  unidade e o campo NumeroMDS</p>
+      <p class="steps"><strong>Como foi testado:</strong> Tenant com CARDUG <code>004821</code> válido (senão o bloqueio do CARDUG mascararia este) e uma única unidade, “CRAS Alto do Cruzeiro”, com <code>mds_number = NULL</code>. <code>POST client/siap-remittances</code> seguido de <code>GET client/siap-remittances/pre-check?exercise=2026&amp;reference_month=8</code>.<p class="warn"><b>Por que um de cada vez:</b> qualquer unidade incompleta bloqueia a remessa inteira (D02). Se os três defeitos coexistissem, não daria para afirmar qual deles produziu a recusa — então cada critério foi demonstrado isoladamente: nos payloads, um tenant por cenário; no navegador, a mesma unidade “CRAS Alto do Cruzeiro” foi levada a um defeito de cada vez (MDS nulo → tipo fora da escala → CEP nulo), com a conferência prévia recarregada entre eles.</p><p><b>No navegador:</b> painel do tenant → <code>Prestação de Contas → Remessas SIAP</code>, organização “E2E CadÚnico”, referência <b>08/2026</b>, perfil <b>Master</b>, com o CARDUG <code>004821</code> já informado nos parâmetros TCE/AL (sem ele o impedimento do CARDUG mascararia o da unidade). Os dados usados nas capturas foram semeados só para a evidência e removidos da base ao final.</p><div class="filecap">payloads/ca07-bloqueio-sem-numero-mds.json (trecho)</div><pre class="json">{
+  &quot;post_siap_remittances&quot;: {
+    &quot;status&quot;: 422,
+    &quot;body&quot;: {
+      &quot;message&quot;: &quot;The SIAP remittance cannot be generated: 1 social unit has an incomplete record for SIAP. Check the missing data in the pre-check screen.&quot;,
+      &quot;errors&quot;: {
+        &quot;social_units&quot;: [
+          &quot;The SIAP remittance cannot be generated: 1 social unit has an incomplete record for SIAP. Check the missing data in the pre-check screen.&quot;
+        ]
+      }
+    }
+  },
+  &quot;remessas_criadas&quot;: 0,
+  &quot;pre_check_blocking&quot;: {
+    &quot;can_generate&quot;: false,
+    &quot;pendencies&quot;: [
+      {
+        &quot;scope&quot;: &quot;blocking&quot;,
+        &quot;kind&quot;: &quot;record_incomplete&quot;,
+        &quot;field_name&quot;: &quot;NumeroMDS&quot;,
+        &quot;subject_type&quot;: &quot;social_unit&quot;,
+        &quot;subject_uuid&quot;: &quot;0391cf46-b734-49c6-a43a-20441abdceaf&quot;,
+        &quot;affected_count&quot;: 1,
+        &quot;message_key&quot;: &quot;siap_remittance.pendency.unit_incomplete&quot;,
+        &quot;message&quot;: &quot;This social unit is missing NumeroMDS, required by SIAP. Fix the unit record: until then, no remittance can be generated.&quot;,
+        &quot;blocks_entire_remittance&quot;: true,
+        &quot;affected_layouts&quot;: 11,
+        &quot;resolution&quot;: {
+          &quot;resource&quot;: &quot;tenant-tce-parameters&quot;,
+          &quot;requires_role&quot;: &quot;master&quot;
+        }
+      }
+    ]
+  }
+}</pre></p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Na tela, o botão &lt;b&gt;Gerar remessa&lt;/b&gt; aparece DESABILITADO, com a razão ao lado: “Esta unidade socioassistencial está sem NumeroMDS, exigido pelo SIAP. Corrija o cadastro da unidade: enquanto isso, nenhuma remessa pode ser gerada.”</li><li>A faixa “IMPEDIMENTOS QUE BLOQUEIAM TODA A REMESSA” traz o selo “Bloqueia os 11 arquivos” e &lt;b&gt;identifica a unidade pelo nome&lt;/b&gt;: “Registro: CRAS Alto do Cruzeiro · Campo: NumeroMDS” — que é literalmente o que o critério pede (“identificando essa unidade e o campo”).</li><li>O impedimento explica a consequência (“o número MDS de cada uma liga os demais leiautes, e o Tribunal recusa os arquivos dependentes se a unidade não constar”) e oferece o atalho “Abrir o cadastro da unidade”, que leva à ficha correta.</li><li>A mesma pendência se repete na lista por leiaute, em “UnidadeSocial · Parcial”, também nomeando a unidade — o município vê tudo de uma vez, não uma pendência por vez.</li><li>A geração é RECUSADA com 422; nenhuma remessa é criada, nenhum job entra na fila e nenhum arquivo vai para o storage — “a remessa não é gerada”, literalmente.</li><li>A conferência traz can_generate = false e a pendência na zona de bloqueio, com blocks_entire_remittance = true, nomeando o campo NumeroMDS.</li><li>Testes: “it refuses the generation when a unit has no MDS number (CA07)”, “it shows the incomplete unit pendency in the blocking zone AND in the layout list (CA07/D08)” e o de reavaliação dentro do job (TOCTOU).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca07-geracao-recusada.png" alt="CA07 evidência"/><figcaption>ca07-geracao-recusada.png</figcaption></figure><figure><img src="screenshots/ca07-pendencia-numero-mds.png" alt="CA07 evidência"/><figcaption>ca07-pendencia-numero-mds.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA08">
+      <h2>CA08 — Bloqueio por classificação sem correspondência no SIAP <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que uma unidade tem tipo cujo código não corresponde a nenhuma classificação do Manual
+Quando eu solicitar a geração da remessa
+Então a remessa não é gerada
+E a conferência indica a unidade e a necessidade de ajustar o código no cadastro de apoio de
+  tipos de unidade, no Painel de Administração Global</p>
+      <p class="steps"><strong>Como foi testado:</strong> Tipo de unidade criado com <code>code = '777'</code> (“Unidade Móvel de Abordagem”), fora da escala do Manual (001–005 e 099), e uma unidade do tenant apontando para ele. Demais dados completos.<p class="warn"><b>Por que um de cada vez:</b> qualquer unidade incompleta bloqueia a remessa inteira (D02). Se os três defeitos coexistissem, não daria para afirmar qual deles produziu a recusa — então cada critério foi demonstrado isoladamente: nos payloads, um tenant por cenário; no navegador, a mesma unidade “CRAS Alto do Cruzeiro” foi levada a um defeito de cada vez (MDS nulo → tipo fora da escala → CEP nulo), com a conferência prévia recarregada entre eles.</p><p><b>No navegador:</b> painel do tenant → <code>Prestação de Contas → Remessas SIAP</code>, organização “E2E CadÚnico”, referência <b>08/2026</b>, perfil <b>Master</b>, com o CARDUG <code>004821</code> já informado nos parâmetros TCE/AL (sem ele o impedimento do CARDUG mascararia o da unidade). Os dados usados nas capturas foram semeados só para a evidência e removidos da base ao final.</p><div class="filecap">payloads/ca08-bloqueio-classificacao-sem-correspondencia.json (trecho)</div><pre class="json">{
+  &quot;post_siap_remittances&quot;: {
+    &quot;status&quot;: 422,
+    &quot;body&quot;: {
+      &quot;message&quot;: &quot;The SIAP remittance cannot be generated: 1 social unit has an incomplete record for SIAP. Check the missing data in the pre-check screen.&quot;,
+      &quot;errors&quot;: {
+        &quot;social_units&quot;: [
+          &quot;The SIAP remittance cannot be generated: 1 social unit has an incomplete record for SIAP. Check the missing data in the pre-check screen.&quot;
+        ]
+      }
+    }
+  },
+  &quot;remessas_criadas&quot;: 0,
+  &quot;pendencia_localizada&quot;: {
+    &quot;scope&quot;: &quot;blocking&quot;,
+    &quot;kind&quot;: &quot;record_incomplete&quot;,
+    &quot;field_name&quot;: &quot;ClassificacaoUnidadeSocial&quot;,
+    &quot;subject_type&quot;: &quot;social_unit&quot;,
+    &quot;subject_uuid&quot;: &quot;7403dd4e-32dd-4b70-bdec-a90a14de3fc8&quot;,
+    &quot;affected_count&quot;: 1,
+    &quot;message_key&quot;: &quot;siap_remittance.pendency.unit_type_unmapped&quot;,
+    &quot;message&quot;: &quot;The classification of this unit (ClassificacaoUnidadeSocial) has no counterpart in the SIAP table. The fix is made in the social unit types support register, in the Global Administration Panel. Until then, no remittance can be generated.&quot;,
+    &quot;blocks_entire_remittance&quot;: true,
+    &quot;affected_layouts&quot;: 11,
+    &quot;resolution&quot;: {
+      &quot;resource&quot;: &quot;tenant-tce-parameters&quot;,
+      &quot;requires_role&quot;: &quot;master&quot;
+    }
+  }
+}</pre><div class="filecap">payloads/ca08-mensagens-traduzidas.txt</div><pre class="sql">HU #10370 — CA08: mensagem da pendência, nas duas línguas do sistema
+==========================================================================================
+
+pt_BR: A classificação desta unidade (:field) não corresponde a nenhum tipo previsto pelo SIAP. O ajuste é feito no cadastro de apoio de tipos de unidade, no Painel de Administração Global. Enquanto isso, nenhuma remessa pode ser gerada.
+
+en   : The classification of this unit (:field) has no counterpart in the SIAP table. The fix is made in the social unit types support register, in the Global Administration Panel. Until then, no remittance can be generated.
+
+Tipo cadastrado que provoca a pendência: code=&#x27;777&#x27; name=&#x27;Unidade Móvel de Abordagem&#x27;
+Escala aceita pelo Manual (item 15.1): 001 CRAS, 002 CREAS, 003 Centro POP, 004 Centro-Dia, 005 Unidades de Acolhimento, 099 Outros</pre></p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A faixa de impedimentos traz a mensagem completa: “A classificação desta unidade (ClassificacaoUnidadeSocial) não corresponde a nenhum tipo previsto pelo SIAP. O ajuste é feito no cadastro de apoio de tipos de unidade, no Painel de Administração Global. Enquanto isso, nenhuma remessa pode ser gerada.”</li><li>A unidade é &lt;b&gt;identificada pelo nome&lt;/b&gt;: “Registro: CREAS Centro · Campo: ClassificacaoUnidadeSocial”.</li><li>A tela avisa explicitamente que a correção está fora do alcance do município: “Este ajuste é feito em cadastro de apoio global e não está ao alcance do município: acione o administrador da plataforma.” — por isso não há atalho de correção, diferente dos demais bloqueios.</li><li>O botão Gerar remessa está desabilitado e a mesma mensagem se repete na lista por leiaute.</li><li>422, zero remessas criadas, nenhum arquivo gerado.</li><li>A pendência usa mensagem PRÓPRIA (siap_remittance.pendency.unit_type_unmapped), distinta da mensagem genérica de campo faltando — o município sabe que revisa classificação, não que preenche cadastro.</li><li>Testes: “it refuses the generation when the unit classification is outside the SIAP scale (CA08)” e “it sends the unmapped unit classification to the Global Panel (CA08)”.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca08-pendencia-painel-global.png" alt="CA08 evidência"/><figcaption>ca08-pendencia-painel-global.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA09">
+      <h2>CA09 — Bloqueio por endereço sem CEP <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que uma unidade está com o endereço cadastrado sem CEP
+Quando eu solicitar a geração da remessa
+Então a remessa não é gerada
+E a conferência aponta pendência impeditiva identificando a unidade e o campo CEP</p>
+      <p class="steps"><strong>Como foi testado:</strong> Unidade “CRAS Jacintinho” com endereço completo, porém <code>addresses.postal_code = NULL</code>. Demais campos válidos.<p class="warn"><b>Por que um de cada vez:</b> qualquer unidade incompleta bloqueia a remessa inteira (D02). Se os três defeitos coexistissem, não daria para afirmar qual deles produziu a recusa — então cada critério foi demonstrado isoladamente: nos payloads, um tenant por cenário; no navegador, a mesma unidade “CRAS Alto do Cruzeiro” foi levada a um defeito de cada vez (MDS nulo → tipo fora da escala → CEP nulo), com a conferência prévia recarregada entre eles.</p><p><b>No navegador:</b> painel do tenant → <code>Prestação de Contas → Remessas SIAP</code>, organização “E2E CadÚnico”, referência <b>08/2026</b>, perfil <b>Master</b>, com o CARDUG <code>004821</code> já informado nos parâmetros TCE/AL (sem ele o impedimento do CARDUG mascararia o da unidade). Os dados usados nas capturas foram semeados só para a evidência e removidos da base ao final.</p><div class="filecap">payloads/ca09-bloqueio-endereco-sem-cep.json (trecho)</div><pre class="json">{
+  &quot;post_siap_remittances&quot;: {
+    &quot;status&quot;: 422,
+    &quot;body&quot;: {
+      &quot;message&quot;: &quot;The SIAP remittance cannot be generated: 1 social unit has an incomplete record for SIAP. Check the missing data in the pre-check screen.&quot;,
+      &quot;errors&quot;: {
+        &quot;social_units&quot;: [
+          &quot;The SIAP remittance cannot be generated: 1 social unit has an incomplete record for SIAP. Check the missing data in the pre-check screen.&quot;
+        ]
+      }
+    }
+  },
+  &quot;remessas_criadas&quot;: 0,
+  &quot;pendencia_localizada&quot;: {
+    &quot;scope&quot;: &quot;blocking&quot;,
+    &quot;kind&quot;: &quot;record_incomplete&quot;,
+    &quot;field_name&quot;: &quot;CEP&quot;,
+    &quot;subject_type&quot;: &quot;social_unit&quot;,
+    &quot;subject_uuid&quot;: &quot;121db7fd-6daa-4e3c-84b2-d44c22dfb614&quot;,
+    &quot;affected_count&quot;: 1,
+    &quot;message_key&quot;: &quot;siap_remittance.pendency.unit_incomplete&quot;,
+    &quot;message&quot;: &quot;This social unit is missing CEP, required by SIAP. Fix the unit record: until then, no remittance can be generated.&quot;,
+    &quot;blocks_entire_remittance&quot;: true,
+    &quot;affected_layouts&quot;: 11,
+    &quot;resolution&quot;: {
+      &quot;resource&quot;: &quot;tenant-tce-parameters&quot;,
+      &quot;requires_role&quot;: &quot;master&quot;
+    }
+  }
+}</pre></p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A faixa de impedimentos aponta o campo: “Esta unidade socioassistencial está sem CEP, exigido pelo SIAP. Corrija o cadastro da unidade: enquanto isso, nenhuma remessa pode ser gerada.”, com o botão Gerar remessa desabilitado.</li><li>A unidade é &lt;b&gt;identificada pelo nome&lt;/b&gt;: “Registro: Centro POP Maceió · Campo: CEP”, com atalho “Abrir o cadastro da unidade”.</li><li>422 e zero remessas — o endereço existe, mas sem CEP a unidade não é declarável (RN10).</li><li>Nada é “consertado para caber”: o sistema não inventa CEP nem emite o campo em branco.</li><li>Testes: “it refuses the generation when the unit address has no postal code (CA09)”.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca09-pendencia-cep.png" alt="CA09 evidência"/><figcaption>ca09-pendencia-cep.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA10">
+      <h2>CA10 — Município sem unidades <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que meu município ainda não cadastrou nenhuma unidade socioassistencial
+Quando a remessa for gerada
+Então o leiaute UnidadeSocial é entregue em branco, com apenas Codigo, Exercicio e Mes</p>
+      <p class="steps"><strong>Como foi testado:</strong> Tenant com CARDUG informado e <b>nenhuma</b> unidade cadastrada; remessa gerada normalmente.<div class="filecap">xml/ca10-leiaute-em-branco.xml</div><pre class="xml">&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;SIAP&gt;
+    &lt;Codigo&gt;004821&lt;/Codigo&gt;
+    &lt;Exercicio&gt;2026&lt;/Exercicio&gt;
+    &lt;Mes&gt;08&lt;/Mes&gt;
+&lt;/SIAP&gt;</pre></p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O arquivo sai com Codigo, Exercicio e Mes e NENHUM bloco &lt;UnidadeSocial&gt;.</li><li>O leiaute continua dentro do zip: “enviar em branco” não é o mesmo que “não enviar” — o pacote mantém os 11 arquivos (RN12 + regra da #10367).</li><li>Município sem unidade não é bloqueado: sem unidade, não há unidade incompleta.</li><li>Teste: “it delivers the layout with the header only when there is no unit (CA10)”.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA11">
+      <h2>CA11 — Isolamento entre municípios <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que existem unidades cadastradas em outros municípios da plataforma
+Quando a remessa do meu município for gerada
+Então o leiaute UnidadeSocial contém exclusivamente unidades do meu município</p>
+      <p class="steps"><strong>Como foi testado:</strong> Duas unidades na plataforma, em <b>tenants diferentes</b>: “CRAS Alto do Cruzeiro” no tenant da remessa e “CRAS Arapiraca” em outro. A remessa é gerada pelo primeiro.<div class="filecap">xml/ca11-contexto.txt</div><pre class="sql">HU #10370 — CA11: isolamento entre municípios
+================================================================================
+
+Base do cenário — DUAS unidades existem na plataforma, em tenants diferentes:
+
+  tenant da remessa   : c982ad51-5cbb-488c-8506-1d9d3a310bdf
+    unidade           : CRAS Alto do Cruzeiro (meu município)
+    NumeroMDS         : 2704302000123
+
+  OUTRO tenant        : 34d4127f-dd86-4cea-92ab-046d13499bd7
+    unidade           : CRAS Arapiraca (OUTRO município)
+    NumeroMDS         : 2700108000999
+
+Resultado no ca11-isolamento-entre-municipios.xml:
+  blocos &lt;UnidadeSocial&gt;            : 1
+  contém o MDS do meu município     : sim
+  contém o MDS do outro município   : não</pre><div class="filecap">xml/ca11-isolamento-entre-municipios.xml</div><pre class="xml">&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;SIAP&gt;
+    &lt;Codigo&gt;004821&lt;/Codigo&gt;
+    &lt;Exercicio&gt;2026&lt;/Exercicio&gt;
+    &lt;Mes&gt;08&lt;/Mes&gt;
+    &lt;UnidadeSocial&gt;
+        &lt;NumeroMDS&gt;2704302000123&lt;/NumeroMDS&gt;
+        &lt;NomeUnidadeSocial&gt;CRAS Alto do Cruzeiro (meu município)&lt;/NomeUnidadeSocial&gt;
+        &lt;TipoLocalizacao&gt;1&lt;/TipoLocalizacao&gt;
+        &lt;EnderecoUnidadeSocial&gt;Rua, das Flores, 123, Centro, Maceió&lt;/EnderecoUnidadeSocial&gt;
+        &lt;CEP&gt;57000000&lt;/CEP&gt;
+        &lt;SituacaoUnidadeSocial&gt;1&lt;/SituacaoUnidadeSocial&gt;
+        &lt;ClassificacaoUnidadeSocial&gt;1&lt;/ClassificacaoUnidadeSocial&gt;
+    &lt;/UnidadeSocial&gt;
+&lt;/SIAP&gt;</pre></p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O arquivo traz 1 bloco &lt;UnidadeSocial&gt; — o do tenant da remessa.</li><li>O NumeroMDS da unidade do outro município (2700108000999) NÃO aparece em lugar nenhum do arquivo.</li><li>A query do leiaute dispensa apenas o BelongsToTenantScope e filtra pelo tenant da referência, preservando o SoftDeletingScope — a correção de d3811cd, coberta por “it leaves the soft-deleted unit out of the remittance”.</li><li>Teste: “it contains exclusively the units of my municipality (CA11)”.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+  
+  <h2>Observações e ressalvas</h2>
+  <section class="note"><h3>Recaptura das evidências de tela dos três bloqueios (CA07, CA08 e CA09)</h3><p>Os oito critérios de conteúdo (CA01 a CA06, CA10 e CA11) têm como evidência o próprio <code>UnidadeSocial.xml</code> de uma remessa realmente gerada, e seguem exatamente como na entrega original.</p><p>Já os três critérios de bloqueio tiveram a <b>evidência de tela recapturada</b>. Motivo: depois da entrega original, a US-SIAP-02 passou a <b>identificar o registro pendente pelo nome</b> na conferência prévia. Nas capturas anteriores a unidade não aparecia identificada na tela — a identificação existia apenas no dado interno da pendência —, de modo que os prints não demonstravam a parte do critério que diz “identificando essa unidade”. Hoje a tela mostra “Registro: <i>nome da unidade</i> · Campo: <i>campo</i>”, e é isso que as capturas atuais registram.</p><p>O comportamento de bloqueio em si não mudou: a remessa continua sendo recusada, nenhum arquivo é gerado e o botão permanece desabilitado. O que mudou, e para melhor, foi a clareza da tela.</p></section><section class="note"><h3>Onde o nome da unidade aparece — e por que isso não conflita com a proteção de dados</h3><p>O nome exibido é o da <b>unidade socioassistencial</b>, informação institucional do município, e não dado pessoal de cidadão: este leiaute não carrega nenhuma informação de pessoa atendida.</p><p>Ainda assim, o desenho preserva o cuidado adotado no restante do sistema: a pendência <b>gravada</b> continua identificando a unidade apenas por seu identificador interno; o nome é resolvido no momento de montar a resposta da conferência e <b>não é persistido</b> em lugar nenhum.</p></section><section class="note"><h3>Correção de atalho observada na recaptura</h3><p>Nas capturas originais, o texto de apoio e o atalho do impedimento de unidade apontavam para os parâmetros do Tribunal — herdados do impedimento do identificador da Unidade Gestora —, o que não correspondia à pendência exibida.</p><p>Na recaptura, o texto de apoio é o da própria unidade e o atalho é <b>“Abrir o cadastro da unidade”</b>, levando à ficha correta. O desvio anterior já não existe.</p></section>
+  
+  <h2>Anexo — Cobertura automatizada (Pest, --filter=Siap) — 99 testes, 407 asserções</h2>
+  <pre class="pest"># HU #10370 (US-SIAP-03) — php artisan test --filter=Siap
+# Executado em: 2026-08-13 10:53:16 -03
+# Runner: php -d memory_limit=1G vendor/bin/pest --filter=Siap  (php artisan test estoura o memory_limit de 128M do php.ini local — pré-existente)
+# api/ @ 881dc0c (branch feature/10370-leiaute-unidade-social)
+
+
+   PASS  Tests\Unit\Services\Siap\SiapDomainMapTest
+  ✓ it inverts Parda and Amarela between the eSUAS and SIAP scales
+  ✓ it keeps the race colors that coincide in both scales
+  ✓ it returns null for a race color without counterpart
+  ✓ it maps social unit types to the SIAP classification
+  ✓ it refuses to translate a unit status the SIAP does not define
+  ✓ it derives the extinction status from the end date against the exer… 0.01s  
+  ✓ it lets the derivation win over the code chosen in the lookup (D04)
+  ✓ it turns an extinct unit without a usable end date into a pendency (D05)
+  ✓ it ignores the end date for statuses that are not extinction
+  ✓ it only translates the entity status that has a safe counterpart
+  ✓ it collapses the four SUAS participation types into the three of SIAP
+  ✓ it maps the contract modality to the SIAP scale (HU #10369 / D06)
+  ✓ it refuses to translate a contract modality outside the SIAP scale
+  ✓ it maps kinship to the family position scale
+  ✓ it leaves the ambiguous education level unmapped
+  ✓ it maps booleans to the SIM/NAO pair
+  ✓ it strips the zero padding only for the auxiliary tables
+  ✓ it refuses a numeric value with a size different from the exact one
+  ✓ it never sanitizes a non numeric value to make it fit
+  ✓ it flags truncation instead of cutting text in silence
+  ✓ it formats dates in ISO and decimals with two places
+  ✓ it registers exactly the 11 layouts of the SIAP social assistance section
+  ✓ it puts UnidadeSocial first, since 8 other layouts depend on it
+  ✓ it names every file after its layout, as the Manual requires
+
+   PASS  Tests\Feature\Api\SiapRemittanceGenerationTest
+  ✓ it refuses the generation when the identifier is missing (CA06)      0.27s  
+  ✓ it refuses the generation for a legacy identifier outside the TCE-A… 0.02s  
+  ✓ it creates the remittance and dispatches the job when the identifie… 0.02s  
+  ✓ it generates a zip with all 11 layouts, including the ones without…  0.03s  
+  ✓ it emits the service agreement and the operating status as independ… 0.03s  
+  ✓ it emits the informed service agreement as SIM (CA08b)               0.03s  
+  ✓ it leaves out of the file the entity whose service agreement is not… 0.03s  
+  ✓ it emits the unit address in the Manual order, with street number a… 0.03s  
+  ✓ it brings every unit of the municipality with the seven fields of t… 0.04s  
+  ✓ it keeps the paralysed unit inside the remittance (CA02)             0.04s  
+  ✓ it emits the unit extinct within the reference exercise as 3 (CA03)  0.03s  
+  ✓ it emits the unit extinct in a previous exercise as 4 (CA04)         0.03s  
+  ✓ it lets the end date override the status code chosen in the lookup…  0.03s  
+  ✓ it turns the extinct unit without a usable end date into a blocking… 0.03s  
+  ✓ it blocks the remittance while an inactive unit has no SIAP counter… 0.02s  
+  ✓ it translates the unit classification to the SIAP domain (CA05)      0.04s  
+  ✓ it suppresses the reference point first and keeps the complement (C… 0.03s  
+  ✓ it also suppresses the complement when the reference point is not e… 0.03s  
+  ✓ it never lets the address exceed 255 characters, not even in the wo… 0.03s  
+  ✓ it delivers the layout with the header only when there is no unit (… 0.02s  
+  ✓ it contains exclusively the units of my municipality (CA11)          0.04s  
+  ✓ it leaves the soft-deleted unit out of the remittance                0.03s  
+  ✓ it records the layout outcome of a layout without movement           0.02s  
+  ✓ it re-evaluates the block inside the job (TOCTOU)                    0.02s  
+  ✓ it refuses the generation when a unit has no MDS number (CA07)       0.02s  
+  ✓ it refuses the generation when the unit classification is outside t… 0.02s  
+  ✓ it refuses the generation when the unit address has no postal code…  0.02s  
+  ✓ it counts municipalities, not fields: one unit missing two values i… 0.02s  
+  ✓ it lets the remittance out while only an entity is incomplete (não-… 0.03s  
+  ✓ it re-evaluates the unit block inside the job (D07/TOCTOU)           0.02s  
+  ✓ it refuses a second generation while one is still running            0.02s  
+  ✓ it never lists or downloads a remittance from another tenant         0.02s  
+  ✓ it refuses the download while the remittance is not completed        0.01s  
+
+   PASS  Tests\Feature\Api\SiapRemittancePreCheckTest
+  ✓ it separates the blocking identifier pendency from the per-layout o… 0.02s  
+  ✓ it states that the identifier pendency blocks the entire remittance… 0.02s  
+  ✓ it still lists every layout while the remittance is blocked (CA06)   0.02s  
+  ✓ it marks per-layout pendencies as non blocking                       0.02s  
+  ✓ it reports a required field that has no source in the system         0.01s  
+  ✓ it does not persist anything during the pre-check                    0.02s  
+  ✓ it releases the generation when the identifier is valid              0.02s  
+  ✓ it counts records only from the active tenant                        0.02s  
+  ✓ it names the entity whose service agreement was never informed (CA0… 0.02s  
+  ✓ it keeps the entity pendency inside the layout, never blocking the…  0.02s  
+  ✓ it never carries the entity name or CNPJ into the pendency (RN09/LG… 0.02s  
+  ✓ it drops the pendency as soon as the municipality informs the value… 0.03s  
+  ✓ it turns a contract modality outside the SIAP scale into a pendency… 0.02s  
+  ✓ it stops reporting EntidadeSocial as a layout without data source    0.02s  
+  ✓ it shows the incomplete unit pendency in the blocking zone AND in t… 0.02s  
+  ✓ it counts the promoted pendency only once (D08b)                     0.02s  
+  ✓ it sends the unmapped unit classification to the Global Panel (CA08… 0.02s  
+  ✓ it names the unit without postal code by uuid, never by name or add… 0.02s  
+  ✓ it keeps the CARDUG pendency blocking alongside the unit ones (não-… 0.02s  
+  ✓ it releases the pre-check as soon as every unit is complete (happy…  0.02s  
+  ✓ it rejects an invalid reference month                                0.02s  
+  ✓ it accepts the special reference months 13 and 14 with (13)          0.02s  
+  ✓ it accepts the special reference months 13 and 14 with (14)          0.02s  
+
+   PASS  Tests\Feature\Api\SocialEntityControllerTest
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('cne… 0.04s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('leg… 0.02s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('cnp… 0.02s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('hea… 0.02s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('ema… 0.02s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('add… 0.02s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('soc… 0.02s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('loc… 0.02s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('sua… 0.02s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('con… 0.02s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('has… 0.02s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('pro… 0.02s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('exe… 0.02s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('has… 0.02s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('con… 0.02s  
+
+   PASS  Tests\Feature\Api\TenantTceParameterControllerTest
+  ✓ it saves the TCE parameters without the identifier and warns about…  0.02s  
+
+   PASS  Tests\Feature\Api\TenantTceParameterSiapReadinessTest
+  ✓ it does not block other modules when the identifier is missing (RN1… 0.02s  
+  ✓ it reports readiness as true once the identifier is in the TCE-AL f… 0.01s  
+  ✓ it reports readiness as false for a legacy value outside the TCE-AL… 0.02s  
+
+  Tests:    99 passed (407 assertions)
+  Duration: 2.19s
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

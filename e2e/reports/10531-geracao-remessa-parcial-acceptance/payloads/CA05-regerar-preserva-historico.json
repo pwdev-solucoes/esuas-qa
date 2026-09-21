@@ -1,0 +1,55 @@
+{
+    "_cenario": "CA05 — duas gerações de 08/2026: a nova nasce, a anterior continua listada com data e solicitante",
+    "duas_remessas_da_mesma_referencia": [
+        {
+            "id": 2,
+            "uuid": "bdf3aa65-5e0b-481d-8f49-a3a510a127bb",
+            "tenant_id": 1,
+            "exercise": 2026,
+            "reference_month": 8,
+            "reference_label": "08/2026",
+            "status": "completed",
+            "status_label": "Gerada",
+            "cardug_identifier": "004821",
+            "generated_with_previous_identifier": false,
+            "file_size": 2217,
+            "file_checksum": "7e2ee4ae7d464ec2ba7e19e88bdd1602bc89105bb108ded8ea53f094ea3d11bd",
+            "suggested_file_name": "remessa-assistencia-social-maceio-2026-08.zip",
+            "layout_count": 11,
+            "record_count": 0,
+            "pendency_count": 16,
+            "error_message": null,
+            "requested_by_label": "Joana B. F.",
+            "started_at": "2026-08-17T17:23:23.000000Z",
+            "finished_at": "2026-08-17T17:23:23.000000Z",
+            "created_at": "2026-08-17T17:23:23.000000Z"
+        },
+        {
+            "id": 1,
+            "uuid": "7c176cda-9ea4-4107-ba70-3e0e7f017fb8",
+            "tenant_id": 1,
+            "exercise": 2026,
+            "reference_month": 8,
+            "reference_label": "08/2026",
+            "status": "completed",
+            "status_label": "Gerada",
+            "cardug_identifier": "004821",
+            "generated_with_previous_identifier": false,
+            "file_size": 2217,
+            "file_checksum": "7e2ee4ae7d464ec2ba7e19e88bdd1602bc89105bb108ded8ea53f094ea3d11bd",
+            "suggested_file_name": "remessa-assistencia-social-maceio-2026-08.zip",
+            "layout_count": 11,
+            "record_count": 0,
+            "pendency_count": 16,
+            "error_message": null,
+            "requested_by_label": "Joana B. F.",
+            "started_at": "2026-08-17T17:18:23.000000Z",
+            "finished_at": "2026-08-17T17:18:23.000000Z",
+            "created_at": "2026-08-17T17:18:23.000000Z"
+        }
+    ],
+    "anterior_preservada": {
+        "file_path_inalterado": true,
+        "file_checksum_inalterado": true
+    }
+}

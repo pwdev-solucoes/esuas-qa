@@ -1,0 +1,25 @@
+# §8.1 — base DEV (esuas @ api-pgsql-1), 2026-09-16 06:46, psql (saida AGREGADA: tenant, unidade, codigo, qty — sem familia)
+SELECT f.tenant_id, su.id AS social_unit_id, s.code AS service_code, COUNT(*) AS qty
+FROM family_follow_ups f
+JOIN social_units su       ON su.id = f.social_unit_id
+JOIN follow_up_services s  ON s.id  = f.follow_up_service_id
+WHERE f.deleted_at IS NULL
+  AND f.status <> 'cancelled'
+  AND s.social_unit_type_id <> su.type_id
+GROUP BY f.tenant_id, su.id, s.code;
+
+ tenant_id | social_unit_id | service_code | qty 
+-----------+----------------+--------------+-----
+(0 rows)
+
+
+# contexto (agregado, sem PII): acompanhamentos por tenant/status na base dev
+ tenant_id |  status   | count 
+-----------+-----------+-------
+         5 | cancelled |     5
+(1 row)
+
+
+# §8.1 via tinker (conexao padrao da API, no container api-laravel.test-1) — mesma consulta pelo helper de teste
+[]
+DB_CONNECTION=pgsql DB=esuas

@@ -1,0 +1,31 @@
+[globalSetup] Rate-limiter cache do Laravel zerado.
+
+Running 24 tests using 2 workers
+
+  ✓   2 [setup] › tests/auth.setup.ts:10:6 › autentica super admin (UI) e propaga cookies para o api-client (1.3s)
+[tenant-auth.setup] sessão de tenant pronta em /Users/binho/Projetos/esuas-all/e2e/.auth/tenant.json
+  ✓   1 [setup] › tests/tenant-auth.setup.ts:82:6 › autentica usuário do tenant (client) e propaga cookies para o api-client (1.6s)
+  ✓   3 [chromium-tenant] › tests/client/family-follow-up.spec.ts:222:7 › US-ACOMP-02 — acompanhamento familiar no prontuário (client) › (g) família nunca acompanhada mostra o estado vazio do bloco (6.5s)
+  ✓   4 [chromium-tenant] › tests/client/family-follow-up.spec.ts:245:7 › US-ACOMP-02 — acompanhamento familiar no prontuário (client) › (b) num CRAS o select oferece só o PAIF — o PAEFI não é ofertado (7.9s)
+  ✓   5 [chromium-tenant] › tests/client/family-follow-up.spec.ts:263:7 › US-ACOMP-02 — acompanhamento familiar no prontuário (client) › (d) data futura é barrada no próprio formulário (7.9s)
+  ✓   6 [chromium-tenant] › tests/client/family-follow-up.spec.ts:291:7 › US-ACOMP-02 — acompanhamento familiar no prontuário (client) › (a) registra o ingresso no PAIF a partir de um CRAS (8.8s)
+  ✓   7 [chromium-tenant] › tests/client/family-follow-up.spec.ts:324:7 › US-ACOMP-02 — acompanhamento familiar no prontuário (client) › (c) segundo ingresso na mesma unidade e serviço é recusado, apontando o existente (9.3s)
+  ✓   8 [chromium-tenant] › tests/client/family-follow-up.spec.ts:352:7 › US-ACOMP-02 — acompanhamento familiar no prontuário (client) › (e) cancelar com motivo mantém a linha no prontuário, marcada (7.7s)
+  ✓   9 [chromium-tenant] › tests/client/family-follow-up.spec.ts:417:7 › US-ACOMP-02 — negativa de acesso ao bloco de acompanhamento (client) › (f) Operacional sem acesso não vê o bloco, e a negativa não nomeia unidade (6.4s)
+  ✓  10 [chromium-tenant] › tests/client/family-follow-up.spec.ts:540:7 › US-ACOMP-03 — desligamento e avaliação de resultados (client) › (c) os meses de acompanhamento são apresentados calculados e NÃO digitáveis (6.6s)
+  ✓  11 [chromium-tenant] › tests/client/family-follow-up.spec.ts:561:7 › US-ACOMP-03 — desligamento e avaliação de resultados (client) › (d) "não se aplica" vem sugerida quando não houve encaminhamento — e é alterável (7.4s)
+  ✓  12 [chromium-tenant] › tests/client/family-follow-up.spec.ts:591:7 › US-ACOMP-03 — desligamento e avaliação de resultados (client) › (b) concluir sem a avaliação é recusado, e o acompanhamento continua vigente (7.9s)
+  ✓  13 [chromium-tenant] › tests/client/family-follow-up.spec.ts:617:7 › US-ACOMP-03 — desligamento e avaliação de resultados (client) › (e) a combinação incoerente pede confirmação — e, confirmada, é salva como informada (9.8s)
+  ✓  14 [chromium-tenant] › tests/client/family-follow-up.spec.ts:665:7 › US-ACOMP-03 — desligamento e avaliação de resultados (client) › (a) o desligamento aparece no prontuário com a avaliação ao lado (6.5s)
+  ✓  15 [chromium-tenant] › tests/client/family-follow-up.spec.ts:688:7 › US-ACOMP-03 — desligamento e avaliação de resultados (client) › (f) a avaliação não tem ação de excluir nem de editar — e não há reabertura (6.5s)
+  ✓  16 [chromium-tenant] › tests/client/family-follow-up.spec.ts:709:7 › US-ACOMP-03 — desligamento e avaliação de resultados (client) › reingresso após desligamento é aceito, e a linha anterior permanece intacta (9.3s)
+  ✓  17 [chromium-tenant] › tests/client/family-follow-up.spec.ts:906:7 › US-ACOMP-04 — acesso ao prontuário pela unidade que acompanha (client) › (a) quando a minha unidade acompanha, o prontuário da família de outra unidade abre (6.1s)
+  ✓  18 [chromium-tenant] › tests/client/family-follow-up.spec.ts:917:7 › US-ACOMP-04 — acesso ao prontuário pela unidade que acompanha (client) › (b) o acesso é ao prontuário INTEIRO — composição, atendimentos e encaminhamentos (6.0s)
+  ✓  19 [chromium-tenant] › tests/client/family-follow-up.spec.ts:934:7 › US-ACOMP-04 — acesso ao prontuário pela unidade que acompanha (client) › (c) cancelado NÃO concede: o acesso fecha, e a negativa declara os dois eixos sem nomear unidade (12.7s)
+  ✓  20 [chromium-tenant] › tests/client/family-follow-up.spec.ts:981:7 › US-ACOMP-04 — acesso ao prontuário pela unidade que acompanha (client) › DESLIGADO mantém o acesso — só o cancelamento fecha (US-ACOMP-03 destrava este par) (17.8s)
+  ✓  21 [chromium-tenant] › tests/client/family-follow-up.spec.ts:1136:7 › US-ACOMP-05 — contadores de acompanhamento na apuração (client) › (a) os contadores do 15.6 e do 15.7 aparecem ACESOS, onde antes diziam indisponível (50ms)
+  ✓  22 [chromium-tenant] › tests/client/family-follow-up.spec.ts:1158:7 › US-ACOMP-05 — contadores de acompanhamento na apuração (client) › (b) os quatro perfis indisponíveis são IDENTIFICADOS com a fase de que dependem (84ms)
+  ✓  23 [chromium-tenant] › tests/client/family-follow-up.spec.ts:1200:7 › US-ACOMP-05 — contadores de acompanhamento na apuração (client) › (c) o ponto de atenção lista acompanhamentos vigentes sem nenhum atendimento (28ms)
+  ✓  24 [chromium-tenant] › tests/client/family-follow-up.spec.ts:1216:7 › US-ACOMP-05 — contadores de acompanhamento na apuração (client) › (e) unidade sem nenhum acompanhamento aparece com ZERO DECLARADO (30ms)
+
+  24 passed (2.9m)

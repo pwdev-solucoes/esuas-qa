@@ -1,0 +1,139 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — Painel 3: Bolsa Família",
+    "subtitle": "HU #10188 · Dashboard do tenant · Evidências end-to-end no client",
+    "rows": [
+      [
+        "Gerado em",
+        "30/07/2026"
+      ],
+      [
+        "HU",
+        "#10188 — Painel 3: Bolsa Família"
+      ],
+      [
+        "Branch",
+        "feature/10188-painel-3-bolsa-familia (api + client)"
+      ],
+      [
+        "Spec",
+        ".planning/specs/10188-painel-3-bolsa-familia.md"
+      ],
+      [
+        "Ambiente",
+        "API Sail/PostgreSQL+PostGIS · client :5174 (não-mock)"
+      ],
+      [
+        "Organização (tenant)",
+        "E2E CadÚnico · 96 famílias · 22 beneficiárias do PBF"
+      ],
+      [
+        "Limiares de renda",
+        "Extrema pobreza R$ 218,00 · meio SM R$ 759,00 (tabela minimum_wages)"
+      ],
+      [
+        "Ferramenta",
+        "playwright-cli (Chromium) + Pest"
+      ]
+    ]
+  },
+  "summary": "7 critérios evidenciados: 4 por navegador dirigindo o client real (CA05 perfil de renda dos beneficiários, RN05 cobertura + perfil, e o RG01 nas modalidades padrão/dinâmico/limpar) e 3 por suíte automatizada (partição + consistência com o KPI 3 da barra fixa, isolamento multi-tenant e gate de permissão). Todos atendidos. Suíte Pest do backend: 9 testes verdes (41 asserções).",
+  "cas": [
+    {
+      "id": "CA05",
+      "title": "Cruzamento de renda dos beneficiários (perfil socioeconômico)",
+      "status": "nav",
+      "gherkin": "Dado que consulto o perfil do Bolsa Família (aba \"Bolsa Família\")\nQuando a tela renderiza o gráfico de perfil socioeconômico\nEntão identifico quantas famílias beneficiárias do programa estão enquadradas em cada faixa de renda per capita (Extrema Pobreza, Pobreza/Baixa Renda e Acima de Meio Salário Mínimo).",
+      "steps_html": "Login como Master, aba <b>Bolsa Família</b>. Leitura do gráfico de rosca <b>Perfil Socioeconômico dos Beneficiários</b> (Apache ECharts).",
+      "results": [
+        "O gráfico cruza os 22 beneficiários com as 3 faixas de renda: <b>Extrema Pobreza 9 (40,9%)</b>, <b>Pobreza/Baixa Renda 8 (36,4%)</b> e <b>Acima de Meio Salário Mínimo 5 (22,7%)</b>.",
+        "A legenda detalha a contagem, o percentual e a faixa em R$ de cada grupo."
+      ],
+      "images": [
+        "screenshots/ca05-perfil-renda.png"
+      ]
+    },
+    {
+      "id": "RN05-cob",
+      "title": "Indicador de cobertura (Famílias Beneficiárias)",
+      "status": "nav",
+      "gherkin": "Dado um recorte com famílias\nQuando o painel é calculado\nEntão \"Famílias Beneficiárias\" = famílias com a marcação de recebimento ativo do PBF (contagem + percentual sobre o total).",
+      "steps_html": "Cartão de cobertura no topo do Painel 3, no recorte municipal.",
+      "results": [
+        "Famílias Beneficiárias do Bolsa Família: <b>22 (22,9% do total)</b>, de 96 famílias cadastradas no recorte."
+      ],
+      "images": [
+        "screenshots/rn05-cobertura-topo.png"
+      ]
+    },
+    {
+      "id": "RG01-a",
+      "title": "Filtro global por Bairro — comportamento padrão (\"Todos os Bairros\")",
+      "status": "nav",
+      "gherkin": "Dado que acabei de carregar a aba \"Bolsa Família\"\nQuando nenhum bairro está selecionado\nEntão o filtro inicia em \"Todos os Bairros\"\nE a cobertura e o perfil refletem a consolidação municipal.",
+      "steps_html": "Ao abrir o dashboard, o filtro global (topo, à direita) inicia em <code>Todos os Bairros</code>.",
+      "results": [
+        "Filtro em \"Todos os Bairros\"; cobertura e perfil exibem a consolidação municipal (22 beneficiárias de 96)."
+      ],
+      "images": [
+        "screenshots/rn05-cobertura-topo.png"
+      ]
+    },
+    {
+      "id": "RG01-bc",
+      "title": "Filtro global por Bairro — recálculo dinâmico e \"Limpar Filtro\"",
+      "status": "nav",
+      "gherkin": "Dado que o filtro global está em \"Todos os Bairros\"\nQuando eu seleciono o bairro \"Itapoã\"\nEntão a cobertura e o perfil recalculam para as famílias do bairro (RN07)\nE ao acionar \"Limpar Filtro\" o painel volta à consolidação municipal.",
+      "steps_html": "Seleção do bairro <b>Itapoã</b> no filtro global; um único evento recalcula a barra fixa E o painel (RG01/RN08).",
+      "results": [
+        "Recálculo instantâneo: cobertura 22 → 2 (66,7% de 3 famílias); barra fixa e painel exibem \"Recalculado por bairro: Itapoã\".",
+        "O perfil recalcula (2 beneficiárias em Extrema Pobreza). O KPI \"Famílias no Bolsa Família\" da barra fixa também mostra 2 (consistência RN08).",
+        "O botão \"Limpar Filtro\" retorna imediatamente à visão municipal (cobertura volta a 22, filtro a \"Todos os Bairros\")."
+      ],
+      "images": [
+        "screenshots/rg01-bairro-itapoa.png"
+      ]
+    },
+    {
+      "id": "PART",
+      "title": "Partição do perfil e consistência com a barra fixa",
+      "status": "parc",
+      "gherkin": "Então extreme_poverty + low_income + above_half_minimum_wage = Famílias Beneficiárias\nE \"Famílias Beneficiárias\" é igual ao KPI 3 (Total de Famílias Bolsa Família) da barra fixa (#10184).",
+      "steps_html": "Verificado na UI (9+8+5 = 22) e por testes automatizados (Pest) — ver apêndice.",
+      "results": [
+        "Na tela: 9 (Extrema Pobreza) + 8 (Baixa Renda) + 5 (Acima de Meio SM) = 22 (Beneficiárias).",
+        "BolsaFamiliaTest: partição das 3 faixas e teste cruzado \"beneficiaries == KPI 3\" (RN08); não-beneficiárias excluídas do perfil."
+      ],
+      "images": [
+        "screenshots/ca05-perfil-renda.png"
+      ]
+    },
+    {
+      "id": "ISO",
+      "title": "Isolamento multi-tenant",
+      "status": "auto",
+      "gherkin": "Dado um usuário vinculado ao Tenant A\nQuando ele solicita o Painel 3\nEntão apenas famílias do Tenant A entram nos cálculos\nE um neighborhood_uuid fora do município do Tenant A retorna 422.",
+      "steps_html": "Coberto por teste automatizado (Pest) — ver apêndice.",
+      "results": [
+        "DashboardBolsaFamiliaIsolationTest: famílias/beneficiárias do Tenant B nunca são contadas para o Tenant A.",
+        "BolsaFamiliaTest: 422 para bairro fora do município do tenant."
+      ],
+      "images": []
+    },
+    {
+      "id": "PERM",
+      "title": "Gate de permissão (sem dashboard.view-indicators → 403 / painel oculto)",
+      "status": "auto",
+      "gherkin": "Dado um usuário sem dashboard.view-indicators\nQuando ele chama o endpoint do Painel 3\nEntão recebe 403 (e o painel não é exibido).",
+      "steps_html": "Coberto por teste automatizado (Pest) — o endpoint reusa o gate da barra fixa (#10184).",
+      "results": [
+        "BolsaFamiliaTest: operador sem o papel dedicado recebe 403; Master acessa sem add-on."
+      ],
+      "images": []
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Pest — BolsaFamilia + Isolamento)",
+    "file": "bolsa-familia.txt"
+  }
+}

@@ -1,0 +1,66 @@
+
+   PASS  Tests\Unit\Family\FamilyIntakeActionsTest
+  ✓ it reads the referring-agency requirement STRAIGHT FROM THE LOOKUP…  0.75s  
+  ✓ it registers signing the record with the acting user and the tenant… 0.02s  
+  ✓ it never turns a second register into an update — the DB refuses it… 0.02s  
+  ✓ it classifies the unique-index collision so the controller can answ… 0.02s  
+  ✓ it finds the existing record scoped to the tenant, never across mun… 0.02s  
+  ✓ it corrects IN PLACE and clears the agency when the new form does n… 0.02s  
+  ✓ it syncs social programs treating (program, member) as the unit — t… 0.03s  
+  ✓ it deduplicates a repeated (program, member) pair in the payload     0.02s  
+  ✓ it offers only ACTIVE programs from the global lookup                0.02s  
+
+   PASS  Tests\Unit\Models\FamilyIntakeFormTest
+  ✓ it has correct fillable, casts and defaults                          0.02s  
+  ✓ it uses soft deletes, HasUuid, LogsActivity and resolves by uuid     0.01s  
+  ✓ it is a GLOBAL lookup — never tenant-scoped                          0.01s  
+  ✓ it keeps the referring agency rule as data, in a column              0.05s  
+  ✓ it enforces unique code                                              0.01s  
+
+   PASS  Tests\Feature\Api\FamilyIntakeFormControllerTest
+  ✓ it lists family intake forms                                         0.05s  
+  ✓ it shows a family intake form by uuid                                0.02s  
+  ✓ it creates a family intake form carrying the referring agency rule   0.02s  
+  ✓ it defaults requires_referring_agency to false when omitted          0.02s  
+  ✓ it rejects a duplicate code                                          0.02s  
+  ✓ it requires code and name                                            0.02s  
+  ✓ it lets the super admin fix the referring agency rule without a dep… 0.03s  
+  ✓ it soft deletes a family intake form                                 0.01s  
+  ✓ it bulk deactivates and bulk activates family intake forms           0.02s  
+  ✓ it filters by is_active and by requires_referring_agency             0.02s  
+  ✓ it blocks write without permission                                   0.02s  
+
+   PASS  Tests\Feature\Family\FamilyIntakeTest
+  ✓ it registers the intake by spontaneous demand, signed and dated (CA… 0.08s  
+  ✓ it requires the referring agency because THE LOOKUP ROW says so (CA… 0.06s  
+  ✓ it does NOT ask for the referring agency on active search — and rej… 0.06s  
+  ✓ it FLIPS the lookup column and the validation follows — WITHOUT tou… 0.06s  
+  ✓ it serves the lookup RULE to the screen on load, so the front never… 0.05s  
+  ✓ it refuses to save without the reason (CA04/RN04)                    0.05s  
+  ✓ it shows Bolsa Familia as imported and LOCKED (CA05/RN06)            0.05s  
+  ✓ it REJECTS any attempt to change receives_pbf through this block (C… 0.07s  
+  ✓ it accepts TWO BPC beneficiaries in the SAME family (CA06/P5)        0.07s  
+  ✓ it demands the beneficiary because THE LOOKUP says the program requ… 0.08s  
+  ✓ it refuses a beneficiary who is not an active member of THIS family… 0.05s  
+  ✓ it synchronises declarations idempotently, soft-deleting what left…  0.06s  
+  ✓ it serves everything the programs screen reads on load (CA05/CA06)   0.06s  
+  ✓ it refuses a SECOND intake record on the same family record (CA07/R… 0.05s  
+  ✓ it blocks the second record at the DATABASE too — the partial uniqu… 0.05s  
+  ✓ it corrects the record IN PLACE and audits the change (CA08/RN09)    0.07s  
+  ✓ it CLEARS the referring agency when corrected to a form that does n… 0.07s  
+  ✓ it answers 404 with a stable error_code when correcting a record th… 0.07s  
+  ✓ it NEVER leaks the reason (nor other_programs) into the activity_lo… 0.06s  
+  ✓ it presents the block as PENDING without blocking the record (CA09/… 0.07s  
+  ✓ it answers 404 for a family referenced in a unit outside my assignm… 0.05s  
+  ✓ it answers 403 with a stable error_code when there is no current as… 0.05s  
+  ✓ it answers 404 for a family of ANOTHER municipality (CA10/RN07)      0.05s  
+
+   PASS  Tests\Feature\TenantIsolation\FamilyIntakeIsolationTest
+  ✓ it applies BelongsToTenant to FamilyIntake                           0.04s  
+  ✓ it applies BelongsToTenant to FamilySocialProgram                    0.03s  
+  ✓ it keeps the scope a NO-OP outside the HTTP cycle — which is why pr… 0.03s  
+  ✓ it keeps the two lookups GLOBAL — without BelongsToTenant, on purpo… 0.03s  
+
+  Tests:    52 passed (251 assertions)
+  Duration: 3.51s
+

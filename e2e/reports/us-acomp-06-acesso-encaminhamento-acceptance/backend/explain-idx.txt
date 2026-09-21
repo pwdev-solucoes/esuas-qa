@@ -1,0 +1,23 @@
+-- Predicado 8.1 (tenant=5, family=15, units=[4])
+Result  (cost=8.15..8.16 rows=1 width=1) (actual time=0.025..0.026 rows=1.00 loops=1)
+  Buffers: shared hit=2
+  InitPlan 1
+    ->  Index Only Scan using referrals_destination_access_idx on referrals r  (cost=0.13..8.15 rows=1 width=0) (actual time=0.025..0.025 rows=1.00 loops=1)
+          Index Cond: ((tenant_id = '5'::bigint) AND (family_id = '15'::bigint) AND (destination_social_unit_id = '4'::bigint))
+          Heap Fetches: 1
+          Index Searches: 1
+          Buffers: shared hit=2
+Planning:
+  Buffers: shared hit=188
+Planning Time: 0.305 ms
+Execution Time: 0.032 ms
+
+-- Recorte por query (8.3, so o EXISTS do eixo 3 correlacionado)
+Nested Loop  (cost=8.29..17.39 rows=1 width=8)
+  ->  HashAggregate  (cost=8.15..8.16 rows=1 width=8)
+        Group Key: r.family_id
+        ->  Index Only Scan using referrals_destination_access_idx on referrals r  (cost=0.13..8.15 rows=1 width=8)
+              Index Cond: ((tenant_id = '5'::bigint) AND (destination_social_unit_id = '4'::bigint))
+  ->  Index Scan using families_pkey on families fam  (cost=0.14..8.15 rows=1 width=8)
+        Index Cond: (id = r.family_id)
+        Filter: (tenant_id = '5'::bigint)

@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — US-DIAG-02 · Condições habitacionais da família</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  section.note { border:1px solid var(--line); border-left:4px solid #b06a00; border-radius:6px; padding:10px 14px; margin:10px 0; background:#fffdf7; font-size:13px; }
+  section.note h3 { margin:0 0 6px; font-size:13.5px; color:#8a5200; }
+  section.note p { margin:6px 0; }
+  section.note ul { margin:6px 0 6px 18px; padding:0; }
+  section.note pre { background:var(--bg); border:1px solid var(--line); border-radius:4px; padding:8px; overflow-x:auto; font-size:11px; white-space:pre-wrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — US-DIAG-02 · Condições habitacionais da família</h1>
+    <div class="sub">Épico HU-PRONT-DIAG (fase F6) · bloco 4 do instrumento / leiaute 15.11 · evidências end-to-end no Painel do Tenant</div>
+    <div class="meta"><div><span>Gerado em:</span> 17/09/2026 18:05</div><div><span>Spec:</span> .planning/specs/US-DIAG-02-condicoes-habitacionais.md</div><div><span>Branch:</span> feature/diag-prontuario-blocos-4-6-8-10 (api be790f7 · client bebf1c0)</div><div><span>Ambiente:</span> API Laravel/Sail (container api-laravel.test-1) + PostgreSQL · client build de produção servido em :4174</div><div><span>Organização (tenant):</span> E2E CadÚnico (uuid 00000000-…-c1) · 3 unidades · 12 famílias</div><div><span>Perfil usado:</span> Operacional do Tenant — CPF 111.444.777-35, papel operador + add-on LGPD family_viewer, lotação vigente em E2E CRAS Centro e E2E CRAS Sem MDS</div><div><span>Ferramenta:</span> playwright-cli (Chromium headless) + Pest 4 (--filter=FamilyHousingCondition)</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">Os 10 critérios de aceite da US-DIAG-02 foram verificados: 4 exclusivamente no navegador, 5 de forma combinada (navegador + suíte Pest / payload da API / trilha de auditoria) e 1 exclusivamente automatizado (isolamento entre organizações, que a massa de dados disponível não permite encenar na tela). Nenhum critério ficou em falta e nenhum defeito foi encontrado. Os três critérios mais sensíveis da história foram provados com dado real do banco: a vulnerabilidade do domicílio permaneceu NULL depois de gravar a área de risco como "sim" (CA03), a família sem registro devolveu os três campos vazios e nenhum deles como "Não" (CA05), e os elementos de apoio aparecem como texto de leitura, sem nenhum controle de entrada (CA04). A suíte automatizada fechou 27 testes verdes / 152 asserções.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA01</td><td>Registrar as condições habitacionais (happy path)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA02</td><td>Tipo de residência com as nove opções</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA03</td><td>Vulnerabilidade não é calculada</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA04</td><td>Elementos de apoio à declaração</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA05</td><td>Ausência é diferente de negativa</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA06</td><td>Ausência gera pendência na conferência</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA07</td><td>Correção auditada</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA08</td><td>O endereço não é editado aqui</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA09</td><td>Negativa declara o motivo</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA10</td><td>Isolamento entre municípios</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA01">
+      <h2>CA01 — Registrar as condições habitacionais (happy path) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Operacional do Tenant com o add-on LGPD, lotado no "CRAS Centro"
+E que a família Silva é referenciada no "CRAS Centro"
+Quando eu registrar tipo de residência "cedida", área de risco "não" e vulnerabilidade "não"
+Então os três valores são salvos
+E constam no prontuário com meu nome e a data</p>
+      <p class="steps"><strong>Como foi testado:</strong> Autenticado como <b>E2E Operador Prontuário</b> (operador + add-on LGPD, lotado no <code>E2E CRAS Centro</code>), abri o prontuário da família <code>9900000009</code> — referenciada no <code>E2E CRAS Centro</code> — e a aba <b>Condições habitacionais</b>. Selecionei <code>5 — Cedida</code>, marquei <b>Não</b> em "Domicílio em área de risco" e <b>Não</b> em "Domicílio em situação de vulnerabilidade", e cliquei em <b>Salvar condições habitacionais</b>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>PUT /api/client/families/00000000-…-f0009/housing-conditions respondeu 200.</li><li>Linha gravada no banco: residence_type_id=5 · in_risk_area=false · domicile_vulnerability=false · created_by=14.</li><li>A tela passou a exibir a assinatura "Registrado por E2E Operador Prontuário em 17/09/2026" (RN10 — registro assinado e datado).</li><li>O aviso de pendência do leiaute 15.11 desapareceu: com os três campos respondidos, não há mais campo em falta.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca01-registro-happy-path.png" alt="CA01 evidência"/><figcaption>ca01-registro-happy-path.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA02">
+      <h2>CA02 — Tipo de residência com as nove opções <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Quando eu abrir o select de tipo de residência
+Então me são oferecidas as nove opções do Manual, incluindo aluguel social, arrendada, financiada e invadida</p>
+      <p class="steps"><strong>Como foi testado:</strong> Na aba <b>Condições habitacionais</b>, abri o campo <b>Tipo de residência</b>. A lista vem do lookup global <code>GET /api/residence-types</code> (US-DIAG-01), não de uma lista escrita na tela.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>As nove opções do Manual são oferecidas, na ordem e com o código: 1 — Própria, 2 — Alugada, 3 — Aluguel social, 4 — Arrendada, 5 — Cedida, 6 — Financiada, 7 — Invadida, 8 — Ocupada, 9 — Outros.</li><li>As quatro opções citadas nominalmente pelo critério estão presentes: aluguel social (3), arrendada (4), financiada (6) e invadida (7).</li><li>Além das nove, o select oferece "Sem informação" — que não é uma décima opção do Manual, e sim o terceiro estado do campo (RN06): o tipo de residência pode voltar a não ter resposta, e isso é pendência, não um valor.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca02-nove-opcoes.png" alt="CA02 evidência"/><figcaption>ca02-nove-opcoes.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA03">
+      <h2>CA03 — Vulnerabilidade não é calculada <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que registrei in_risk_area = true
+Quando eu abrir o campo de vulnerabilidade do domicílio
+Então domicile_vulnerability permanece NULL
+E nenhum valor foi atribuído pelo sistema a partir da área de risco</p>
+      <p class="steps"><strong>Como foi testado:</strong> Na família <code>9900000007</code>, marquei <b>Sim</b> em "Domicílio em área de risco" <u>sem tocar</u> no campo de vulnerabilidade e salvei. Em seguida conferi o estado da tela, o payload devolvido pelo <code>GET</code> e a linha no banco.<pre>familia 9900000007 (CA03)
+{
+  "residence_type": null,
+  "in_risk_area": true,
+  "domicile_vulnerability": null,
+  "missing_fields": ["residence_type", "domicile_vulnerability"]
+}
+
+-- banco --
+residence_type_id = NULL | in_risk_area = true | domicile_vulnerability = NULL</pre></p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Na tela, o controle de vulnerabilidade permaneceu em "Sem informação" — nada foi pré-preenchido, sugerido ou marcado pelo sistema a partir da área de risco.</li><li>No banco, domicile_vulnerability continua NULL depois de gravar in_risk_area = true (D04 — o campo não tem default, mutator, observer nem derivação).</li><li>No payload da API, o valor volta como null, e o campo aparece em missing_fields.</li><li>A tela ainda declara a regra em texto: "A vulnerabilidade do domicílio é declarada pelo município: o sistema não a deduz da área de risco nem de qualquer outro dado."</li><li>A suíte Pest cobre o mesmo ponto por dois ângulos: "it keeps domicile_vulnerability NULL after recording in_risk_area = true" e "it never lets the risk area answer leak into the vulnerability column".</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca03-vulnerabilidade-nao-calculada.png" alt="CA03 evidência"/><figcaption>ca03-vulnerabilidade-nao-calculada.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA04">
+      <h2>CA04 — Elementos de apoio à declaração <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Quando eu olhar a tela ao responder a vulnerabilidade
+Então vejo, como apoio, as perguntas sobre área de risco, difícil acesso geográfico e presença de conflito
+E elas não são campos a preencher — não existem no payload nem na tabela</p>
+      <p class="steps"><strong>Como foi testado:</strong> Inspecionei o painel ao lado do campo de vulnerabilidade. A evidência deste critério é a <b>ausência de controles</b>: os três itens aparecem como itens de uma lista de leitura, e a legenda de cada um diz se ele é coletado.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Os três elementos do bloco 4 são exibidos como texto: "domicílio em área de risco de desabamento ou alagamento (coletado acima)", "difícil acesso geográfico (não coletado)" e "forte presença de conflito ou violência na região (não coletado)".</li><li>Nenhum dos três tem input, radio, checkbox ou select: o painel é um &lt;aside&gt; com um &lt;ul&gt; — não há controle algum dentro dele (confirmado no snapshot de acessibilidade da página, que lista apenas 'listitem' sob o painel).</li><li>O único dos três que é campo é a área de risco, e ele fica fora do painel, acima — exatamente como o instrumento prevê (item l).</li><li>Do lado do backend, o Pest assere a contrapartida: "it has NO column and NO payload field for difficult access or violence" — não existem colunas difficult_access/violence_presence nem chaves correspondentes no PUT.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca04-elementos-de-apoio.png" alt="CA04 evidência"/><figcaption>ca04-elementos-de-apoio.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA05">
+      <h2>CA05 — Ausência é diferente de negativa <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que a família Souza nunca teve as condições habitacionais registradas
+Quando eu consultar o prontuário
+Então os três campos aparecem vazios
+E nenhum deles é apresentado como "não"</p>
+      <p class="steps"><strong>Como foi testado:</strong> Abri a aba <b>Condições habitacionais</b> da família <code>9900000008</code>, que nunca teve registro (nenhuma linha em <code>family_housing_conditions</code>), e conferi a tela e o payload.<pre>familia 9900000008 (CA05)
+{ "data": null, "is_pending": true }</pre></p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O tipo de residência aparece como "Sem informação"; os dois campos de sim/não aparecem com o terceiro estado "Sem informação" selecionado.</li><li>Nenhum dos três é apresentado como "Não": o controle tem três estados (Sim / Não / Sem informação) e os botões "Não" estão visivelmente não selecionados.</li><li>O payload devolve data: null e is_pending: true — nunca false. O Pest confirma o contrato nos dois sentidos: "it returns data null and is_pending true for a family that was never …" e "it returns NULL as null — never as false — in the payload".</li><li>Há ainda um teste de borda relevante: "it reads the string 'false' as false, not as true" — o prepareForValidation impede que a string "false" vire true e apague a distinção.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca05-ausencia-nao-e-negativa.png" alt="CA05 evidência"/><figcaption>ca05-ausencia-nao-e-negativa.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA06">
+      <h2>CA06 — Ausência gera pendência na conferência <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que a família Souza está sem as condições habitacionais informadas
+Quando eu solicitar a conferência prévia de uma referência em que ela é atendida
+Então é apontada pendência impeditiva identificando a família e os campos em falta</p>
+      <p class="steps"><strong>Como foi testado:</strong> Duas verificações. (1) Na tela, o prontuário exibe o aviso de pendência do leiaute 15.11 nomeando <u>exatamente</u> os campos que ninguém respondeu — a imagem abaixo é a família <code>9900000007</code>, que já tem a área de risco gravada e por isso só acusa dois. (2) No servidor, rodei a consulta da §8.2 da spec (o insumo da conferência prévia por família) sobre as 12 famílias da organização.<pre>FAMILIA       TIPO RESIDENCIA   AREA DE RISCO   VULNERABILIDADE
+----------------------------------------------------------------------
+9900000001    EM FALTA          EM FALTA        EM FALTA
+...
+9900000007    EM FALTA          ok              EM FALTA
+9900000008    EM FALTA          EM FALTA        EM FALTA
+9900000009    ok                ok              ok
+...</pre></p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A pendência identifica a família (o aviso está no prontuário dela) e os campos em falta, nominalmente: "Tipo de residência · Domicílio em situação de vulnerabilidade".</li><li>A lista de campos vem do servidor (missing_fields), não é recalculada na tela — e muda conforme o que foi respondido: três campos na família 9900000008, dois na 9900000007, nenhum na 9900000009.</li><li>A consulta §8.2 da spec, rodada no banco, distingue corretamente as 12 famílias e diz qual campo falta em cada uma.</li><li>A suíte Pest cobre o contrato: "it names exactly which of the three fields are still missing (CA06)".</li><li>RESSALVA: a conferência AGREGADA de uma referência (a tela "Apuração de Atendimentos", da US-DIAG-05) não pôde ser exercida — ver a observação "Conferência agregada da referência" ao final deste dossiê.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca06-pendencia-campos-em-falta.png" alt="CA06 evidência"/><figcaption>ca06-pendencia-campos-em-falta.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA07">
+      <h2>CA07 — Correção auditada <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que registrei o tipo de residência errado
+Quando eu corrigi-lo
+Então a correção é salva
+E o activity_log registra a alteração, com autor, data e valores antes/depois</p>
+      <p class="steps"><strong>Como foi testado:</strong> Na família <code>9900000009</code>, troquei o tipo de residência de <code>5 — Cedida</code> para <code>2 — Alugada</code> e salvei. Depois li a trilha em <code>activity_log</code> (log_name <code>family_housing_condition</code>).<pre>activity #3144  evento=created  familia=9900000009  autor=E2E Operador Prontuário  em 2026-09-17 21:00:41
+   {"attributes":{"residence_type_id":5,"in_risk_area":false,"domicile_vulnerability":false}}
+
+activity #3145  evento=updated  familia=9900000009  autor=E2E Operador Prontuário  em 2026-09-17 21:01:01
+   {"attributes":{"residence_type_id":2},"old":{"residence_type_id":5}}</pre></p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A correção foi salva pelo mesmo PUT idempotente: não há POST nem segundo registro — a tabela continua com UMA linha por família (RN01).</li><li>O activity_log registrou o evento 'updated' com autor (E2E Operador Prontuário), data/hora e os valores antes/depois: old.residence_type_id = 5, attributes.residence_type_id = 2.</li><li>O campo updated_by da linha passou a apontar para quem corrigiu.</li><li>O Pest cobre o cenário completo, inclusive com um corretor diferente do autor original: "it corrects the record in place and audits the change with author and before/after (CA07)" e "it audits the three value fields — and only them (D07)".</li><li>Nota técnica: no spatie/laravel-activitylog v5 os valores antes/depois ficam na coluna attribute_changes, não em properties (que guarda apenas o tenant_id injetado pelo App\Models\Activity).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca07-correcao-na-tela.png" alt="CA07 evidência"/><figcaption>ca07-correcao-na-tela.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA08">
+      <h2>CA08 — O endereço não é editado aqui <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Quando eu procurar os campos de CEP e zona de residência nesta tela
+Então eles não são oferecidos
+E continuam sendo mantidos no endereço da família</p>
+      <p class="steps"><strong>Como foi testado:</strong> Comparei as duas telas do mesmo prontuário: a aba <b>Condições habitacionais</b> (primeira imagem) e a aba <b>Resumo</b> (segunda imagem), onde vive o endereço da família.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A aba Condições habitacionais tem exatamente três campos — tipo de residência, área de risco e vulnerabilidade. Não há campo de CEP, logradouro, número, município ou zona de residência.</li><li>A própria tela declara para onde foram: "Endereço, CEP e zona de residência são mantidos no endereço da família."</li><li>Na aba Resumo, o painel "Endereço e Zona de Residência" mostra Localidade, Tipo/Nome do Logradouro, Número, Complemento, CEP, Município/UF e o selo "Situação do Domicílio" — confirmando que a manutenção continua lá.</li><li>O Pest fecha o lado do backend: "it neither offers nor accepts address, postal code or residence zone" — a tabela não tem coluna de endereço e o PUT não aceita essas chaves.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca04-elementos-de-apoio.png" alt="CA08 evidência"/><figcaption>ca04-elementos-de-apoio.png</figcaption></figure><figure><img src="screenshots/ca08-endereco-no-resumo.png" alt="CA08 evidência"/><figcaption>ca08-endereco-no-resumo.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA09">
+      <h2>CA09 — Negativa declara o motivo <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Operacional lotado apenas no "CRAS Rural"
+E que a família Silva é referenciada no "CRAS Centro" e acompanhada pelo "CREAS"
+Quando eu tentar registrar as condições habitacionais dela
+Então recebo 403 com reason = unit_not_assigned
+E a mensagem não nomeia o "CRAS Centro" nem o "CREAS"</p>
+      <p class="steps"><strong>Como foi testado:</strong> Cenário equivalente ao do critério, com as unidades que a massa E2E oferece: o mesmo Operacional (lotado em <code>E2E CRAS Centro</code> e <code>E2E CRAS Sem MDS</code>) tentou abrir a família <code>9900000002</code>, que é referenciada no <code>E2E CREAS</code> — unidade fora da sua lotação e sem acompanhamento que lhe dê o segundo eixo.<pre>GET /api/client/families/00000000-…-f0002/housing-conditions
+=> 403 Forbidden
+{
+  "message": "Esta família é referenciada e acompanhada em unidades onde você não possui lotação vigente. Procure o gestor Master do município.",
+  "error_code": "unit_not_assigned"
+}</pre></p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A resposta é 403 com error_code = unit_not_assigned — o motivo é declarado num código estável, não inferido pela tela.</li><li>A mensagem NÃO nomeia nenhuma unidade: não cita "E2E CREAS", "E2E CRAS Centro" nem qualquer outra. Diz o que falta (lotação vigente) e a quem recorrer (o gestor Master).</li><li>Na tela, o prontuário inteiro exibe o alerta "Acesso restrito" com a mesma mensagem — o bloco de condições habitacionais herda o gate do prontuário, sem permissão própria (D08).</li><li>O Pest cobre os dois motivos de negativa: "it answers 403 with unit_not_assigned, naming no unit, to an operator …" e "it answers 403 with missing_addon to an operator without the LGPD add-on".</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca09-negativa-declara-motivo.png" alt="CA09 evidência"/><figcaption>ca09-negativa-declara-motivo.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA10">
+      <h2>CA10 — Isolamento entre municípios <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou usuário do município A
+Quando eu acessar as condições habitacionais de uma família do município B
+Então recebo 404 — nunca 403, que confirmaria a existência da família</p>
+      <p class="steps"><strong>Como foi testado:</strong> Critério de backend. A massa semeada tem famílias em <u>uma única</u> organização (as 12 da E2E CadÚnico), então não há como encenar na tela um usuário do município A abrindo a família do município B — a evidência é a suíte automatizada, complementada por um probe de formato feito na sessão real do navegador.<pre>GET /api/client/families/00000000-…-fbbbb/housing-conditions
+=> 404 Not Found
+{ "message": "Registro não encontrado." }</pre></p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Tests\Feature\TenantIsolation\FamilyHousingConditionIsolationTest — 6 testes verdes, entre eles "it makes the housing condition of another municipality unreachable" e "it never lets the Action reach the row of another municipality".</li><li>Tests\Feature\Api\Client\FamilyHousingConditionTest — "it answers 404 — never 403 — for a family from another municipality".</li><li>O mesmo suite verifica a defesa em profundidade: "it applies BelongsToTenant to FamilyHousingCondition" (o Global Scope no Model, não só o middleware da rota) e "it keeps the residence_types lookup GLOBAL — without BelongsToTenant".</li><li>No navegador, uma família fora do escopo da organização ativa responde 404 com "Registro não encontrado." — nunca 403.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+  
+  <h2>Observações e ressalvas</h2>
+  <section class="note"><h3>Conferência agregada da referência (limite da massa de dados) — CA06</h3><p>O CA06 fala em "solicitar a conferência prévia de uma referência". No eSUAS isso existe em dois níveis, e só um deles pôde ser exercido nesta captura.</p><p><b>Por família (exercido).</b> O prontuário aponta a pendência impeditiva nomeando a família e os campos em falta — é a imagem deste CA, alimentada pelo <code>missing_fields</code> do servidor.</p><p><b>Agregado por referência (não exercido).</b> A tela <i>Apuração de Atendimentos</i> (US-DIAG-05) conta, por unidade e mês de referência, quantas famílias estão incompletas no leiaute 15.11. Ela é calculada <u>sobre os atendimentos do mês</u>, e a base semeada não tem <b>nenhum</b> atendimento registrado (<code>attendances</code> vazia em todas as organizações) — a tela sairia com contadores zerados, o que não provaria nada. Além disso, ela é acessível apenas com a permissão <code>attendance-reports.view</code>, que o Operacional usado neste dossiê não tem. No lugar dela rodei a consulta da §8.2 da própria spec, que é o insumo dessa conferência.</p><p><b>Divergência de redação a levar ao PO:</b> o CA06 pede a pendência "identificando a família", mas a US-DIAG-05 decide, na sua RN10, que a apuração agregada <u>não nomeia ninguém</u>. As duas coisas convivem porque a identificação acontece no prontuário e a contagem na apuração — mas convém alinhar o texto do critério para não sugerir que a tela agregada deva listar famílias.</p></section><section class="note"><h3>Ambiente: a porta da API divergia da configuração do frontend</h3><p>A API do Sail responde em <code>http://localhost</code> (porta 80), mas o build e o dev server do <code>client/</code> estavam configurados para <code>http://localhost:8000</code> — porta sem nada escutando. O sintoma era o login responder 200 e a chamada seguinte falhar. Como a instrução vedava alterar a configuração do projeto, encaminhei a porta 8000 para a 80 com um proxy TCP temporário, fora do repositório, encerrado no teardown. <b>Nada do projeto foi alterado</b> — nem configuração, nem migrations, nem seeds.</p><p>A captura foi feita contra o build de produção do client servido em <code>:4174</code>, gerado hoje às 17:48 a partir do mesmo commit da branch (<code>bebf1c0</code>) e contendo o código desta história. Essa porta é a única da faixa aceita pelo Sanctum stateful neste ambiente (<code>localhost:4173</code> / <code>localhost:4174</code>); em <code>:5175</code> e <code>:5176</code> a sessão não é reconhecida e toda chamada após o login volta 401.</p></section><section class="note"><h3>Marcas deixadas na base</h3><p>A captura gravou condições habitacionais em duas famílias da organização E2E CadÚnico: <code>9900000007</code> (apenas a área de risco, para o CA03) e <code>9900000009</code> (os três campos, depois corrigida para o CA07). As demais dez continuam sem registro. Além dos eventos gerados pela tela, a trilha de auditoria tem dois lançamentos adicionais (<code>activity #3147</code> e <code>#3148</code>) produzidos por uma verificação técnica da auditoria via tinker, que alternou <code>in_risk_area</code> e a devolveu ao valor original — declarados aqui para que ninguém os leia como ação de um profissional.</p></section><section class="note"><h3>Suíte automatizada</h3><p><code>docker exec api-laravel.test-1 php -d memory_limit=1G vendor/bin/pest --filter=FamilyHousingCondition</code> — <b>27 testes, 152 asserções, tudo verde em 4,34 s</b>. Saída completa no anexo. A suíte E2E completa do projeto <u>não</u> foi executada (ela tem falhas pré-existentes por timeout, alheias a esta história).</p></section>
+  
+  <h2>Anexo — Cobertura automatizada (Pest 4, --filter=FamilyHousingCondition)</h2>
+  <pre class="pest">
+   PASS  Tests\Feature\Api\Client\FamilyHousingConditionTest
+  ✓ it registers residence type, risk area and vulnerability, signed an… 0.72s  
+  ✓ it offers the nine Manual residence types to the tenant operator, i… 0.11s  
+  ✓ it keeps domicile_vulnerability NULL after recording in_risk_area =… 0.10s  
+  ✓ it never lets the risk area answer leak into the vulnerability colu… 0.17s  
+  ✓ it has NO column and NO payload field for difficult access or viole… 0.12s  
+  ✓ it returns data null and is_pending true for a family that was neve… 0.13s  
+  ✓ it returns NULL as null — never as false — in the payload (CA05/D03… 0.12s  
+  ✓ it reads the string "false" as false, not as true (§10)              0.12s  
+  ✓ it refuses an unrecognizable answer instead of silently erasing the… 0.09s  
+  ✓ it names exactly which of the three fields are still missing (CA06)  0.10s  
+  ✓ it corrects the record in place and audits the change with author a… 0.25s  
+  ✓ it audits the three value fields — and only them (D07)               0.24s  
+  ✓ it neither offers nor accepts address, postal code or residence zon… 0.16s  
+  ✓ it answers 403 with unit_not_assigned, naming no unit, to an operat… 0.28s  
+  ✓ it answers 403 with missing_addon to an operator without the LGPD a… 0.15s  
+  ✓ it answers 404 — never 403 — for a family from another municipality… 0.09s  
+  ✓ it answers 405 to POST and DELETE — registering is the same PUT, an… 0.08s  
+  ✓ it leaves out-of-payload fields untouched and clears a field only w… 0.12s  
+  ✓ it keeps ONE row per family however many times it is saved (RN01)    0.10s  
+  ✓ it refuses a residence type outside the Manual domain (RN02)         0.08s  
+  ✓ it refuses authorship sent by the client (RN10)                      0.09s  
+
+   PASS  Tests\Feature\TenantIsolation\FamilyHousingConditionIsolationTest
+  ✓ it applies BelongsToTenant to FamilyHousingCondition                 0.05s  
+  ✓ it makes the housing condition of another municipality unreachable…  0.03s  
+  ✓ it keeps NULL as NULL across the tenant scope — the pending answer…  0.03s  
+  ✓ it keeps the scope a NO-OP outside the HTTP cycle — which is why th… 0.03s  
+  ✓ it never lets the Action reach the row of another municipality (RN0… 0.03s  
+  ✓ it keeps the residence_types lookup GLOBAL — without BelongsToTenan… 0.02s  
+
+  Tests:    27 passed (152 assertions)
+  Duration: 4.34s
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

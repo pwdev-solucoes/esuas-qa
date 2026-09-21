@@ -1,0 +1,5 @@
+#3172 exported causer=9 at=2026-07-02 11:11:12
+  props: {"tenant_id":3,"datetime":"2026-07-02T11:11:12+00:00","exported_count":6,"filters":{"search":null,"failure_reason":null},"causer_cpf":"***.982.247-**","ip_address":"192.168.65.1","user_agent":"Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/537.36 (KHTML, like Gecko) HeadlessChrome\/149.0.0.0 Safari\/537.36"}
+#3171 exported causer=9 at=2026-07-02 09:55:14
+  props: {"tenant_id":3,"datetime":"2026-07-02T09:55:14+00:00","exported_count":6,"filters":{"search":null,"failure_reason":null},"causer_cpf":"***.982.247-**","ip_address":"192.168.65.1","user_agent":"curl\/8.7.1"}
+total exports auditados=2

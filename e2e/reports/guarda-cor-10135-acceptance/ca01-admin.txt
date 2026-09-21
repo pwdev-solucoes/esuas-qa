@@ -1,0 +1,19 @@
+
+> sigsuas-frontend-admin@0.1.0 check:colors
+> node scripts/check-color-tokens.mjs
+
+Guarda de cor fora do token — GLPI #10135
+Arquivos .vue varridos: 586
+
+Exceções ativas (allowlist — listadas, nunca silenciadas):
+
+  src/components/map/MapPointPicker.vue — 2 ocorrência(s)
+  Motivo: Marcador SVG do OpenLayers: a lib de mapa exige um data-URI de SVG com cor concreta (o `fill` da marca vem de brand-tokens.ts; só o branco do traço do ícone é literal). Consumidor imperativo sem alternativa via classe/token CSS.
+    src/components/map/MapPointPicker.vue:68 — #ffffff
+    src/components/map/MapPointPicker.vue:69 — #ffffff
+
+  src/modules/geo-layers/components/GeoLayerPreviewMap.vue — 1 ocorrência(s)
+  Motivo: `toRgba(hex, alpha)` converte a cor configurada na camada (ou de brand-tokens.ts) para o `rgba()` exigido pelo estilo de layer/heatmap do OpenLayers — não é cor solta, é transformação do token para o formato que a lib pede.
+    src/modules/geo-layers/components/GeoLayerPreviewMap.vue:93 — rgba(
+
+Resultado: ZERO cor literal fora da allowlist.

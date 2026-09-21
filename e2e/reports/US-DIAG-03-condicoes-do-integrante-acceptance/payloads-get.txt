@@ -1,0 +1,305 @@
+GET /api/client/families/{familia}/members/{integrante}/conditions
+Respostas reais capturadas na sessao autenticada do navegador
+==============================================================
+
+integrante #1 — E2E Familia No CRAS (CA01: os seis campos preenchidos)
+-----------------------------------------------------------------------
+HTTP 200
+{
+  "data": {
+    "uuid": "cb356a79-6dcd-42a6-9d2d-db029d297738",
+    "own_income": "1200.00",
+    "is_literate": true,
+    "schooling_level": {
+      "id": 4,
+      "uuid": "cd70dd26-9317-4de5-95dc-066bf39f2bd8",
+      "code": "4",
+      "name": "Ensino médio"
+    },
+    "schooling_level_suggested": null,
+    "schooling_source": "manual",
+    "schooling_confirmed_at": "2026-09-17T21:42:02+00:00",
+    "school_situation": {
+      "id": 3,
+      "uuid": "8b337867-d518-4854-b3c6-f1dbfd8a71a9",
+      "code": "3",
+      "name": "Não, já frequentou"
+    },
+    "has_serious_illness": false,
+    "disability_type": null,
+    "disability_applicable": false,
+    "missing_fields": [],
+    "created_by": {
+      "id": 14,
+      "name": "E2E Operador Prontuário"
+    },
+    "created_at": "2026-09-17T21:41:09+00:00",
+    "updated_by": {
+      "id": 14,
+      "name": "E2E Operador Prontuário"
+    },
+    "updated_at": "2026-09-17T21:42:02+00:00"
+  },
+  "schooling_level_suggested": null,
+  "disability_applicable": false,
+  "is_pending": false
+}
+
+integrante #2 — E2E Integrante Local (CA02/CA11: derivado e depois corrigido)
+-----------------------------------------------------------------------------
+HTTP 200
+{
+  "data": {
+    "uuid": "8adc88ab-95b4-40bc-9eea-aa7a4707db04",
+    "own_income": null,
+    "is_literate": null,
+    "schooling_level": {
+      "id": 3,
+      "uuid": "46b71ef7-d2e6-4a62-aaab-4778e25cedb8",
+      "code": "3",
+      "name": "Fundamental"
+    },
+    "schooling_level_suggested": {
+      "id": 2,
+      "uuid": "d9b93310-8f41-491b-8454-bdd3c90d6da5",
+      "code": "2",
+      "name": "Alfabetizado",
+      "is_derived": true
+    },
+    "schooling_source": "manual",
+    "schooling_confirmed_at": "2026-09-17T21:43:09+00:00",
+    "school_situation": null,
+    "has_serious_illness": null,
+    "disability_type": null,
+    "disability_applicable": false,
+    "missing_fields": [
+      "own_income",
+      "is_literate",
+      "has_serious_illness"
+    ],
+    "created_by": {
+      "id": 14,
+      "name": "E2E Operador Prontuário"
+    },
+    "created_at": "2026-09-17T21:38:39+00:00",
+    "updated_by": {
+      "id": 14,
+      "name": "E2E Operador Prontuário"
+    },
+    "updated_at": "2026-09-17T21:44:15+00:00"
+  },
+  "schooling_level_suggested": {
+    "id": 2,
+    "uuid": "d9b93310-8f41-491b-8454-bdd3c90d6da5",
+    "code": "2",
+    "name": "Alfabetizado",
+    "is_derived": true
+  },
+  "disability_applicable": false,
+  "is_pending": false
+}
+
+integrante #3 — E2E Integrante Sem Nascimento (CA03/CA05/CA06/CA09/CA10)
+-------------------------------------------------------------------------
+HTTP 200
+{
+  "data": {
+    "uuid": "4df26382-cddf-44b4-8373-7975c529e982",
+    "own_income": null,
+    "is_literate": null,
+    "schooling_level": null,
+    "schooling_level_suggested": null,
+    "schooling_source": null,
+    "schooling_confirmed_at": null,
+    "school_situation": null,
+    "has_serious_illness": null,
+    "disability_type": null,
+    "disability_applicable": true,
+    "missing_fields": [
+      "own_income",
+      "is_literate",
+      "schooling_level",
+      "has_serious_illness"
+    ],
+    "created_by": {
+      "id": 14,
+      "name": "E2E Operador Prontuário"
+    },
+    "created_at": "2026-09-17T21:46:38+00:00",
+    "updated_by": {
+      "id": 14,
+      "name": "E2E Operador Prontuário"
+    },
+    "updated_at": "2026-09-17T21:46:49+00:00"
+  },
+  "schooling_level_suggested": null,
+  "disability_applicable": true,
+  "is_pending": false
+}
+
+GET /api/client/families/{familia}/conditions — a composicao INTEIRA (§11)
+--------------------------------------------------------------------------
+HTTP 200
+{
+  "data": [
+    {
+      "family_member_uuid": "1e492461-d7c5-404a-8bb6-7c7261bb0e34",
+      "name": "E2E Família No CRAS",
+      "is_responsible": true,
+      "data": {
+        "uuid": "cb356a79-6dcd-42a6-9d2d-db029d297738",
+        "own_income": "1200.00",
+        "is_literate": true,
+        "schooling_level": {
+          "id": 4,
+          "uuid": "cd70dd26-9317-4de5-95dc-066bf39f2bd8",
+          "code": "4",
+          "name": "Ensino médio"
+        },
+        "schooling_level_suggested": null,
+        "schooling_source": "manual",
+        "schooling_confirmed_at": "2026-09-17T21:42:02+00:00",
+        "school_situation": {
+          "id": 3,
+          "uuid": "8b337867-d518-4854-b3c6-f1dbfd8a71a9",
+          "code": "3",
+          "name": "Não, já frequentou"
+        },
+        "has_serious_illness": false,
+        "disability_type": null,
+        "disability_applicable": false,
+        "missing_fields": [],
+        "created_by": {
+          "id": 14,
+          "name": "E2E Operador Prontuário"
+        },
+        "created_at": "2026-09-17T21:41:09+00:00",
+        "updated_by": {
+          "id": 14,
+          "name": "E2E Operador Prontuário"
+        },
+        "updated_at": "2026-09-17T21:42:02+00:00"
+      },
+      "schooling_level_suggested": null,
+      "disability_applicable": false,
+      "is_pending": false
+    },
+    {
+      "family_member_uuid": "3bd13076-79e3-4ec1-8326-93959aa29cdb",
+      "name": "E2E Integrante Local",
+      "is_responsible": false,
+      "data": {
+        "uuid": "8adc88ab-95b4-40bc-9eea-aa7a4707db04",
+        "own_income": null,
+        "is_literate": null,
+        "schooling_level": {
+          "id": 3,
+          "uuid": "46b71ef7-d2e6-4a62-aaab-4778e25cedb8",
+          "code": "3",
+          "name": "Fundamental"
+        },
+        "schooling_level_suggested": {
+          "id": 2,
+          "uuid": "d9b93310-8f41-491b-8454-bdd3c90d6da5",
+          "code": "2",
+          "name": "Alfabetizado",
+          "is_derived": true
+        },
+        "schooling_source": "manual",
+        "schooling_confirmed_at": "2026-09-17T21:43:09+00:00",
+        "school_situation": null,
+        "has_serious_illness": null,
+        "disability_type": null,
+        "disability_applicable": false,
+        "missing_fields": [
+          "own_income",
+          "is_literate",
+          "has_serious_illness"
+        ],
+        "created_by": {
+          "id": 14,
+          "name": "E2E Operador Prontuário"
+        },
+        "created_at": "2026-09-17T21:38:39+00:00",
+        "updated_by": {
+          "id": 14,
+          "name": "E2E Operador Prontuário"
+        },
+        "updated_at": "2026-09-17T21:44:15+00:00"
+      },
+      "schooling_level_suggested": {
+        "id": 2,
+        "uuid": "d9b93310-8f41-491b-8454-bdd3c90d6da5",
+        "code": "2",
+        "name": "Alfabetizado",
+        "is_derived": true
+      },
+      "disability_applicable": false,
+      "is_pending": false
+    },
+    {
+      "family_member_uuid": "e03188bd-21b4-47c2-930b-15f4bed03579",
+      "name": "E2E Integrante Sem Nascimento",
+      "is_responsible": false,
+      "data": {
+        "uuid": "4df26382-cddf-44b4-8373-7975c529e982",
+        "own_income": null,
+        "is_literate": null,
+        "schooling_level": null,
+        "schooling_level_suggested": null,
+        "schooling_source": null,
+        "schooling_confirmed_at": null,
+        "school_situation": null,
+        "has_serious_illness": null,
+        "disability_type": null,
+        "disability_applicable": true,
+        "missing_fields": [
+          "own_income",
+          "is_literate",
+          "schooling_level",
+          "has_serious_illness"
+        ],
+        "created_by": {
+          "id": 14,
+          "name": "E2E Operador Prontuário"
+        },
+        "created_at": "2026-09-17T21:46:38+00:00",
+        "updated_by": {
+          "id": 14,
+          "name": "E2E Operador Prontuário"
+        },
+        "updated_at": "2026-09-17T21:46:49+00:00"
+      },
+      "schooling_level_suggested": null,
+      "disability_applicable": true,
+      "is_pending": false
+    },
+    {
+      "family_member_uuid": "da351d33-d3be-4d5e-835a-3de664d8f79b",
+      "name": "E2E Integrante Desvinculado",
+      "is_responsible": false,
+      "data": null,
+      "schooling_level_suggested": null,
+      "disability_applicable": false,
+      "is_pending": true
+    }
+  ]
+}
+
+GET .../members/{integrante}/pregnancies — historico da gestacao (CA07)
+------------------------------------------------------------------------
+HTTP 200
+{
+  "data": [
+    {
+      "uuid": "ed400b24-80d7-4df5-a4db-feb7b63fecc0",
+      "recorded_on": "2026-09-17",
+      "notes": "Gestacao informada pela propria adolescente na acolhida.",
+      "created_by": {
+        "id": 14,
+        "name": "E2E Operador Prontuário"
+      },
+      "created_at": "2026-09-17T21:39:18+00:00"
+    }
+  ]
+}

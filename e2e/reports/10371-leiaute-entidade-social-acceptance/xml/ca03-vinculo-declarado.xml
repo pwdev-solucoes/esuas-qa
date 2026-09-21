@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<SIAP>
+    <Codigo>004821</Codigo>
+    <Exercicio>2026</Exercicio>
+    <Mes>08</Mes>
+    <EntidadeSocial>
+        <NumeroCNEAS>5833906268323</NumeroCNEAS>
+        <NomeEntidadeSocial>Associação Lar Feliz</NomeEntidadeSocial>
+        <CNPJEntidadeSocial>06280491791045</CNPJEntidadeSocial>
+        <EnderecoEntidadeSocial>Rua, Av. Taís, 3, do Leste, São Patrícia do Sul</EnderecoEntidadeSocial>
+        <CEP>57000000</CEP>
+        <SituacaoEntidadeSocial>1</SituacaoEntidadeSocial>
+        <Email>contato@entidade.test</Email>
+        <TipoLocalizacao>1</TipoLocalizacao>
+        <ParceriaPoderPublico>2</ParceriaPoderPublico>
+        <ParticipanteSUAS>1</ParticipanteSUAS>
+        <BeneficioEventual>2</BeneficioEventual>
+        <ExecucaoServicos>2</ExecucaoServicos>
+        <SituacaoUnidade>1</SituacaoUnidade>
+        <Modalidade>1</Modalidade>
+        <ValorVinculo>12345.20</ValorVinculo>
+    </EntidadeSocial>
+    <EntidadeSocial>
+        <NumeroCNEAS>0228668805005</NumeroCNEAS>
+        <NomeEntidadeSocial>Instituto Esperança</NomeEntidadeSocial>
+        <CNPJEntidadeSocial>80350929783904</CNPJEntidadeSocial>
+        <EnderecoEntidadeSocial>Rua, Largo Ortega, 40643, F, do Norte, Sanches do Leste</EnderecoEntidadeSocial>
+        <CEP>57000000</CEP>
+        <SituacaoEntidadeSocial>1</SituacaoEntidadeSocial>
+        <Email>contato@entidade.test</Email>
+        <TipoLocalizacao>1</TipoLocalizacao>
+        <ParceriaPoderPublico>2</ParceriaPoderPublico>
+        <ParticipanteSUAS>1</ParticipanteSUAS>
+        <BeneficioEventual>2</BeneficioEventual>
+        <ExecucaoServicos>2</ExecucaoServicos>
+        <SituacaoUnidade>2</SituacaoUnidade>
+        <Modalidade>3</Modalidade>
+        <ValorVinculo>12345.20</ValorVinculo>
+    </EntidadeSocial>
+</SIAP>

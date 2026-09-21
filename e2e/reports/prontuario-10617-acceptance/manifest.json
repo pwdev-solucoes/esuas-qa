@@ -1,0 +1,226 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — Acesso ao Prontuário por Unidade",
+    "subtitle": "Épico Prontuário SUAS F0 · HU #10617 · 9 critérios · evidências dirigidas no client",
+    "rows": [
+      [
+        "Gerado em",
+        "27/08/2026"
+      ],
+      [
+        "História",
+        "#10617 — Acesso ao prontuário por unidade de referência"
+      ],
+      [
+        "Spec",
+        ".planning/specs/10617-acesso-prontuario-por-unidade.md"
+      ],
+      [
+        "Branch",
+        "prontuario (api, client, admin)"
+      ],
+      [
+        "Ambiente",
+        "API Laravel :8090 (esuas_app) · PostgreSQL esuas_e2e · client vite preview :4174"
+      ],
+      [
+        "Organização (tenant)",
+        "E2E CadÚnico"
+      ],
+      [
+        "Ferramenta",
+        "playwright-cli (Chromium headless) + Pest 4"
+      ]
+    ]
+  },
+  "summary": "9 critérios de aceite. <b>8 evidenciados no navegador</b> (CA01 a CA08) e <b>1 por suíte automatizada</b> (CA09, por o ambiente de evidências ter uma única organização). Nenhum critério reprovado. <b>Esta é a segunda emissão do relatório</b>: a RN08 foi revisada em 27/08/2026 e a negativa por unidade passou de “registro inexistente” (404) para “acesso negado com motivo” (403), o que altera as evidências do CA02, do CA03 e do CA08 — a mudança e sua contrapartida estão na primeira das observações. A suíte de backend da história fecha 29 testes / 163 asserções, com um teste nomeado para cada critério. Durante a primeira validação foram encontrados e corrigidos um CPF inválido na massa de teste e um vazamento de vínculo na tela de login; ambos seguem descritos abaixo.",
+  "cas": [
+    {
+      "id": "CA01",
+      "title": "Profissional da unidade de referência acessa",
+      "status": "nav",
+      "gherkin": "Dado que sou Operacional do Tenant com o add-on LGPD, lotado no \"CRAS Centro\"\n  E que a família Silva está referenciada no \"CRAS Centro\"\nQuando eu abrir o prontuário da família Silva\nEntão o prontuário é apresentado\n  E a auditoria registra a abertura, identificando a unidade pela qual o acesso foi concedido",
+      "steps_html": "Login no client como o operador com add-on LGPD (lotado em <code>E2E CRAS Centro</code> e <code>E2E CRAS Sem MDS</code>). Pesquisa de Pessoas → Código Familiar <code>9900000001</code> → <b>Visualizar Família</b>.",
+      "results": [
+        "O prontuário é apresentado (GET /families/{uuid}/details → 200 OK).",
+        "O cabeçalho identifica a unidade concedente: “Centro de Referência de Assistência Social · E2E CRAS Centro”.",
+        "A auditoria registra log_name=family_access, description=family.record_opened: 9900000001.",
+        "A propriedade access_granted_via=\"unit_assignment\" e social_unit_id=1 identificam a unidade pela qual o acesso foi concedido.",
+        "O CPF do profissional é gravado mascarado na trilha (***.444.777-**)."
+      ],
+      "images": [
+        "screenshots/ca01-prontuario-aberto.png"
+      ]
+    },
+    {
+      "id": "CA02",
+      "title": "Profissional de outra unidade não acessa",
+      "status": "nav",
+      "gherkin": "Dado que sou Operacional do Tenant com o add-on LGPD, lotado apenas no \"CRAS Centro\"\n  E que a família Souza está referenciada no \"CREAS\"\nQuando eu tentar abrir o prontuário da família Souza\nEntão o prontuário não é apresentado\n  E o sistema responde como registro inexistente, sem informar que a família existe\n  E a tentativa é registrada na trilha de auditoria",
+      "steps_html": "Na mesma sessão do operador, acesso direto ao prontuário da família referenciada no <code>E2E CREAS</code> e, em seguida, a um UUID que <b>não existe</b> na base, para comparar as duas respostas. <b>Reexecutado após a revisão da RN08</b> descrita em “Observações e ressalvas”.",
+      "results": [
+        "O prontuário NÃO é apresentado — o resultado exigido pelo critério é atendido.",
+        "A resposta é <b>403 Forbidden</b> com o motivo declarado: “Acesso restrito — Esta família é referenciada em uma unidade socioassistencial onde você não possui lotação vigente.”, seguido da orientação “Solicite o acesso ao gestor Master da sua organização.”",
+        "A API devolve o <code>error_code</code> estável <code>unit_not_assigned</code>, que o front usa para distinguir esta negativa das demais.",
+        "A tentativa é auditada: <code>family.record_access_denied: unit_not_assigned</code>.",
+        "A resposta declara o motivo mas NÃO entrega o código familiar nem qual unidade atende a família — verificado por asserção automatizada sobre o corpo da resposta.",
+        "MUDANÇA EM RELAÇÃO À VERSÃO ANTERIOR DESTE RELATÓRIO: até 27/08/2026 este caso respondia 404, idêntico a um registro inexistente. Um UUID inexistente continua respondendo 404 (“Prontuário não encontrado”), de modo que as duas telas agora DIFEREM. Ver “Observações e ressalvas”."
+      ],
+      "images": [
+        "screenshots/ca02-creas-acesso-negado.png",
+        "screenshots/ca02-inexistente-comparacao.png"
+      ]
+    },
+    {
+      "id": "CA03",
+      "title": "Profissional lotado em duas unidades",
+      "status": "nav",
+      "gherkin": "Dado que estou lotado no \"CRAS Centro\" e no \"CRAS Rural\"\nQuando eu consultar prontuários\nEntão acesso as famílias referenciadas nas duas unidades\n  E não acesso as referenciadas no \"CREAS\"",
+      "steps_html": "No prontuário aberto, abertura do seletor <b>Trocar unidade</b> — que oferece exatamente as unidades do escopo do profissional. A operação foi <b>cancelada</b>, sem alterar a família.",
+      "results": [
+        "As opções oferecidas são exatamente as duas lotações vigentes: “E2E CRAS Centro (unidade atual)” e “E2E CRAS Sem MDS”.",
+        "O “E2E CREAS” NÃO é oferecido — a unidade fora da lotação fica fora do escopo.",
+        "O contraste é confirmado na sessão do Master, que vê as três unidades (ver CA08).",
+        "A família permaneceu intacta após o cancelamento (social_unit_id inalterado)."
+      ],
+      "images": [
+        "screenshots/ca03-duas-unidades-sem-creas.png"
+      ]
+    },
+    {
+      "id": "CA04",
+      "title": "Profissional sem lotação vigente",
+      "status": "nav",
+      "gherkin": "Dado que tenho o add-on LGPD, mas minha lotação no \"CRAS Centro\" foi encerrada\nQuando eu tentar abrir qualquer prontuário\nEntão nenhum prontuário é apresentado\n  E o motivo é a ausência de lotação vigente em unidade socioassistencial",
+      "steps_html": "Tentativa de login no client com o operador cuja lotação no <code>E2E CRAS Centro</code> foi encerrada. <b>Reexecutado após a correção da mensagem</b> descrita em “Observações e ressalvas”.",
+      "results": [
+        "Nenhum prontuário é apresentado — o resultado exigido pelo critério é atendido.",
+        "O motivo é declarado: “Atenção, seu vínculo profissional não está ativo em nenhuma unidade. Procure o administrador do sistema.”",
+        "A mensagem <b>não nomeia unidade alguma</b> — verificado programaticamente sobre todo o texto da página, que não contém nenhum nome de unidade.",
+        "DESVIO DE CAMINHO: o bloqueio ocorre no LOGIN (POST /auth/login → 422), não na abertura do prontuário. O cenário do critério pressupõe um usuário autenticado que então não acessa nada. O efeito é mais restritivo que o especificado, não menos.",
+        "O critério também é garantido no ponto exato que a spec descreve: a suíte prova que a API recusa todo prontuário para profissional com lotação encerrada (“it blocks every record for a professional whose assignment is closed”). As duas camadas estão cobertas."
+      ],
+      "images": [
+        "screenshots/ca04-sem-lotacao-vigente.png"
+      ]
+    },
+    {
+      "id": "CA05",
+      "title": "Master acessa todas as unidades",
+      "status": "nav",
+      "gherkin": "Dado que sou Master do município\nQuando eu abrir o prontuário de uma família referenciada em qualquer unidade\nEntão o prontuário é apresentado\n  E a auditoria registra que o acesso se deu pela condição de Master, e não por lotação",
+      "steps_html": "Login como Master e abertura do prontuário da família referenciada no <code>E2E CREAS</code> — a mesma que o operador do CA02 não alcança.",
+      "results": [
+        "O prontuário é apresentado (200 OK) na mesma família que retornou 404 para o operador.",
+        "A auditoria registra access_granted_via=\"master_bypass\" — a condição de Master, e não uma lotação.",
+        "O Master enxerga as três unidades do município no seletor de unidade, contra as duas do operador."
+      ],
+      "images": [
+        "screenshots/ca05-master-acessa-creas.png"
+      ]
+    },
+    {
+      "id": "CA06",
+      "title": "Add-on continua obrigatório",
+      "status": "nav",
+      "gherkin": "Dado que sou Operacional do Tenant lotado no \"CRAS Centro\", sem o add-on LGPD\nQuando eu tentar abrir o prontuário de uma família do \"CRAS Centro\"\nEntão o prontuário não é apresentado\n  E a lotação na unidade não substitui o add-on",
+      "steps_html": "Correção prévia da massa: o CPF da persona “sem add-on” no seeder era inválido e impedia o login (ver “Observações e ressalvas”). Corrigido para <code>48761649082</code> e re-semeado. Em seguida: login no client como o operador <b>com lotação vigente no E2E CRAS Centro</b> e <b>sem</b> o papel add-on <code>family_viewer</code>, e tentativa de abrir o prontuário de uma família <b>daquela mesma unidade</b>.",
+      "results": [
+        "O login é bem-sucedido (POST /auth/login → 200 OK): o usuário está autenticado e é operador do tenant.",
+        "A lotação é vigente e confirmada em banco: unidade “E2E CRAS Centro”, início 27/02/2026, sem data de encerramento.",
+        "Os papéis do usuário são apenas “operador” — sem o add-on “family_viewer”.",
+        "Ainda assim, o prontuário da família da PRÓPRIA unidade responde 403 Forbidden.",
+        "A tela declara: “Acesso restrito — Acesso negado. Solicite o acesso ao gestor Master da sua organização.”",
+        "A lotação, portanto, não substitui o add-on — que é exatamente o que o critério exige.",
+        "A sidebar também reflete o corte: sem o add-on, somem “Famílias sem Unidade”, “Especificidade Pendente” e “Nova Família”.",
+        "Cobertura automatizada correspondente: “it does not let the unit assignment replace the LGPD add-on (CA06/RN…)” — PASS."
+      ],
+      "images": [
+        "screenshots/ca06-sidebar-sem-addon.png",
+        "screenshots/ca06-403-lotacao-nao-substitui-addon.png"
+      ]
+    },
+    {
+      "id": "CA07",
+      "title": "Família sem unidade de referência, em transição",
+      "status": "nav",
+      "gherkin": "Dado que a família Oliveira foi importada do CadÚnico e está sem unidade de referência\nQuando eu, Operacional com o add-on, consultar prontuários\nEntão a família Oliveira continua acessível\n  E ela aparece na relação de famílias sem unidade de referência",
+      "steps_html": "Como operador: menu <b>Famílias sem Unidade</b>, e em seguida acesso direto ao prontuário da família sem unidade.",
+      "results": [
+        "A família consta da relação: “1 família(s) ainda sem unidade de referência”.",
+        "A tela declara a regra da transição: “Enquanto não tiverem unidade, ficam visíveis a toda a equipe com acesso ao prontuário familiar.”",
+        "O prontuário continua acessível (200 OK), com o aviso “Prontuário sem unidade de referência”."
+      ],
+      "images": [
+        "screenshots/ca07-relacao-sem-unidade.png",
+        "screenshots/ca07-prontuario-sem-unidade-acessivel.png"
+      ]
+    },
+    {
+      "id": "CA08",
+      "title": "Definida a unidade, o corte passa a valer",
+      "status": "nav",
+      "gherkin": "Dado que a família Oliveira recebeu o \"CREAS\" como unidade de referência\n  E que estou lotado apenas no \"CRAS Centro\"\nQuando eu tentar abrir o prontuário da família Oliveira\nEntão o prontuário não é apresentado\n  E ela deixa de constar da relação de famílias sem unidade de referência",
+      "steps_html": "O Master atribui o <code>E2E CREAS</code> como unidade de referência da família que estava sem unidade (o operador não consegue fazê-lo — só lhe são oferecidas as unidades onde tem lotação). Em seguida, nova sessão como operador. <b>A massa foi restaurada ao estado original ao final.</b>",
+      "results": [
+        "Para o Master, o seletor oferece as três unidades, incluindo o CREAS.",
+        "Após a atribuição, o operador recebe <b>403 Forbidden</b> com “Acesso restrito” e o motivo declarado — antes da revisão da RN08 este caso respondia 404.",
+        "A família deixa a relação: “Nenhuma família sem unidade de referência — Todas as famílias desta organização já têm unidade de referência registrada.”",
+        "A pendência é calculada a cada consulta, conforme declarado na própria tela.",
+        "A negativa é auditada com o mesmo <code>reason</code> do CA02."
+      ],
+      "images": [
+        "screenshots/ca08-master-opcoes-com-creas.png",
+        "screenshots/ca08-corte-passa-a-valer.png",
+        "screenshots/ca08-saiu-da-relacao.png"
+      ]
+    },
+    {
+      "id": "CA09",
+      "title": "Isolamento entre organizações",
+      "status": "auto",
+      "gherkin": "Dado que sou usuário do município A e estou lotado em uma unidade do município A\nQuando eu tentar acessar o prontuário de uma família do município B\nEntão o acesso é tratado como registro inexistente, mesmo havendo unidade de mesmo nome nos dois",
+      "steps_html": "Evidência <b>automatizada</b>. O ambiente de evidências possui uma única organização semeada, o que impede montar o cenário de dois municípios pelo navegador sem alterar a massa.",
+      "results": [
+        "Pest: “it treats a family of another organization as a nonexistent record…” — PASS.",
+        "Pest: “it never lists people of another organization in the person search…” — PASS.",
+        "O isolamento é exercido na suíte de TenantIsolation, camada onde a regra mora."
+      ],
+      "images": []
+    }
+  ],
+  "notes": [
+    {
+      "title": "A RN08 foi REVISADA em 27/08/2026 — a negativa por unidade passou de 404 para 403",
+      "html": "<p>Este relatório substitui a versão anterior, que evidenciava um comportamento que não vale mais. A mudança foi decidida após a primeira validação e altera o CA02, o CA03 e o CA08.</p><p><b>Como era:</b> família referenciada em unidade fora da lotação respondia <b>404</b>, com o mesmo corpo de um prontuário inexistente. A RN08 original mandava tratar assim justamente para não revelar que a família existe.</p><p><b>Como é agora:</b> responde <b>403</b> com o motivo declarado — “Esta família é referenciada em uma unidade socioassistencial onde você não possui lotação vigente.” — e <code>error_code</code> <code>unit_not_assigned</code>, no mesmo molde do CA06.</p><p><b>A contrapartida, que precisa estar clara para quem valida:</b> um UUID inexistente continua respondendo 404. As duas telas agora diferem, e essa diferença <b>confirma a existência da família no município</b> a quem tem o add-on LGPD mas não a lotação na unidade. Era exatamente isso que a redação original da RN08 evitava.</p><p>A contenção que restou: a mensagem declara o porquê sem entregar o onde — não nomeia a unidade que atende a família nem o código familiar, e há asserção automatizada garantindo isso. O isolamento entre organizações (RN07) <b>não</b> mudou: família de outro município segue respondendo 404.</p><p>A decisão alcança também os critérios de acesso das HUs #10618, #10619, #10620 e #10621, porque a tradução para HTTP é ponto único no sistema. O texto da RN08 no chamado ainda descreve o comportamento antigo e convém atualizá-lo.</p>"
+    },
+    {
+      "title": "Vazamento de vínculo na tela de login — encontrado e CORRIGIDO durante esta validação",
+      "html": "<p>Na primeira execução do CA04, a mensagem de bloqueio nomeava a unidade: “Atenção, seu período na Unidade <i>E2E CRAS Centro</i> está vencido.” Ela é exibida <b>antes da autenticação</b> — bastava digitar o CPF de um terceiro para descobrir a que unidade socioassistencial aquela pessoa esteve vinculada.</p><p>É o oposto do que a RN08 desta própria história determina: não expor vínculo de ninguém. E o dado vazado é sensível por tabela — a unidade indica CRAS ou CREAS, e portanto o tipo de atendimento.</p><p><b>Correção aplicada:</b> o bloqueio passa a usar sempre a mensagem genérica, que já existia no sistema (“seu vínculo profissional não está ativo em nenhuma unidade”). O método que buscava o nome da unidade expirada e a chave de tradução correspondente foram removidos, para que o caminho não possa ser reintroduzido por engano.</p><p><b>Verificação:</b> o login continua bloqueado (422) e a tela não contém nome de unidade alguma. O teste que fixava o comportamento anterior foi reescrito para asserir a propriedade nova — que a mensagem <i>não</i> revela a unidade —, o que a torna protegida contra regressão. Suíte de autenticação e profissionais: 450 testes / 1414 asserções, todos verdes.</p>"
+    },
+    {
+      "title": "CPF inválido na massa de teste — encontrado e CORRIGIDO durante esta validação",
+      "html": "<p>A constante <code>DEFAULT_NO_ADDON_CPF</code> (<code>api/database/seeders/E2EProntuarioSeeder.php:116</code>) trazia <code>'48761649074'</code>, que <b>não é um CPF válido</b> — falha na conferência do dígito verificador. Dos 15 CPFs do seeder, era o único inválido.</p><p><b>Consequência:</b> a persona “Operacional sem add-on LGPD”, criada justamente para provar o CA06, nunca conseguia autenticar — o formulário respondia “CPF inválido.” antes de qualquer verificação de credencial. Qualquer spec E2E que use esse usuário falhava no login.</p><p><b>Correção aplicada:</b> <code>'48761649082'</code> (mesmo prefixo, dígitos verificadores corretos). Após a correção o login responde 200 e o CA06 pôde ser evidenciado no navegador.</p><p><b>Atenção ao aplicar em base já semeada:</b> como o seeder identifica o usuário pelo CPF (<code>updateOrCreate(['cpf' =&gt; …])</code>), a troca tenta criar um segundo registro e esbarra em <code>users_email_unique</code>. Basta atualizar o CPF do registro existente antes de re-semear.</p><p><b>Pendente fora do backend:</b> o mesmo CPF aparece em <code>e2e/.env.e2e.example:61</code> (<code>E2E_CLIENT_NO_ADDON_CPF</code>) e no <code>.env.e2e</code> local. Enquanto não forem atualizados, as specs Playwright continuam usando o CPF inválido.</p>"
+    },
+    {
+      "title": "Causa raiz da falha do harness E2E: os builds apontavam para a porta errada",
+      "html": "<p>Os bundles de <code>admin/dist</code> e <code>client/dist</code> estavam com <code>http://localhost/api</code> embutido (porta 80). Nesta máquina a porta 80 é atendida por um nginx alheio ao projeto, que responde <b>301 HTTP→HTTPS</b>. Um redirecionamento invalida o <i>preflight</i> CORS, de modo que <b>toda</b> chamada à API falhava antes de sair — o que a UI apresenta como falha de credencial.</p><p>Isso explica, com uma única causa, por que as duas suítes E2E abortavam no <code>auth.setup</code> com “CPF ou senha inválidos”: os 26 casos do admin e os 54 do client. A API do eSUAS responde em <b>http://localhost:8090</b>.</p><p><b>Verificado:</b> reconstruído o client com <code>VITE_API_URL=http://localhost:8090/api</code>, o login autentica normalmente e todas as telas deste dossiê foram dirigidas com sucesso.</p>"
+    },
+    {
+      "title": "CA04 — o bloqueio acontece antes do previsto pelo cenário",
+      "html": "<p>O critério descreve um profissional autenticado que, sem lotação vigente, não acessa nenhum prontuário. O sistema é mais restritivo: <b>impede o próprio login</b> (422), declarando o motivo. O resultado exigido é atendido e o efeito é mais seguro, mas o caminho difere do cenário escrito — vale a ratificação do PO sobre qual dos dois comportamentos é o desejado.</p><p>Observação menor de privacidade: a mensagem exibida <b>antes da autenticação</b> nomeia a unidade (“seu período na Unidade E2E CRAS Centro está vencido”). Quem digitar um CPF válido de terceiro descobre a que unidade aquela pessoa esteve vinculada. Convém avaliar uma redação que declare o motivo sem nomear a unidade.</p>"
+    },
+    {
+      "title": "403 e 404 são deliberadamente diferentes — e a diferença é a proteção",
+      "html": "<p>Os dois cenários de negativa devolvem códigos distintos, e isso é acerto de projeto, não inconsistência:</p><ul><li><b>CA02</b> — o profissional <i>tem</i> o add-on, mas a família é de outra unidade → <b>404</b>, idêntico a um registro inexistente. Um 403 ali revelaria que aquela família existe.</li><li><b>CA06</b> — o profissional está na unidade certa, mas <i>não tem</i> o add-on → <b>403</b>, declarando a permissão que falta. Aqui não há o que esconder: a negativa é sobre o usuário, não sobre a família.</li></ul><p>O corte por unidade protege a existência do prontuário; o corte por add-on orienta o profissional.</p>"
+    },
+    {
+      "title": "Integridade da massa",
+      "html": "<p>O CA08 exige alterar a unidade de referência de uma família. A alteração foi feita, evidenciada e <b>revertida</b> ao final por re-execução do <code>E2EProntuarioSeeder</code> (idempotente). Confirmado ao término: a família volta a constar sem unidade de referência (<code>social_unit_id = NULL</code>). Nenhum outro dado foi alterado.</p>"
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Pest — FamilyAccessByUnit, OpenFamilyRecord, FamilyAccessTenantIsolation)",
+    "file": "pest-10617.txt"
+  }
+}

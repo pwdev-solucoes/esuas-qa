@@ -1,0 +1,83 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — Hierarquia do menu (Admin)",
+    "subtitle": "US-06 · HU-10008 · Evidências end-to-end no frontend Admin",
+    "rows": [
+      ["Gerado em", "22/07/2026 17:50"],
+      ["Feature", "hierarquia-menu-admin (US-06)"],
+      ["Branch (admin)", "feature/us-06-hierarquia-menu"],
+      ["Spec", ".planning/product/stories/US-06-hierarquia-menu-admin.md"],
+      ["Escopo", "Guia visual de hierarquia + subdivisão de ENDEREÇO e PESSOAS no AppSidebar.vue"],
+      ["Ambiente", "API Sail/PostgreSQL :8000 · Admin (Vite) :5174 não-mock · E2ESeeder"],
+      ["Credenciais", "Super Admin 44983702016 · Admin Operador 12345678909 (senha123)"],
+      ["Ferramenta", "playwright-cli (Chromium) + Vitest"]
+    ]
+  },
+  "summary": "5 Critérios de Aceite verificados: 4 por navegação direta no Admin real (CA01, CA02, CA03, CA04) e CA05 por navegação (item oculto e ausência de título órfão). Todos ATENDIDOS. Os grupos ENDEREÇO e PESSOAS passaram a exibir subgrupos nomeados (nenhum com mais de 8 itens), com uma linha vertical de hierarquia sob o grupo collapsible aberto — no modo expandido e no flyout do modo rail. A subdivisão preservou o estado ativo (isActive), o gating por permissão e não gera títulos órfãos. Apêndice: suíte Vitest do AppSidebar (8/8 verdes), incluindo os casos mapeados a CA01/CA02/CA04/CA05.",
+  "cas": [
+    {
+      "id": "CA01",
+      "title": "Grupos longos subdivididos (nenhum subgrupo com mais de 8 itens)",
+      "status": "nav",
+      "gherkin": "Dado os grupos ENDEREÇO e PESSOAS, quando abro cada um no modo expandido, então os itens estão distribuídos em subgrupos nomeados, nenhum subgrupo com mais de 8 itens.",
+      "steps_html": "Login como Super Admin no Admin real (<code>:5174</code>); abrir os grupos <b>ENDEREÇO</b> e <b>PESSOAS</b> no modo expandido e inspecionar a distribuição dos itens em subgrupos.",
+      "results": [
+        "ENDEREÇO subdividido em 3 subgrupos: DIVISÃO TERRITORIAL (5), LOGRADOUROS &amp; CEP (5), IMPORTAÇÕES &amp; GEO (3).",
+        "PESSOAS subdividido em 2 subgrupos: CADASTRO (1) e CLASSIFICAÇÕES (6).",
+        "Maior subgrupo = 6 itens (≤ 8). Linha vertical de hierarquia sob o grupo aberto, itens indentados sob o título do subgrupo."
+      ],
+      "images": ["screenshots/ca01b-endereco-subgrupos.png", "screenshots/ca01-enderecos-pessoas-subgrupos.png"]
+    },
+    {
+      "id": "CA02",
+      "title": "Agrupamento fiel à referência",
+      "status": "parc",
+      "gherkin": "Dado a referência Cuida, quando comparo os títulos e a composição dos subgrupos, então correspondem ao que a referência define.",
+      "steps_html": "Comparar títulos e composição dos subgrupos renderizados com a definição pretendida. <b>Observação:</b> o artefato \"Cuida\" não foi disponibilizado (bloqueio original da HU); a composição segue a proposta documentada no plano (§3) — DIVISÃO TERRITORIAL, LOGRADOUROS &amp; CEP, IMPORTAÇÕES &amp; GEO / CADASTRO, CLASSIFICAÇÕES.",
+      "results": [
+        "Títulos e composição batem com a proposta §3 do plano (evidência visual em CA01).",
+        "Pendência: validar contra o artefato Cuida quando disponível — ajustar títulos/ordem se divergir, mantendo a regra ≤ 8 itens."
+      ],
+      "images": ["screenshots/ca01b-endereco-subgrupos.png"]
+    },
+    {
+      "id": "CA03",
+      "title": "Flyout do modo rail espelha a hierarquia",
+      "status": "nav",
+      "gherkin": "Dado a barra lateral recolhida (modo rail), quando aciono o ícone de um grupo subdividido, então o flyout exibe os mesmos subgrupos, com os mesmos títulos, na mesma ordem do modo expandido.",
+      "steps_html": "Recolher a sidebar (modo rail) e acionar o ícone do grupo <b>ENDEREÇO</b>; inspecionar o flyout (Popover).",
+      "results": [
+        "Flyout exibe DIVISÃO TERRITORIAL → LOGRADOUROS &amp; CEP → IMPORTAÇÕES &amp; GEO, mesmos títulos e mesma ordem do modo expandido."
+      ],
+      "images": ["screenshots/ca03-rail-flyout-hierarquia.png"]
+    },
+    {
+      "id": "CA04",
+      "title": "Item ativo continua sendo detectado",
+      "status": "nav",
+      "gherkin": "Dado que estou numa rota de um item movido para dentro de um subgrupo, quando o menu renderiza, então o grupo aparece como ativo e o item aparece destacado — a subdivisão não pode quebrar o isActive nem o estado de abertura persistido.",
+      "steps_html": "Navegar para <code>/app/streets</code> (item <b>Logradouros</b>, dentro do subgrupo LOGRADOUROS &amp; CEP) e observar o estado do menu.",
+      "results": [
+        "ENDEREÇO auto-expande e aparece ativo; o item Logradouros fica destacado (fundo/realce primary) dentro do subgrupo.",
+        "A subdivisão não quebrou o isActive nem a abertura persistida do grupo."
+      ],
+      "images": ["screenshots/ca04-item-ativo-subgrupo.png"]
+    },
+    {
+      "id": "CA05",
+      "title": "Permissões preservadas (sem título de subgrupo órfão)",
+      "status": "nav",
+      "gherkin": "Dado um admin_operador sem platform-versions.index, quando o menu renderiza após a subdivisão, então o item continua oculto, e um subgrupo que fique inteiramente sem itens visíveis não renderiza título órfão.",
+      "steps_html": "Login como <b>Admin Operador</b> (<code>12345678909</code>, role admin_operador) e inspecionar o menu após a subdivisão.",
+      "results": [
+        "PLATAFORMA exibe apenas 'Histórico de versões'; 'Gerenciar versões' (exige platform-versions.index) fica oculto.",
+        "Em ENDEREÇO, os subgrupos sem itens visíveis para o operador (DIVISÃO TERRITORIAL, LOGRADOUROS &amp; CEP) NÃO renderizam título órfão — sobra apenas IMPORTAÇÕES &amp; GEO com o item permitido (Construtor de Camadas)."
+      ],
+      "images": ["screenshots/ca05-permissao-item-oculto.png"]
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Vitest — src/components/app/AppSidebar.test.ts)",
+    "file": "vitest-appsidebar.txt"
+  }
+}

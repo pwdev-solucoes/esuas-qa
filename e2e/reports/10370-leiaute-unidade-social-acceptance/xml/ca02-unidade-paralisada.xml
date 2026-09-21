@@ -1,0 +1,22 @@
+<!--
+  HU #10370 (US-SIAP-03) — dossiê de aceite
+  CA02
+  Cenário: unidade com situação "paralisada" no cadastro — entra no arquivo com SituacaoUnidadeSocial=2
+  Gerado em: 2026-08-13 13:55:50 por tests/Feature/Api/Siap10370EvidenceDumpTest.php (temporário)
+  Origem: UnidadeSocial.xml extraído do zip da remessa realmente gerada pelo POST client/siap-remittances
+-->
+<?xml version="1.0"?>
+<SIAP>
+    <Codigo>004821</Codigo>
+    <Exercicio>2026</Exercicio>
+    <Mes>08</Mes>
+    <UnidadeSocial>
+        <NumeroMDS>2704302000222</NumeroMDS>
+        <NomeUnidadeSocial>CRAS Benedito Bentes</NomeUnidadeSocial>
+        <TipoLocalizacao>1</TipoLocalizacao>
+        <EnderecoUnidadeSocial>Rua, das Flores, 123, Centro, Maceió</EnderecoUnidadeSocial>
+        <CEP>57000000</CEP>
+        <SituacaoUnidadeSocial>2</SituacaoUnidadeSocial>
+        <ClassificacaoUnidadeSocial>1</ClassificacaoUnidadeSocial>
+    </UnidadeSocial>
+</SIAP>

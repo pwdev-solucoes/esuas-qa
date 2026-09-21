@@ -1,0 +1,345 @@
+{
+    "_leitura": "Resposta INTEIRA de GET /api/client/siap-remittances/pre-check no cenário do bloqueio por estrutura — é o payload que a tela do painel do tenant consome. Sem nenhum dado pessoal: os subject_uuid são de UNIDADE.",
+    "data": {
+        "reference": {
+            "exercise": 2026,
+            "month": 7
+        },
+        "blocking": {
+            "can_generate": false,
+            "pendencies": [
+                {
+                    "scope": "blocking",
+                    "kind": "domain_unmapped",
+                    "field_name": "Estrutura",
+                    "subject_type": "social_unit",
+                    "subject_uuid": "350518fd-fc23-4363-a7aa-bd8cdb6bab0b",
+                    "affected_count": 1,
+                    "message_key": "siap_remittance.pendency.structure_code_unmapped",
+                    "message": "O código de estrutura \"099\" registrado nesta unidade não consta da tabela de estruturas do SIAP. Há duas saídas: corrigir o código no cadastro de apoio de estruturas de unidade, no Painel de Administração Global — acione o administrador da plataforma —, ou desvincular esta estrutura da unidade, o que está ao alcance do município. Enquanto nenhuma das duas for feita, nenhuma remessa pode ser gerada.",
+                    "blocks_entire_remittance": true,
+                    "affected_layouts": 11,
+                    "resolution": {
+                        "scope": "global",
+                        "resource": "social-unit-structures",
+                        "requires_role": null
+                    }
+                }
+            ]
+        },
+        "layouts": [
+            {
+                "name": "UnidadeSocial",
+                "sort_order": 1,
+                "file_name": "UnidadeSocial.xml",
+                "outcome": "complete",
+                "record_count": 1,
+                "skipped_count": 0,
+                "pendencies": []
+            },
+            {
+                "name": "EntidadeSocial",
+                "sort_order": 2,
+                "file_name": "EntidadeSocial.xml",
+                "outcome": "header_only",
+                "record_count": 0,
+                "skipped_count": 0,
+                "pendencies": []
+            },
+            {
+                "name": "EquipamentoUnidade",
+                "sort_order": 3,
+                "file_name": "EquipamentoUnidade.xml",
+                "outcome": "header_only",
+                "record_count": 0,
+                "skipped_count": 0,
+                "pendencies": []
+            },
+            {
+                "name": "EstruturaUnidadeSocial",
+                "sort_order": 4,
+                "file_name": "EstruturaUnidadeSocial.xml",
+                "outcome": "partial",
+                "record_count": 1,
+                "skipped_count": 1,
+                "pendencies": [
+                    {
+                        "scope": "blocking",
+                        "kind": "domain_unmapped",
+                        "field_name": "Estrutura",
+                        "subject_type": "social_unit",
+                        "subject_uuid": "350518fd-fc23-4363-a7aa-bd8cdb6bab0b",
+                        "affected_count": 1,
+                        "message_key": "siap_remittance.pendency.structure_code_unmapped",
+                        "message": "O código de estrutura \"099\" registrado nesta unidade não consta da tabela de estruturas do SIAP. Há duas saídas: corrigir o código no cadastro de apoio de estruturas de unidade, no Painel de Administração Global — acione o administrador da plataforma —, ou desvincular esta estrutura da unidade, o que está ao alcance do município. Enquanto nenhuma das duas for feita, nenhuma remessa pode ser gerada.",
+                        "blocks_entire_remittance": true
+                    }
+                ]
+            },
+            {
+                "name": "ProfissionalSocial",
+                "sort_order": 5,
+                "file_name": "ProfissionalSocial.xml",
+                "outcome": "header_only",
+                "record_count": 0,
+                "skipped_count": 0,
+                "pendencies": [
+                    {
+                        "scope": "layout",
+                        "kind": "field_without_source",
+                        "field_name": "Matricula",
+                        "subject_type": null,
+                        "subject_uuid": null,
+                        "affected_count": 1,
+                        "message_key": "siap_remittance.pendency.field_without_source",
+                        "message": "O campo Matricula é exigido pelo SIAP, mas ainda não é registrado no sistema.",
+                        "blocks_entire_remittance": false
+                    }
+                ]
+            },
+            {
+                "name": "RegistrosUnidade",
+                "sort_order": 6,
+                "file_name": "RegistrosUnidade.xml",
+                "outcome": "header_only",
+                "record_count": 0,
+                "skipped_count": 0,
+                "pendencies": [
+                    {
+                        "scope": "layout",
+                        "kind": "no_data_source",
+                        "field_name": null,
+                        "subject_type": null,
+                        "subject_uuid": null,
+                        "affected_count": 1,
+                        "message_key": "siap_remittance.pendency.no_data_source",
+                        "message": "Este leiaute depende de um módulo de atendimento que ainda não existe no sistema.",
+                        "blocks_entire_remittance": false
+                    }
+                ]
+            },
+            {
+                "name": "NovasFamilias",
+                "sort_order": 7,
+                "file_name": "NovasFamilias.xml",
+                "outcome": "header_only",
+                "record_count": 0,
+                "skipped_count": 0,
+                "pendencies": [
+                    {
+                        "scope": "layout",
+                        "kind": "no_data_source",
+                        "field_name": null,
+                        "subject_type": null,
+                        "subject_uuid": null,
+                        "affected_count": 1,
+                        "message_key": "siap_remittance.pendency.no_data_source",
+                        "message": "Este leiaute depende de um módulo de atendimento que ainda não existe no sistema.",
+                        "blocks_entire_remittance": false
+                    }
+                ]
+            },
+            {
+                "name": "SCFV",
+                "sort_order": 8,
+                "file_name": "SCFV.xml",
+                "outcome": "header_only",
+                "record_count": 0,
+                "skipped_count": 0,
+                "pendencies": [
+                    {
+                        "scope": "layout",
+                        "kind": "no_data_source",
+                        "field_name": null,
+                        "subject_type": null,
+                        "subject_uuid": null,
+                        "affected_count": 1,
+                        "message_key": "siap_remittance.pendency.no_data_source",
+                        "message": "Este leiaute depende de um módulo de atendimento que ainda não existe no sistema.",
+                        "blocks_entire_remittance": false
+                    }
+                ]
+            },
+            {
+                "name": "CapacitacaoDivulgacao",
+                "sort_order": 9,
+                "file_name": "CapacitacaoDivulgacao.xml",
+                "outcome": "header_only",
+                "record_count": 0,
+                "skipped_count": 0,
+                "pendencies": [
+                    {
+                        "scope": "layout",
+                        "kind": "no_data_source",
+                        "field_name": null,
+                        "subject_type": null,
+                        "subject_uuid": null,
+                        "affected_count": 1,
+                        "message_key": "siap_remittance.pendency.no_data_source",
+                        "message": "Este leiaute depende de um módulo de atendimento que ainda não existe no sistema.",
+                        "blocks_entire_remittance": false
+                    }
+                ]
+            },
+            {
+                "name": "UsuarioRede",
+                "sort_order": 10,
+                "file_name": "UsuarioRede.xml",
+                "outcome": "header_only",
+                "record_count": 0,
+                "skipped_count": 0,
+                "pendencies": [
+                    {
+                        "scope": "layout",
+                        "kind": "field_without_source",
+                        "field_name": "NIS",
+                        "subject_type": null,
+                        "subject_uuid": null,
+                        "affected_count": 1,
+                        "message_key": "siap_remittance.pendency.field_without_source",
+                        "message": "O campo NIS é exigido pelo SIAP, mas ainda não é registrado no sistema.",
+                        "blocks_entire_remittance": false
+                    },
+                    {
+                        "scope": "layout",
+                        "kind": "field_without_source",
+                        "field_name": "ValorRenda",
+                        "subject_type": null,
+                        "subject_uuid": null,
+                        "affected_count": 1,
+                        "message_key": "siap_remittance.pendency.field_without_source",
+                        "message": "O campo ValorRenda é exigido pelo SIAP, mas ainda não é registrado no sistema.",
+                        "blocks_entire_remittance": false
+                    },
+                    {
+                        "scope": "layout",
+                        "kind": "field_without_source",
+                        "field_name": "Alfabetizado",
+                        "subject_type": null,
+                        "subject_uuid": null,
+                        "affected_count": 1,
+                        "message_key": "siap_remittance.pendency.field_without_source",
+                        "message": "O campo Alfabetizado é exigido pelo SIAP, mas ainda não é registrado no sistema.",
+                        "blocks_entire_remittance": false
+                    },
+                    {
+                        "scope": "layout",
+                        "kind": "field_without_source",
+                        "field_name": "SituacaoEscolar",
+                        "subject_type": null,
+                        "subject_uuid": null,
+                        "affected_count": 1,
+                        "message_key": "siap_remittance.pendency.field_without_source",
+                        "message": "O campo SituacaoEscolar é exigido pelo SIAP, mas ainda não é registrado no sistema.",
+                        "blocks_entire_remittance": false
+                    },
+                    {
+                        "scope": "layout",
+                        "kind": "field_without_source",
+                        "field_name": "DoencaGrave",
+                        "subject_type": null,
+                        "subject_uuid": null,
+                        "affected_count": 1,
+                        "message_key": "siap_remittance.pendency.field_without_source",
+                        "message": "O campo DoencaGrave é exigido pelo SIAP, mas ainda não é registrado no sistema.",
+                        "blocks_entire_remittance": false
+                    },
+                    {
+                        "scope": "layout",
+                        "kind": "field_without_source",
+                        "field_name": "SaudeDeficiencia",
+                        "subject_type": null,
+                        "subject_uuid": null,
+                        "affected_count": 1,
+                        "message_key": "siap_remittance.pendency.field_without_source",
+                        "message": "O campo SaudeDeficiencia é exigido pelo SIAP, mas ainda não é registrado no sistema.",
+                        "blocks_entire_remittance": false
+                    },
+                    {
+                        "scope": "layout",
+                        "kind": "field_without_source",
+                        "field_name": "Escolaridade",
+                        "subject_type": null,
+                        "subject_uuid": null,
+                        "affected_count": 1,
+                        "message_key": "siap_remittance.pendency.field_without_source",
+                        "message": "O campo Escolaridade é exigido pelo SIAP, mas ainda não é registrado no sistema.",
+                        "blocks_entire_remittance": false
+                    },
+                    {
+                        "scope": "layout",
+                        "kind": "field_without_source",
+                        "field_name": "ZonaResidencia",
+                        "subject_type": null,
+                        "subject_uuid": null,
+                        "affected_count": 1,
+                        "message_key": "siap_remittance.pendency.field_without_source",
+                        "message": "O campo ZonaResidencia é exigido pelo SIAP, mas ainda não é registrado no sistema.",
+                        "blocks_entire_remittance": false
+                    }
+                ]
+            },
+            {
+                "name": "Familia",
+                "sort_order": 11,
+                "file_name": "Familia.xml",
+                "outcome": "header_only",
+                "record_count": 0,
+                "skipped_count": 0,
+                "pendencies": [
+                    {
+                        "scope": "layout",
+                        "kind": "field_without_source",
+                        "field_name": "TipoResidencia",
+                        "subject_type": null,
+                        "subject_uuid": null,
+                        "affected_count": 1,
+                        "message_key": "siap_remittance.pendency.field_without_source",
+                        "message": "O campo TipoResidencia é exigido pelo SIAP, mas ainda não é registrado no sistema.",
+                        "blocks_entire_remittance": false
+                    },
+                    {
+                        "scope": "layout",
+                        "kind": "field_without_source",
+                        "field_name": "DomicilioAreaRisco",
+                        "subject_type": null,
+                        "subject_uuid": null,
+                        "affected_count": 1,
+                        "message_key": "siap_remittance.pendency.field_without_source",
+                        "message": "O campo DomicilioAreaRisco é exigido pelo SIAP, mas ainda não é registrado no sistema.",
+                        "blocks_entire_remittance": false
+                    },
+                    {
+                        "scope": "layout",
+                        "kind": "field_without_source",
+                        "field_name": "DomicilioVulnerabilidade",
+                        "subject_type": null,
+                        "subject_uuid": null,
+                        "affected_count": 1,
+                        "message_key": "siap_remittance.pendency.field_without_source",
+                        "message": "O campo DomicilioVulnerabilidade é exigido pelo SIAP, mas ainda não é registrado no sistema.",
+                        "blocks_entire_remittance": false
+                    },
+                    {
+                        "scope": "layout",
+                        "kind": "field_without_source",
+                        "field_name": "Especificidades",
+                        "subject_type": null,
+                        "subject_uuid": null,
+                        "affected_count": 1,
+                        "message_key": "siap_remittance.pendency.field_without_source",
+                        "message": "O campo Especificidades é exigido pelo SIAP, mas ainda não é registrado no sistema.",
+                        "blocks_entire_remittance": false
+                    }
+                ]
+            }
+        ],
+        "summary": {
+            "layout_count": 11,
+            "record_count": 2,
+            "blocking_pendency_count": 1,
+            "informative_pendency_count": 0,
+            "layout_pendency_count": 17
+        }
+    }
+}

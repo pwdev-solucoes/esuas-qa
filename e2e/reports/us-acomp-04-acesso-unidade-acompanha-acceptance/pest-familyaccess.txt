@@ -1,0 +1,48 @@
+
+   PASS  Tests\Unit\Services\FamilyAccessAuditServiceTest
+  ✓ it writes one family_access/record_opened entry with the RN05 prope… 0.29s  
+  ✓ it writes the denial with a closed-domain reason and no PII in the…  0.02s  
+  ✓ it labels the professional name as "<Nome> [Master]" when the Master has…  0.01s  
+  ✓ it prefers the local professional name over the master label when t… 0.01s  
+
+   PASS  Tests\Unit\Services\FamilyAccessServiceTest
+  ✓ it detects the master role only in the tenant where it was granted   0.03s  
+  ✓ it detects the view-details permission per tenant, via the dedicate… 0.03s  
+  ✓ it stops counting a revoked (force-deleted) role as a grant          0.03s  
+  ✓ it resolves the active professional and denies inactive/soft-delete… 0.03s  
+
+   PASS  Tests\Feature\Client\FamilyAccessFollowUpAxisTest
+  ✓ it opens the record for a unit that FOLLOWS the family, auditing vi… 0.06s  
+  ✓ it reaches the WHOLE record, not just the follow-up block, includin… 0.07s  
+  ✓ it keeps the access after the follow-up is DISCHARGED (CA03/RN02)    0.05s  
+  ✓ it does NOT grant access through a CANCELLED follow-up, denying wit… 0.05s  
+  ✓ it does NOT grant access through a soft-deleted follow-up (RN02/D05… 0.05s  
+  ✓ it denies the unit with NEITHER reference NOR follow-up, stating bo… 0.06s  
+  ✓ it does not let the follow-up replace the LGPD add-on (CA06/RN03)    0.05s  
+  ✓ it does not let the follow-up replace an ACTIVE unit assignment (CA… 0.05s  
+  ✓ it keeps the Master accessing by bypass, never by the follow-up axi… 0.05s  
+  ✓ it audits the FOUR distinct access axes (CA01/CA03/CA08/RN04)        0.07s  
+  ✓ it does not let following ONE family authorize reaching another one… 0.05s  
+  ✓ it keeps the organization isolation ahead of the follow-up axis (CA… 0.06s  
+  ✓ it lists the FOLLOWED family in the person search and opens it from… 0.06s  
+  ✓ it filters the follow-up axis by tenant_id, even with a numerically… 0.07s  
+  ✓ it reports the assigned units that follow the family in the decisio… 0.06s  
+
+   PASS  Tests\Feature\Family\FamilyAccessByUnitTest
+  ✓ it opens the record for a professional assigned to the reference un… 0.06s  
+  ✓ it answers a family of another unit as ACCESS DENIED, stating the r… 0.05s  
+  ✓ it reaches every unit where the professional is assigned, and none…  0.06s  
+  ✓ it hides families of other units from the person search, keeping th… 0.06s  
+  ✓ it blocks every record for a professional whose assignment is close… 0.06s  
+  ✓ it keeps the Master free from the unit cut, auditing the bypass (CA… 0.10s  
+  ✓ it does not let the unit assignment replace the LGPD add-on (CA06/R… 0.05s  
+  ✓ it keeps a family without reference unit visible during the transit… 0.06s  
+  ✓ it starts cutting as soon as the family receives a unit outside the… 0.06s  
+
+   PASS  Tests\Feature\TenantIsolation\FamilyAccessTenantIsolationTest
+  ✓ it treats a family of another organization as a nonexistent record,… 0.06s  
+  ✓ it never lists people of another organization in the person search,… 0.05s  
+
+  Tests:    34 passed (179 assertions)
+  Duration: 2.35s
+

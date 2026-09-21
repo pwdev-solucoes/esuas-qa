@@ -1,0 +1,59 @@
+$ grep -nE 'paefi|PAEFI' tests/Feature/Client/FollowUpReportServiceTest.php tests/Feature/Client/AttendanceReportFollowUpTest.php
+tests/Feature/Client/FollowUpReportServiceTest.php:86: * o servico do TIPO da unidade (CRAS -> PAIF, CREAS -> PAEFI); com servico,
+tests/Feature/Client/FollowUpReportServiceTest.php:87: * recusa o que o tipo nao oferta — um PAEFI dentro de um CRAS e dado
+tests/Feature/Client/FollowUpReportServiceTest.php:99:            (int) test()->tipoCreas->id => test()->paefi,
+tests/Feature/Client/FollowUpReportServiceTest.php:173:    $this->paefi = FollowUpService::factory()->offeredBy($this->tipoCreas)->create([
+tests/Feature/Client/FollowUpReportServiceTest.php:174:        'code' => 'PAEFI', 'name' => 'Protecao e Atendimento Especializado a Familias e Individuos', 'short_name' => 'PAEFI',
+tests/Feature/Client/FollowUpReportServiceTest.php:257:    furActive($silva, $this->creas, '2026-08-01', $this->paefi);
+tests/Feature/Client/FollowUpReportServiceTest.php:269:    // permite, o catalogo de hoje nao tem. PAEFI aqui seria dado IMPOSSIVEL
+tests/Feature/Client/FollowUpReportServiceTest.php:305:    // Sem servico, o helper deriva do tipo: CRAS -> PAIF, CREAS -> PAEFI.
+tests/Feature/Client/FollowUpReportServiceTest.php:307:        ->and(furActive($silva, $this->creas, '2026-08-01')->follow_up_service_id)->toBe($this->paefi->id);
+tests/Feature/Client/FollowUpReportServiceTest.php:314:        $this->paefi, // PAEFI num CRAS: dado impossivel
+tests/Feature/Client/FollowUpReportServiceTest.php:387:    // de ser um PAEFI dentro do CRAS (que a API recusa) e virou o REINGRESSO
+tests/Feature/Client/FollowUpReportServiceTest.php:609:    // unico parcial impede dois vigentes no mesmo servico, e PAEFI num CRAS
+tests/Feature/Client/AttendanceReportFollowUpTest.php:113: * o servico do TIPO da unidade (CRAS -> PAIF, CREAS -> PAEFI); com servico,
+tests/Feature/Client/AttendanceReportFollowUpTest.php:114: * recusa o que o tipo nao oferta — um PAEFI dentro de um CRAS e dado
+tests/Feature/Client/AttendanceReportFollowUpTest.php:126:            (int) test()->tipoCreas->id => test()->paefi,
+tests/Feature/Client/AttendanceReportFollowUpTest.php:195:    $this->paefi = FollowUpService::factory()->offeredBy($this->tipoCreas)->create([
+tests/Feature/Client/AttendanceReportFollowUpTest.php:196:        'code' => 'PAEFI', 'name' => 'Protecao e Atendimento Especializado a Familias e Individuos', 'short_name' => 'PAEFI',
+tests/Feature/Client/AttendanceReportFollowUpTest.php:252:    // linha 106 deixou de ser um PAEFI dentro do CRAS (que a API recusa) e
+tests/Feature/Client/AttendanceReportFollowUpTest.php:297:| e RECUSA o incoerente: nenhum caso HTTP daqui pode nascer de um PAEFI em
+tests/Feature/Client/AttendanceReportFollowUpTest.php:306:    // Sem servico, deriva do tipo: CRAS -> PAIF, CREAS -> PAEFI.
+tests/Feature/Client/AttendanceReportFollowUpTest.php:308:        ->and(arfuFollowUp($familia, $creas, '2026-08-01')->follow_up_service_id)->toBe($this->paefi->id);
+tests/Feature/Client/AttendanceReportFollowUpTest.php:317:        $this->paefi, // PAEFI num CRAS: dado impossivel
+tests/Feature/Client/AttendanceReportFollowUpTest.php:497:    // vigentes no mesmo servico; PAEFI num CRAS seria dado impossivel —
+tests/Feature/Client/AttendanceReportFollowUpTest.php:583:    // US-ACOMP-08) — PAEFI num CRAS seria dado impossivel.
+
+$ ocorrencias de paefi/PAEFI na MESMA linha de crasCentro|crasRural|unidadeB (DoD §16: esperado 0):
+0
+
+=== Leitura linha a linha das ocorrencias restantes (US-ACOMP-08 · DoD §16 / plano §5) ===
+FollowUpReportServiceTest.php
+  86-87   docblock do helper furServiceFor (prosa: "CRAS -> PAIF, CREAS -> PAEFI"; "PAEFI dentro de um CRAS e dado IMPOSSIVEL")
+  99      furServiceFor: braco do match que DERIVA paefi para o tipo CREAS (tipoCreas)
+  173-174 beforeEach: criacao do $this->paefi ofertado por tipoCreas
+  257     CA04/RN03: furActive(..., $this->creas, ..., $this->paefi) — unidade de tipo CREAS (coerente)
+  269     comentario do CA-extra-B explicando por que PAEFI NAO e usado ali
+  305/307 teste "helper recusa": prosa + derivacao para $this->creas (CREAS -> paefi, coerente)
+  314     teste "helper recusa": `$this->paefi` como argumento de furActive(..., $this->crasCentro, ...) DENTRO de
+          expect(fn)->toThrow(LogicException) — o par incoerente NUNCA chega ao banco; a chamada esta quebrada em
+          varias linhas, por isso `crasCentro` e `paefi` nao coincidem na mesma linha do grep. E a UNICA ocorrencia
+          deliberada de PAEFI x CRAS nos dois arquivos, exigida pelo plano (§5 "Helpers recusam incoerencia").
+  387     comentario do cenario canonico ("deixou de ser um PAEFI dentro do CRAS")
+  609     comentario do D10 ("PAEFI num CRAS seria dado impossivel")
+AttendanceReportFollowUpTest.php
+  113-114 docblock do helper arfuServiceFor (prosa)
+  126     arfuServiceFor: braco do match que DERIVA paefi para o tipo CREAS
+  195-196 beforeEach: criacao do $this->paefi ofertado por tipoCreas
+  252     comentario do cenario canonico HTTP
+  297     cabecalho do bloco do teste "helper recusa" (prosa)
+  306/308 teste "helper recusa": prosa + derivacao para $creas (unidade de tipo CREAS criada no caso, coerente)
+  317     teste "helper recusa": `$this->paefi` como argumento de arfuFollowUp(..., $this->crasCentro, ...) DENTRO de
+          expect(fn)->toThrow(LogicException) — mesma leitura da linha 314 do outro arquivo; nunca chega ao banco.
+  497/583 comentarios dos sitios L419/L500 saneados (agora PAIF2 do tipo CRAS)
+
+Sitios incoerentes saneados (PAEFI em unidade de tipo CRAS via factory), com `expect` IDENTICOS:
+  FollowUpReportServiceTest   L221 (dois servicos na mesma unidade -> PAIF2, CA-extra-B) · L294 (canonico -> reingresso §7.2) · L508 (D10 -> PAIF2)
+  AttendanceReportFollowUpTest L209 (canonico HTTP -> reingresso §7.2) · L419 (unidadeB tipo CRAS -> PAIF2) · L500 (crasCentro -> PAIF2)
+Nenhum sitio ALEM dos seis acima: os helpers agora lancam LogicException e a suite filtrada passou inteira (228/228).
+Resultado: 0 ocorrencias de paefi/PAEFI na mesma linha de crasCentro|crasRural|unidadeB.

@@ -1,0 +1,12 @@
+<!-- HU #10373 — CA04 — duas unidades no tenant; a segunda (MDS 7170415681848) não tem estrutura nenhuma. Nenhuma linha dela no arquivo — e nenhuma pendência (ver payloads/CA04-sem-pendencia.json) -->
+<!-- Remessa GERADA de verdade via POST /api/client/siap-remittances; XML extraído do zip. -->
+<?xml version="1.0"?>
+<SIAP>
+    <Codigo>004821</Codigo>
+    <Exercicio>2026</Exercicio>
+    <Mes>07</Mes>
+    <EstruturaUnidadeSocial>
+        <NumeroMDS>6650513502642</NumeroMDS>
+        <Estrutura>1</Estrutura>
+    </EstruturaUnidadeSocial>
+</SIAP>

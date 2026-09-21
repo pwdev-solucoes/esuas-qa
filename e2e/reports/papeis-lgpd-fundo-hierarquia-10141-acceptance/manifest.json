@@ -1,0 +1,122 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — US-07 Papéis LGPD de ação única no fundo da hierarquia",
+    "subtitle": "Ticket GLPI #10141 · Evidência 100% automatizada (Pest) — feature sem UI própria",
+    "rows": [
+      ["Gerado em", "30/07/2026"],
+      ["Ticket GLPI", "#10141 — HU - #10141 Papéis LGPD de ação única no fundo da hierarquia"],
+      ["Spec", ".planning/product/stories/US-07-add-ons-lgpd-exigem-posto-base.md"],
+      ["Branch", "feature/papeis-lgpd-fundo-hierarquia (api/)"],
+      ["Commits", "560b923, 47b12ee, b81d565, e11356e"],
+      ["Ambiente", "API Sail/PostgreSQL — Pest 4, memory_limit=1G"],
+      ["Ferramenta", "Pest (100% automatizado — regra de backend puro, sem tela dedicada)"]
+    ]
+  },
+  "summary": "8 critérios de aceite, todos verificados por suíte automatizada (Pest) — esta HU altera apenas regra de hierarquia de papéis e um comando de saneamento no backend, sem componente de UI próprio (o drawer de perfis que consome o erro 422 já existia e não muda). 96 testes relevantes rodados nesta passada, todos verdes. Inclui as duas correções feitas na revisão do PR #92 (bug de soft-delete no comando de saneamento e fechamento de um bypass real da RN02 via UserService::create/update, fora do escopo literal dos CAs mas necessário para o propósito da HU).",
+  "cas": [
+    {
+      "id": "CA01",
+      "title": "Add-ons no fundo da hierarquia",
+      "status": "auto",
+      "gherkin": "Dado o RoleSeeder executado\nQuando consulto os levels\nEntão client_family_viewer = 910, client_territorial_qualifier = 920 e client_geo_panel_viewer = 930\nE todos são > 900 e > client_operador (30).",
+      "steps_html": "<code>tests/Feature/Database/RoleSeederTest.php</code> + verificação direta na base de dev real após <code>db:seed --class=RoleSeeder</code>.",
+      "results": [
+        "4 testes verdes confirmando os 3 levels exatos e a faixa reservada 900+.",
+        "Consulta real na base de dev (guard client, level >= 900): family_viewer=910, territorial_qualifier=920, geo_panel_viewer=930 — nenhum outro papel na faixa."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA02",
+      "title": "Empilhar add-on sobre posto continua permitido",
+      "status": "auto",
+      "gherkin": "Dado um profissional com o posto operador\nQuando o Master atribui family_viewer\nEntão a atribuição é aceita\nE o profissional passa a abrir o prontuário familiar detalhado.",
+      "steps_html": "<code>UserTenantRoleControllerTest</code> (store) + <code>ProfessionalRoleControllerTest</code> (syncRoles).",
+      "results": [
+        "'store aceita add-on empilhado sobre um posto base existente (CA02)' — verde.",
+        "'aceita empilhar um add-on sobre o posto base (CA02 — sem regressão)' — verde, união Spatie confirmada com operador + family_viewer."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA03",
+      "title": "Add-on isolado é recusado (caminho de erro)",
+      "status": "auto",
+      "gherkin": "Dado um profissional sem nenhum posto base no tenant\nQuando o Master tenta salvar um conjunto de perfis contendo apenas add-ons\nEntão a operação é recusada com 422 e mensagem em pt-BR explicando a exigência\nE nenhuma linha é criada em user_tenant_role.",
+      "steps_html": "<code>UserTenantRoleControllerTest</code> (store) + <code>ProfessionalRoleControllerTest</code> (syncRoles) + <code>UserControllerTest</code> (via /api/client/users, achado da revisão do PR #92).",
+      "results": [
+        "'store recusa add-on isolado para usuário sem posto base no tenant (CA03)' — verde, assertDatabaseMissing + Spatie vazio.",
+        "'recusa um conjunto composto só por add-ons (CA03/CA05)' — verde, UTR/Spatie/activity_log inalterados.",
+        "'store rejeita criar user com add-on isolado como único role (RN02, GLPI #10141)' — verde, 422 via UserService::create — fecha o bypass encontrado na revisão do PR."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA04",
+      "title": "Remover o último posto base é recusado (caminho de erro)",
+      "status": "auto",
+      "gherkin": "Dado um profissional com operador + family_viewer\nQuando o Master remove operador mantendo family_viewer\nEntão a operação é recusada com 422 — o estado proibido do CA03 não pode ser alcançado por remoção.",
+      "steps_html": "<code>UserTenantRoleControllerTest</code> (destroy/destroyForUser/update) + <code>ProfessionalRoleControllerTest</code> (syncRoles) + <code>UserControllerTest</code> (update, achado da revisão).",
+      "results": [
+        "'destroy recusa remover o último posto base mantendo um add-on (CA04)' — verde.",
+        "'destroyForUser recusa ...' — verde.",
+        "'update rejeita trocar o único role do target para um add-on isolado (RN02, GLPI #10141)' — verde, fecha o mesmo bypass via UserService::update."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA05",
+      "title": "Regra vale nos dois pontos de mutação",
+      "status": "auto",
+      "gherkin": "Dado que user_tenant_role é mutado tanto por UserTenantRoleController quanto por ProfessionalService::syncRoles\nQuando tento criar o estado proibido por qualquer um dos dois caminhos\nEntão ambos recusam — a validação não pode viver só no drawer de perfis.",
+      "steps_html": "Verificação estrutural + testes cruzados: um único método (<code>UserTenantRoleSyncService::assertResultingSetHasBasePost()</code>) chamado pelos dois pontos do ticket.",
+      "results": [
+        "Confirmado por leitura de código: implementação única, sem duplicação de regra.",
+        "Ambos os caminhos devolvem a mesma chave de mensagem (user_tenant_role.validation.base_post_required), asserido nos dois arquivos de teste.",
+        "Achado adicional na revisão do PR #92 (fora do escopo literal deste CA, mas do mesmo espírito): o mesmo método também passou a ser chamado por UserService::create/update, terceiro ponto de mutação que não constava nos CAs originais mas permitia o mesmo estado proibido por outro caminho — fechado e testado (ver CA03/CA04)."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA06",
+      "title": "Resolução de \"o papel\" fica correta por estrutura",
+      "status": "auto",
+      "gherkin": "Dado um profissional com operador (30) + family_viewer (910)\nQuando consulto /auth/me, o seletor de tenants e a hierarquia de CRUD\nEntão o papel resolvido é operador nos três\nE as exclusões por nome permanecem no código, com os testes de regressão das HUs #9760/#9761 verdes.",
+      "steps_html": "<code>FamilyAccessServiceTest</code>, <code>RoleServiceTest</code>, <code>TenantServiceTest</code>, <code>ClientUserPolicyStackedRolesTest</code> — nenhum código de produção destes pontos foi alterado (só o level mudou).",
+      "results": [
+        "19 testes de regressão verdes, sem alteração de ClientUserPolicy::roleFor/TenantService::listForUser/TenantPermissionResolver.",
+        "Exclusão por nome (RoleCode::addOnRoleNames()) confirmada intacta e ainda necessária como defesa em profundidade independente do valor numérico do level."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA07",
+      "title": "União de permissões preservada",
+      "status": "auto",
+      "gherkin": "Dado o mesmo profissional\nQuando o TenantPermissionResolver calcula as permissões efetivas\nEntão families.view-details continua concedida — add-on entra na união de permissões, muda apenas a posição na hierarquia.",
+      "steps_html": "<code>tests/Unit/Services/TenantPermissionResolverTest.php</code>.",
+      "results": [
+        "6 testes verdes; união de permissões de papéis empilhados confirmada sem deduplicação indevida.",
+        "Ordem de agrupamento por level ajustada (posto base antes do add-on) — efeito esperado e desejado da RN01, sem mudança de código de produção do resolver."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA08",
+      "title": "Base legada saneada",
+      "status": "auto",
+      "gherkin": "Dado profissionais existentes que hoje possuem apenas um add-on\nQuando executo o comando de saneamento antes da migração de levels\nEntão cada caso é listado com tenant, CPF mascarado e papel\nE nenhum usuário perde acesso silenciosamente nem fica impedido de autenticar.",
+      "steps_html": "<code>tests/Feature/Console/AuditAddonOnlyRolesCommandTest.php</code> (8 testes, incluindo o caso de soft-delete corrigido na revisão) + execução real do comando <code>roles:audit-addon-only</code> na base de dev.",
+      "results": [
+        "8 testes verdes: listagem, mascaramento de CPF (só 2 últimos dígitos), escopo por tenant, soft-delete corretamente ignorado, prova de somente-leitura (snapshot antes/depois idêntico).",
+        "Achado da revisão do PR #92: o comando usava withoutGlobalScopes() (removia também o SoftDeletingScope), o que poderia mascarar uma violação real se um posto base fosse soft-deletado deixando só o add-on ativo — corrigido para withoutGlobalScope(BelongsToTenantScope::class); novo teste discrimina esse caso.",
+        "Execução real na base de dev (após o fix): 2 casos encontrados — Maceió Geo e Arapiraca Geo, ambos com apenas geo_panel_viewer — nenhum registro alterado. Pendência operacional: tratar esses 2 casos com produto/operação antes do deploy do RoleSeeder atualizado."
+      ],
+      "images": []
+    }
+  ],
+  "appendix": {
+    "label": "Suíte Pest completa dos arquivos relevantes aos 8 CAs (96 testes, 260 assertions)",
+    "file": "pest-hu10141.txt"
+  }
+}

@@ -1,0 +1,153 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — Painel 1: Resumo Geral",
+    "subtitle": "HU #10185 · Dashboard do tenant · Evidências end-to-end no client",
+    "rows": [
+      [
+        "Gerado em",
+        "30/07/2026"
+      ],
+      [
+        "HU",
+        "#10185 — Painel 1: Resumo Geral"
+      ],
+      [
+        "Branch",
+        "feature/10185-painel-1-resumo-geral (api + client)"
+      ],
+      [
+        "Spec",
+        ".planning/specs/10185-painel-1-resumo-geral.md"
+      ],
+      [
+        "Ambiente",
+        "API Sail/PostgreSQL+PostGIS · client :5174 (não-mock)"
+      ],
+      [
+        "Organização (tenant)",
+        "E2E CadÚnico · 96 famílias · 60 bairros"
+      ],
+      [
+        "Salário mínimo vigente",
+        "R$ 1.518,00 (tabela minimum_wages) · meio SM R$ 759,00"
+      ],
+      [
+        "Ferramenta",
+        "playwright-cli (Chromium) + Pest"
+      ]
+    ]
+  },
+  "summary": "8 critérios evidenciados: 5 por navegador dirigindo o client real (CA03 consistência de totais e faixas, RN03 indicadores do painel, e as três facetas do RG01 — visão padrão \"Todos os Bairros\", recálculo dinâmico ao selecionar um bairro e \"Limpar Filtro\") e 3 por suíte automatizada (isolamento multi-tenant, gate de permissão e salário mínimo cadastrável por exercício). Todos atendidos. Suíte Pest do backend: 26 testes verdes (103 asserções).",
+  "cas": [
+    {
+      "id": "CA03",
+      "title": "Consistência de totais e faixas (soma das 3 faixas = Total de Famílias)",
+      "status": "nav",
+      "gherkin": "Dado que estou na aba \"Resumo Geral\"\nE o filtro territorial está em \"Todos os Bairros\"\nQuando o painel é calculado\nEntão o somatório das 3 faixas de renda (Extrema Pobreza + Baixa Renda + Acima de Meio SM) é EXATAMENTE igual ao Total de Famílias Cadastradas do município.",
+      "steps_html": "Login como Master, aba <b>Resumo Geral</b> com o filtro em <code>Todos os Bairros</code>. Leitura direta dos cartões e das faixas do painel.",
+      "results": [
+        "Total de Famílias Cadastradas = 96.",
+        "Extrema Pobreza 76 (79,2%) + Pobreza/Baixa Renda 8 (8,3%) + Acima de Meio SM 12 (12,5%) = 96.",
+        "A soma das 3 faixas bate exatamente com o Total de Famílias (CA03 atendido). Inclui 1 família de origem manual com renda nula, contabilizada como R$ 0,00 na Extrema Pobreza (P3)."
+      ],
+      "images": [
+        "screenshots/ca03-rn03-painel-municipal.png"
+      ]
+    },
+    {
+      "id": "RN03",
+      "title": "Indicadores do Painel 1 (Total de Famílias, Total de Pessoas, distribuição por renda)",
+      "status": "nav",
+      "gherkin": "Dado um recorte com famílias e integrantes\nQuando o painel é calculado\nEntão \"Total de Famílias Cadastradas\" = famílias distintas do recorte\nE \"Total de Pessoas Cadastradas\" = cidadãos distintos (integrantes ativos)\nE a distribuição traz as 3 faixas com contagem e percentual.",
+      "steps_html": "Painel <b>Resumo Geral</b> no recorte municipal: cartões de totais + gráfico de barras das 3 faixas de renda per capita (<b>Apache ECharts</b>) + legenda com contagem/percentual.",
+      "results": [
+        "Total de Famílias Cadastradas = 96; Total de Pessoas Cadastradas = 33 (integrantes ativos distintos).",
+        "Distribuição por Faixa de Renda Per Capita renderizada em ECharts: Extrema Pobreza (R$ 0,00–218,00), Pobreza/Baixa Renda (R$ 218,01–759,00) e Acima de Meio Salário Mínimo (> R$ 759,00).",
+        "Faixa intermediária delimitada por meio salário mínimo (R$ 759,00) derivado da tabela cadastrável minimum_wages (SM R$ 1.518,00)."
+      ],
+      "images": [
+        "screenshots/ca03-rn03-painel-municipal.png"
+      ]
+    },
+    {
+      "id": "RG01-a",
+      "title": "Filtro global por Bairro — comportamento padrão (\"Todos os Bairros\")",
+      "status": "nav",
+      "gherkin": "Dado que acabei de carregar a aba \"Resumo Geral\"\nQuando nenhum bairro está selecionado\nEntão o filtro inicia em \"Todos os Bairros\"\nE os totais e a distribuição refletem a consolidação municipal completa do tenant.",
+      "steps_html": "Ao abrir o dashboard, o filtro global (topo, à direita) inicia em <code>Todos os Bairros</code>.",
+      "results": [
+        "Filtro em \"Todos os Bairros\"; barra fixa de KPIs e painel Resumo Geral exibem a consolidação municipal (96 famílias)."
+      ],
+      "images": [
+        "screenshots/rg01-01-todos-os-bairros.png"
+      ]
+    },
+    {
+      "id": "RG01-b",
+      "title": "Filtro global por Bairro — recálculo dinâmico ao selecionar um bairro",
+      "status": "nav",
+      "gherkin": "Dado que o filtro global está em \"Todos os Bairros\"\nQuando eu seleciono o bairro \"Itapoã\"\nEntão o Total de Famílias, o Total de Pessoas e as 3 faixas recalculam considerando apenas as famílias geocodificadas dentro do bairro (RN09)\nE o somatório das 3 faixas continua igual ao Total de Famílias do recorte.",
+      "steps_html": "Seleção do bairro <b>Itapoã</b> no filtro global. Um único evento recalcula a barra fixa E o painel ativo (RG01/RN08).",
+      "results": [
+        "Recálculo instantâneo: Total de Famílias 96 → 3 e Total de Pessoas 33 → 7.",
+        "Distribuição do bairro: Extrema Pobreza 3 (100%), demais faixas 0 — soma 3 = Total (CA03 mantido no recorte).",
+        "A barra fixa de KPIs também recalcula (Atualização 100%, Válidos 71,4%…) e ambas exibem \"Recalculado por bairro: Itapoã\"."
+      ],
+      "images": [
+        "screenshots/rg01-02-bairro-itapoa.png"
+      ]
+    },
+    {
+      "id": "RG01-c",
+      "title": "Filtro global por Bairro — \"Limpar Filtro\" retorna à visão municipal",
+      "status": "nav",
+      "gherkin": "Dado que estou com o bairro \"Itapoã\" selecionado\nQuando eu aciono \"Limpar Filtro\"\nEntão o painel volta à consolidação municipal completa.",
+      "steps_html": "Clique no botão <b>Limpar Filtro</b> (visível quando há bairro selecionado).",
+      "results": [
+        "Filtro volta a \"Todos os Bairros\"; Total de Famílias 3 → 96 e Total de Pessoas 7 → 33.",
+        "Painel e barra fixa retornam à consolidação municipal completa."
+      ],
+      "images": [
+        "screenshots/rg01-03-limpar-filtro.png"
+      ]
+    },
+    {
+      "id": "ISO",
+      "title": "Isolamento multi-tenant (famílias de outro tenant nunca entram)",
+      "status": "auto",
+      "gherkin": "Dado um usuário vinculado ao Tenant A\nQuando ele solicita o Resumo Geral\nEntão apenas famílias/pessoas do Tenant A entram nos cálculos\nE um neighborhood_uuid de bairro fora do município do Tenant A retorna 422.",
+      "steps_html": "Coberto por teste automatizado (Pest) — ver apêndice.",
+      "results": [
+        "DashboardGeneralSummaryIsolationTest: famílias do Tenant B nunca são contadas para o Tenant A; totais e distribuição isolados por tenant_id."
+      ],
+      "images": []
+    },
+    {
+      "id": "PERM",
+      "title": "Gate de permissão (sem dashboard.view-indicators → 403 / painel oculto)",
+      "status": "auto",
+      "gherkin": "Dado um usuário sem a permissão dashboard.view-indicators\nQuando ele chama o endpoint do Resumo Geral\nEntão recebe 403 (e o painel não é exibido).",
+      "steps_html": "Coberto por teste automatizado (Pest) — o endpoint reusa o mesmo gate da barra fixa (#10184).",
+      "results": [
+        "GeneralSummaryTest: operador sem o papel dedicado recebe 403; Master e geo_panel_viewer acessam. No frontend, o painel só é montado com a permissão."
+      ],
+      "images": []
+    },
+    {
+      "id": "SM",
+      "title": "Salário mínimo cadastrável por exercício (tabela minimum_wages)",
+      "status": "auto",
+      "gherkin": "Dado que o meio salário mínimo delimita a faixa intermediária\nQuando o Super Admin cadastra o salário mínimo por exercício\nEntão o painel usa MinimumWage::currentAmount()/2 (sem configuração por env).",
+      "steps_html": "CRUD global de <code>minimum_wages</code> (guard manager) + resolução do valor vigente. Coberto por Pest.",
+      "results": [
+        "MinimumWageControllerTest: CRUD com unicidade por exercício, ativação e resolução de currentAmount (maior ano ≤ atual, com fallback).",
+        "No ambiente E2E, o valor vigente R$ 1.518,00 (tabela) define a faixa intermediária até R$ 759,00 — sem variável de ambiente."
+      ],
+      "images": []
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Pest — GeneralSummary + MinimumWage + Isolamento)",
+    "file": "general-summary.txt"
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — HU #9864 Identificação Visual de Alertas Cadastrais",
+    "subtitle": "Painel de Georreferenciamento (rota /georreferenciamento) · módulo client · Evidências end-to-end no app real",
+    "rows": [
+      ["Gerado em", "10/07/2026"],
+      ["História", "HU #9864 — Identificação Visual de Alertas Cadastrais (Vencidos e A Vencer)"],
+      ["Critérios", "CA05 (1 critério)"],
+      ["Submódulos", "client 99e397d · api 7731b50 (branch feature/geo-9862-google-satelite-zindex, base develop)"],
+      ["Ambiente", "API Sail/PostgreSQL · client Vite :5175 (não-mock) → http://localhost/api"],
+      ["Organização (tenant)", "Maceió Geo (massa geo) · 12 famílias geocodificadas (3 com cadastro vencido >24m)"],
+      ["Perfil de acesso", "Master (CPF 27043020140) com geo-panel.view — RN10/RN21"],
+      ["Ferramenta", "playwright-cli (Chromium, viewport 1680×1050) + Vitest + Pest"]
+    ]
+  },
+  "summary": "O critério de aceite da HU #9864 sobre a paleta diferenciada para alertas cadastrais foi verificado dirigindo o app real no navegador (tenant Maceió Geo, 3 famílias com cadastro vencido há mais de 24 meses) e reforçado pela suíte automatizada — ATENDIDO. CA05: ao aplicar o filtro “Cadastros vencidos (mais de 24 meses)” isoladamente (sem nenhuma vulnerabilidade social), o mapa projeta o adensamento usando a paleta de cores FRIAS dedicada (azul claro → azul → azul escuro → roxo, HEAT_PALETTE_COOL / RN05), tanto nas manchas de calor quanto na barra de legenda dinâmica — visualmente distinta da paleta quente (amarelo/vermelho) do risco social. A seleção da paleta é coberta pelo Vitest heat-palettes (fria quando o único critério efetivo é atualização cadastral; quente com ≥1 vulnerabilidade) e a classificação vencido/a-vencer pela suíte Pest (RN05, >24 e 19–24 meses).",
+  "cas": [
+    {
+      "id": "CA05",
+      "title": "Paleta diferenciada (cores frias) para atualização cadastral",
+      "status": "nav",
+      "gherkin": "Dado que seleciono o filtro de \"Cadastros Vencidos\", Quando o mapa projeta o adensamento na tela, Então o sistema utiliza a paleta de cores frias dedicada (tons de azul escuro/roxo), diferenciando visualmente o risco de defasagem cadastral das manchas de risco social.",
+      "steps_html": "Na <b>Busca avançada</b>, em <b>Situação de atualização cadastral</b>, selecionado <b>Cadastros vencidos (mais de 24 meses)</b> — sem marcar nenhuma vulnerabilidade social — e acionado <b>Buscar</b> → <b>Aplicar no mapa</b> (tenant Maceió Geo, 3 famílias com <code>source_updated_at</code> há mais de 24 meses).",
+      "results": [
+        "A busca retorna 3 famílias com cadastro vencido e o chip “FILTROS ATIVOS: Cadastros vencidos (mais de 24 meses)” fica ativo.",
+        "O mapa projeta o adensamento usando a paleta FRIA dedicada — azul claro → azul → azul escuro → roxo (HEAT_PALETTE_COOL) — tanto nas manchas de calor quanto na barra de legenda dinâmica “DENSIDADE”, visualmente distinta da paleta quente (amarelo/vermelho) das vulnerabilidades sociais.",
+        "Regra de seleção (RN05): a paleta é FRIA quando o único critério efetivo é a atualização cadastral; passa a QUENTE assim que há ≥1 vulnerabilidade social — coberto pelo Vitest heat-palettes (ver Anexo).",
+        "A classificação vencido (>24 meses) / a-vencer (19–24 meses) sobre families.source_updated_at é coberta pela suíte Pest (GeoPanelQueryServiceTest — ver Anexo)."
+      ],
+      "images": [
+        "screenshots/ca05-modal-vencidos.png",
+        "screenshots/ca05-vencidos-paleta-fria.png"
+      ]
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada — Vitest heat-palettes (fria×quente) + Pest classificação de defasagem (RN05)",
+    "file": "tests-9864.txt"
+  }
+}

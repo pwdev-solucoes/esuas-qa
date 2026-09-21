@@ -1,0 +1,40 @@
+<!--
+  HU #10370 (US-SIAP-03) — dossiê de aceite
+  CA01
+  Cenário: 3 unidades completas, referência 08/2026
+  Gerado em: 2026-08-13 13:55:50 por tests/Feature/Api/Siap10370EvidenceDumpTest.php (temporário)
+  Origem: UnidadeSocial.xml extraído do zip da remessa realmente gerada pelo POST client/siap-remittances
+-->
+<?xml version="1.0"?>
+<SIAP>
+    <Codigo>004821</Codigo>
+    <Exercicio>2026</Exercicio>
+    <Mes>08</Mes>
+    <UnidadeSocial>
+        <NumeroMDS>2704302000123</NumeroMDS>
+        <NomeUnidadeSocial>CRAS Alto do Cruzeiro</NomeUnidadeSocial>
+        <TipoLocalizacao>1</TipoLocalizacao>
+        <EnderecoUnidadeSocial>Rua, das Flores, 123, Centro, Maceió</EnderecoUnidadeSocial>
+        <CEP>57000000</CEP>
+        <SituacaoUnidadeSocial>1</SituacaoUnidadeSocial>
+        <ClassificacaoUnidadeSocial>1</ClassificacaoUnidadeSocial>
+    </UnidadeSocial>
+    <UnidadeSocial>
+        <NumeroMDS>2704302000456</NumeroMDS>
+        <NomeUnidadeSocial>CREAS Centro</NomeUnidadeSocial>
+        <TipoLocalizacao>1</TipoLocalizacao>
+        <EnderecoUnidadeSocial>Avenida, Fernandes Lima, 900, Farol, Maceió</EnderecoUnidadeSocial>
+        <CEP>57055000</CEP>
+        <SituacaoUnidadeSocial>1</SituacaoUnidadeSocial>
+        <ClassificacaoUnidadeSocial>2</ClassificacaoUnidadeSocial>
+    </UnidadeSocial>
+    <UnidadeSocial>
+        <NumeroMDS>2704302000789</NumeroMDS>
+        <NomeUnidadeSocial>Centro POP Maceió</NomeUnidadeSocial>
+        <TipoLocalizacao>2</TipoLocalizacao>
+        <EnderecoUnidadeSocial>Rua, do Sol, 45, Jacintinho, Maceió</EnderecoUnidadeSocial>
+        <CEP>57040000</CEP>
+        <SituacaoUnidadeSocial>1</SituacaoUnidadeSocial>
+        <ClassificacaoUnidadeSocial>3</ClassificacaoUnidadeSocial>
+    </UnidadeSocial>
+</SIAP>

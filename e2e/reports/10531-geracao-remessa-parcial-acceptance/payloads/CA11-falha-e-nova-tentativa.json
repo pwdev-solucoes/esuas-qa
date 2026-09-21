@@ -1,0 +1,13 @@
+{
+    "_cenario": "CA11/RN08 — montagem interrompida: failed com motivo em linguagem compreensível (genérico — o detalhe vai só ao log privado, LGPD); a mesma referência aceita nova solicitação",
+    "situacao_failed": {
+        "status": "failed",
+        "error_message": "The remittance could not be generated. The technical team has been notified.",
+        "finished_at": "2026-08-17 17:19:20"
+    },
+    "mensagem_pt_br": "Não foi possível gerar a remessa. A equipe técnica foi notificada.",
+    "nova_solicitacao_da_mesma_referencia": {
+        "http_status": 201,
+        "total_remessas": 2
+    }
+}

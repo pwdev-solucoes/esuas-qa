@@ -1,0 +1,2 @@
+# §8.1–8.4 — STAGING: NAO ALCANCAVEL deste ciclo (plano §6 premissa 9): docker-compose-staging.yml define a stack, mas o banco de staging nao e exposto localmente.
+# Pendencia para DevOps: rodar as consultas de sql-8.1-dev.txt e sql-8.2-8.4-dev.txt em staging antes da 1a remessa real; se a §8.1 devolver linhas, NAO corrigir por SQL — reportar por tenant, sem familia (spec §7.3).

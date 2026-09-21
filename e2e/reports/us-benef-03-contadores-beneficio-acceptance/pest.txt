@@ -1,0 +1,28 @@
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Feature\Client\AttendanceReportEventualBenefitTest[39m
+  [32;1m✓[39;22m[90m [39m[90mit acende os quatro contadores de beneficio no payload da unidade,[39m[90m… [39m [90m0.45s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit nao alimenta os contadores de beneficio a partir do tipo de aten[39m[90m…[39m [90m0.15s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit nao alimenta nenhum dos quatro contadores de beneficio nem os de[39m[90m…[39m [90m0.06s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit devolve unavailable_counters VAZIO e nenhum contador de benefici[39m[90m…[39m [90m0.05s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit devolve zero DECLARADO nos quatro contadores para a unidade sem[39m[90m… [39m [90m0.05s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit mostra ao Operacional apenas a unidade em que esta lotado, com o[39m[90m…[39m [90m0.06s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit nao conta concessao de outro municipio em contador nenhum (CA12)[39m[90m [39m [90m0.06s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit persiste absolutamente nada ao consultar a apuracao duas vezes ([39m[90m…[39m [90m0.06s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit nunca vaza dado de cidadao pelos quatro contadores de beneficio,[39m[90m…[39m [90m0.05s[39m  
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Feature\Client\EventualBenefitReportServiceTest[39m
+  [32;1m✓[39;22m[90m [39m[90mit conta CONCESSOES, nao familias distintas — a mesma familia com t[39m[90m…[39m [90m0.02s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit soma kit de emergencia, aluguel social e "outros" no mesmo conta[39m[90m…[39m [90m0.03s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit nao conta concessao CANCELADA — 40 cestas menos 1 cancelada = 39[39m[90m…[39m [90m0.10s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit conta a concessao no mes de granted_on, nao no mes do lancamento[39m[90m…[39m [90m0.03s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit devolve zero DECLARADO nos quatro contadores para a unidade sem[39m[90m… [39m [90m0.02s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit continua contando concessao cujo tipo foi INATIVADO depois de us[39m[90m…[39m [90m0.02s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit nao conta concessao REMOVIDA operacionalmente — deleted_at (RN08[39m[90m…[39m [90m0.02s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit nao conta concessao de outro municipio (RN11)[39m[90m                    [39m [90m0.02s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit curto-circuita sem tocar o banco quando o recorte de unidades e[39m[90m… [39m [90m0.02s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit nao persiste absolutamente nada — a apuracao e derivada (RN09)[39m[90m   [39m [90m0.02s[39m  
+  [32;1m✓[39;22m[90m [39m[90mit nao devolve nenhum identificador de pessoa ou familia no resulta[39m[90m…[39m [90m0.02s[39m  
+
+  [90mTests:[39m    [32;1m20 passed[39;22m[90m (68 assertions)[39m
+  [90mDuration:[39m [39m1.71s[39m
+

@@ -1,0 +1,197 @@
+{
+ "meta": {
+  "title": "Relatório de Critérios de Aceite — US-ACOMP-08",
+  "subtitle": "Épico HU-PRONT-ACOMP (fase F3) · GLPI #10899 · Regras de contagem do acompanhamento e vínculo serviço × tipo de unidade",
+  "rows": [
+   [
+    "Gerado em",
+    "16/09/2026 07:07"
+   ],
+   [
+    "História",
+    "US-ACOMP-08 — Regras de contagem e vínculo serviço × tipo de unidade (GLPI #10899)"
+   ],
+   [
+    "Spec",
+    ".planning/specs/US-ACOMP-08-regras-de-contagem-e-vinculo-servico-unidade.md"
+   ],
+   [
+    "Natureza",
+    "HU de AJUSTE — testes, docblock e documentação. Nenhuma regra de produção mudou"
+   ],
+   [
+    "Branch",
+    "feature/acomp-06-07-encaminhamento-recebido"
+   ],
+   [
+    "Commit (api)",
+    "8b22e37"
+   ],
+   [
+    "Documentos entregues",
+    ".planning/specs/US-ACOMP-consulta-tce-al.md (novo) · US-ACOMP-05 ajustada em cinco pontos"
+   ],
+   [
+    "Ambiente",
+    "Stack Sail · suíte Pest no container · base de desenvolvimento"
+   ],
+   [
+    "Ferramenta",
+    "Pest 4 (sem navegador — ver observações)"
+   ]
+  ]
+ },
+ "summary": "Dez critérios, todos verificados por suíte automatizada e por inspeção de diff — nenhum por imagem, e a razão está nas observações: esta HU não criou tela nem mudou número, então um print não provaria nada. A entrega tem três naturezas: sanear dados de teste que violavam o vínculo serviço × tipo de unidade (seis pontos, todos corrigidos no dado e nenhum na expectativa), fixar por teste as regras de contagem que só existiam em prosa (seis casos novos, incluindo o PUT incoerente, que não tinha teste), e consolidar as interpretações para consulta ao Tribunal. Os números do cenário canônico — 3 e 2 — permanecem idênticos, o diff em app/ é exclusivamente comentário, a cobertura vai de 222 para 228 testes sem perder nenhum, e a suíte completa fecha com 4613 passando e zero falhas. Duas verificações ficaram pendentes por ambiente e estão declaradas como pendentes, não como aprovadas.",
+ "cas": [
+  {
+   "id": "CA01",
+   "title": "A regra escrita corresponde ao comportamento",
+   "status": "auto",
+   "gherkin": "Dado a spec US-ACOMP-05-contadores-de-acompanhamento-na-apuracao.md\nQuando eu ler a RN04 e o D07\nEntão dizem \"famílias distintas com ingresso no mês, por unidade\", sem \"soma dos ingressos\"\nE o topo da spec traz nota apontando para US-ACOMP-08\nE o docblock de FollowUpReportService justifica o DISTINCT pelo reingresso no mesmo mês",
+   "steps_html": "Critério de <b>registro</b>: o texto passa a dizer o que o sistema faz. Verificável no diff da spec da US-ACOMP-05 e no diff do docblock, ambos anexos.",
+   "results": [
+    "A RN04 passou a declarar \"a família DISTINTA que ingressou no período — nunca a soma dos ingressos\", com reingresso entre meses contando e reingresso no mesmo mês contando uma vez.",
+    "O topo da spec da US-ACOMP-05 recebeu a nota de que as regras foram firmadas por esta HU, sem que comportamento, consulta ou número mudassem.",
+    "O docblock passou a justificar a contagem por famílias distintas com o caso <b>real</b> (reingresso no mesmo mês, ou dois serviços do mesmo tipo). O exemplo anterior — a mesma família no PAIF e no PAEFI da mesma unidade — era <b>impossível</b>: o serviço é vinculado ao tipo da unidade.",
+    "Anexo <code>backend/diff-app.txt</code>: o diff de <code>app/</code> contém exclusivamente linhas de comentário."
+   ],
+   "images": []
+  },
+  {
+   "id": "CA02",
+   "title": "Dois ingressos no mesmo mês contam uma vez",
+   "status": "auto",
+   "gherkin": "Dado a família Silva com family_follow_ups no PAIF do \"CRAS Centro\":\n     (admitted_on 2026-08-03, discharged_on 2026-08-12) e (admitted_on 2026-08-25, ativo)\nQuando FollowUpReportService::summary for chamado para 2026-08\nEntão counters.new_families.value do \"CRAS Centro\" = 1\nE counters.families_in_follow_up.value do \"CRAS Centro\" = 1",
+   "steps_html": "Caso novo na suíte: é o cenário que <b>de fato</b> justifica contar famílias distintas, e que até agora não tinha teste.",
+   "results": [
+    "O teste ancora a prova em duas linhas de acompanhamento existentes no banco e um único valor contado.",
+    "É a diferença prática entre contar famílias e contar processos — a pergunta I4 levada ao Tribunal."
+   ],
+   "images": []
+  },
+  {
+   "id": "CA03",
+   "title": "Reingresso em outro mês conta de novo",
+   "status": "auto",
+   "gherkin": "Dado a família Souza desligada do PAIF do \"CRAS Centro\" em 2026-03-20 e readmitida em 2026-08-11\nQuando eu apurar 2026-08\nEntão counters.new_families.value = 1",
+   "steps_html": "Já coberto pela suíte antes desta HU; revalidado sem alteração.",
+   "results": [
+    "Regra provisória I2, submetida ao Tribunal no documento de consulta."
+   ],
+   "images": []
+  },
+  {
+   "id": "CA04",
+   "title": "CRAS não registra PAEFI (nenhum caminho HTTP)",
+   "status": "auto",
+   "gherkin": "Dado que sou CLIENT_OPERADOR lotado no \"CRAS Centro\"\nQuando eu chamar GET …/follow-ups/options?social_unit_uuid={crasCentro}\nEntão services contém apenas PAIF\nQuando eu chamar POST …/follow-ups com follow_up_service_uuid = {paefi}\nEntão recebo 422 com error_code = \"service_not_offered_by_unit_type\"\nDado um acompanhamento PAIF ativo no \"CRAS Centro\"\nQuando eu chamar PUT …/follow-ups/{f} com follow_up_service_uuid = {paefi}\nEntão recebo 422 com error_code = \"service_not_offered_by_unit_type\"\nE family_follow_ups.follow_up_service_id continua sendo o PAIF",
+   "steps_html": "A oferta e o POST já eram cobertos; o <b>PUT</b> não tinha teste e passou a ter. É a evidência de produto do vínculo serviço × tipo de unidade.",
+   "results": [
+    "O PUT incoerente responde 422 com o código de erro previsto, e o registro <b>permanece intacto</b> — o teste confere o estado persistido, não só a resposta.",
+    "Há controle positivo no mesmo caso (a correção coerente responde 200), para que o critério não passe por \"o PUT sempre falha\"."
+   ],
+   "images": []
+  },
+  {
+   "id": "CA05",
+   "title": "CREAS não registra PAIF",
+   "status": "auto",
+   "gherkin": "Dado que sou CLIENT_OPERADOR lotado no \"CREAS\"\nQuando eu chamar o options e o POST com follow_up_service_uuid = {paif}\nEntão services contém apenas PAEFI\nE o POST recebe 422 service_not_offered_by_unit_type",
+   "steps_html": "Caso novo: o espelho do CA04, que faltava.",
+   "results": [
+    "A oferta traz apenas o PAEFI e o POST incoerente é recusado, sem gravar linha alguma."
+   ],
+   "images": []
+  },
+  {
+   "id": "CA06",
+   "title": "Dois acompanhamentos vigentes na mesma unidade continuam recusados",
+   "status": "auto",
+   "gherkin": "Dado que a Silva tem acompanhamento ativo no PAIF do \"CRAS Centro\"\nQuando eu chamar POST …/follow-ups para o PAIF do \"CRAS Centro\"\nEntão recebo 409 com error_code = \"follow_up_already_active\"\nE meta.follow_up_uuid aponta o acompanhamento existente",
+   "steps_html": "Já coberto antes desta HU; revalidado sem alteração.",
+   "results": [
+    "A recusa aponta o acompanhamento existente, em vez de um erro cego.",
+    "<b>Precisão registrada:</b> a unicidade real é por (organização, família, unidade, <b>serviço</b>), e não apenas \"mesma unidade\" como dizia o texto. Com um serviço por tipo de unidade, as duas leituras coincidem na prática hoje."
+   ],
+   "images": []
+  },
+  {
+   "id": "CA07",
+   "title": "Nenhum número apurado muda",
+   "status": "auto",
+   "gherkin": "Dado o cenário canônico reescrito com dados coerentes (§9)\nQuando eu apurar 2026-08 pelo service e por GET /api/client/attendance-reports\nEntão \"CRAS Centro\" apresenta families_in_follow_up = 3 e new_families = 2, os mesmos números da validação da US-ACOMP-05\nE nenhum arquivo em app/ (exceto o docblock de FollowUpReportService) aparece no diff",
+   "steps_html": "É o critério que sustenta a promessa da HU: sanear o dado de teste <b>sem</b> mexer em número nem em comportamento.",
+   "results": [
+    "Os números 3 e 2 permanecem idênticos, nos dois níveis (serviço e HTTP), e as linhas que os asseveram aparecem como <b>contexto</b> no diff — ou seja, não foram tocadas.",
+    "Nenhuma asserção foi removida ou afrouxada em todo o commit: o diff dos testes não tem uma única linha de expectativa apagada. O que mudou foi o dado.",
+    "O diff de <code>app/</code> é exclusivamente docblock (anexo <code>backend/diff-app.txt</code>).",
+    "Cobertura: 222 testes no filtro antes, 228 depois — seis casos novos, nenhum perdido (<code>backend/pest-followup-baseline.txt</code> e <code>pest-followup.txt</code>). Suíte completa: 4613 passando, 27 pulados, zero falhas."
+   ],
+   "images": []
+  },
+  {
+   "id": "CA08",
+   "title": "As quatro interpretações registradas para o Tribunal",
+   "status": "auto",
+   "gherkin": "Dado o documento .planning/specs/US-ACOMP-consulta-tce-al.md\nQuando eu o consultar\nEntão há quatro itens (I1 critério temporal, I2 reingresso, I3 perfis não exclusivos, I4 distintos)\nE cada um traz a pergunta, a regra provisória, a HU afetada, onde vive no código e o impacto se cair\nE o item I1 apresenta junto a sinalização de abandono (RN07)",
+   "steps_html": "Documento novo, escrito em linguagem de negócio, para o PO levar ao Tribunal.",
+   "results": [
+    "O documento reúne <b>cinco</b> itens: os quatro pedidos (I1 a I4) e mais o prazo de abandono (I5), que a RN07 mandava apresentar junto do I1 e ganhou item próprio por clareza.",
+    "Cada item traz a pergunta ao Tribunal, a resposta provisória adotada e o efeito no número caso a resposta divirja — inclusive a distinção entre ajuste técnico e mudança de regra de negócio (o I3 é o único que exige decisão da área, não só alteração de consulta).",
+    "Fecha com o encaminhamento sugerido por urgência: o I4 é o mais importante antes da primeira remessa."
+   ],
+   "images": []
+  },
+  {
+   "id": "CA-extra-A",
+   "title": "Invariante do vínculo na suíte",
+   "status": "auto",
+   "gherkin": "Dado o fim da suíte de acompanhamento (FamilyFollowUpTest)\nQuando a consulta §8.1 rodar sobre o banco de teste criado pelos caminhos HTTP\nEntão retorna 0 linhas",
+   "steps_html": "O invariante roda <b>a cada caso</b>, e não \"no fim da suíte\": com o banco recriado por teste, um caso final veria base vazia e a prova seria vazia.",
+   "results": [
+    "Zero violações em toda a suíte de acompanhamento e de apuração.",
+    "<b>O invariante tem controle negativo:</b> um caso planta deliberadamente uma linha incoerente, prova que a consulta a detecta com a forma correta, e depois a remove. Sem isso, uma consulta silenciosamente quebrada passaria por \"nenhuma violação\".",
+    "A revisão de código verificou ainda que as duas colunas comparadas são obrigatórias no banco, de modo que a comparação não pode devolver resultado indefinido e engolir uma violação."
+   ],
+   "images": []
+  },
+  {
+   "id": "CA-extra-B",
+   "title": "Dois serviços do mesmo tipo na mesma unidade contam uma família",
+   "status": "auto",
+   "gherkin": "Dado um segundo serviço \"PAIF2\" oferecido pelo tipo CRAS\nE a Silva ativa no PAIF e no PAIF2 do \"CRAS Centro\" com ingressos em agosto\nQuando eu apurar 2026-08\nEntão new_families = 1 e families_in_follow_up = 1",
+   "steps_html": "Cenário <b>futuro</b>, montado na suíte com um serviço fictício do mesmo tipo.",
+   "results": [
+    "A família é contada uma única vez, como a regra exige.",
+    "<b>Ressalva honesta:</b> o catálogo de produção hoje tem um serviço por tipo de unidade, então este cenário <b>não é reproduzível no sistema como está</b>. Ele existe para que a regra continue valendo quando o catálogo crescer."
+   ],
+   "images": []
+  }
+ ],
+ "notes": [
+  {
+   "title": "Por que este dossiê não tem nenhuma imagem",
+   "html": "<p>Esta é uma HU de ajuste: <b>nenhuma regra de produção mudou</b>, nenhuma tela nova foi criada e nenhum número apurado se alterou. Um print da tela de apuração mostraria hoje exatamente o que mostrava antes — seria decorativo, e decoração não é evidência: não permitiria reprovar nada.</p><p>As telas envolvidas já foram evidenciadas com imagens nos dossiês das HUs que as entregaram — a apuração na <b>US-ACOMP-05</b> e a oferta de serviços por tipo de unidade na <b>US-ACOMP-02</b>. Aqui a evidência legítima é outra: a saída da suíte com os casos numerados por critério, o diff restrito a comentário, a contagem de testes antes e depois, e os documentos.</p>"
+  },
+  {
+   "title": "O que é evidência de produto e o que é infraestrutura de teste",
+   "html": "<p>Dois dos casos novos asseguram os <b>auxiliares de teste</b> — eles impedem que alguém, no futuro, relaxe o auxiliar em vez de corrigir o dado. São uma trava de manutenção, e não prova de comportamento do sistema. A evidência de produto do vínculo serviço × tipo de unidade são o <b>CA04</b> (incluindo o PUT, que não tinha teste) e o <b>CA05</b>.</p>"
+  },
+  {
+   "title": "Verificações que não puderam ser feitas neste ambiente",
+   "html": "<p><b>Base de teste ponta a ponta:</b> a consulta do invariante não foi executada nessa base porque a pilha correspondente não está no ar. Está declarada como <b>não executada</b> — e não como \"zero violações\".</p><p><b>Ambiente de homologação:</b> não é alcançável a partir da máquina de desenvolvimento. A consulta fica registrada no anexo <code>backend/sql-staging-pendente.txt</code> para que a equipe de infraestrutura a rode antes da primeira remessa real. Na base de desenvolvimento, a consulta devolveu <b>zero violações</b>.</p>"
+  },
+  {
+   "title": "Caminho ainda aberto, declarado como HU candidata",
+   "html": "<p>O vínculo é protegido no registro e na correção do acompanhamento. Restam dois caminhos indiretos, hoje sem teste e sem trava: se o Painel Global <b>reapontar o tipo</b> de um serviço já em uso, ou se o <b>tipo de uma unidade</b> mudar, acompanhamentos já gravados passam a violar o vínculo retroativamente. Nenhum dos dois foi tocado aqui, por decisão explícita da spec — mexer neles alteraria o comportamento de exclusão no Painel Global. Fica como HU candidata, para o PO.</p>"
+  },
+  {
+   "title": "Precisão registrada sobre a unicidade (§17-P4)",
+   "html": "<p>O critério CA06 fala em \"mesma unidade\", mas a unicidade real do sistema é por (organização, família, unidade, <b>serviço</b>). Com o catálogo atual — um serviço por tipo de unidade — as duas leituras coincidem. A spec registra a precisão e o índice <b>não</b> foi alterado: mudá-lo bloquearia o caso legítimo de dois serviços do mesmo tipo.</p>"
+  }
+ ],
+ "appendix": {
+  "label": "Cobertura automatizada (Pest, --filter=FollowUp|AttendanceReportFollowUp)",
+  "file": "pest-followup.txt"
+ }
+}

@@ -1,0 +1,11 @@
+HU #10370 — texto da recusa da geração (LGPD: quantidade, nunca o nome da unidade)
+==========================================================================================
+
+pt_BR (1 unidade) : A remessa SIAP não pode ser gerada: 1 unidade socioassistencial está com o cadastro incompleto para o SIAP. Veja quais dados faltam na conferência prévia.
+pt_BR (3 unidades): A remessa SIAP não pode ser gerada: 3 unidades socioassistenciais estão com o cadastro incompleto para o SIAP. Veja quais dados faltam na conferência prévia.
+
+en    (1 unidade) : The SIAP remittance cannot be generated: 1 social unit has an incomplete record for SIAP. Check the missing data in the pre-check screen.
+en    (3 unidades): The SIAP remittance cannot be generated: 3 social units have incomplete records for SIAP. Check the missing data in the pre-check screen.
+
+pendência (pt_BR) : Esta unidade socioassistencial está sem NumeroMDS, exigido pelo SIAP. Corrija o cadastro da unidade: enquanto isso, nenhuma remessa pode ser gerada.
+pendência (en)    : This social unit is missing NumeroMDS, required by SIAP. Fix the unit record: until then, no remittance can be generated.

@@ -1,0 +1,15 @@
+
+> esuas-client@0.1.0 audit:ui
+> node scripts/audit-ui-consistency.mjs
+
+Auditoria de conformidade de UI (HU #10136) — 279 arquivos .vue em src/
+
+[R1] RN05 — <Button> com override de variante: 0 desvio(s)
+[R2] RN05 — <button> nativo replicando o design system: 0 desvio(s)
+[R3] RN01 — :disabled usado como "modo visualizacao": 0 desvio(s)
+[R4] RN02 — classe de readonly colada na tela: 0 desvio(s)
+Excecoes declaradas (visiveis por RN07): 2
+  src/components/app/DatePicker.vue:56 [R2] — Gatilho de Popover do campo de data (PopoverTrigger as-child): e controle de formulario com aparencia de Input, nao acao do design system.
+  src/modules/tenant-settings/components/OrganizationLogoHeader.vue:84 [R2] — Tile clicavel do logo da organizacao (60x60, avatar com upload): nao e botao de acao — nenhuma variante/size do Button descreve esse elemento.
+
+OK: zero desvios de conformidade de UI.

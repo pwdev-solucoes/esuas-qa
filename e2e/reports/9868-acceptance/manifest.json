@@ -1,0 +1,72 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — Camadas Geográficas Globais",
+    "subtitle": "HU #9868 · Painel Global (admin) · Evidências end-to-end",
+    "rows": [
+      ["Gerado em", "04/07/2026"],
+      ["HU", "#9868 — Cadastramento Administrativo de Camadas Geográficas Globais"],
+      ["Branch", "feature-camadas-geo-9868 (api @ 46ccca3 · admin @ c1af005)"],
+      ["Spec", ".planning/specs/9868-camadas-geograficas-globais.md"],
+      ["Ambiente", "API PostgreSQL 18/PostGIS 3.6 (:8090) · fila geo · admin (Painel Global) :4173"],
+      ["Massa", "docs/geojson/geojs-27-mun.json — 102 municípios de Alagoas (IBGE 7 díg.)"],
+      ["Ferramenta", "playwright-cli (Chromium) + Pest (SQLite) + smoke PostGIS real"]
+    ]
+  },
+  "summary": "4 critérios de aceite evidenciados, todos por navegador (dirigindo o Painel Global) e corroborados pela suíte automatizada. CA-ISO e CA12 foram ainda validados por smoke end-to-end em PostGIS real (ST_GeomFromGeoJSON): a importação da isometria de Alagoas gerou 102 city_geometries e a dos setores censitários gerou 3 census_sectors + 3 census_sector_geometries, todos vinculados às cidades pelo código IBGE (sem chave estrangeira). Apêndice: 84 testes Pest (344 asserções), 100% verdes.",
+  "cas": [
+    {
+      "id": "CA-ISO",
+      "title": "Importação da isometria municipal a partir do GeoJSON",
+      "status": "nav",
+      "gherkin": "Dado que sou um Administrador logado no Painel Global e possuo um GeoJSON de municípios com a chave IBGE em properties.id, Quando faço o upload e o processamento conclui, Então cada Feature válida é materializada como uma geometria de município em city_geometries e vinculada à cidade correspondente pelo código IBGE (sem chave estrangeira).",
+      "steps_html": "No Painel Global, menu <b>Camadas Geográficas</b> &rarr; <b>Nova importação</b> &rarr; camada <b>Isometrias Municipais</b> &rarr; anexar <code>isometrias-al.geojson</code> (102 municípios) &rarr; <b>Importar</b>. O worker da fila <code>geo</code> processa (<b>Concluída</b>, feature_count=102); a ação <b>Sincronizar</b> distribui as geometrias (<b>Sincronizada</b>).",
+      "results": [
+        "Processamento: status Concluída com 102 Features materializadas em staging.",
+        "Sincronização: status Sincronizada — sync_summary {matched:102, created:102, unmatched:0, skipped.city_not_found:0}.",
+        "Smoke PostGIS: 102 registros em city_geometries, geometria ST_Polygon SRID 4326, city_id resolvido por IBGE e centróide calculado."
+      ],
+      "images": ["screenshots/00-lista-vazia.png", "screenshots/caiso-isometria-sincronizada.png"]
+    },
+    {
+      "id": "CA11",
+      "title": "Bloqueio de sequência de camadas",
+      "status": "nav",
+      "gherkin": "Dado que sou um Administrador logado no Painel Global e a base nacional de isometrias municipais NÃO foi cadastrada e homologada, Quando tento carregar o arquivo de setores censitários e clico em processar, Então o sistema bloqueia o envio e emite o alerta de negócio: \"Operação não permitida. A camada primária de isometrias dos municípios do Brasil deve ser cadastrada primeiro\".",
+      "steps_html": "Com nenhuma isometria homologada, abrir <b>Nova importação</b> &rarr; selecionar a camada <b>Setores Censitários</b> &rarr; anexar um GeoJSON de setores &rarr; <b>Importar</b>.",
+      "results": [
+        "O envio é bloqueado (HTTP 422) e o alerta exibe a mensagem exata: \"Operação não permitida. A camada primária de isometrias dos municípios do Brasil deve ser cadastrada primeiro\".",
+        "O sheet permanece aberto e nenhum registro de setor é criado."
+      ],
+      "images": ["screenshots/ca11-bloqueio-setores.png"]
+    },
+    {
+      "id": "CA-VAL",
+      "title": "Rejeição de GeoJSON inválido",
+      "status": "nav",
+      "gherkin": "Dado que carreguei um arquivo que não é um FeatureCollection válido, Quando o job de processamento executa a validação estrutural, Então a importação recebe status \"failed\" com uma mensagem de erro explicativa e nenhuma geometria é gravada na tabela de negócio.",
+      "steps_html": "Importar como <b>Isometrias Municipais</b> um arquivo estruturalmente inválido (<code>invalido.geojson</code>, type &ne; FeatureCollection). O worker processa e aplica a validação estrutural (RN-VAL).",
+      "results": [
+        "Status Falhou; error_message: \"O GeoJSON deve ser um FeatureCollection (recebido: SomethingElse).\"",
+        "Nenhuma geometria é gravada em city_geometries."
+      ],
+      "images": ["screenshots/caval-geojson-invalido-falhou.png"]
+    },
+    {
+      "id": "CA12",
+      "title": "Sucesso no cadastramento das camadas (setores censitários)",
+      "status": "nav",
+      "gherkin": "Dado que a base de isometrias municipais está homologada (importada e sincronizada) e que realizo a carga do arquivo de malha de setores censitários do IBGE, Quando o processamento global termina, Então o sistema vincula essas divisões geográficas aos respectivos municípios da plataforma para consumo imediato na Área do Cliente.",
+      "steps_html": "Com a isometria já Sincronizada, o bloqueio da CA11 é liberado: <b>Nova importação</b> &rarr; camada <b>Setores Censitários</b> &rarr; anexar <code>setores-al.geojson</code> (códigos de 15 dígitos) &rarr; <b>Importar</b> &rarr; <b>Sincronizar</b>. O sistema resolve o município pelo prefixo de 7 dígitos do código do setor.",
+      "results": [
+        "Importação aceita (bloqueio da CA11 liberado após a homologação da isometria).",
+        "Sincronização: Sincronizada — sync_summary {matched:3, created:3, unmatched:0, skipped.city_not_found:0}.",
+        "Banco: 3 census_sectors + 3 census_sector_geometries, cada setor vinculado à sua cidade (Água Branca 2700102, Anadia 2700201) pelo prefixo IBGE."
+      ],
+      "images": ["screenshots/ca12-setores-sincronizados.png"]
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Pest — GeoLayer|GeoJson|CensusSector) — 84 testes, 344 asserções",
+    "file": "pest-geo.txt"
+  }
+}

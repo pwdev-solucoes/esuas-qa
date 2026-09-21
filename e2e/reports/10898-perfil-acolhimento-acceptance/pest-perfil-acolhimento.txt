@@ -1,0 +1,31 @@
+
+   PASS  Tests\Unit\Enums\SiapNewFamilyProfileTest
+  ✓ it conta OITO perfis acesos e NENHUM apagado depois da F7 (RN01/CA0… 0.01s  
+  ✓ it acende os perfis da F6 e da F7 e apaga o depends_on deles (D02 · RN01) with dataset "descumprimento de condicionalidades"
+  ✓ it acende os perfis da F6 e da F7 e apaga o depends_on deles (D02 · RN01) with dataset "evasao escolar"
+  ✓ it acende os perfis da F6 e da F7 e apaga o depends_on deles (D02 · RN01) with dataset "gravidez na adolescencia"
+  ✓ it acende os perfis da F6 e da F7 e apaga o depends_on deles (D02 · RN01) with dataset "acolhimento"
+  ✓ it nenhum case aponta fase de dependencia depois da F7
+  ✓ it mantem o VALOR do case como chave do payload — sem mapa intermediario
+
+   PASS  Tests\Feature\Client\AttendanceReportShelteringTest
+  ✓ it acende o perfil de acolhimento sobre as novas familias do mes (C… 0.50s  
+  ✓ it nao declara NENHUM campo indisponivel em leiaute nenhum, em unid… 0.06s  
+  ✓ it declara ZERO — e nao ausencia — no perfil e no ponto de atencao…  0.05s  
+  ✓ it nao conta acolhimento encerrado antes do mes, e o registro conti… 0.05s  
+  ✓ it conta acolhimento encerrado DENTRO do mes e respeita as bordas d… 0.06s  
+  ✓ it conta a familia UMA vez mesmo com dois filhos acolhidos (CA06/RN… 0.05s  
+  ✓ it conta so menores de 18 no ULTIMO dia do mes, com as bordas da id… 0.06s  
+  ✓ it conta acolhimento institucional e familiar juntos, sem filtro de… 0.05s  
+  ✓ it reduz o perfil em um ao cancelar um acolhimento, e nao conta o s… 0.07s  
+  ✓ it nao conta familia que NAO e nova no mes, mesmo com crianca acolh… 0.05s  
+  ✓ it conta o integrante DESVINCULADO da composicao, mas nao o soft-de… 0.05s  
+  ✓ it sinaliza so a QUANTIDADE de acolhimentos em curso ha mais de 24…  0.06s  
+  ✓ it atribui o acolhimento longo a unidade com acompanhamento VIGENTE… 0.06s  
+  ✓ it nao expoe familia, nome, idade nem instituicao — so quantidades…  0.06s  
+  ✓ it mostra ao Operacional apenas as unidades em que ele tem lotacao…  0.06s  
+  ✓ it nao deixa a apuracao de um municipio enxergar o acolhimento de o… 0.05s  
+
+  Tests:    23 passed (192 assertions)
+  Duration: 1.96s
+

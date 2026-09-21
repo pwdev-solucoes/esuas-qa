@@ -1,0 +1,19 @@
+ANTES (todos os elementos concatenados — o que estouraria o limite)
+------------------------------------------------------------------------------
+Rua das Flores, 120, Sala 3, Em frente à praça central, ao lado do mercado municipal, próximo ao antigo terminal rodoviário próximo ao antigo terminal rodoviário próximo ao antigo terminal rodoviário próximo ao antigo terminal rodoviário próximo ao antigo terminal rodoviário , Centro, Maceió
+comprimento: 292 caracteres
+
+DEPOIS (EnderecoEntidadeSocial emitido no XML)
+------------------------------------------------------------------------------
+Rua, das Flores, 120, Sala 3, Centro, Maceió
+comprimento: 44 caracteres
+
+Verificações do CA13
+------------------------------------------------------------------------------
+  ponto de referência sumiu ...: sim
+  complemento permanece ........: sim
+  logradouro permanece .........: sim
+  número permanece .............: sim
+  bairro permanece .............: sim
+  município permanece ..........: sim
+  <= 255 caracteres ............: sim

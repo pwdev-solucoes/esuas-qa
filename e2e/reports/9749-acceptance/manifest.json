@@ -1,0 +1,73 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — HU #9749 (Importação e sincronização automática)",
+    "subtitle": "Sprint 8 · HU #9749 (fatia HU02) · Evidências end-to-end no client",
+    "rows": [
+      ["Gerado em", "29/06/2026"],
+      ["Branch", "sprint8-cadunico"],
+      ["Spec", ".planning/specs/sprint8/9749-conformidade-importacao-sincronizacao.md"],
+      ["Ambiente", "API Sail/PostgreSQL (api-laravel.test-1) · fila cadunico (worker dedicado) · client Vite :5175 (não-mock)"],
+      ["Organização (tenant)", "Organização E2E CadÚnico · IBGE 2304400 (Fortaleza/CE)"],
+      ["Massa de dados", "e2e/fixtures/cadunico/massa-dados/ (remessa1 + remessa2)"],
+      ["Ferramenta", "playwright-cli (Chromium) + Pest"]
+    ]
+  },
+  "summary": "HU #9749 cobre a execução da importação e a sincronização automática por comparação de datas (CA04–CA07). Os 4 critérios foram evidenciados ao vivo no client dirigindo o fluxo assíncrono real (confirmação → Etapa 1 ingestão na fila 'cadunico' → Etapa 2 sincronização): a 1ª remessa criou 11 famílias inéditas (CA04) com 2 linhas catalogadas como erro (RN07 — bloco sem Código Familiar e bloco com data inválida); a 2ª remessa, sobre a base já sincronizada, atualizou 2 famílias por data mais recente — desvinculando (sem excluir) o membro ausente — (CA05) e ignorou 1 família por data não mais recente (CA06); e o botão de nova importação fica bloqueado enquanto há lote em processamento (CA07). A suíte Pest (28 testes, 95 asserções, 100% verde) acompanha como apêndice.",
+  "cas": [
+    {
+      "id": "CA04",
+      "title": "Criação de famílias inéditas",
+      "status": "nav",
+      "gherkin": "Dado que o arquivo validado foi confirmado para processamento\nQuando o sistema encontra um Código Familiar inexistente na base do tenant\nEntão ele realiza o cadastro completo da nova unidade familiar, registrando o domicílio e todos os membros presentes naquele bloco",
+      "steps_html": "Logado como <b>Master</b>: importar <code>massa-cadunico-remessa1.csv</code> → <code>Confirmar importação</code> (Etapa 1, fila cadunico) → <code>Sincronizar</code> (Etapa 2) → abrir <code>Ver detalhes</code>.",
+      "results": [
+        "Resumo da sincronização: Total analisado 17, Novas famílias 11, Atualizadas 0, Ignoradas 0, Linhas com erro 2.",
+        "As 11 famílias inéditas foram cadastradas com domicílio (addresses) e membros (family_members + persons).",
+        "2 blocos foram catalogados em \"Erros de linha\" sem interromper o lote (RN07): um sem Código Familiar (missing_family_code) e um com data inválida (invalid_date, família 1600000012)."
+      ],
+      "images": ["screenshots/ca04-novas-familias.png"]
+    },
+    {
+      "id": "CA05",
+      "title": "Atualização automática por data mais recente",
+      "status": "parc",
+      "gherkin": "Dado que o arquivo contém uma família já existente no sistema\nQuando a Data da Última Atualização do arquivo for mais recente (maior) que a do sistema local\nEntão o sistema atualiza em bloco todas as informações socioeconômicas e de integrantes daquela família",
+      "steps_html": "Sobre a base já sincronizada, importar <code>massa-cadunico-remessa2.csv</code> → sincronizar. Famílias <code>…009</code> (data maior) e <code>…011→…99911</code> (recodificação, casada pela identidade do RF — RN03) são atualizadas. Verificado no banco que o membro ausente (BRUNO) foi desvinculado, não excluído.",
+      "results": [
+        "Resumo: Atualizadas por data 2.",
+        "Membro ausente do novo bloco → status='unlinked', unlinked_at preenchido, registro PRESERVADO no banco (RN02 — nunca exclusão física).",
+        "Apêndice Pest cobre a regra: CadunicoSyncServiceTest \"updates by newer date and unlinks absent members without deleting (CA05)\"."
+      ],
+      "images": ["screenshots/ca05-ca06-atualizadas-ignoradas.png"]
+    },
+    {
+      "id": "CA06",
+      "title": "Bloqueio de dados defasados ou iguais",
+      "status": "nav",
+      "gherkin": "Dado que o arquivo contém uma família já existente no sistema\nQuando a Data da Última Atualização do arquivo for igual ou mais antiga (menor) que a da base local\nEntão o sistema ignora o bloco integralmente e contabiliza como \"Ignorado por Sincronização\"",
+      "steps_html": "No mesmo resultado da remessa2: a família <code>…010</code> (data 2026-01-10, menor que a base 2026-05-20) é ignorada integralmente.",
+      "results": [
+        "Resumo: Ignoradas por sincronização 1.",
+        "O cadastro local da família ignorada permanece intocado."
+      ],
+      "images": ["screenshots/ca05-ca06-atualizadas-ignoradas.png"]
+    },
+    {
+      "id": "CA07",
+      "title": "Bloqueio por concorrência ativa",
+      "status": "parc",
+      "gherkin": "Dado que uma importação já está sendo processada no meu município\nQuando eu ou outro Profissional do mesmo tenant tenta iniciar um novo upload\nEntão o sistema nega a ação e exibe o alerta: \"Existe uma importação em andamento para este município. Aguarde a conclusão\"",
+      "steps_html": "Com um lote em <code>Processando</code> no tenant, o botão <code>Nova importação</code> fica desabilitado, com a dica \"Já existe uma importação em andamento para esta organização.\" No backend, validate/store/sync rejeitam com guard atômico (advisory lock).",
+      "results": [
+        "Botão \"Nova importação\" desabilitado enquanto o lote está \"Processando\".",
+        "Dica (title): \"Já existe uma importação em andamento para esta organização.\" (tradução pt-BR de \"município\" → \"organização\").",
+        "Apêndice Pest: \"blocks validation when an import is already active\" e \"blocks sync when another batch is active in the tenant\"."
+      ],
+      "images": ["screenshots/ca07-concorrencia-bloqueada.png"]
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Pest — CadunicoSyncService + CadunicoImportController + CadunicoIngestService, 28 testes / 95 asserções)",
+    "file": "pest-9749.txt"
+  }
+}

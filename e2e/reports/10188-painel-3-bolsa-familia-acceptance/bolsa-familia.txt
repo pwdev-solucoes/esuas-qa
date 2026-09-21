@@ -1,0 +1,17 @@
+
+   PASS  Tests\Feature\Dashboard\BolsaFamiliaTest
+  ✓ it reports coverage and profiles only beneficiaries across the 3 in… 0.42s  
+  ✓ it reports zeroed coverage and profile without error when there are… 0.05s  
+  ✓ it excludes non-beneficiaries from the profile even when they share… 0.06s  
+  ✓ it reports beneficiaries equal to the strategic indicators KPI 3 (R… 0.06s  
+  ✓ it recalculates for a neighborhood, covering only geocoded benefici… 0.06s  
+  ✓ it returns 422 for a neighborhood_uuid outside the tenant municipal… 0.05s  
+  ✓ it denies the panel to the base operator without the dedicated role  0.04s  
+  ✓ it grants the panel to the Master without any add-on role            0.04s  
+
+   PASS  Tests\Feature\TenantIsolation\DashboardBolsaFamiliaIsolationTest
+  ✓ it never counts families from another tenant in the bolsa família p… 0.06s  
+
+  Tests:    9 passed (41 assertions)
+  Duration: 0.91s
+

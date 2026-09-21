@@ -1,0 +1,25 @@
+{
+    "_evidencia": {
+        "hu": "#10530 (US-SIAP-02)",
+        "criterio": "CA08",
+        "descricao": "12 registros incompletos reportados; nenhum registro alterado (atributos idênticos antes/depois), activity_log sem linha nova decorrente da conferência, nada gravado em siap_remittances/siap_remittance_pendencies.",
+        "endpoint": "GET /api/client/siap-remittances/pre-check?exercise=2026&reference_month=8",
+        "dados": "FABRICADOS — nenhuma cópia de base real",
+        "mascaramento": "nome → \"Nome I. I.\" e CPF → 999.***.***-99, aplicados no artefato antes da gravação"
+    },
+    "pendencias_reportadas": 12,
+    "registros_intactos": true,
+    "activity_log": {
+        "antes": 17,
+        "depois": 17
+    },
+    "siap_remittances_gravadas": 0,
+    "siap_remittance_pendencies_gravadas": 0,
+    "summary_do_payload": {
+        "layout_count": 11,
+        "record_count": 0,
+        "blocking_pendency_count": 12,
+        "informative_pendency_count": 0,
+        "layout_pendency_count": 16
+    }
+}

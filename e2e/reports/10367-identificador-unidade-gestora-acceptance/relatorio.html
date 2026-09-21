@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — HU #10367 (US-SIAP-09)</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  section.note { border:1px solid var(--line); border-left:4px solid #b06a00; border-radius:6px; padding:10px 14px; margin:10px 0; background:#fffdf7; font-size:13px; }
+  section.note h3 { margin:0 0 6px; font-size:13.5px; color:#8a5200; }
+  section.note p { margin:6px 0; }
+  section.note ul { margin:6px 0 6px 18px; padding:0; }
+  section.note pre { background:var(--bg); border:1px solid var(--line); border-radius:4px; padding:8px; overflow-x:auto; font-size:11px; white-space:pre-wrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — HU #10367 (US-SIAP-09)</h1>
+    <div class="sub">Garantir o identificador da Unidade Gestora nos parâmetros TCE/AL da Organização</div>
+    <div class="meta"><div><span>Gerado em:</span> 11/08/2026</div><div><span>Ticket GLPI:</span> #10367 · épico HU-SIAP-AS</div><div><span>Spec:</span> .planning/specs/10367-identificador-unidade-gestora-tce-al.md</div><div><span>Decisões de negócio (CA06/CA08):</span> .planning/specs/10367-decisoes-pendentes-ca06-ca08.md</div><div><span>Branch:</span> feature/10367-identificador-unidade-gestora-tce-al (api · client · admin)</div><div><span>Commits:</span> api 3d99ef9 · client ed680bd · admin abf7a92</div><div><span>Ambiente:</span> API Sail/PostgreSQL :8000 · client Vite :5174 (não-mock) · fila siap</div><div><span>Organização (tenant):</span> Organização E2E CadÚnico · uuid 00000000-0000-4000-8000-0000000000c1</div><div><span>Perfis usados:</span> Master (CPF 52998224725) · Operacional do Tenant (CPF 39053344705)</div><div><span>Ferramenta:</span> playwright-cli (Chromium 1440×900) + Pest 4</div><div><span>Origem normativa:</span> Manual de Referência do SIAP (2026, 2ª ed.) — Estrutura dos Arquivos XML e Seção 15</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">11 critérios avaliados, 11 atendidos e evidenciados — nenhum reprovado, nenhum pendente. CA01, CA02, CA03, CA04, CA04b e CA05 foram dirigidos na tela de Configurações; CA06 e CA08, que na entrega anterior figuravam como contrato por dependerem de funcionalidade inexistente, agora estão implementados e demonstrados no app real: a conferência prévia da remessa separa visualmente o impedimento que bloqueia toda a remessa das pendências por leiaute, e a alteração do identificador com remessa já gerada exige confirmação do Master. CA07, CA09 e CA10 são cobertos pela suíte automatizada. 11 prints e 87 testes Pest (296 asserções, 100% verdes).</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA01</td><td>Informar o identificador (happy path)</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA02</td><td>Recusa por quantidade de dígitos</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA03</td><td>Recusa por caractere não numérico</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA04</td><td>Orientação de onde consultar o código</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA04b</td><td>Salvar os parâmetros sem o identificador é permitido, com aviso</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA05</td><td>Operacional não edita</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA06</td><td>Bloqueio da geração de remessa sem o identificador</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA07</td><td>Ausência do identificador não bloqueia o resto do sistema</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA08</td><td>Aviso ao alterar com remessa já gerada</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA09</td><td>Alteração auditada</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA10</td><td>Isolamento multi-tenant (invariante regressiva)</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA01">
+      <h2>CA01 — Informar o identificador (happy path) <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Master e estou na tela Organização, no bloco de parâmetros TCE/AL
+Quando eu informar o identificador da Unidade Gestora com 6 dígitos numéricos e salvar
+Então os parâmetros são salvos
+E o identificador aparece no bloco de parâmetros TCE/AL.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Login como <b>Master</b> (CPF 52998224725) → <code>Configurações</code> → aba <code>Parâmetros TCE/AL</code> → <b>Editar</b> → informar <code>004821</code> → <b>Salvar</b>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Os parâmetros são salvos (HTTP 200) e o drawer fecha.</li><li>O card exibe o identificador 004821 no bloco de parâmetros TCE/AL.</li><li>O aviso de bloqueio da remessa SIAP deixa de ser exibido (siap_readiness.ready passa a true).</li><li>Confirmação no banco: tenant_tce_parameters.cardug_identifier = '004821'.</li><li>Observação: até esta entrega o botão Editar não renderizava (v-if preso em `&amp;&amp; false` no TceParametersCard.vue), o que tornava este critério inexequível pela tela.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca01-identificador-salvo.png" alt="CA01 evidência"/><figcaption>ca01-identificador-salvo.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA02">
+      <h2>CA02 — Recusa por quantidade de dígitos <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que estou editando os parâmetros TCE/AL
+Quando eu informar um identificador com 4 dígitos e tentar salvar
+Então os parâmetros não são salvos
+E o sistema indica que o identificador da Unidade Gestora precisa ter exatamente 6 dígitos numéricos.</p>
+      <p class="steps"><strong>Como foi testado:</strong> No drawer de edição, informar <code>1234</code> → <b>Salvar</b>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Os parâmetros não são salvos.</li><li>A tela indica: “O identificador da Unidade Gestora deve ter exatamente 6 dígitos numéricos.”</li><li>Confirmação no banco: cardug_identifier permanece NULL após a tentativa.</li><li>Backend cobre os dois lados do limite (1234, 12345 e 1234567 → 422), inclusive na rota do Super Admin.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca02-recusa-quatro-digitos.png" alt="CA02 evidência"/><figcaption>ca02-recusa-quatro-digitos.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA03">
+      <h2>CA03 — Recusa por caractere não numérico <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que estou editando os parâmetros TCE/AL
+Quando eu informar um identificador contendo letra ou pontuação e tentar salvar
+Então os parâmetros não são salvos
+E o sistema indica que o identificador aceita apenas números.</p>
+      <p class="steps"><strong>Como foi testado:</strong> No drawer de edição, informar <code>12A4B6</code> → <b>Salvar</b>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Os parâmetros não são salvos.</li><li>A tela indica: “O identificador da Unidade Gestora aceita apenas números.” — mensagem distinta da de tamanho, como o PO separou nos critérios.</li><li>O valor digitado permanece 12A4B6 no campo: não é sanitizado em silêncio para 1246 (verificado por leitura do valor do input).</li><li>Backend recusa igualmente letra, pontuação e espaço interno (12A4B6, 123-56, 12 456 → 422), sem gravar nem o valor original nem uma versão limpa.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca03-recusa-caractere-nao-numerico.png" alt="CA03 evidência"/><figcaption>ca03-recusa-caractere-nao-numerico.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA04">
+      <h2>CA04 — Orientação de onde consultar o código <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que estou no bloco de parâmetros TCE/AL
+Quando eu olhar o campo do identificador da Unidade Gestora
+Então vejo a indicação de que o código é o do cadastro do município no CARDUG, com o endereço de consulta do TCE-AL
+E o bloco identifica que esses parâmetros são da integração com o TCE-AL, e não parâmetros genéricos do sistema.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Abrir o drawer <code>Editar parâmetros do TCE/AL</code> e observar o campo do identificador.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O campo é rotulado “Identificador da Unidade Gestora (CARDUG)”.</li><li>Hint abaixo do campo: “Código de 6 dígitos do cadastro do seu município no CARDUG. Consulte em unidadesgestoras.tceal.tc.br”, com link para http://unidadesgestoras.tceal.tc.br/ (target=_blank, rel=noopener noreferrer).</li><li>Callout do bloco: “Parâmetros da integração com o TCE-AL (Tribunal de Contas do Estado de Alagoas). O formato do identificador segue o cadastro CARDUG desse tribunal.” — atende a RN03 ao não apresentar a regra como universal do sistema.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca04-orientacao-cardug-link-tceal.png" alt="CA04 evidência"/><figcaption>ca04-orientacao-cardug-link-tceal.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA04b">
+      <h2>CA04b — Salvar os parâmetros sem o identificador é permitido, com aviso <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que ainda não tenho o código da minha Unidade Gestora em mãos
+Quando eu salvar os parâmetros TCE/AL deixando o identificador vazio
+Então os parâmetros são salvos
+E a tela avisa que a remessa SIAP não poderá ser gerada enquanto o identificador não for informado.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Com o identificador vazio no banco e os demais parâmetros preenchidos (Unidade Gestora informada), abrir a aba <code>Parâmetros TCE/AL</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Os parâmetros são salvos normalmente com o identificador vazio (HTTP 200, cardug_identifier = null).</li><li>O card exibe o aviso: “A remessa SIAP não poderá ser gerada enquanto o identificador da Unidade Gestora não for informado. Os demais módulos do sistema seguem liberados.”</li><li>O aviso não bloqueia o salvamento nem a navegação — é informativo (RN02).</li><li>A resposta da API traz siap_readiness = { ready: false, blocking_reason: 'cardug_identifier_missing', has_generated_remittances: false }.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca04b-aviso-remessa-bloqueada.png" alt="CA04b evidência"/><figcaption>ca04b-aviso-remessa-bloqueada.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA05">
+      <h2>CA05 — Operacional não edita <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Operacional do Tenant
+Quando eu abrir a tela Organização
+Então visualizo o identificador da Unidade Gestora
+E não tenho a ação de editar os parâmetros TCE/AL.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Logout do Master → login como <b>Operacional do Tenant</b> (CPF 39053344705, papel <code>operador</code>) → <code>Configurações</code> → aba <code>Parâmetros TCE/AL</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O Operacional visualiza o identificador 004821 e os demais parâmetros.</li><li>O botão Editar não é renderizado (ausência, não apenas desabilitado).</li><li>Defesa em profundidade: PUT direto em /api/client/tenant-tce-parameters com o token do Operacional retorna 403 “Acesso negado.”</li><li>Gate corrigido nesta entrega: o front checava tenant-settings.update (outro recurso); passou a checar tenant-tce-parameters.update, a permissão que o backend exige.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca05-operacional-somente-leitura.png" alt="CA05 evidência"/><figcaption>ca05-operacional-somente-leitura.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA06">
+      <h2>CA06 — Bloqueio da geração de remessa sem o identificador <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que os parâmetros TCE/AL da minha organização estão sem o identificador da Unidade Gestora
+Quando eu tentar gerar qualquer remessa SIAP
+Então a remessa não é gerada
+E a conferência prévia apresenta essa pendência em destaque, separada das pendências por leiaute, indicando que bloqueia toda a remessa.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Com os parâmetros TCE/AL sem o identificador, abrir <code>Prestação de Contas → Remessas SIAP</code> e observar a conferência prévia; em seguida tentar gerar a remessa, inclusive por chamada direta à API.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O botão “Gerar remessa” aparece desabilitado, com o motivo escrito ao lado: “O identificador da Unidade Gestora (CARDUG) não foi informado. Nenhum dos 11 leiautes pode ser gerado sem ele.”</li><li>A conferência prévia mostra o bloco “Impedimentos que bloqueiam toda a remessa” em destaque, no topo, com o selo “Bloqueia os 11 arquivos”.</li><li>As pendências por leiaute aparecem em bloco separado, logo abaixo — EntidadeSocial, ProfissionalSocial, RegistrosUnidade e demais leiautes sem fonte de dados, cada um nomeando o campo que falta.</li><li>Chamada direta a POST /api/client/siap-remittances responde 422 e a remessa não é criada: o bloqueio não depende da interface.</li><li>O impedimento oferece atalho “Corrigir nos Parâmetros TCE/AL”, que leva direto à aba certa (/app/configuracoes?tab=tce), já selecionada.</li><li>Informado o identificador 004821, o impedimento some, o botão habilita e a remessa é gerada de verdade: 11 leiautes no pacote .zip, cada arquivo com o cabeçalho Codigo/Exercicio/Mes.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca06-conferencia-previa-bloqueio.png" alt="CA06 evidência"/><figcaption>ca06-conferencia-previa-bloqueio.png</figcaption></figure><figure><img src="screenshots/ca06-atalho-deep-link-tce.png" alt="CA06 evidência"/><figcaption>ca06-atalho-deep-link-tce.png</figcaption></figure><figure><img src="screenshots/ca06b-remessa-gerada-11-leiautes.png" alt="CA06 evidência"/><figcaption>ca06b-remessa-gerada-11-leiautes.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA07">
+      <h2>CA07 — Ausência do identificador não bloqueia o resto do sistema <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que os parâmetros TCE/AL da minha organização estão sem o identificador da Unidade Gestora
+Quando eu usar os demais módulos do sistema (unidades, entidades, profissionais, prontuário)
+Então nenhuma dessas operações é bloqueada por causa do identificador ausente.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Teste de não-regressão em <code>tests/Feature/Api/TenantTceParameterSiapReadinessTest.php</code>: com <code>cardug_identifier = null</code>, exercitar um módulo operacional do tenant.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Com o identificador ausente, GET /api/client/social-units responde 200 normalmente.</li><li>Nenhum middleware, gate ou Policy novo foi criado nesta HU — a ausência do identificador não é gate de sistema (RN10).</li><li>A mesma requisição de parâmetros TCE/AL segue respondendo 200, apenas com readiness false.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA08">
+      <h2>CA08 — Aviso ao alterar com remessa já gerada <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que existe remessa gerada para a referência 07/2026 e que sou Master
+Quando eu alterar o identificador da Unidade Gestora
+Então o sistema avisa que as remessas já geradas mantêm o código anterior e precisam ser geradas novamente caso ainda não tenham sido enviadas
+E, ao confirmar, o novo identificador é salvo e as remessas anteriores permanecem no histórico como estavam.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Com a remessa de 08/2026 já gerada com o identificador <code>004821</code>, alterar o identificador para <code>004822</code> em <code>Configurações → Parâmetros TCE/AL</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O sistema abre a confirmação: “Já existem 1 remessa(s) gerada(s) com o código anterior” e “As remessas já geradas mantêm o código anterior e precisam ser geradas novamente caso ainda não tenham sido enviadas ao TCE-AL.”</li><li>Enquanto o Master não confirma, nada é salvo: o identificador permanece 004821 no banco.</li><li>Ao confirmar, o novo identificador (004822) é gravado.</li><li>A remessa anterior permanece intacta: mesmo identificador 004821, mesmo arquivo e mesmo checksum de conteúdo antes e depois da alteração.</li><li>No histórico, a remessa antiga passa a exibir a marca “identificador anterior”, que continua visível depois que o aviso da tela já sumiu.</li><li>Decisão de negócio provisória registrada: o aviso dispara para qualquer remessa gerada, sem distinguir as já enviadas — o envio acontece no portal do TCE-AL, fora do sistema, e o SigSUAS não tem como saber.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca08-aviso-remessa-ja-gerada.png" alt="CA08 evidência"/><figcaption>ca08-aviso-remessa-ja-gerada.png</figcaption></figure><figure><img src="screenshots/ca08b-historico-identificador-anterior.png" alt="CA08 evidência"/><figcaption>ca08b-historico-identificador-anterior.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA09">
+      <h2>CA09 — Alteração auditada <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que alterei o identificador da Unidade Gestora
+Quando eu consultar a trilha de auditoria da organização
+Então a alteração consta registrada, com o autor e a data.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Teste em <code>tests/Feature/Api/TenantTceParameterControllerTest.php</code>: após o PUT, inspecionar a trilha em <code>activity_log</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Registro gravado com log_name 'tenant', subject TenantTceParameter, causer_id do autor e created_at da alteração.</li><li>attribute_changes preserva o valor novo ('004821') e o anterior (null) do identificador.</li><li>properties carrega o tenant_id, injetado pelo Model Activity customizado do projeto.</li><li>Comportamento já existia via trait LogsActivity; esta entrega o fixou com teste de regressão.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA10">
+      <h2>CA10 — Isolamento multi-tenant (invariante regressiva) <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Master do tenant A
+Quando eu salvar o identificador enviando tenant_id do tenant B no corpo
+Então o valor é gravado apenas no tenant A (tenant vem do contexto, nunca do payload).</p>
+      <p class="steps"><strong>Como foi testado:</strong> Teste em <code>tests/Feature/Api/TenantTceParameterControllerTest.php</code>: PUT com <code>tenant_id</code> de outro tenant no corpo da requisição.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Nada é gravado no tenant alvo do payload — nem no tenant legítimo: a requisição é recusada com 403 (error_code tenant_access_denied) antes de chegar ao Controller.</li><li>O destino da escrita continua vindo exclusivamente do contexto (header X-Tenant-UUID), como exige a RN09.</li><li>Achado registrado para acompanhamento: o Global Scope de BelongsToTenant resolve o tenant corrente por request-&gt;input('tenant_id'), que lê do corpo/query — hoje o resultado fecha (403), mas a resolução do escopo por dado do cliente é frágil e merece tratamento próprio, fora desta HU.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+  
+  <h2>Observações e ressalvas</h2>
+  <section class="note"><h3>Decisão de negócio provisória — o aviso de alteração não distingue remessa já enviada (CA08)</h3><p>Quando o Master altera o identificador da Unidade Gestora e já existe remessa gerada, o sistema exige confirmação avisando que as remessas anteriores mantêm o código antigo e precisam ser geradas novamente <b>caso ainda não tenham sido enviadas</b>.</p><p>Na prática, o aviso <b>dispara para qualquer remessa já gerada</b>, sem separar as que já foram enviadas ao Tribunal das que não foram. A razão é que o envio acontece no portal do TCE-AL, <b>fora do sistema</b>: o SigSUAS não tem como saber se o pacote já foi entregue. O texto do critério exige o aviso, e o aviso é dado — mas fica registrado que a distinção pedida na redação do CA depende de uma informação que o sistema não possui hoje. Se a área de negócio quiser essa separação, será preciso decidir como o município registra o envio.</p></section><section class="note"><h3>Achado técnico para acompanhamento — fora do escopo desta HU (CA10)</h3><p>Ao verificar o isolamento entre organizações, constatou-se que o mecanismo global que restringe os dados à organização ativa resolve qual é essa organização a partir de um dado que vem na própria requisição do cliente.</p><p><b>O resultado hoje está correto</b>: a tentativa de gravar o identificador em outra organização é recusada antes de chegar ao processamento, e o destino da escrita continua vindo exclusivamente do contexto autenticado. Ainda assim, resolver o escopo a partir de dado enviado pelo cliente é frágil e merece tratamento próprio, em chamado separado — não é alteração que caiba nesta entrega.</p></section><section class="note"><h3>Cobertura adicional além dos critérios do chamado</h3><p>Além dos nove critérios pedidos no chamado, o dossiê traz um décimo (CA10), de isolamento entre organizações, que <b>não consta do texto original da história</b>. Ele foi incluído como invariante de regressão, por ser o identificador um dado que representa o município perante o Tribunal. Não substitui nem altera nenhum critério aprovado.</p></section>
+  
+  <h2>Anexo — Cobertura automatizada (Pest — TenantTceParameter, ValidCardugIdentifier, SiapRemittance, SiapPreCheck, SiapDomainMap)</h2>
+  <pre class="pest">
+   PASS  Tests\Unit\Models\TenantTceParameterTest
+  ✓ it has correct fillable attributes                                   0.33s  
+  ✓ it uses the expected traits                                          0.01s  
+  ✓ it defines tenant relationship                                       0.01s  
+  ✓ it normalizes managing_unit_cnpj preserving the alphanumeric format… 0.01s  
+  ✓ it generates a uuid via factory                                      0.05s  
+
+   PASS  Tests\Unit\Rules\ValidCardugIdentifierTest
+  ✓ it accepts exactly six digits (RN01/CA01)                            0.03s  
+  ✓ it accepts six zeros — the format rule is about shape, not value     0.01s  
+  ✓ it rejects fewer than six digits with the length message (CA02) wit… 0.01s  
+  ✓ it rejects fewer than six digits with the length message (CA02) wit… 0.01s  
+  ✓ it rejects fewer than six digits with the length message (CA02) wit… 0.01s  
+  ✓ it rejects more than six digits with the length message (CA02)       0.01s  
+  ✓ it rejects non numeric characters with its own message (CA03) with…  0.01s  
+  ✓ it rejects non numeric characters with its own message (CA03) with…  0.01s  
+  ✓ it rejects non numeric characters with its own message (CA03) with…  0.01s  
+  ✓ it rejects non numeric characters with its own message (CA03) with…  0.01s  
+  ✓ it rejects non numeric characters with its own message (CA03) with…  0.01s  
+  ✓ it rejects non numeric characters with its own message (CA03) with…  0.01s  
+  ✓ it rejects a non string value                                        0.01s  
+  ✓ it exposes the format as a single source of truth (RN03/D01)         0.01s  
+
+   PASS  Tests\Unit\Services\Siap\SiapDomainMapTest
+  ✓ it inverts Parda and Amarela between the eSUAS and SIAP scales       0.01s  
+  ✓ it keeps the race colors that coincide in both scales
+  ✓ it returns null for a race color without counterpart
+  ✓ it maps social unit types to the SIAP classification
+  ✓ it refuses to translate a unit status the SIAP does not define
+  ✓ it only translates the entity status that has a safe counterpart
+  ✓ it collapses the four SUAS participation types into the three of SIAP
+  ✓ it maps kinship to the family position scale
+  ✓ it leaves the ambiguous education level unmapped
+  ✓ it maps booleans to the SIM/NAO pair
+  ✓ it strips the zero padding only for the auxiliary tables
+  ✓ it refuses a numeric value with a size different from the exact one
+  ✓ it never sanitizes a non numeric value to make it fit
+  ✓ it flags truncation instead of cutting text in silence
+  ✓ it formats dates in ISO and decimals with two places
+  ✓ it registers exactly the 11 layouts of the SIAP social assistance section
+  ✓ it puts UnidadeSocial first, since 8 other layouts depend on it
+  ✓ it names every file after its layout, as the Manual requires
+
+   PASS  Tests\Feature\Api\SiapRemittanceGenerationTest
+  ✓ it refuses the generation when the identifier is missing (CA06)      0.07s  
+  ✓ it refuses the generation for a legacy identifier outside the TCE-A… 0.02s  
+  ✓ it creates the remittance and dispatches the job when the identifie… 0.05s  
+  ✓ it generates a zip with all 11 layouts, including the ones without…  0.05s  
+  ✓ it records the layout outcome of a layout without movement           0.10s  
+  ✓ it re-evaluates the block inside the job (TOCTOU)                    0.04s  
+  ✓ it refuses a second generation while one is still running            0.04s  
+  ✓ it never lists or downloads a remittance from another tenant         0.04s  
+  ✓ it refuses the download while the remittance is not completed        0.07s  
+
+   PASS  Tests\Feature\Api\SiapRemittancePreCheckTest
+  ✓ it separates the blocking identifier pendency from the per-layout o… 0.03s  
+  ✓ it states that the identifier pendency blocks the entire remittance… 0.02s  
+  ✓ it still lists every layout while the remittance is blocked (CA06)   0.03s  
+  ✓ it marks per-layout pendencies as non blocking                       0.02s  
+  ✓ it reports a required field that has no source in the system         0.05s  
+  ✓ it does not persist anything during the pre-check                    0.03s  
+  ✓ it releases the generation when the identifier is valid              0.02s  
+  ✓ it counts records only from the active tenant                        0.03s  
+  ✓ it rejects an invalid reference month                                0.03s  
+  ✓ it accepts the special reference months 13 and 14 with (13)          0.02s  
+  ✓ it accepts the special reference months 13 and 14 with (14)          0.02s  
+
+   PASS  Tests\Feature\Api\TenantTceParameterControllerTest
+  ✓ it shows TCE parameters (creates if not exists)                      0.03s  
+  ✓ it updates TCE parameters with a valid alphanumeric UG CNPJ (RN07/R… 0.02s  
+  ✓ it saves the managing unit identifier with exactly six digits (CA01… 0.02s  
+  ✓ it rejects an identifier with the wrong number of digits (RN01/CA02… 0.02s  
+  ✓ it rejects an identifier with the wrong number of digits (RN01/CA02… 0.02s  
+  ✓ it rejects an identifier with the wrong number of digits (RN01/CA02… 0.02s  
+  ✓ it rejects an identifier with non numeric characters and does NOT s… 0.05s  
+  ✓ it rejects an identifier with non numeric characters and does NOT s… 0.04s  
+  ✓ it rejects an identifier with non numeric characters and does NOT s… 0.02s  
+  ✓ it trims the identifier before validating                            0.02s  
+  ✓ it saves the TCE parameters without the identifier and warns about…  0.02s  
+  ✓ it never writes to another tenant when tenant_id comes in the paylo… 0.02s  
+  ✓ it records the identifier change in the audit trail with author and… 0.02s  
+  ✓ it rejects an invalid UG CNPJ (RN15)                                 0.02s  
+  ✓ it forbids the Operacional from updating TCE parameters (RN03)       0.02s  
+  ✓ it manager shows TCE parameters of any tenant by uuid (no binding)   0.02s  
+  ✓ it manager updates TCE parameters of any tenant by uuid              0.02s  
+  ✓ it applies the same identifier format rule on the manager variant (… 0.02s  
+  ✓ it forbids a manager without permission from updating TCE by uuid    0.02s  
+
+   PASS  Tests\Feature\Api\TenantTceParameterIdentifierChangeTest
+  ✓ it does not ask for confirmation while no remittance was generated…  0.03s  
+  ✓ it warns the Master when a remittance was already generated (CA08)   0.02s  
+  ✓ it saves the new identifier once the Master confirms (CA08)          0.02s  
+  ✓ it keeps previously generated remittances untouched after the chang… 0.03s  
+  ✓ it marks old remittances as generated with the previous identifier…  0.03s  
+  ✓ it does not ask for confirmation when the identifier does not chang… 0.02s  
+  ✓ it exposes has_generated_remittances reflecting reality (CA08)       0.03s  
+  ✓ it does not leak has_generated_remittances across tenants (CA08 + i… 0.03s  
+
+   PASS  Tests\Feature\Api\TenantTceParameterSiapReadinessTest
+  ✓ it does not block other modules when the identifier is missing (RN1… 0.03s  
+  ✓ it reports readiness as true once the identifier is in the TCE-AL f… 0.02s  
+  ✓ it reports readiness as false for a legacy value outside the TCE-AL… 0.03s  
+
+  Tests:    87 passed (296 assertions)
+  Duration: 2.55s
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

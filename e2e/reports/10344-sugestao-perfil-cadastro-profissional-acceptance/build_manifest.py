@@ -1,0 +1,253 @@
+#!/usr/bin/env python3
+"""Monta o manifest.json do dossiê de evidências da HU #10344."""
+import json
+import pathlib
+
+BASE = pathlib.Path(__file__).parent
+
+
+def txt(name: str) -> str:
+    return (BASE / name).read_text(encoding="utf-8").strip()
+
+
+CAS = [
+    {
+        "id": "CA01",
+        "title": "Sugestão aparece pré-marcada ao informar o CBO",
+        "status": "nav",
+        "gherkin": (
+            "Dado que o Master está cadastrando um profissional no seu tenant e que o CBO 2516-05 "
+            "(Assistente social) está mapeado ao perfil \"Técnico de Referência\", quando o Master informa "
+            "esse CBO, então GET /api/client/professionals/role-suggestion retorna 200, o posto base "
+            "\"Operador\" vem com preselected = true e group = \"base\", o perfil \"Técnico de Referência\" "
+            "vem com preselected = true e group = \"functional\", cada papel traz source = \"suggested\" e o "
+            "CBO que o originou, e a tela indica que a marcação veio da ocupação informada."
+        ),
+        "steps_html": (
+            "Autenticado como <b>Master</b> (guard <code>client</code>, organização E2E CadÚnico), abrir "
+            "<code>/app/cadastros/profissionais-municipais/novo</code>. Antes de informar a ocupação, a seção "
+            "<b>Acesso do profissional</b> apenas orienta. Ao selecionar <code>2516-05 — Assistente social</code> "
+            "no combobox <b>Ocupação (CBO)</b>, o formulário chama "
+            "<code>GET /api/client/professionals/role-suggestion?cbo_id=715</code> e monta a proposta."
+        ),
+        "results": [
+            "O endpoint responde HTTP 200 com has_mapping = true e três papéis, cada um com source = \"suggested\".",
+            "Grupo \"Posto base\": Operador [checked] (group = base, preselected = true).",
+            "Grupo \"Perfil funcional\": Técnico de Referência (PAIF / PAEFI) [checked] com o selo \"sugerido\" (group = functional, preselected = true).",
+            "A tela informa: \"Proposta a partir da ocupação 2516-05. Você pode desmarcar ou ajustar antes de salvar.\"",
+            "A pré-marcação não é decidida no front — vem campo a campo do backend, no atributo preselected.",
+        ],
+        "images": [
+            "screenshots/ca01-form-sem-ocupacao.png",
+            "screenshots/ca01-sugestao-premarcada.png",
+            "screenshots/ca01-form-com-ocupacao.png",
+        ],
+    },
+    {
+        "id": "CA02",
+        "title": "Add-on LGPD aparece sugerido e desmarcado; salvar sem marcá-lo não concede acesso",
+        "status": "nav",
+        "gherkin": (
+            "Dado o mesmo cadastro do CA01, cuja sugestão inclui family_viewer, quando a proposta é exibida, "
+            "então o add-on \"Visualização de Detalhes da Família — LGPD\" vem com group = \"addon\" e com "
+            "preselected = FALSE. Quando o Master salva sem marcá-lo, então o profissional é criado sem "
+            "family_viewer, nenhum user_tenant_role com esse papel existe no tenant ativo e o usuário NÃO tem "
+            "a permissão families.view-details."
+        ),
+        "steps_html": (
+            "Na mesma proposta do CA01, observar o grupo <b>Acessos sensíveis (LGPD)</b>. Concluir o cadastro "
+            "(CPF 655.599.586-62, endereço via CEP 57300-290) <b>sem marcar</b> o add-on e clicar "
+            "<b>Salvar profissional</b>. Em seguida, conferir <code>user_tenant_role</code> e a trilha no banco."
+        ),
+        "results": [
+            "O add-on vem visível e DESMARCADO, com o aviso: \"Estes acessos liberam dados sensíveis de cidadãos. Vêm desmarcados de propósito: marque apenas o que a função realmente exigir.\"",
+            "POST /api/client/professionals responde 201 Created e a UI confirma \"Profissional cadastrado com sucesso.\"",
+            "No banco, user_tenant_role do tenant ativo contém apenas operador e pf_tecnico_referencia — family_viewer NÃO foi concedido.",
+            "tenant_professionals.cbo_id gravado com o CBO 2516-05 (ocupação principal).",
+            "A trilha registra suggested_removed = [\"family_viewer\"], provando que a ausência foi decisão do Master, não falha.",
+        ],
+        "images": [
+            "screenshots/ca02-addon-lgpd-desmarcado.png",
+            "screenshots/ca02-profissional-criado-sem-addon.png",
+        ],
+    },
+    {
+        "id": "CA03",
+        "title": "Confirmação afirmativa do add-on registra a origem",
+        "status": "nav",
+        "gherkin": (
+            "Dado o mesmo cadastro, quando o Master marca family_viewer e salva, então o acesso é concedido no "
+            "tenant ativo (user_tenant_role criado), uma entrada é gravada em activity_log com "
+            "log_name = \"tenant_professional\" e event = \"roles_granted_from_suggestion\", causer = o Master, "
+            "subject = o profissional, tenant_id = o tenant ativo, properties contendo cbo_code, suggested, "
+            "suggested_kept (com family_viewer) e o momento, e properties NÃO contendo CPF nem nome completo "
+            "em texto livre."
+        ),
+        "steps_html": (
+            "Novo cadastro (CPF 283.417.962-01) com o mesmo CBO 2516-05, desta vez <b>marcando</b> o add-on "
+            "<b>Visualização de Detalhes da Família — LGPD</b> antes de salvar. Depois, inspecionar "
+            "<code>user_tenant_role</code> e a última entrada de <code>activity_log</code>."
+        ),
+        "results": [
+            "user_tenant_role passa a conter operador, family_viewer e pf_tecnico_referencia.",
+            "activity_log: event = roles_granted_from_suggestion, causer = User#7 (o Master), subject = TenantProfessional#8.",
+            "properties trazem tenant_id, cbo_code = \"2516-05\", has_mapping = true e suggested_kept com os três papéis (inclusive family_viewer).",
+            "A lista de sugeridos é RECALCULADA no servidor — não se confia numa lista vinda do cliente, que poderia mascarar concessão manual como sugerida.",
+            "Nenhum CPF em claro nas properties.",
+        ],
+        "images": [
+            "screenshots/ca03-addon-marcado.png",
+            "screenshots/ca03-profissional-criado-com-addon.png",
+        ],
+    },
+    {
+        "id": "CA04",
+        "title": "Master recusa a sugestão",
+        "status": "nav",
+        "gherkin": (
+            "Dado um cadastro com o perfil \"Técnico de Referência\" pré-marcado, quando o Master desmarca o "
+            "perfil e salva, então o profissional é criado apenas com o posto base Operacional do Tenant, sem "
+            "nenhuma permissão dos módulos daquele perfil, e properties da auditoria trazem "
+            "suggested_removed = [\"pf_tecnico_referencia\"]."
+        ),
+        "steps_html": (
+            "Novo cadastro (CPF 915.375.932-00) com o CBO 2516-05. Na proposta, <b>desmarcar</b> o perfil "
+            "funcional <b>Técnico de Referência (PAIF / PAEFI)</b> e salvar."
+        ),
+        "results": [
+            "O profissional é criado apenas com o posto base operador.",
+            "pf_tecnico_referencia NÃO consta em user_tenant_role — a recusa do Master prevalece sobre a sugestão.",
+            "A auditoria registra suggested_removed = [\"family_viewer\", \"pf_tecnico_referencia\"] e suggested_kept = [\"operador\"].",
+            "O posto base permanece marcado e não desmarcável na UI: sem ele o profissional não acessa a organização.",
+        ],
+        "images": ["screenshots/ca04-perfil-desmarcado.png"],
+    },
+    {
+        "id": "CA05",
+        "title": "CBO sem entrada no mapa",
+        "status": "nav",
+        "gherkin": (
+            "Dado o CBO 5153-20 (Conselheiro tutelar), sem entrada no mapa, quando o Master o informa no "
+            "cadastro, então a resposta é 200 (não é erro), has_mapping = false, meta.fallback = "
+            "\"minimum_base_post\", roles contém APENAS o posto base operador com preselected = true, nenhum "
+            "add-on é sugerido e a tela informa que a ocupação não possui perfil sugerido. Quando o Master "
+            "salva, o profissional é criado com o posto base e nenhum módulo operacional."
+        ),
+        "steps_html": (
+            "Novo cadastro (CPF 236.407.697-83) selecionando <code>5153-20 — Conselheiro tutelar</code>, ocupação "
+            "que não tem entrada no mapa da HU #10343. Observar a proposta e concluir o cadastro."
+        ),
+        "results": [
+            "GET role-suggestion?cbo_id=1450 responde HTTP 200 (nunca 404) com has_mapping = false e meta.fallback = \"minimum_base_post\".",
+            "roles traz somente o posto base operador, com preselected = true e source = \"base_post\".",
+            "A tela informa: \"Esta ocupação não possui perfil sugerido. O profissional recebe apenas o posto base Operacional do Tenant.\"",
+            "Nenhum grupo de perfil funcional nem de add-on LGPD é renderizado.",
+            "Após salvar, user_tenant_role contém apenas operador; a auditoria registra has_mapping = false.",
+        ],
+        "images": ["screenshots/ca05-cbo-sem-mapa.png"],
+    },
+    {
+        "id": "CA06",
+        "title": "Salvar somente add-on é recusado",
+        "status": "parc",
+        "gherkin": (
+            "Dado um cadastro em que o Master marcou family_viewer e removeu o posto base, quando ele tenta "
+            "salvar, então o sistema recusa com 422, nenhum tenant_professional é criado, nenhum "
+            "user_tenant_role é criado e a mensagem informa que papel add-on exige posto base."
+        ),
+        "steps_html": (
+            "O caso é <b>inalcançável pela tela</b>: o posto base é pré-marcado e não desmarcável (defesa em "
+            "profundidade). A recusa do servidor foi provocada diretamente com "
+            "<code>POST /api/client/professionals</code> e <code>role_ids: [family_viewer]</code>, autenticado "
+            "como o mesmo Master. Também coberto pelo teste Pest <i>\"CA06: recusa 422 ao salvar conjunto "
+            "composto SO por add-on\"</i>."
+        ),
+        "results": [
+            "HTTP 422 com a mensagem \"Não é possível manter apenas perfis de ação única. O profissional precisa ter também um perfil base nesta organização.\"",
+            "Nenhum usuário criado para o CPF usado na tentativa.",
+            "Zero tenant_professionals com esse CPF — a validação corre ANTES da transação, então nada é criado pela metade.",
+            "A regra reusa UserTenantRoleSyncService::assertResultingSetHasBasePost(), a mesma da HU #10343.",
+        ],
+        "images": ["screenshots/ca04-perfil-desmarcado.png"],
+    },
+    {
+        "id": "CA07",
+        "title": "Isolamento entre tenants",
+        "status": "auto",
+        "gherkin": (
+            "Dado um Master do tenant A, quando ele acessa por uuid um profissional pertencente ao tenant B, "
+            "então a API responde 404 (nunca 403 — o registro não existe no escopo dele), e o mesmo vale para "
+            "GET/PUT .../roles e para a sugestão aplicada àquele profissional."
+        ),
+        "steps_html": (
+            "Critério de backend sem UI dedicada — a tela do tenant A nunca lista o profissional do tenant B, "
+            "de modo que a evidência útil é a resposta da API. Coberto pelo teste Pest "
+            "<i>\"CA07: profissional de outro tenant responde 404\"</i>, com o guard <code>client</code>, a trait "
+            "<code>BelongsToTenant</code> e o middleware <code>EnsureTenantScope</code> ativos."
+        ),
+        "results": [
+            "Acesso cruzado por uuid responde 404, não 403 — a existência do registro não vaza.",
+            "Vale para o show do profissional, para as rotas de papéis e para a sugestão aplicada.",
+            "Ver apêndice: teste \"CA07: profissional de outro tenant responde 404\" passando.",
+        ],
+        "images": [],
+    },
+    {
+        "id": "CA08",
+        "title": "Nenhum dado pessoal em texto livre",
+        "status": "parc",
+        "gherkin": (
+            "Dado um cadastro de profissional contendo CPF e telefone, quando o cadastro é salvo com sucesso OU "
+            "recusado por erro de validação, então nenhum registro em activity_log contém o CPF em claro "
+            "(apenas mascarado por cpf_oculta), nenhum registro contém o nome completo em texto livre e nenhuma "
+            "mensagem de erro devolvida ao usuário ecoa CPF ou nome completo."
+        ),
+        "steps_html": (
+            "Inspeção direta das entradas de <code>activity_log</code> geradas pelos cadastros dos CA02, CA03, "
+            "CA04 e CA05, procurando o CPF e o nome completo dos profissionais criados; e da mensagem de erro "
+            "devolvida na recusa do CA06. Reforçado pelo teste Pest "
+            "<i>\"CA08: a trilha NUNCA registra o CPF em claro\"</i>."
+        ),
+        "results": [
+            "As properties da trilha contêm apenas tenant_id, cbo_code, has_mapping e as listas de papéis — nenhum campo de PII.",
+            "Busca literal pelo CPF (65559958662, 28341796201) nas properties: não encontrado.",
+            "Busca literal pelo nome completo do profissional nas properties: não encontrado.",
+            "A mensagem 422 do CA06 fala de perfis e posto base, sem ecoar CPF ou nome.",
+        ],
+        "images": [],
+    },
+]
+
+MANIFEST = {
+    "meta": {
+        "title": "Relatório de Critérios de Aceite — HU #10344",
+        "subtitle": "Receber o acesso já sugerido ao cadastrar um profissional · Épico HU-CBO-PERFIL (US-002)",
+        "rows": [
+            ["Gerado em", "07/08/2026"],
+            ["Branch", "feature/10345-reprocessar-acesso-em-mudanca-de-cbo"],
+            ["Commits", "api 197a147 + cfec6cd · client 8da5b0c + 6c9d5dc"],
+            ["Spec", ".planning/specs/10344-sugestao-perfil-no-cadastro-de-profissional.md"],
+            ["Ambiente", "API Laravel/Sail :8000 · PostgreSQL · client Vite :5174 (não-mock)"],
+            ["Organização (tenant)", "E2E CadÚnico · uuid 00000000-0000-4000-8000-0000000000c1"],
+            ["Perfil usado", "Master do tenant (guard client) — CPF 529.982.247-25"],
+            ["Ferramenta", "playwright-cli (Chromium headless) + Pest 4"],
+        ],
+    },
+    "summary": (
+        "8 critérios de aceite, todos atendidos: 5 evidenciados dirigindo o frontend do tenant no navegador "
+        "(CA01–CA05), 2 combinando navegador e suíte automatizada (CA06 e CA08, cujos caminhos são "
+        "inalcançáveis pela tela por desenho) e 1 exclusivamente automatizado (CA07, isolamento entre tenants). "
+        "A suíte Pest da feature roda 19 testes com 97 asserções, todos passando. Nenhum critério ficou em "
+        "aberto e nenhum defeito foi observado durante a execução."
+    ),
+    "cas": CAS,
+    "appendix": {
+        "label": "Cobertura automatizada (Pest — ProfessionalRoleSuggestionTest + ProfessionalRoleSuggestionMasterOnlyTest)",
+        "file": "pest-role-suggestion.txt",
+    },
+}
+
+(BASE / "manifest.json").write_text(
+    json.dumps(MANIFEST, ensure_ascii=False, indent=2), encoding="utf-8"
+)
+print("manifest.json escrito com", len(CAS), "CAs")

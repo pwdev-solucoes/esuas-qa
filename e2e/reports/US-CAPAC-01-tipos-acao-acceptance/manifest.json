@@ -1,0 +1,189 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — US-CAPAC-01",
+    "subtitle": "Tipos de ação de capacitação e divulgação (Painel Global) · evidências end-to-end no admin",
+    "rows": [
+      [
+        "Gerado em",
+        "02/09/2026 · apêndice completado em 04/09/2026"
+      ],
+      [
+        "Épico",
+        "HU-UNID-CAPAC — leiaute 15.9 do SIAP (CapacitacaoDivulgacao)"
+      ],
+      [
+        "Branch",
+        "feature/capac-leiaute-15-9 (api, admin, client)"
+      ],
+      [
+        "Spec",
+        ".planning/specs/US-CAPAC-01-tipos-acao-capacitacao-divulgacao.md"
+      ],
+      [
+        "Ambiente",
+        "Stack E2E isolada — admin :4173 · client :4174 · API :8090 · banco esuas_e2e (E2ESeeder)"
+      ],
+      [
+        "Organização (tenant)",
+        "E2E CadÚnico — unidades E2E CRAS Centro, E2E CREAS e E2E CRAS Sem MDS"
+      ],
+      [
+        "Ferramenta",
+        "Playwright (Chromium) — specs committed em e2e/ — + Pest (anexo)"
+      ]
+    ]
+  },
+  "summary": "Oito critérios. Seis com evidência no navegador (Painel Global, guard manager) gravada pelos 4 casos de tests/lookups/capacitation-action-types.spec.ts, todos aprovados; os seis também têm contraparte na suíte Pest. Dois critérios — CA05 (o município não edita a lista) e CA08 (auditoria da alteração em activity_log) — não têm tela própria e ficam exclusivamente com a evidência automatizada do anexo. Nenhum critério ficou sem evidência. Complemento de 04/09/2026: o apêndice passou a incluir também a suíte da apuração, que é onde se prova a segunda metade do CA07 — a de que um tipo inativado continua contando no período em que foi usado. O anexo fecha com 50 testes e 200 asserções, todos verdes.",
+  "cas": [
+    {
+      "id": "CA01",
+      "title": "Cinco tipos disponíveis (happy path)",
+      "status": "parc",
+      "gherkin": "Dado que sou Administrador autenticado no guard manager\nQuando eu chamar GET /api/capacitation-action-types\nEntão recebo 200 com exatamente 5 itens\nE cada item traz uuid, code, name, siap_field, counting_mode, date_mode, is_required_in_layout e is_active",
+      "steps_html": "Playwright, autenticado como Super Admin (guard <code>manager</code>): abrir <code>/app/capacitation-action-types</code>, aguardar o <code>GET /api/capacitation-action-types</code> e conferir a resposta 200. O caso assevera <b>cinco</b> linhas, na ordem de <code>sort_order</code> (= ordem dos campos no XML), e que a coluna “Campo do leiaute” traz exatamente <code>QuantidadePalestras</code>, <code>QuantidadeReunioes</code>, <code>QuantidadeReunioesInternas</code>, <code>QuantidadeEventos</code> e <code>QuantidadeCursos</code>. Assevera também a ausência de qualquer botão “Novo” e a presença do aviso de lista fechada.",
+      "results": [
+        "A listagem traz exatamente 5 tipos, códigos 001…005 na ordem do XML, cada um com o seu campo do leiaute.",
+        "O aviso “Lista normativa fechada: os cinco tipos vêm do leiaute 15.9 do SIAP e não podem ser criados nem excluídos. Tipos fora de uso devem ser inativados.” está visível no topo.",
+        "Nenhum botão de criação existe na tela (asserção negativa toHaveCount(0)) — a UI não promete o que a API recusa.",
+        "Nenhum erro de console durante o carregamento.",
+        "Pest: “lista exatamente os cinco tipos do leiaute, na ordem do XML” e “nao expoe rota de criacao de um sexto tipo”."
+      ],
+      "images": [
+        "screenshots/ca01-os-cinco-tipos-do-leiaute-aparecem-na-ordem-do-xml-sem-porta.png"
+      ]
+    },
+    {
+      "id": "CA02",
+      "title": "Forma de contagem visível em cada tipo",
+      "status": "parc",
+      "gherkin": "Dado que estou consultando o cadastro\nQuando eu abrir o tipo de code \"001\" (Participação em palestras, congressos e seminários)\nEntão counting_mode é \"participation\"\nE o tipo de code \"003\" (Reuniões internas) tem counting_mode \"event\"\nE o tipo de code \"005\" (Profissionais realizando cursos) tem counting_mode \"professional\"",
+      "steps_html": "No mesmo listado, conferir o badge “Forma de contagem” linha a linha (<code>data-code</code> é a chave estável) e, em seguida, abrir o detalhe do tipo <code>005</code> pelo menu da linha → “Editar”.",
+      "results": [
+        "Código 001 (palestras/congressos/seminários): “Participações de profissionais” (counting_mode = participation).",
+        "Código 003 (reuniões internas): “Eventos realizados” (counting_mode = event).",
+        "Código 005 (profissionais em cursos): “Profissionais envolvidos” (counting_mode = professional).",
+        "A regra do número é legível na LISTAGEM, sem abrir registro a registro, e se repete no detalhe.",
+        "Pest: “carrega a forma de contagem em cada tipo”."
+      ],
+      "images": [
+        "screenshots/ca02-cada-tipo-mostra-forma-de-contagem-natureza-temporal-e-obrig.png",
+        "screenshots/ca02-cada-tipo-mostra-forma-de-contagem-natureza-temporal-e-obrig-detalhe-tipo-005.png"
+      ]
+    },
+    {
+      "id": "CA03",
+      "title": "Obrigatoriedade no leiaute visível",
+      "status": "parc",
+      "gherkin": "Dado que estou consultando o cadastro\nQuando eu listar os tipos\nEntão os codes \"001\", \"004\" e \"005\" têm is_required_in_layout = true\nE os codes \"002\" e \"003\" têm is_required_in_layout = false",
+      "steps_html": "Mesmo caso do CA02: conferir o badge de obrigatoriedade em cada uma das cinco linhas e o switch “Obrigatório no leiaute” no detalhe do tipo 005.",
+      "results": [
+        "Códigos 001, 004 e 005 exibem “Obrigatório no leiaute”.",
+        "Códigos 002 e 003 exibem “Opcional no leiaute”.",
+        "No detalhe do 005 o switch “Obrigatório no leiaute” está marcado (aria-checked=true).",
+        "Pest: “reflete a obrigatoriedade do leiaute em cada tipo” e “replica a obrigatoriedade declarada no layout” (seeder)."
+      ],
+      "images": [
+        "screenshots/ca03-cada-tipo-mostra-forma-de-contagem-natureza-temporal-e-obrig.png",
+        "screenshots/ca03-cada-tipo-mostra-forma-de-contagem-natureza-temporal-e-obrig-detalhe-tipo-005.png"
+      ]
+    },
+    {
+      "id": "CA04",
+      "title": "Natureza de duração no tipo de cursos",
+      "status": "parc",
+      "gherkin": "Dado que estou consultando o tipo de code \"005\"\nQuando eu abrir o detalhe\nEntão date_mode é \"period\"\nE todos os demais tipos têm date_mode \"single_date\"",
+      "steps_html": "Mesmo caso do CA02/CA03: badge “Natureza temporal” nas cinco linhas e detalhe do tipo 005 (que também prova que <code>code</code> e <code>sort_order</code> são somente leitura — a chave estável e a ordem do XML não se editam).",
+      "results": [
+        "O tipo 005 (QuantidadeCursos) exibe “Período”.",
+        "Os quatro demais exibem “Data única”.",
+        "No detalhe: “Período”, campo do leiaute QuantidadeCursos, code 005 e ordem 5 em readonly.",
+        "Pest: “marca apenas o tipo de cursos como periodo”."
+      ],
+      "images": [
+        "screenshots/ca04-cada-tipo-mostra-forma-de-contagem-natureza-temporal-e-obrig.png",
+        "screenshots/ca04-cada-tipo-mostra-forma-de-contagem-natureza-temporal-e-obrig-detalhe-tipo-005.png"
+      ]
+    },
+    {
+      "id": "CA05",
+      "title": "Município não edita a lista",
+      "status": "auto",
+      "gherkin": "Dado que sou Master autenticado no guard client\nQuando eu chamar PUT /api/capacitation-action-types/{uuid}\nEntão recebo 404 (rota inexistente para o guard client)\nE GET /api/capacitation-action-types continua respondendo 200",
+      "steps_html": "<b>Sem evidência de tela, por desenho.</b> O critério afirma a inexistência de uma rota de escrita para o guard <code>client</code> — não há UI onde isso aconteça (o cadastro só existe no Painel Global). A prova é o status HTTP, verificado no Pest: <code>Tests\\Feature\\Manager\\CapacitationActionTypeTest</code> → “nao oferece escrita ao guard client, mas mantem a leitura” e “da ao Master do tenant apenas leitura da lista”.",
+      "results": [
+        "PUT /api/capacitation-action-types/{uuid} com sessão do guard client responde 404 (rota inexistente para esse guard).",
+        "GET continua respondendo 200 para o client — é dele que sai o select do formulário da US-CAPAC-02."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA06",
+      "title": "Tipo em uso não é excluído",
+      "status": "parc",
+      "gherkin": "Dado que o tipo \"Reuniões internas\" já foi usado em capacitation_actions\nQuando eu chamar DELETE /api/capacitation-action-types/{uuid}\nEntão recebo 422 com error_code \"capacitation_action_type_in_use\"\nE a mensagem indica que o tipo pode ser inativado\nE o registro permanece na base",
+      "steps_html": "Abrir o menu da linha do tipo <code>003</code> (Reuniões internas). O caso assevera primeiro a <b>ausência</b> do item “Excluir” e depois aciona “Por que não posso excluir?”, que dispara o <code>DELETE</code> real e mostra a resposta do servidor.",
+      "results": [
+        "O menu da linha não oferece “Excluir” — a UI não expõe o verbo que o sistema recusa.",
+        "O DELETE responde 422 com error_code em {capacitation_action_type_in_use, capacitation_action_type_layout_bound}.",
+        "O diálogo “Este tipo não pode ser excluído · Tipos do leiaute 15.9 do SIAP são permanentes” mostra a explicação do servidor e o caminho legítimo: o botão “Inativar tipo”.",
+        "Após fechar, os cinco tipos continuam na base (nada foi apagado).",
+        "Pest: “recusa a exclusao de tipo em uso com o motivo de uso registrado” e “recusa a exclusao de tipo sem uso com o motivo de vinculo ao leiaute”."
+      ],
+      "images": [
+        "screenshots/ca06-a-exclusao-e-recusada-com-explicacao-que-orienta-inativar-dialogo-recusa.png",
+        "screenshots/ca06-a-exclusao-e-recusada-com-explicacao-que-orienta-inativar.png"
+      ]
+    },
+    {
+      "id": "CA07",
+      "title": "Tipo inativado continua no histórico e na apuração",
+      "status": "parc",
+      "gherkin": "Dado que inativei o tipo de code \"003\" em 01/09/2026\nE existem ações registradas com ele em agosto de 2026\nQuando a apuração de agosto de 2026 for consultada (US-CAPAC-03)\nEntão o contador QuantidadeReunioesInternas continua somando essas ações",
+      "steps_html": "<b>Critério dividido em dois planos, e o dossiê é explícito sobre isso.</b> No navegador, o caso inativa em lote o tipo <code>002</code>, confere que ele <b>continua na lista com o seu campo do leiaute</b> e o reativa em seguida (para não deixar resíduo na base). A segunda metade do Gherkin — “a apuração de agosto continua somando” — é do serviço de apuração e está provada no Pest da US-CAPAC-03: <code>CapacitationTallyServiceTest</code> → “devolve contador de tipo INATIVADO, porque o campo e do leiaute”.",
+      "results": [
+        "Após a inativação em lote, o tipo 002 mostra o status “Inativo” e permanece na listagem, com QuantidadeReunioes intacto — inativar não retira o campo do XML (D06).",
+        "As cinco linhas continuam presentes.",
+        "A reativação devolve o status “Ativo” (a base volta ao estado inicial).",
+        "A parte “continua somando na apuração” é regra de backend e não tem tela própria neste cadastro. Ela é provada nominalmente pelo teste <code>✓ it devolve contador de tipo INATIVADO, porque o campo e do leiaute e nao do cadastro (D03)</code>, do serviço de apuração — agora incluído no apêndice deste dossiê.",
+        "O raciocínio que o teste trava: o contador do leiaute 15.9 é do CAMPO do XML, não do item do cadastro. Inativar um tipo tira ele dos lançamentos novos, mas não apaga nem zera o que já foi registrado no período."
+      ],
+      "images": [
+        "screenshots/ca07-inativar-e-reativar-em-massa-sem-tirar-o-tipo-do-leiaute-tipo-inativado.png",
+        "screenshots/ca07-inativar-e-reativar-em-massa-sem-tirar-o-tipo-do-leiaute.png"
+      ]
+    },
+    {
+      "id": "CA08",
+      "title": "Alteração auditada",
+      "status": "auto",
+      "gherkin": "Dado que alterei counting_mode do tipo de code \"002\" de \"participation\" para \"event\"\nQuando eu consultar activity_log com log_name \"capacitation_action_type\"\nEntão existe registro do evento \"updated\" com causer_id do meu usuário, o valor antigo, o novo e o timestamp",
+      "steps_html": "<b>Sem evidência de tela.</b> O critério pede o conteúdo de <code>activity_log</code> (causer, valor antigo, valor novo, timestamp) — não há tela de trilha para este lookup no admin. Verificado no Pest: <code>Tests\\Feature\\Manager\\CapacitationActionTypeTest</code> → “audita a alteracao de counting_mode com autor, valor antigo e novo”.",
+      "results": [
+        "A alteração de counting_mode grava um evento \"updated\" no log_name capacitation_action_type, com causer_id, o valor antigo, o novo e o timestamp."
+      ],
+      "images": []
+    }
+  ],
+  "notes": [
+    {
+      "title": "Como estas evidências foram produzidas (e por que isso importa)",
+      "html": "<p>Nenhum print foi tirado à mão. Cada imagem deste dossiê foi gravada pelo <b>mesmo caso Playwright que verifica o critério</b>, executado com <code>CAPTURE_EVIDENCE=1</code> (<code>e2e/helpers/evidence.ts</code>): a foto só é salva quando o caso <b>passa</b>. Se uma asserção cai, não existe imagem — logo, a presença do arquivo é ela própria parte da prova. Sem essa variável de ambiente a suíte roda exatamente como antes, sem gravar nada.</p><p>Quando um caso cobre mais de um critério, o mesmo instante é salvo com um nome por critério (ex.: <code>ca02-…</code>, <code>ca03-…</code> e <code>ca04-…</code> são a mesma tela).</p>"
+    },
+    {
+      "title": "Mensagens da API em inglês sobre UI em pt-BR (anterior a esta HU)",
+      "html": "<p>Alguns textos vindos da API aparecem em inglês nos prints (o diálogo de recusa da exclusão, o painel “Sem lotação vigente”, o toast de cancelamento). É um comportamento de <b>plataforma</b>, comum a todos os módulos e anterior a este épico: o <code>SetLocale</code> da API resolve o idioma pelo <code>Accept-Language</code> do navegador (o Chromium do Playwright envia <code>en-US</code>) e <b>nenhum</b> dos frontends envia <code>X-Locale</code>. O que os critérios afirmam — a recusa, a explicação e a orientação — está atendido; a tradução é dívida técnica registrada à parte.</p>"
+    },
+    {
+      "title": "Onde o anexo automatizado foi executado",
+      "html": "<p>O anexo Pest foi rodado no <b>host</b>, em <code>api/</code>, com <code>DB_CONNECTION=sqlite DB_DATABASE=:memory:</code>. Rodar a mesma suíte dentro do contêiner da stack E2E <b>não é seguro</b>: as variáveis de ambiente do contêiner vencem os <code>&lt;env&gt;</code> do <code>phpunit.xml</code>, e o <code>RefreshDatabase</code> recria o banco <code>esuas_e2e</code> — isto é, apaga a massa da própria stack de evidências.</p>"
+    },
+    {
+      "title": "Complemento de 04/09/2026 — a suíte da apuração entrou no apêndice",
+      "html": "O dossiê original era explícito ao dizer que a metade do CA07 relativa à apuração não tinha captura e ficava com o Pest da US-CAPAC-03. A remissão estava correta, mas a suíte citada não vinha no anexo, que rodava apenas o filtro do cadastro: o leitor encontrava a referência e não o teste.<br><br>A execução foi refeita cobrindo os dois filtros, e o anexo agora traz as duas suítes juntas — incluindo <code>devolve contador de tipo INATIVADO</code>, que é a prova exata do critério. Nenhum resultado anterior foi alterado; o que mudou foi o que acompanha o documento."
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Pest, --filter=\"CapacitationActionType|CapacitationTally\") — 50 testes, 200 asserções, todos verdes",
+    "file": "pest.txt"
+  }
+}

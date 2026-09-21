@@ -1,0 +1,88 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — HU #9868 (Revisão 3)",
+    "subtitle": "Sprint 9 · Cadastramento Administrativo de Camadas Geográficas Globais · Evidências end-to-end no Painel Global (admin)",
+    "rows": [
+      ["Gerado em", "04/07/2026 15:00"],
+      ["Branch", "sprint9-geo-painel (api 9b3432b · admin 7d44bd7)"],
+      ["Spec", ".planning/specs/9868-camadas-geograficas-globais.md (Revisão 3)"],
+      ["Ambiente", "API :8090 (esuas_app · PostgreSQL/PostGIS esuas_e2e) · fila geo · admin preview :4173"],
+      ["Usuário", "Super Admin global (guard manager, CPF 449.***.***-16)"],
+      ["Ferramenta", "playwright-cli (Chromium) + Pest 4"]
+    ]
+  },
+  "summary": "5 critérios de aceite da Revisão 3 (CA11, CA12, CA14, CA15, CA16 — não existe CA13 na numeração do PO), todos evidenciados por navegador dirigindo o Painel Global real, com estados confirmados no banco PostGIS e cobertura automatizada de 108 testes (407 asserções) nas suítes Geo/CityGeometry. A Revisão 3 renomeia a terminologia para 'geometria municipal' (antes 'isometria'), atualiza a mensagem de bloqueio do CA11 e introduz a tela de visualização da geometria municipal em mapa (CA15, OpenLayers + OSM). Resultado geral: todos os critérios atendidos.",
+  "cas": [
+    {
+      "id": "CA11",
+      "title": "Bloqueio da malha de setores censitários sem geometria municipal homologada",
+      "status": "nav",
+      "gherkin": "Dado que sou um Administrador logado no Painel Global\n  E que a base nacional de geometrias municipais NÃO foi cadastrada e homologada\nQuando tento processar o arquivo de malha de setores censitários\nEntão o sistema me impede de continuar (bloqueia o envio)\n  E apresenta a mensagem: \"Operação não permitida. A camada primária de geometrias municipais do Brasil deve ser cadastrada primeiro.\"",
+      "steps_html": "A importação de geometrias municipais homologada foi temporariamente removida (soft delete via tinker) para reproduzir o estado inicial da plataforma. Em <b>Camadas Geográficas → Nova importação</b>, selecionada a camada <b>Setores Censitários</b> com o arquivo <code>setores-al.geojson</code> e acionado <b>Importar</b>. Após a captura, o estado original do banco foi restaurado (restore).",
+      "results": [
+        "O envio é bloqueado no backend (HTTP 422, regra RN11 no withValidator) sem gravar nenhum registro.",
+        "A sheet exibe a mensagem de negócio EXATA da Revisão 3: \"Operação não permitida. A camada primária de geometrias municipais do Brasil deve ser cadastrada primeiro.\"",
+        "A própria UI reforça a ordem das camadas: \"A camada de Geometrias Municipais deve estar importada e sincronizada antes do envio dos Setores Censitários.\""
+      ],
+      "images": ["screenshots/ca11-bloqueio-setores-sem-geometria-municipal.png"]
+    },
+    {
+      "id": "CA12",
+      "title": "Carga da malha de setores censitários com vínculo aos municípios",
+      "status": "nav",
+      "gherkin": "Dado que a base nacional de geometrias municipais está homologada (importada e sincronizada)\n  E que realizo a carga do arquivo de malha de setores censitários do IBGE em GeoJSON\nQuando o processamento global é concluído com sucesso\nEntão o sistema vincula essas divisões geográficas aos respectivos municípios da plataforma\n  E disponibiliza as camadas para consumo na Área do Cliente",
+      "steps_html": "Com a base municipal homologada, upload de <code>setores-al.geojson</code> (camada <b>Setores Censitários</b>, formato GeoJSON), processamento pelo worker da fila <code>geo</code> e sincronização pela ação <b>Sincronizar</b> da listagem.",
+      "results": [
+        "Processamento concluído e sincronização com summary {matched: 3, updated: 3, unmatched: 0, city_not_found: 0} — todos os setores vinculados ao município pelo prefixo de 7 dígitos do código IBGE (confirmado no banco: 3 census_sectors ativos com city_id resolvido).",
+        "Camada disponível para consumo imediato: as tabelas census_sectors/census_sector_geometries são a base global lida pelo painel de georreferenciamento da Área do Cliente (HU-GEO-01).",
+        "Detalhe da importação exibe status Concluída + Sincronizada com contadores."
+      ],
+      "images": ["screenshots/ca12-setores-censitarios-sincronizados.png"]
+    },
+    {
+      "id": "CA14",
+      "title": "Importação da geometria municipal a partir do GeoJSON (vínculo por código IBGE)",
+      "status": "nav",
+      "gherkin": "Dado que sou um Administrador logado no Painel Global\n  E que envio um arquivo GeoJSON (formato padrão de importação da geometria municipal)\n    contendo as informações dos municípios, com a chave IBGE em properties.id\nQuando o processamento é concluído com sucesso\nEntão as geometrias municipais válidas são registradas em city_geometries\n  E vinculadas aos respectivos municípios por meio do código IBGE (sem chave estrangeira)",
+      "steps_html": "Upload de <code>geometrias-municipais-al.geojson</code> (malha IBGE de Alagoas, 102 municípios, chave <code>properties.id</code>) na camada <b>Geometrias Municipais</b>; processamento na fila <code>geo</code> (staging) e sincronização (negócio).",
+      "results": [
+        "Processamento Concluído com 102 features válidas materializadas.",
+        "Sincronização com summary {matched: 102, updated: 102, unmatched: 0, city_not_found: 0} — 102 geometrias ativas em city_geometries, cada uma vinculada à cidade pelo código IBGE (city_id denormalizado resolvido no sync, sem FK).",
+        "Detalhe exibe \"Features vinculadas a município: 102\" e status Sincronizada."
+      ],
+      "images": [
+        "screenshots/ca14-importacao-geometria-municipal-concluida.png",
+        "screenshots/ca14-detalhe-sincronizacao-102-municipios.png"
+      ]
+    },
+    {
+      "id": "CA15",
+      "title": "Visualização da geometria municipal em tela simples com mapa",
+      "status": "nav",
+      "gherkin": "Dado que sou um usuário do Painel Global com acesso às importações de camadas\n  E que existe uma geometria municipal importada\nQuando consulto a geometria de um município em uma tela simples com mapa\nEntão visualizo a representação geográfica do município importado\n  E consigo validar visualmente, de forma rápida, se a geometria foi carregada corretamente\n    e se corresponde ao município esperado",
+      "steps_html": "Na listagem de <b>Camadas Geográficas</b>, acionado o botão <b>Visualizar geometrias</b> (rota <code>/app/geo-layer-imports/city-geometries</code>, novo endpoint <code>GET /api/manager/city-geometries</code>). Busca por \"Maceió\" no seletor e seleção do município (código IBGE 2704302).",
+      "results": [
+        "A tela exibe o polígono de Maceió desenhado sobre o mapa OpenStreetMap (OpenLayers) com enquadramento automático (fit bounds) — a mancha corresponde visivelmente ao território do município, permitindo a validação rápida.",
+        "Faixa de detalhes confirma: Maceió · Código IBGE 2704302 · Tipo de geometria Polygon · Centróide -9.5415688, -35.6868617.",
+        "O index do seletor é leve (nunca serializa o polígono); apenas o show do município selecionado carrega o GeoJSON via ST_AsGeoJSON — endpoint protegido por city-geometries.index/.show (guard manager)."
+      ],
+      "images": ["screenshots/ca15-mapa-geometria-maceio.png"]
+    },
+    {
+      "id": "CA16",
+      "title": "Rejeição de GeoJSON inválido sem registrar geometrias",
+      "status": "nav",
+      "gherkin": "Dado que carreguei um arquivo GeoJSON inválido ou sem as informações necessárias\n  para o processamento (não é FeatureCollection, Feature sem properties.id,\n  ou geometry de tipo não suportado)\nQuando o job de processamento executa a validação estrutural\nEntão a importação é rejeitada com status indicando falha\n  E uma mensagem explicativa é apresentada\n  E nenhuma geometria inválida é registrada na tabela de negócio",
+      "steps_html": "Upload de <code>invalido.geojson</code> (documento com <code>type: SomethingElse</code>) na camada <b>Geometrias Municipais</b>; processamento pelo worker da fila <code>geo</code>.",
+      "results": [
+        "Importação rejeitada: status Falhou, com a mensagem explicativa \"O GeoJSON deve ser um FeatureCollection (recebido: SomethingElse).\" exibida no detalhe.",
+        "Nenhuma geometria gravada: confirmado no banco que o lote rejeitado não possui registros em city_geometries (0 linhas para o geo_layer_import_id)."
+      ],
+      "images": ["screenshots/ca16-geojson-invalido-rejeitado.png"]
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Pest — suítes CityGeometry, GeoLayerImport, Process/SyncGeoLayerJob, Services/Geo): 108 testes, 407 asserções",
+    "file": "pest-geo.txt"
+  }
+}

@@ -1,0 +1,142 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — US-BENEF-01</title><style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  section.note { border:1px solid var(--line); border-left:4px solid #b06a00; border-radius:6px; padding:10px 14px; margin:10px 0; background:#fffdf7; font-size:13px; }
+  section.note h3 { margin:0 0 6px; font-size:13.5px; color:#8a5200; }
+  section.note p { margin:6px 0; }
+  section.note ul { margin:6px 0 6px 18px; padding:0; }
+  section.note pre { background:var(--bg); border:1px solid var(--line); border-radius:4px; padding:8px; overflow-x:auto; font-size:11px; white-space:pre-wrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style>
+<body><div class="wrap">
+<header class="cover"><h1>Relatório de Critérios de Aceite — US-BENEF-01</h1>
+<div class="sub">Épico HU-PRONT-BENEF (fase F5) · Tipos de benefício eventual no Painel de Administração Global</div>
+<div class="meta"><div><span>Gerado em:</span> 15/09/2026</div><div><span>História:</span> US-BENEF-01 — Manter os tipos de benefício eventual no Painel Global</div><div><span>Spec:</span> <code>.planning/specs/US-BENEF-01-tipos-de-beneficio-painel-global.md</code></div><div><span>Branch:</span> <code>feature/benef-prontuario-bloco-12</code></div><div><span>Commits (api/):</span> <code>3ea2b7b</code> · <code>a9a336d</code> · <code>3d88ee4</code> · <code>fd1768a</code> · <code>1ec4a12</code></div><div><span>Commits (admin/):</span> <code>626d860</code></div><div><span>Commits (e2e/):</span> a ser fixado pelo orquestrador junto com este dossiê</div><div><span>Ambiente:</span> Stack E2E Docker · API em :8090 · admin em :4173 · base recém-semeada</div><div><span>Perfil usado:</span> Administrador do Painel Global (guard <code>manager</code>, permissão <code>eventual-benefit-types.index</code>)</div><div><span>Ferramenta:</span> Playwright (Chromium) + Pest 4</div></div></header>
+<h2 style="border-top:none;padding-top:0">Resumo</h2>
+<p>Onze critérios de aceite (CA01–CA10, com o CA06b do tipo "Outros"). <strong>Seis evidenciados no navegador</strong> (CA01, CA02, CA04, CA05 e CA06/CA06b — cinco prints, um deles reaproveitado para dois critérios) e <strong>cinco cobertos pela suíte automatizada</strong> (CA03, CA07, CA09, CA10, e a recusa REAL de exclusão do CA08). A suíte fecha com <strong>34 testes e 150 asserções</strong>, entre invariantes de Model e testes de Feature do Painel Global. Os <strong>7 cenários Playwright</strong> passam contra base recém-semeada, sem tocar a massa usada pelos demais specs da fase. <strong>Nenhum critério em falha.</strong> O <strong>CA08 é o único critério atendido de forma parcial pela UI</strong> — ver Observações e ressalvas.</p>
+<table class="summary"><thead><tr><th>CA</th><th>Critério</th><th>Situação</th><th>Evidência</th></tr></thead>
+<tbody>
+<tr><td class="caid">CA01</td><td>Seis tipos disponíveis</td><td><span class="pill" style="background:#0a7d33">ATENDIDO</span></td><td>Print + Pest</td></tr>
+<tr><td class="caid">CA02</td><td>Regra de apuração visível em cada tipo</td><td><span class="pill" style="background:#0a7d33">ATENDIDO</span></td><td>Print + Pest</td></tr>
+<tr><td class="caid">CA03</td><td>Nenhum tipo sem contador</td><td><span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></td><td>Pest</td></tr>
+<tr><td class="caid">CA04</td><td>Campo adicional exigido no natalidade</td><td><span class="pill" style="background:#0a7d33">ATENDIDO</span></td><td>Print + Pest</td></tr>
+<tr><td class="caid">CA05</td><td>Campo adicional exigido no funeral</td><td><span class="pill" style="background:#0a7d33">ATENDIDO</span></td><td>Print + Pest</td></tr>
+<tr><td class="caid">CA06</td><td>Demais tipos sem campo adicional</td><td><span class="pill" style="background:#0a7d33">ATENDIDO</span></td><td>Print + Pest</td></tr>
+<tr><td class="caid">CA06b</td><td>O tipo "Outros" exige a observação</td><td><span class="pill" style="background:#0a7d33">ATENDIDO</span></td><td>Print + Pest</td></tr>
+<tr><td class="caid">CA07</td><td>Município não edita a lista</td><td><span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></td><td>Pest</td></tr>
+<tr><td class="caid">CA08</td><td>Item em uso não é excluído</td><td><span class="pill" style="background:#b06a00">ATENDIDO (PARCIAL UI + SUITE)</span></td><td>Print (afordância) + Pest (422 real)</td></tr>
+<tr><td class="caid">CA09</td><td>Item inativado continua contando no histórico</td><td><span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></td><td>Pest</td></tr>
+<tr><td class="caid">CA10</td><td>Alteração da regra de apuração auditada</td><td><span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></td><td>Pest</td></tr>
+</tbody></table>
+
+<section class="ca"><h2>CA01 — Seis tipos disponíveis <span class="pill" style="background:#0a7d33">ATENDIDO</span></h2><div class="gherkin"><p><strong>Dado</strong> que sou Administrador no Painel de Administração Global, <strong>quando</strong> eu consultar o cadastro de tipos de benefício eventual, <strong>então</strong> vejo os seis tipos do instrumento, com os códigos 1 a 6, e nenhum código foi renumerado.</p></div><div class="results"><ul><li>A listagem mostra exatamente <strong>seis</strong> linhas, uma para cada código do bloco 12 — nem mais, nem menos.</li><li>Verificado que nenhum código fora de <code>1</code>..<code>6</code> existe na tela (a suíte testou explicitamente a ausência de <code>0</code>, <code>7</code>, <code>8</code>, <code>9</code>, <code>10</code>).</li></ul></div><div class="evid"><figure><img src="screenshots/ca01-os-seis-tipos-aparecem-com-os-codigos-1-a-6-do-instrumento-s-listagem-seis-tipos.png" alt="Listagem com os seis tipos de benefício eventual, códigos 1 a 6"><figcaption>ca01-…-listagem-seis-tipos.png — Os seis tipos, com os códigos 1 a 6 do instrumento</figcaption></figure></div></section>
+
+<section class="ca"><h2>CA02 — Regra de apuração visível em cada tipo <span class="pill" style="background:#0a7d33">ATENDIDO</span></h2><div class="gherkin"><p><strong>Quando</strong> eu abrir cada tipo, <strong>então</strong> o auxílio natalidade consta com <code>remittance_counter = birth_assistance</code>, o auxílio funeral com <code>funeral_assistance</code>, a cesta básica com <code>food_assistance</code>, e kit de emergência, aluguel social e outros com <code>other_benefits</code>.</p></div><div class="results"><ul><li>A tela confere, <strong>item a item, os seis contadores</strong> — não uma amostra. Trocar o contador de um único tipo no cadastro global muda números declarados ao TCE-AL de todos os municípios, por isso o spec não amostra.</li><li>Contagem por rótulo: "Auxílio natalidade" e "Auxílio funeral" aparecem uma vez cada; "Auxílio alimentação" (a inferência do código 4, D10) aparece uma vez; "Outros benefícios" aparece três vezes (códigos 3, 5 e 6).</li></ul></div><div class="evid"><figure><img src="screenshots/ca02-a-regra-de-apuracao-do-leiaute-15-6-confere-item-a-item-na-l-matriz-contadores.png" alt="A matriz de contadores do leiaute 15.6, um badge por tipo"><figcaption>ca02-…-matriz-contadores.png — A regra de apuração de cada tipo, na própria linha</figcaption></figure></div></section>
+
+<section class="ca"><h2>CA03 — Nenhum tipo sem contador <span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></h2><div class="gherkin"><p><strong>Quando</strong> eu percorrer os seis tipos, <strong>então</strong> todos têm <code>remittance_counter</code> preenchido, e a coluna é <code>NOT NULL</code> no banco — item sem contador não pode existir.</p></div><div class="results"><ul><li>O teste de invariante prova que <code>remittance_counter</code> nunca é nulo nos seis registros semeados, e o teste de Feature prova que o banco recusa a tentativa de gravar a coluna vazia.</li></ul></div><div class="evid"><p class="noimg">Sem prova visual: critério verificado pela suíte automatizada (ver anexo).</p></div></section>
+
+<section class="ca"><h2>CA04 — Campo adicional exigido no natalidade <span class="pill" style="background:#0a7d33">ATENDIDO</span></h2><div class="gherkin"><p><strong>Quando</strong> eu abrir o tipo "Auxílio Natalidade", <strong>então</strong> ele consta com <code>requires_birth_registration = true</code>, e é o ÚNICO item com esse atributo.</p></div><div class="results"><ul><li>Na listagem, só a linha do código 1 traz o selo "Exige registro de nascimento" — verificado que o selo é <strong>exclusivo</strong> na tela inteira, não "o mais comum".</li><li>No detalhe (edição) do tipo, o toggle de registro de nascimento aparece ligado e o de CPF do falecido desligado — a mesma exclusividade mútua imposta no backend (RN03).</li></ul></div><div class="evid"><figure><img src="screenshots/ca04-so-o-tipo-1-exige-registro-de-nascimento-e-so-o-tipo-2-exige-detalhe-natalidade.png" alt="Detalhe do tipo Auxílio Natalidade, com o toggle de registro de nascimento ligado"><figcaption>ca04-…-detalhe-natalidade.png — O toggle de registro de nascimento ligado, o de CPF do falecido desligado</figcaption></figure></div></section>
+
+<section class="ca"><h2>CA05 — Campo adicional exigido no funeral <span class="pill" style="background:#0a7d33">ATENDIDO</span></h2><div class="gherkin"><p><strong>Quando</strong> eu abrir o tipo "Auxílio Funeral", <strong>então</strong> ele consta com <code>requires_deceased_cpf = true</code>, e é o ÚNICO item com esse atributo.</p></div><div class="results"><ul><li>Só a linha do código 2 traz o selo "Exige CPF do falecido" — exclusivo na tela inteira.</li><li>No detalhe do tipo, o toggle de CPF do falecido aparece ligado e o de registro de nascimento desligado.</li></ul></div><div class="evid"><figure><img src="screenshots/ca05-so-o-tipo-1-exige-registro-de-nascimento-e-so-o-tipo-2-exige-detalhe-funeral.png" alt="Detalhe do tipo Auxílio Funeral, com o toggle de CPF do falecido ligado"><figcaption>ca05-…-detalhe-funeral.png — O toggle de CPF do falecido ligado, o de registro de nascimento desligado</figcaption></figure></div></section>
+
+<section class="ca"><h2>CA06 — Demais tipos sem campo adicional <span class="pill" style="background:#0a7d33">ATENDIDO</span></h2><div class="gherkin"><p><strong>Quando</strong> eu abrir cesta básica, kit de emergência, aluguel social e outros, <strong>então</strong> nenhum deles exige registro de nascimento nem CPF de pessoa falecida.</p></div><div class="results"><ul><li>Verificado que os códigos 3, 4 e 5 não carregam badge condicional nenhuma — nem registro de nascimento, nem CPF do falecido, nem descrição.</li></ul></div><div class="evid"><figure><img src="screenshots/ca06-os-demais-tipos-nao-exigem-campo-adicional-e-so-o-tipo-6-exi-tipo-outros-exige-descricao.png" alt="Listagem mostrando o selo de observação exclusivo do tipo Outros"><figcaption>ca06-…-tipo-outros-exige-descricao.png — Os tipos 3, 4 e 5 sem badge condicional; o 6 com a observação</figcaption></figure></div></section>
+
+<section class="ca"><h2>CA06b — O tipo "Outros" exige a observação <span class="pill" style="background:#0a7d33">ATENDIDO</span></h2><div class="gherkin"><p><strong>Quando</strong> eu abrir o tipo "Outros" (código 6), <strong>então</strong> ele consta com <code>requires_description = true</code>, e é o único item com esse atributo.</p></div><div class="results"><ul><li>Só a linha do código 6 traz o selo "Exige descrição" — exclusivo na tela inteira, decisão do humano em 15/09/2026 (D05).</li></ul></div><div class="evid"><figure><img src="screenshots/ca06-os-demais-tipos-nao-exigem-campo-adicional-e-so-o-tipo-6-exi-tipo-outros-exige-descricao.png" alt="O selo de observação obrigatória, exclusivo do tipo Outros"><figcaption>ca06-…-tipo-outros-exige-descricao.png — O selo de observação, só no código 6</figcaption></figure></div></section>
+
+<section class="ca"><h2>CA07 — Município não edita a lista <span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></h2><div class="gherkin"><p><strong>Dado</strong> que sou Master no Painel do Tenant, <strong>quando</strong> eu procurar rota de escrita para tipos de benefício eventual, <strong>então</strong> ela não existe (404) — só há leitura.</p></div><div class="results"><ul><li>A suíte prova que toda rota de escrita rejeita token do guard <code>client</code>, e que a leitura compartilhada continua disponível para o mesmo guard — a ausência da rota de escrita sob <code>client.php</code> é a regra (D09).</li></ul></div><div class="evid"><p class="noimg">Sem prova visual: critério verificado pela suíte automatizada (ver anexo).</p></div></section>
+
+<section class="ca"><h2>CA08 — Item em uso não é excluído <span class="pill" style="background:#b06a00">ATENDIDO (PARCIAL UI + SUITE)</span></h2><div class="gherkin"><p><strong>Dado</strong> que o tipo "Cesta Básica" já foi usado em concessões, <strong>quando</strong> eu tentar excluí-lo, <strong>então</strong> recebo 422 com <code>error_code = eventual_benefit_type_in_use</code>, e a mensagem orienta a inativar.</p></div><div class="results"><ul><li><strong>Pela tela, este spec prova apenas o caminho seguro:</strong> a afordância de exclusão existe (o verbo não é escondido, RN05) e o diálogo de confirmação abre com o código e o nome corretos, sem confirmar a exclusão. O <code>DELETE</code> real <strong>não foi disparado no navegador.</strong></li><li>A recusa REAL de exclusão de tipo em uso (422 <code>eventual_benefit_type_in_use</code> + orientação de inativar) é verificada de ponta a ponta em <code>api/tests/Feature/Api/Manager/EventualBenefitTypeTest.php</code>.</li></ul></div><div class="evid"><figure><img src="screenshots/ca08-a-exclusao-oferece-a-afordancia-e-o-dialogo-de-confirmacao-s-dialogo-confirmacao-exclusao.png" alt="Diálogo de confirmação de exclusão, com o código e o nome do tipo, sem confirmar"><figcaption>ca08-…-dialogo-confirmacao-exclusao.png — O diálogo de confirmação aberto, sem disparar a exclusão real</figcaption></figure></div></section>
+
+<section class="ca"><h2>CA09 — Item inativado continua contando no histórico <span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></h2><div class="gherkin"><p><strong>Dado</strong> que inativei um tipo já usado, <strong>quando</strong> eu consultar a apuração do período em que ele foi usado, <strong>então</strong> as concessões registradas com ele continuam contando, e nenhuma query de apuração filtra <code>is_active</code>.</p></div><div class="results"><ul><li>Verificado que a listagem mantém o item inativado visível sem filtro de <code>is_active</code> — a mesma regra que a US-BENEF-03 usa na apuração.</li></ul></div><div class="evid"><p class="noimg">Sem prova visual: critério verificado pela suíte automatizada (ver anexo).</p></div></section>
+
+<section class="ca"><h2>CA10 — Alteração da regra de apuração auditada <span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></h2><div class="gherkin"><p><strong>Dado</strong> que alterei o <code>remittance_counter</code> de um tipo, <strong>quando</strong> eu consultar <code>activity_log</code>, <strong>então</strong> a alteração consta, com autor, data e o valor anterior.</p></div><div class="results"><ul><li>O teste audita a mudança de <code>remittance_counter</code> e confirma que o valor ANTERIOR fica registrado — é a evidência que permite ao TCE-AL rastrear quando um número já declarado mudou de origem.</li></ul></div><div class="evid"><p class="noimg">Sem prova visual: critério verificado pela suíte automatizada (ver anexo).</p></div></section>
+
+<h2>Observações e ressalvas</h2>
+<section class="note"><h3>⚠️ CA08 pela UI: a recusa real de exclusão não foi exercitada na tela</h3><p>O <code>E2ESeeder</code> não semeia nenhuma concessão em <code>family_eventual_benefits</code> — ou seja, hoje, para QUALQUER um dos seis tipos, a trava de uso responderia "não está em uso" e um <code>DELETE</code> de verdade teria sucesso (204), apagando um dos seis tipos usados pelos outros casos desta mesma suíte. Forçar a exclusão para "provar" o 422 seria o caminho inverso: sem uso real, ela não recusaria — apagaria massa. O spec do teste prova, honestamente, apenas o caminho sem risco: a afordância existe e o diálogo abre com os dados corretos, sem confirmar. O caminho real — 422 <code>eventual_benefit_type_in_use</code> e a orientação de inativar — está coberto de ponta a ponta por <code>EventualBenefitTypeTest</code> no backend.</p></section>
+<section class="note"><h3>Correção durante a fase: o CA08 nasceu parcial</h3><p>A trava de uso deste critério só ficou completa quando a tabela de concessões (US-BENEF-02) passou a existir de verdade na branch — antes disso, o guard de uso não tinha o que consultar. O CA08 foi fechado por completo no commit <code>fd1768a</code>, depois que <code>family_eventual_benefits</code> entrou.</p></section>
+<section class="note"><h3>Defeito corrigido: o seeder dos tipos não estava no ambiente de aceite</h3><p>O <code>EventualBenefitTypeSeeder</code> não estava registrado no <code>E2ESeeder</code> — o ambiente de aceite subia sem nenhum dos seis tipos, o que teria derrubado toda a suíte deste dossiê. Corrigido no commit <code>1ec4a12</code>.</p></section>
+
+<h2>Anexo I — Cobertura automatizada (Pest 4, filtro EventualBenefitType)</h2>
+<pre class="pest">  PASS  Tests\Unit\Models\EventualBenefitTypeTest
+  ✓ it has correct fillable, casts and defaults                          0.38s
+  ✓ it uses soft deletes, HasUuid, LogsActivity and resolves by uuid     0.03s
+  ✓ it is a GLOBAL lookup — never tenant-scoped (D01/RN04)               0.01s
+  ✓ it has no global scope of is_active — history/apuration never filte… 0.01s
+  ✓ it enforces unique code — even against soft-deleted rows (D06/RN01) 0.01s
+  ✓ it configures the activity log with ALL the audited fields, includi… 0.01s
+  ✓ it invariant 1 — remittance_counter is never null across the six se… 0.01s
+  ✓ it invariant 2 — the Store Form Request rejects both conditionals t… 0.01s
+  ✓ it invariant 2 — a single conditional true passes the Store Form Re… 0.01s
+  ✓ it invariant 2 — no seeded row ever has both conditionals true (D04… 0.01s
+  ✓ it invariant 3 — exactly one seeded type requires birth registratio… 0.01s
+  ✓ it invariant 4 — all four SiapBenefitCounter cases are reachable by… 0.01s
+
+  PASS  Tests\Feature\Api\Manager\EventualBenefitTypeTest
+  ✓ it lists the six types with codes 1..6, never renumbered (CA01)      0.05s
+  ✓ it matches each of the six types to the expected remittance counter… 0.03s
+  ✓ it has no type without remittance_counter, and the DB refuses a NUL… 0.02s
+  ✓ it flags birth assistance (code 1) as the ONLY type requiring birth… 0.02s
+  ✓ it flags funeral assistance (code 2) as the ONLY type requiring the… 0.02s
+  ✓ it keeps food, kit, rent assistance and other benefits WITHOUT any… 0.02s
+  ✓ it flags code 6 (Outros) as the ONLY type requiring the description… 0.01s
+  ✓ it rejects client-guard tokens on every write route — unauthenticat… 0.02s
+  ✓ it keeps the shared read alive for the client guard — the US-BENEF-… 0.02s
+  ✓ it refuses to delete a type in use with 422 eventual_benefit_type_i… 0.02s
+  ✓ it still soft deletes a type NOT referenced by any consumer (CA08)   0.02s
+  ✓ it refuses to delete a type referenced by a REAL concession, under… 0.03s
+  ✓ it still deletes an unreferenced type under the PRODUCTION consumer… 0.02s
+  ✓ it ignores a registered consumer whose table does not exist yet (Sc… 0.01s
+  ✓ it keeps an inactivated type visible without the is_active filter — 0.02s
+  ✓ it audits the change of remittance_counter with the PREVIOUS value… 0.02s
+  ✓ it rejects turning on the second conditional when the first is alre… 0.01s
+  ✓ it rejects sending both conditionals true in the same store request… 0.01s
+  ✓ it is a GLOBAL lookup — no tenant_id column, no BelongsToTenant tra… 0.01s
+  ✓ it blocks write without permission                                  0.02s
+  ✓ it gives the admin_operador read-only access — every write is 403 ( 0.97s
+  ✓ it lets the ADMIN role exercise all five abilities end to end (RN07… 0.97s
+
+  Tests:    34 passed (150 assertions)
+  Duration: 3.32s</pre>
+
+<h2>Anexo II — Cenários Playwright (admin, 7 cenários)</h2>
+<pre class="pest">[globalSetup] Rate-limiter cache do Laravel zerado.
+
+Running 7 tests using 2 workers
+
+[tenant-auth.setup] sessão de tenant pronta em /Users/binho/Projetos/esuas-all/e2e/.auth/tenant.json
+  ✓  2 [setup] › tests/tenant-auth.setup.ts:82:6 › autentica usuário do tenant (client) e propaga cookies para o api-client (1.6s)
+  ✓  1 [setup] › tests/auth.setup.ts:10:6 › autentica super admin (UI) e propaga cookies para o api-client (3.1s)
+  ✓  3 [chromium] › tests/lookups/eventual-benefit-types.spec.ts:170:7 › US-BENEF-01 · Tipos de Benefício Eventual (admin) › CA01 — os seis tipos aparecem com os códigos 1 a 6 do instrumento, sem renumeração (5.7s)
+  ✓  4 [chromium] › tests/lookups/eventual-benefit-types.spec.ts:209:7 › US-BENEF-01 · Tipos de Benefício Eventual (admin) › CA02 — a regra de apuração do leiaute 15.6 confere item a item na listagem (5.7s)
+  ✓  5 [chromium] › tests/lookups/eventual-benefit-types.spec.ts:236:7 › US-BENEF-01 · Tipos de Benefício Eventual (admin) › CA04/CA05 — só o tipo 1 exige registro de nascimento, e só o tipo 2 exige o CPF do falecido (9.6s)
+  ✓  6 [chromium] › tests/lookups/eventual-benefit-types.spec.ts:296:7 › US-BENEF-01 · Tipos de Benefício Eventual (admin) › CA06 — os demais tipos não exigem campo adicional, e só o tipo 6 exige a observação (5.7s)
+  ✓  7 [chromium] › tests/lookups/eventual-benefit-types.spec.ts:332:7 › US-BENEF-01 · Tipos de Benefício Eventual (admin) › CA08 — a exclusão oferece a afordância e o diálogo de confirmação, sem apagar massa do E2E (6.1s)
+
+  7 passed (37.2s)</pre>
+<footer>SigSUAS — eSUAS · Dossiê de aceite gerado a partir de execução real contra a stack E2E · US-BENEF-01 · o cadastro global do bloco 12</footer>
+</div></body></html>

@@ -1,0 +1,464 @@
+{
+    "_evidencia": {
+        "hu": "#10530 (US-SIAP-02)",
+        "criterio": "CA05",
+        "descricao": "Código de domínio fora da escala do Manual: pendência message_key=unit_type_unmapped indicando a unidade e ClassificacaoUnidadeSocial; resolution.scope=global — sem atalho de tenant, a orientação aponta o Painel de Administração Global. (Nota de contrato: no leiaute UnidadeSocial o kind segue record_incomplete; a natureza \"domínio sem correspondência\" é expressa pelo message_key e pelo escopo global do resolution — contrato validado na etapa 01.)",
+        "endpoint": "GET /api/client/siap-remittances/pre-check?exercise=2026&reference_month=8",
+        "dados": "FABRICADOS — nenhuma cópia de base real",
+        "mascaramento": "nome → \"Nome I. I.\" e CPF → 999.***.***-99, aplicados no artefato antes da gravação"
+    },
+    "payload": {
+        "data": {
+            "reference": {
+                "exercise": 2026,
+                "month": 8
+            },
+            "blocking": {
+                "can_generate": false,
+                "pendencies": [
+                    {
+                        "scope": "blocking",
+                        "kind": "record_incomplete",
+                        "field_name": "ClassificacaoUnidadeSocial",
+                        "subject_type": "social_unit",
+                        "subject_uuid": "078bebcb-81eb-4c1b-a14a-54aafbbf42d4",
+                        "subject_label": "CRAS Jardim das Acacias",
+                        "affected_count": 1,
+                        "message_key": "siap_remittance.pendency.unit_type_unmapped",
+                        "message": "The classification of this unit (ClassificacaoUnidadeSocial) has no counterpart in the SIAP table. The fix is made in the social unit types support register, in the Global Administration Panel. Until then, no remittance can be generated.",
+                        "blocks_entire_remittance": true,
+                        "affected_layouts": 11,
+                        "resolution": {
+                            "scope": "global",
+                            "resource": "social-unit-types",
+                            "requires_role": null,
+                            "subject_uuid": "078bebcb-81eb-4c1b-a14a-54aafbbf42d4"
+                        }
+                    }
+                ]
+            },
+            "layouts": [
+                {
+                    "name": "UnidadeSocial",
+                    "sort_order": 1,
+                    "file_name": "UnidadeSocial.xml",
+                    "outcome": "header_only",
+                    "record_count": 0,
+                    "skipped_count": 1,
+                    "pendencies": [
+                        {
+                            "scope": "blocking",
+                            "kind": "record_incomplete",
+                            "field_name": "ClassificacaoUnidadeSocial",
+                            "subject_type": "social_unit",
+                            "subject_uuid": "078bebcb-81eb-4c1b-a14a-54aafbbf42d4",
+                            "subject_label": "CRAS Jardim das Acacias",
+                            "affected_count": 1,
+                            "message_key": "siap_remittance.pendency.unit_type_unmapped",
+                            "message": "The classification of this unit (ClassificacaoUnidadeSocial) has no counterpart in the SIAP table. The fix is made in the social unit types support register, in the Global Administration Panel. Until then, no remittance can be generated.",
+                            "blocks_entire_remittance": true,
+                            "resolution": {
+                                "scope": "global",
+                                "resource": "social-unit-types",
+                                "requires_role": null,
+                                "subject_uuid": "078bebcb-81eb-4c1b-a14a-54aafbbf42d4"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "EntidadeSocial",
+                    "sort_order": 2,
+                    "file_name": "EntidadeSocial.xml",
+                    "outcome": "header_only",
+                    "record_count": 0,
+                    "skipped_count": 0,
+                    "pendencies": []
+                },
+                {
+                    "name": "EquipamentoUnidade",
+                    "sort_order": 3,
+                    "file_name": "EquipamentoUnidade.xml",
+                    "outcome": "header_only",
+                    "record_count": 0,
+                    "skipped_count": 0,
+                    "pendencies": []
+                },
+                {
+                    "name": "EstruturaUnidadeSocial",
+                    "sort_order": 4,
+                    "file_name": "EstruturaUnidadeSocial.xml",
+                    "outcome": "header_only",
+                    "record_count": 0,
+                    "skipped_count": 0,
+                    "pendencies": []
+                },
+                {
+                    "name": "ProfissionalSocial",
+                    "sort_order": 5,
+                    "file_name": "ProfissionalSocial.xml",
+                    "outcome": "header_only",
+                    "record_count": 0,
+                    "skipped_count": 0,
+                    "pendencies": []
+                },
+                {
+                    "name": "RegistrosUnidade",
+                    "sort_order": 6,
+                    "file_name": "RegistrosUnidade.xml",
+                    "outcome": "header_only",
+                    "record_count": 0,
+                    "skipped_count": 0,
+                    "pendencies": [
+                        {
+                            "scope": "layout",
+                            "kind": "no_data_source",
+                            "field_name": null,
+                            "subject_type": null,
+                            "subject_uuid": null,
+                            "subject_label": null,
+                            "affected_count": 1,
+                            "message_key": "siap_remittance.pendency.no_data_source",
+                            "message": "This layout depends on a service-delivery module that does not exist in the system yet.",
+                            "blocks_entire_remittance": false,
+                            "resolution": {
+                                "scope": "unknown",
+                                "resource": "unknown",
+                                "requires_role": null,
+                                "subject_uuid": null
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "NovasFamilias",
+                    "sort_order": 7,
+                    "file_name": "NovasFamilias.xml",
+                    "outcome": "header_only",
+                    "record_count": 0,
+                    "skipped_count": 0,
+                    "pendencies": [
+                        {
+                            "scope": "layout",
+                            "kind": "no_data_source",
+                            "field_name": null,
+                            "subject_type": null,
+                            "subject_uuid": null,
+                            "subject_label": null,
+                            "affected_count": 1,
+                            "message_key": "siap_remittance.pendency.no_data_source",
+                            "message": "This layout depends on a service-delivery module that does not exist in the system yet.",
+                            "blocks_entire_remittance": false,
+                            "resolution": {
+                                "scope": "unknown",
+                                "resource": "unknown",
+                                "requires_role": null,
+                                "subject_uuid": null
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "SCFV",
+                    "sort_order": 8,
+                    "file_name": "SCFV.xml",
+                    "outcome": "header_only",
+                    "record_count": 0,
+                    "skipped_count": 0,
+                    "pendencies": [
+                        {
+                            "scope": "layout",
+                            "kind": "no_data_source",
+                            "field_name": null,
+                            "subject_type": null,
+                            "subject_uuid": null,
+                            "subject_label": null,
+                            "affected_count": 1,
+                            "message_key": "siap_remittance.pendency.no_data_source",
+                            "message": "This layout depends on a service-delivery module that does not exist in the system yet.",
+                            "blocks_entire_remittance": false,
+                            "resolution": {
+                                "scope": "unknown",
+                                "resource": "unknown",
+                                "requires_role": null,
+                                "subject_uuid": null
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "CapacitacaoDivulgacao",
+                    "sort_order": 9,
+                    "file_name": "CapacitacaoDivulgacao.xml",
+                    "outcome": "header_only",
+                    "record_count": 0,
+                    "skipped_count": 0,
+                    "pendencies": [
+                        {
+                            "scope": "layout",
+                            "kind": "no_data_source",
+                            "field_name": null,
+                            "subject_type": null,
+                            "subject_uuid": null,
+                            "subject_label": null,
+                            "affected_count": 1,
+                            "message_key": "siap_remittance.pendency.no_data_source",
+                            "message": "This layout depends on a service-delivery module that does not exist in the system yet.",
+                            "blocks_entire_remittance": false,
+                            "resolution": {
+                                "scope": "unknown",
+                                "resource": "unknown",
+                                "requires_role": null,
+                                "subject_uuid": null
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "UsuarioRede",
+                    "sort_order": 10,
+                    "file_name": "UsuarioRede.xml",
+                    "outcome": "header_only",
+                    "record_count": 0,
+                    "skipped_count": 0,
+                    "pendencies": [
+                        {
+                            "scope": "layout",
+                            "kind": "field_without_source",
+                            "field_name": "NIS",
+                            "subject_type": null,
+                            "subject_uuid": null,
+                            "subject_label": null,
+                            "affected_count": 1,
+                            "message_key": "siap_remittance.pendency.field_without_source",
+                            "message": "The NIS field is required by SIAP but is not recorded in the system yet.",
+                            "blocks_entire_remittance": false,
+                            "resolution": {
+                                "scope": "unknown",
+                                "resource": "unknown",
+                                "requires_role": null,
+                                "subject_uuid": null
+                            }
+                        },
+                        {
+                            "scope": "layout",
+                            "kind": "field_without_source",
+                            "field_name": "ValorRenda",
+                            "subject_type": null,
+                            "subject_uuid": null,
+                            "subject_label": null,
+                            "affected_count": 1,
+                            "message_key": "siap_remittance.pendency.field_without_source",
+                            "message": "The ValorRenda field is required by SIAP but is not recorded in the system yet.",
+                            "blocks_entire_remittance": false,
+                            "resolution": {
+                                "scope": "unknown",
+                                "resource": "unknown",
+                                "requires_role": null,
+                                "subject_uuid": null
+                            }
+                        },
+                        {
+                            "scope": "layout",
+                            "kind": "field_without_source",
+                            "field_name": "Alfabetizado",
+                            "subject_type": null,
+                            "subject_uuid": null,
+                            "subject_label": null,
+                            "affected_count": 1,
+                            "message_key": "siap_remittance.pendency.field_without_source",
+                            "message": "The Alfabetizado field is required by SIAP but is not recorded in the system yet.",
+                            "blocks_entire_remittance": false,
+                            "resolution": {
+                                "scope": "unknown",
+                                "resource": "unknown",
+                                "requires_role": null,
+                                "subject_uuid": null
+                            }
+                        },
+                        {
+                            "scope": "layout",
+                            "kind": "field_without_source",
+                            "field_name": "SituacaoEscolar",
+                            "subject_type": null,
+                            "subject_uuid": null,
+                            "subject_label": null,
+                            "affected_count": 1,
+                            "message_key": "siap_remittance.pendency.field_without_source",
+                            "message": "The SituacaoEscolar field is required by SIAP but is not recorded in the system yet.",
+                            "blocks_entire_remittance": false,
+                            "resolution": {
+                                "scope": "unknown",
+                                "resource": "unknown",
+                                "requires_role": null,
+                                "subject_uuid": null
+                            }
+                        },
+                        {
+                            "scope": "layout",
+                            "kind": "field_without_source",
+                            "field_name": "DoencaGrave",
+                            "subject_type": null,
+                            "subject_uuid": null,
+                            "subject_label": null,
+                            "affected_count": 1,
+                            "message_key": "siap_remittance.pendency.field_without_source",
+                            "message": "The DoencaGrave field is required by SIAP but is not recorded in the system yet.",
+                            "blocks_entire_remittance": false,
+                            "resolution": {
+                                "scope": "unknown",
+                                "resource": "unknown",
+                                "requires_role": null,
+                                "subject_uuid": null
+                            }
+                        },
+                        {
+                            "scope": "layout",
+                            "kind": "field_without_source",
+                            "field_name": "SaudeDeficiencia",
+                            "subject_type": null,
+                            "subject_uuid": null,
+                            "subject_label": null,
+                            "affected_count": 1,
+                            "message_key": "siap_remittance.pendency.field_without_source",
+                            "message": "The SaudeDeficiencia field is required by SIAP but is not recorded in the system yet.",
+                            "blocks_entire_remittance": false,
+                            "resolution": {
+                                "scope": "unknown",
+                                "resource": "unknown",
+                                "requires_role": null,
+                                "subject_uuid": null
+                            }
+                        },
+                        {
+                            "scope": "layout",
+                            "kind": "field_without_source",
+                            "field_name": "Escolaridade",
+                            "subject_type": null,
+                            "subject_uuid": null,
+                            "subject_label": null,
+                            "affected_count": 1,
+                            "message_key": "siap_remittance.pendency.field_without_source",
+                            "message": "The Escolaridade field is required by SIAP but is not recorded in the system yet.",
+                            "blocks_entire_remittance": false,
+                            "resolution": {
+                                "scope": "unknown",
+                                "resource": "unknown",
+                                "requires_role": null,
+                                "subject_uuid": null
+                            }
+                        },
+                        {
+                            "scope": "layout",
+                            "kind": "field_without_source",
+                            "field_name": "ZonaResidencia",
+                            "subject_type": null,
+                            "subject_uuid": null,
+                            "subject_label": null,
+                            "affected_count": 1,
+                            "message_key": "siap_remittance.pendency.field_without_source",
+                            "message": "The ZonaResidencia field is required by SIAP but is not recorded in the system yet.",
+                            "blocks_entire_remittance": false,
+                            "resolution": {
+                                "scope": "unknown",
+                                "resource": "unknown",
+                                "requires_role": null,
+                                "subject_uuid": null
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Familia",
+                    "sort_order": 11,
+                    "file_name": "Familia.xml",
+                    "outcome": "header_only",
+                    "record_count": 0,
+                    "skipped_count": 0,
+                    "pendencies": [
+                        {
+                            "scope": "layout",
+                            "kind": "field_without_source",
+                            "field_name": "TipoResidencia",
+                            "subject_type": null,
+                            "subject_uuid": null,
+                            "subject_label": null,
+                            "affected_count": 1,
+                            "message_key": "siap_remittance.pendency.field_without_source",
+                            "message": "The TipoResidencia field is required by SIAP but is not recorded in the system yet.",
+                            "blocks_entire_remittance": false,
+                            "resolution": {
+                                "scope": "unknown",
+                                "resource": "unknown",
+                                "requires_role": null,
+                                "subject_uuid": null
+                            }
+                        },
+                        {
+                            "scope": "layout",
+                            "kind": "field_without_source",
+                            "field_name": "DomicilioAreaRisco",
+                            "subject_type": null,
+                            "subject_uuid": null,
+                            "subject_label": null,
+                            "affected_count": 1,
+                            "message_key": "siap_remittance.pendency.field_without_source",
+                            "message": "The DomicilioAreaRisco field is required by SIAP but is not recorded in the system yet.",
+                            "blocks_entire_remittance": false,
+                            "resolution": {
+                                "scope": "unknown",
+                                "resource": "unknown",
+                                "requires_role": null,
+                                "subject_uuid": null
+                            }
+                        },
+                        {
+                            "scope": "layout",
+                            "kind": "field_without_source",
+                            "field_name": "DomicilioVulnerabilidade",
+                            "subject_type": null,
+                            "subject_uuid": null,
+                            "subject_label": null,
+                            "affected_count": 1,
+                            "message_key": "siap_remittance.pendency.field_without_source",
+                            "message": "The DomicilioVulnerabilidade field is required by SIAP but is not recorded in the system yet.",
+                            "blocks_entire_remittance": false,
+                            "resolution": {
+                                "scope": "unknown",
+                                "resource": "unknown",
+                                "requires_role": null,
+                                "subject_uuid": null
+                            }
+                        },
+                        {
+                            "scope": "layout",
+                            "kind": "field_without_source",
+                            "field_name": "Especificidades",
+                            "subject_type": null,
+                            "subject_uuid": null,
+                            "subject_label": null,
+                            "affected_count": 1,
+                            "message_key": "siap_remittance.pendency.field_without_source",
+                            "message": "The Especificidades field is required by SIAP but is not recorded in the system yet.",
+                            "blocks_entire_remittance": false,
+                            "resolution": {
+                                "scope": "unknown",
+                                "resource": "unknown",
+                                "requires_role": null,
+                                "subject_uuid": null
+                            }
+                        }
+                    ]
+                }
+            ],
+            "summary": {
+                "layout_count": 11,
+                "record_count": 0,
+                "blocking_pendency_count": 1,
+                "informative_pendency_count": 0,
+                "layout_pendency_count": 16
+            }
+        }
+    },
+    "mensagem_pt_br": "A classificação desta unidade (:field) não corresponde a nenhum tipo previsto pelo SIAP. O ajuste é feito no cadastro de apoio de tipos de unidade, no Painel de Administração Global. Enquanto isso, nenhuma remessa pode ser gerada."
+}

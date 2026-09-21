@@ -1,0 +1,177 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — US-SCFV-01</title><style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  section.note { border:1px solid var(--line); border-left:4px solid #b06a00; border-radius:6px; padding:10px 14px; margin:10px 0; background:#fffdf7; font-size:13px; }
+  section.note h3 { margin:0 0 6px; font-size:13.5px; color:#8a5200; }
+  section.note p { margin:6px 0; }
+  section.note ul { margin:6px 0 6px 18px; padding:0; }
+  section.note pre { background:var(--bg); border:1px solid var(--line); border-radius:4px; padding:8px; overflow-x:auto; font-size:11px; white-space:pre-wrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style>
+<body><div class="wrap">
+<header class="cover"><h1>Relatório de Critérios de Aceite — US-SCFV-01</h1>
+<div class="sub">Épico HU-PRONT-SCFV (fase F4) · Domínios de participação do bloco 16 no Painel de Administração Global</div>
+<div class="meta"><div><span>Gerado em:</span> 09/09/2026</div><div><span>História:</span> US-SCFV-01 — Manter os domínios de participação no Painel Global</div><div><span>Spec:</span> <code>.planning/specs/US-SCFV-01-dominios-de-participacao-painel-global.md</code></div><div><span>Branch:</span> <code>feature/scfv-prontuario-bloco-16</code>, a partir de <code>feature/acomp-prontuario-bloco-24</code></div><div><span>Commits (api/):</span> <code>adda72a</code> · <code>2ee21c5</code> · <code>e511988</code></div><div><span>Commits (admin/):</span> <code>afd658d</code> · <code>2e17c26</code></div><div><span>Commits (e2e/):</span> <code>e80b8a4</code></div><div><span>Ambiente:</span> Stack E2E Docker · API em :8090 · admin (vite preview) em :4173 · base <code>esuas_e2e</code> recém-semeada</div><div><span>Perfil usado:</span> Administrador (<code>RoleCode ADMIN</code>, guard <code>manager</code>) — Painel de Administração Global</div><div><span>Ferramenta:</span> Playwright (Chromium) + Pest 4</div></div></header>
+<h2 style="border-top:none;padding-top:0">Resumo</h2>
+<p>Dez critérios de aceite, <strong>todos atendidos</strong>. Seis evidenciados no navegador (CA01, CA02, CA03, CA04, CA05 e CA06, com quatro prints) e quatro cobertos pela suíte automatizada (CA07, CA08, CA09 e CA10). A suíte do domínio de participação fecha com <strong>177 testes e 960 asserções</strong>, e os 4 cenários Playwright passam contra base recém-semeada. A ressalva que este dossiê trazia na CA08 — o guard de uso não tinha o que contar antes da US-SCFV-02 — foi fechada com prova de ponta a ponta; ver a própria CA08 e as ressalvas.</p>
+<table class="summary"><thead><tr><th>CA</th><th>Critério</th><th>Situação</th><th>Evidência</th></tr></thead>
+<tbody><tr><td class="caid">CA01</td><td>Lista de serviços disponível, com os códigos do instrumento</td><td><span class="pill" style="background:#0a7d33">ATENDIDO</span></td><td>Print + Pest</td></tr><tr><td class="caid">CA02</td><td>Item de SCFV para adultos identificado como extensão</td><td><span class="pill" style="background:#0a7d33">ATENDIDO</span></td><td>Print + Pest</td></tr><tr><td class="caid">CA03</td><td>Atributo de grupo correto em cada item</td><td><span class="pill" style="background:#0a7d33">ATENDIDO</span></td><td>Print + Pest</td></tr><tr><td class="caid">CA04</td><td>Atributo de SCFV correto em cada item</td><td><span class="pill" style="background:#0a7d33">ATENDIDO</span></td><td>Print + Pest</td></tr><tr><td class="caid">CA05</td><td>Atributo de SCFV para idosos exclusivo</td><td><span class="pill" style="background:#0a7d33">ATENDIDO</span></td><td>Print + Pest</td></tr><tr><td class="caid">CA06</td><td>Locais de realização com os códigos do instrumento</td><td><span class="pill" style="background:#0a7d33">ATENDIDO</span></td><td>Print + Pest</td></tr><tr><td class="caid">CA07</td><td>Município não edita as listas</td><td><span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></td><td>Pest + prova estrutural</td></tr><tr><td class="caid">CA08</td><td>Item em uso não é excluído</td><td><span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></td><td>Pest (guard real + recusa)</td></tr><tr><td class="caid">CA09</td><td>Item inativado continua contando no histórico</td><td><span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></td><td>Pest</td></tr><tr><td class="caid">CA10</td><td>Alteração de atributo de contagem auditada</td><td><span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></td><td>Pest</td></tr></tbody></table>
+<section class="ca"><h2>CA01 — Lista de serviços disponível, com os códigos do instrumento <span class="pill" style="background:#0a7d33">ATENDIDO</span></h2><div class="gherkin"><p><strong>Dado</strong> que sou Administrador no Painel Global, <strong>quando</strong> consulto o cadastro de serviços, <strong>então</strong> vejo os oito itens com os códigos 1 a 6, 99 e 900, e o salto entre o 6 e o 99 é preservado.</p></div><div class="results"><ul><li>Os oito itens conferidos <strong>um a um</strong> na tela, por código.</li><li>Verificado, no sentido inverso, que os códigos <strong>7, 8 e 10 não existem</strong> — a lista não é renumerada e o salto é parte da regra.</li><li><code>code</code> é <code>string</code> e imutável após a criação, garantido também no Form Request.</li></ul></div><div class="evid"><figure><img src="screenshots/scfv01-a-oito-servicos.png" alt="Os oito serviços com os códigos do instrumento"><figcaption>scfv01-a-oito-servicos.png — Os oito serviços com os códigos do instrumento</figcaption></figure></div></section><section class="ca"><h2>CA02 — Item de SCFV para adultos identificado como extensão <span class="pill" style="background:#0a7d33">ATENDIDO</span></h2><div class="gherkin"><p><strong>Dado</strong> que consulto o cadastro, <strong>quando</strong> abro o item de SCFV para adultos, <strong>então</strong> ele consta marcado como extensão posterior ao instrumento de 2013 e é distinguível dos sete de origem no MDS.</p></div><div class="results"><ul><li>O selo aparece no item de código <code>900</code> e em <strong>nenhum</strong> dos sete que vêm do MDS — verificado nos dois sentidos.</li><li>É o <strong>único</strong> da lista inteira com o selo.</li><li>A marcação é o que torna a reconciliação identificável se o MDS publicar versão com código próprio (risco R4 do épico).</li></ul></div><div class="evid"><figure><img src="screenshots/scfv01-b-selo-extensao.png" alt="O item 900 como única extensão ao instrumento"><figcaption>scfv01-b-selo-extensao.png — O item 900 como única extensão ao instrumento</figcaption></figure></div></section><section class="ca"><h2>CA03 — Atributo de grupo correto em cada item <span class="pill" style="background:#0a7d33">ATENDIDO</span></h2><div class="gherkin"><p><strong>Quando</strong> abro cada item, <strong>então</strong> os três SCFV e os grupos do PAIF e do PAEFI integram a noção de grupo, e os programas não continuados, os de outras políticas e "outros" não integram.</p></div><div class="results"><ul><li>Matriz conferida <strong>item a item na tela</strong>, não apenas no banco.</li><li>Os itens sem nenhum contador exibem selo próprio dizendo isso, em vez de ficarem visualmente vazios — a ausência é declarada.</li></ul></div><div class="evid"><figure><img src="screenshots/scfv01-c-matriz-atributos.png" alt="A matriz dos três atributos, item a item"><figcaption>scfv01-c-matriz-atributos.png — A matriz dos três atributos, item a item</figcaption></figure></div></section><section class="ca"><h2>CA04 — Atributo de SCFV correto em cada item <span class="pill" style="background:#0a7d33">ATENDIDO</span></h2><div class="gherkin"><p><strong>Quando</strong> abro cada item, <strong>então</strong> apenas os três SCFV constam como SCFV para efeito das faixas etárias, e os grupos do PAIF e do PAEFI não constam.</p></div><div class="results"><ul><li>Verificado explicitamente que os códigos <code>3</code> e <code>4</code> são <strong>grupo sem ser SCFV</strong>.</li><li>⚠️ É essa distinção que mantém os quatro contadores de faixa etária fora dos grupos do PAIF e do PAEFI — <strong>interpretação da redação do Manual</strong>, ver ressalvas.</li></ul></div><div class="evid"><figure><img src="screenshots/scfv01-c-matriz-atributos.png" alt="PAIF e PAEFI: grupo, mas não SCFV"><figcaption>scfv01-c-matriz-atributos.png — PAIF e PAEFI: grupo, mas não SCFV</figcaption></figure></div></section><section class="ca"><h2>CA05 — Atributo de SCFV para idosos exclusivo <span class="pill" style="background:#0a7d33">ATENDIDO</span></h2><div class="gherkin"><p><strong>Quando</strong> abro o item de SCFV para idosos, <strong>então</strong> ele é o único marcado como SCFV para idosos.</p></div><div class="results"><ul><li>Verificado que existe <strong>exatamente um</strong> item com o atributo, na lista inteira.</li><li>É o que sustenta a natureza do contador de idosos, que é restrito <strong>pelo serviço</strong> e não pela idade.</li><li>A invariante <code>elderly ⟹ scfv ⟹ group</code> é validada no Form Request e coberta por teste Unit.</li></ul></div><div class="evid"><figure><img src="screenshots/scfv01-c-matriz-atributos.png" alt="Exatamente um item de SCFV para idosos"><figcaption>scfv01-c-matriz-atributos.png — Exatamente um item de SCFV para idosos</figcaption></figure></div></section><section class="ca"><h2>CA06 — Locais de realização com os códigos do instrumento <span class="pill" style="background:#0a7d33">ATENDIDO</span></h2><div class="gherkin"><p><strong>Quando</strong> abro a lista de locais, <strong>então</strong> vejo os cinco locais com os códigos 1 a 4 e 9.</p></div><div class="results"><ul><li>Os cinco conferidos por código, com a ausência dos códigos 5 a 8 verificada — o salto 4 → 9 também é do instrumento.</li><li>O selo de cada local diz a <strong>consequência</strong>, não apenas o estado: "exige identificação do local" é o que a US-SCFV-02 vai impor.</li><li>Apenas o código <code>1</code> é a própria unidade.</li></ul></div><div class="evid"><figure><img src="screenshots/scfv01-d-cinco-locais.png" alt="Os cinco locais e a consequência de cada um"><figcaption>scfv01-d-cinco-locais.png — Os cinco locais e a consequência de cada um</figcaption></figure></div></section><section class="ca"><h2>CA07 — Município não edita as listas <span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></h2><div class="gherkin"><p><strong>Dado</strong> que sou Master no Painel do Tenant, <strong>quando</strong> procuro onde alterar serviços ou locais, <strong>então</strong> a ação não existe para mim.</p></div><div class="results"><ul><li>Prova <strong>estrutural</strong>: <code>routes/api/client.php</code> tem <strong>zero</strong> ocorrências destes recursos — a ausência é a regra.</li><li>O tenant consome as duas listas apenas por rotas de <strong>leitura</strong> compartilhadas.</li></ul></div><div class="evid"><p class="noimg">Sem prova visual: critério verificado pela suíte automatizada (ver anexo).</p></div></section><section class="ca"><h2>CA08 — Item em uso não é excluído <span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></h2><div class="gherkin"><p><strong>Dado</strong> que o item "SCFV para idosos" já foi usado em participações, <strong>quando</strong> tento excluí-lo, <strong>então</strong> a exclusão é recusada e o sistema indica que ele pode ser inativado.</p></div><div class="results"><ul><li>O <code>DELETE</code> responde <strong>422</strong> com <code>error_code</code>, e as mensagens em português e em inglês citam a inativação — a recusa orienta, não apenas nega.</li><li>O guard conta uso em <code>family_member_participations</code>, tabela que nasceu na <strong>US-SCFV-02</strong>. O registro de consumidores aponta para ela nas duas pontas do domínio, serviço e local.</li><li><strong>A ressalva desta CA foi fechada.</strong> Quando este dossiê foi gerado, a tabela consumidora ainda não existia e a prova ficava vacuamente verdadeira. Com a US-SCFV-02 entregue, o critério passou a ter prova de ponta a ponta: uma participação <strong>real</strong> na base, o guard <strong>real</strong> (sem substituto de teste) e a recusa do <code>DELETE</code> nos dois itens envolvidos — o serviço e o local. Verificado por mutação: esvaziar o registro de consumidores faz o teste falhar.</li><li>Nada é excluído, nem por remoção lógica: o histórico do período depende de as duas linhas continuarem existindo. O guard também conta participação <strong>cancelada</strong> e removida logicamente, porque a linha do histórico continua apontando para o item.</li></ul></div><div class="evid"><p class="noimg">Sem prova visual: critério verificado pela suíte automatizada (ver anexo).</p></div></section><section class="ca"><h2>CA09 — Item inativado continua contando no histórico <span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></h2><div class="gherkin"><p><strong>Dado</strong> que inativei um item já usado, <strong>quando</strong> consulto a apuração do período, <strong>então</strong> as participações registradas com ele continuam contando.</p></div><div class="results"><ul><li>Nenhuma consulta de histórico filtra <code>is_active</code> — inativar não reescreve o passado.</li><li>O item inativado permanece na listagem completa e sai apenas do seletor de novos registros.</li></ul></div><div class="evid"><p class="noimg">Sem prova visual: critério verificado pela suíte automatizada (ver anexo).</p></div></section><section class="ca"><h2>CA10 — Alteração de atributo de contagem auditada <span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></h2><div class="gherkin"><p><strong>Dado</strong> que alterei o atributo de grupo de um item, <strong>quando</strong> consulto a trilha, <strong>então</strong> a alteração consta com autor e data.</p></div><div class="results"><ul><li>Coberto por teste, com o <strong>valor anterior</strong> registrado.</li><li>É o evento mais sensível deste cadastro: alterar um atributo muda números <strong>já declarados</strong> ao TCE-AL, em todos os municípios.</li></ul></div><div class="evid"><p class="noimg">Sem prova visual: critério verificado pela suíte automatizada (ver anexo).</p></div></section>
+<h2>Observações e ressalvas</h2>
+<section class="note"><h3>⚠️ Uma interpretação que muda quatro contadores</h3><p>Os grupos do PAIF e do PAEFI foram semeados como <b>grupo sem ser SCFV</b> (<code>counts_as_group = true</code>, <code>counts_as_scfv = false</code>). É <b>interpretação da redação do Manual</b>, não regra explícita nele: o leiaute restringe as faixas etárias a Serviços de Convivência.</p><p><b>Se o TCE-AL entender que grupo do PAIF também é serviço de convivência para efeito de contagem, os quatro contadores de faixa etária aumentam.</b> A correção, se vier, é um <code>UPDATE</code> em duas linhas do cadastro — nenhuma migration, nenhum código. Foi para isso que a regra foi posta no dado.</p></section><section class="note"><h3>O item que não vem do instrumento</h3><p>O leiaute exige adultos de 18 a 59 anos em SCFV; o instrumento é de 2013 e a expansão do serviço a essa faixa veio em 2014. O item foi criado por decisão do PO e nasce marcado como extensão. É <b>seguro porque nenhum código deste cadastro atravessa para a remessa</b> — o 15.8 transmite apenas contagens.</p><p>Adotado o código <code>900</code>, com a faixa <code>9xx</code> reservada a extensões do produto: não usa <code>7</code> nem <code>98</code>, que poderiam colidir se o MDS estender o domínio.</p></section><section class="note"><h3>Ressalva de processo</h3><p>O executor do lote de CRUD <b>morreu por estouro de contexto</b> (148k tokens) antes de commitar. O trabalho estava íntegro na working tree, inclusive os testes; o orquestrador inventariou, verificou com evidência de comando e commitou. Nenhum trabalho foi perdido — mas o padrão já se repetiu quatro vezes neste projeto e justifica manter o fatiamento em lotes com commit.</p></section><section class="note"><h3>O que este dossiê não prova</h3><ul><li><b>CA08 na tela</b> — o critério está atendido e provado de ponta a ponta na suíte, mas segue sem captura de tela: encenar a recusa exigiria uma participação real na base de demonstração, e o gesto de tentar excluir apagaria massa usada por outros cenários. A ação de conferência que este dossiê havia registrado <b>foi cumprida</b> — ver a CA08.</li><li>O consumo das listas pelo Painel do Tenant — é a US-SCFV-02.</li><li>Os contadores do leiaute 15.8 — é a US-SCFV-03; esta HU define as regras, não faz a conta.</li></ul></section>
+<h2>Anexo I — Cobertura automatizada (Pest 4, --filter=Participation)</h2><pre class="pest">PASS  Tests\Unit\Models\SocialEntityTest
+  ✓ it has suasParticipationType relationship                            0.01s  
+
+   PASS  Tests\Unit\Models\SuasParticipationTypeTest
+  ✓ it has correct fillable attributes                                   0.02s  
+  ✓ it defaults is_active to true
+  ✓ it casts is_active to boolean
+  ✓ it uses soft deletes
+  ✓ it uses HasUuid trait
+  ✓ it uses LogsActivity trait
+  ✓ it defines socialEntities relationship as HasMany
+  ✓ it configures activity log with name suas_participation_type and dirty-only logging
+
+   PASS  Tests\Unit\ParticipationDomainsSeedTest
+  ✓ it semeia exatamente os oito servicos do bloco 16, na ordem do inst… 0.40s  
+  ✓ it semeia cada servico com o nome e os atributos exatos da matriz d… 0.02s  
+  ✓ it semeia cada servico com o nome e os atributos exatos da matriz d… 0.02s  
+  ✓ it semeia cada servico com o nome e os atributos exatos da matriz d… 0.02s  
+  ✓ it semeia cada servico com o nome e os atributos exatos da matriz d… 0.02s  
+  ✓ it semeia cada servico com o nome e os atributos exatos da matriz d… 0.02s  
+  ✓ it semeia cada servico com o nome e os atributos exatos da matriz d… 0.02s  
+  ✓ it semeia cada servico com o nome e os atributos exatos da matriz d… 0.02s  
+  ✓ it semeia cada servico com o nome e os atributos exatos da matriz d… 0.02s  
+  ✓ it semeia exatamente os cinco locais de realizacao, com os codigos…  0.02s  
+  ✓ it semeia cada local com o nome e o is_own_unit exatos da matriz do… 0.02s  
+  ✓ it semeia cada local com o nome e o is_own_unit exatos da matriz do… 0.02s  
+  ✓ it semeia cada local com o nome e o is_own_unit exatos da matriz do… 0.02s  
+  ✓ it semeia cada local com o nome e o is_own_unit exatos da matriz do… 0.02s  
+  ✓ it semeia cada local com o nome e o is_own_unit exatos da matriz do… 0.02s  
+  ✓ it marca is_own_unit em exatamente um local — o codigo 1 (RN05/§4.2… 0.02s  
+  ✓ it marca counts_as_scfv_elderly em exatamente um servico — o codigo… 0.02s  
+  ✓ it respeita a invariante elderly ⟹ scfv ⟹ group em todas as linhas   0.02s  
+  ✓ it marca requires_description em exatamente um servico — o codigo 9… 0.02s  
+  ✓ it preserva o salto 6 → 99 e marca is_instrument_extension so no 90… 0.03s  
+  ✓ it preserva o salto 4 → 9 dos locais (D05/RN05)                      0.02s  
+  ✓ it e idempotente: rodar duas vezes nao duplica nem renumera          0.02s  
+  ✓ it nao sobrescreve a inativacao feita pelo Administrador             0.02s  
+  ✓ it nao tem tenant_id em nenhuma das duas tabelas — sao lookups glob… 0.01s  
+  ✓ it nao aplica BelongsToTenant nos dois Models                        0.01s  
+  ✓ it aplica LogsActivity nos dois Models e audita os tres atributos d… 0.01s  
+
+   PASS  Tests\Unit\ParticipationServiceInvariantTest
+  ✓ it nao tem nenhuma linha violando elderly ⟹ scfv ⟹ group             0.02s  
+  ✓ it mantem a invariante item a item nos oito servicos                 0.02s  
+  ✓ it reserva o contador de idosos a exatamente um servico              0.02s  
+  ✓ it declara family_member_participations como consumidora dos dois d… 0.02s  
+  ✓ it nao trava a exclusao enquanto a tabela de participacoes nao exis… 0.02s  
+  ✓ it conta o uso pela coluna declarada assim que a tabela consumidora… 0.03s  
+
+   PASS  Tests\Unit\Services\Siap\SiapDomainMapTest
+  ✓ it collapses the four SUAS participation types into the three of SIAP
+
+   PASS  Tests\Feature\Api\Relationals\SuasParticipationTypeControllerTest
+  ✓ it lists only active suas participation types                        0.04s  
+  ✓ it returns up to 30 participation types and flags searchable above…  0.03s  
+  ✓ it exposes only id, name and code                                    0.04s  
+  ✓ it filters by search on name (case-insensitive)                      0.01s  
+  ✓ it filters by search on code                                         0.01s  
+  ✓ it rejects unauthenticated request with 401                          0.02s  
+  ✓ it rejects search shorter than 2 characters                          0.01s  
+  ✓ it accepts requests from the client guard                            0.02s  
+  ✓ it caches the active participation type set                          0.01s  
+  ✓ it invalidates the cache when a participation type is created        0.01s  
+  ✓ it invalidates the cache on bulk deactivate                          0.03s  
+  ✓ it drops a participation type from the cached set when it becomes i… 0.01s  
+
+   PASS  Tests\Feature\Api\SocialEntityControllerTest
+  ✓ it CA02: store requires all mandatory SIAP layout fields with (&#x27;sua… 0.05s  
+
+   PASS  Tests\Feature\Api\SuasParticipationTypeControllerTest
+  ✓ it lists suas participation types                                    0.02s  
+  ✓ it creates a suas participation type                                 0.02s  
+  ✓ it shows a suas participation type                                   0.02s  
+  ✓ it updates a suas participation type                                 0.02s  
+  ✓ it deletes a suas participation type                                 0.02s  
+  ✓ it validates required fields on create                               0.02s  
+  ✓ it requires authentication                                           0.01s  
+  ✓ it filters suas participation types by name                          0.02s  
+  ✓ it sorts suas participation types by code                            0.02s  
+  ✓ it blocks deletion when participation type is linked to a social en… 0.02s  
+  ✓ it allows deletion after social entity link is removed               0.02s  
+  ✓ it exposes is_active and defaults to true on create                  0.02s  
+  ✓ it filters suas participation types by is_active                     0.05s  
+  ✓ it bulk activates suas participation types                           0.02s  
+  ✓ it bulk deactivates suas participation types                         0.02s  
+  ✓ it forbids bulk activate without the bulk-update permission          0.02s  
+  ✓ it validates uuids on bulk activate                                  0.02s  
+  ✓ it rejects integer ids on bulk activate                              0.02s  
+
+   PASS  Tests\Feature\Manager\ParticipationDomainsTest
+  ✓ it lista os oito servicos com os codigos do instrumento e preserva…  0.03s  
+  ✓ it nunca expoe o id no payload dos dominios de participacao          0.03s  
+  ✓ it identifica o SCFV para adultos como extensao do produto, e so el… 0.02s  
+  ✓ it expoe os atributos de contagem de cada servico conforme a matriz… 0.03s  
+  ✓ it marca o contador de idosos em exatamente um servico — o codigo 2  0.02s  
+  ✓ it recusa marcar um segundo servico com o contador de idosos         0.02s  
+  ✓ it recusa a combinacao que viola elderly ⟹ scfv ⟹ group na criacao   0.03s  
+  ✓ it recusa desligar o grupo de um servico que continua contando como… 0.02s  
+  ✓ it cria um servico proprio do Administrador respeitando a invariant… 0.03s  
+  ✓ it aceita servico sem apelido e recusa apelido acima de 30 caracter… 0.02s  
+  ✓ it recusa renumerar o codigo de um servico, mas aceita o reenvio do… 0.02s  
+  ✓ it recusa renumerar o codigo de um local de realizacao               0.03s  
+  ✓ it lista os cinco locais com os codigos do instrumento e so o 1 com… 0.02s  
+  ✓ it nao registra nenhuma rota de escrita dos dominios de participaca… 0.02s  
+  ✓ it nao oferece escrita ao guard client, mas mantem a leitura das du… 0.04s  
+  ✓ it colhe exatamente as cinco abilities de cada dominio de participa… 0.05s  
+  ✓ it recusa excluir um servico ja usado em participacoes, orientando…  0.03s  
+  ✓ it recusa excluir um local ja usado em participacoes, orientando a…  0.03s  
+  ✓ it exclui um item sem uso, porque a lista e aberta e o engano preci… 0.03s  
+  ✓ it mantem o item inativado na lista e no historico, tirando-o so do… 0.03s  
+  ✓ it mantem o local inativado na lista completa e fora do select de a… 0.03s  
+  ✓ it audita a alteracao de um atributo de contagem com autor, data e…  0.02s  
+  ✓ it audita a alteracao do local de realizacao com o valor anterior d… 0.03s  
+  ✓ it deixa o Operacional Global consultar, mas nao manter, os dominio… 0.03s  
+
+  Tests:    97 passed (471 assertions)
+  Duration: 2.79s</pre><h2>Anexo II — Cenários Playwright (project chromium, Painel Global)</h2><pre class="pest">[globalSetup] Rate-limiter cache do Laravel zerado.
+
+Running 6 tests using 2 workers
+
+  ✓  1 [setup] › tests/auth.setup.ts:10:6 › autentica super admin (UI) e propaga cookies para o api-client (1.3s)
+[tenant-auth.setup] sessão de tenant pronta em /Users/binho/Projetos/esuas-all/e2e/.auth/tenant.json
+  ✓  2 [setup] › tests/tenant-auth.setup.ts:82:6 › autentica usuário do tenant (client) e propaga cookies para o api-client (1.6s)
+  ✓  3 [chromium] › tests/lookups/participation-domains.spec.ts:64:7 › US-SCFV-01 — domínios de participação no Painel Global (admin) › (a) os oito serviços aparecem com os códigos do instrumento, e o salto 6 → 99 é preservado (6.7s)
+  ✓  4 [chromium] › tests/lookups/participation-domains.spec.ts:91:7 › US-SCFV-01 — domínios de participação no Painel Global (admin) › (b) o SCFV para adultos é distinguível como extensão posterior ao instrumento (6.7s)
+  ✓  5 [chromium] › tests/lookups/participation-domains.spec.ts:118:7 › US-SCFV-01 — domínios de participação no Painel Global (admin) › (c) a matriz dos três atributos de contagem confere item a item na tela (6.6s)
+  ✓  6 [chromium] › tests/lookups/participation-domains.spec.ts:160:7 › US-SCFV-01 — domínios de participação no Painel Global (admin) › (d) os cinco locais de realização, e só o primeiro é a própria unidade (6.8s)
+
+  6 passed (29.6s)</pre>
+<footer>SigSUAS — eSUAS · Dossiê de aceite gerado a partir de execução real contra a stack E2E · US-SCFV-01</footer>
+</div></body></html>

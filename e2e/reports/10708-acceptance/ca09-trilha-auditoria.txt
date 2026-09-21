@@ -1,0 +1,8 @@
+=== Trilha de auditoria — CA09 (HU #10708) ===
+log_name          = attendance_type
+event             = updated
+subject           = AttendanceType #8
+autor (causer_id) = 4 — Dev Admin Global
+data              = 2026-09-01 03:31:02
+attribute_changes = {"attributes":{"remittance_counter":"individualized_attendance"},"old":{"remittance_counter":null}}
+properties        = []

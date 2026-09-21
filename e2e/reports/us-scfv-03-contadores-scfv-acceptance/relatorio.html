@@ -1,0 +1,201 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — US-SCFV-03</title><style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  section.note { border:1px solid var(--line); border-left:4px solid #b06a00; border-radius:6px; padding:10px 14px; margin:10px 0; background:#fffdf7; font-size:13px; }
+  section.note h3 { margin:0 0 6px; font-size:13.5px; color:#8a5200; }
+  section.note p { margin:6px 0; }
+  section.note ul { margin:6px 0 6px 18px; padding:0; }
+  section.note pre { background:var(--bg); border:1px solid var(--line); border-radius:4px; padding:8px; overflow-x:auto; font-size:11px; white-space:pre-wrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style>
+<body><div class="wrap">
+<header class="cover"><h1>Relatório de Critérios de Aceite — US-SCFV-03</h1>
+<div class="sub">Épico HU-PRONT-SCFV (fase F4) · Contadores do leiaute 15.8 na apuração — o leiaute fecha por completo</div>
+<div class="meta"><div><span>Gerado em:</span> 09/09/2026</div><div><span>História:</span> US-SCFV-03 — Ligar os contadores do leiaute 15.8 à apuração</div><div><span>Spec:</span> <code>.planning/specs/US-SCFV-03-contadores-do-scfv-na-apuracao.md</code></div><div><span>Branch:</span> <code>feature/scfv-prontuario-bloco-16</code></div><div><span>Commits (api/):</span> <code>dee05cf</code> (apuração) · <code>4f7826b</code> (integração)</div><div><span>Commits (client/):</span> <code>59eec11</code></div><div><span>Commits (e2e/):</span> <code>f23c679</code></div><div><span>Ambiente:</span> Stack E2E Docker · API em :8090 · client em :4174 · base recém-semeada</div><div><span>Perfil usado:</span> Master do município (a tela exige <code>attendance-reports.view</code>)</div><div><span>Ferramenta:</span> Playwright (Chromium) + Pest 4</div></div></header>
+<h2 style="border-top:none;padding-top:0">Resumo</h2>
+<p>Dezesseis critérios de aceite. <strong>Seis evidenciados no navegador</strong> (CA01, CA04, CA05, CA13, CA14 e o zero declarado, com quatro prints — três critérios compartilham a captura geral da tela, cada um com sua própria legenda) e <strong>onze cobertos pela suíte automatizada</strong>. A suíte fecha com <strong>88 testes e 438 asserções</strong> no filtro <code>AttendanceReport|Scfv</code>, sem regressão nas fases anteriores (Participation 176, FollowUp 221, isolamento 93). Os <strong>37 cenários Playwright</strong> — cobrindo as seis histórias das fases F3 e F4 — passam contra base recém-semeada. <strong>Nenhum critério em falha</strong> e nenhuma migration criada. Com esta entrega o leiaute 15.8 fecha por completo — o segundo dos seis leiautes de execução a ficar pronto.</p>
+<table class="summary"><thead><tr><th>CA</th><th>Critério</th><th>Situação</th><th>Evidência</th></tr></thead>
+<tbody><tr><td class="caid">CA01</td><td>Contadores de faixa etária</td><td><span class="pill" style="background:#0a7d33">ATENDIDO</span></td><td>Print + Pest</td></tr><tr><td class="caid">CA02</td><td>Famílias contam uma vez</td><td><span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></td><td>Pest</td></tr><tr><td class="caid">CA03</td><td>Grupo do PAIF conta como grupo, mas não nas faixas etárias</td><td><span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></td><td>Pest</td></tr><tr><td class="caid">CA04</td><td>Idosos conta pelo serviço, não pela idade</td><td><span class="pill" style="background:#0a7d33">ATENDIDO</span></td><td>Print + Pest</td></tr><tr><td class="caid">CA05</td><td>Idoso em SCFV de adultos pode não contar em faixa alguma</td><td><span class="pill" style="background:#0a7d33">ATENDIDO</span></td><td>Print + Pest</td></tr><tr><td class="caid">CA06</td><td>Pessoas com deficiência incluem os grupos do PAIF e do PAEFI</td><td><span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></td><td>Pest</td></tr><tr><td class="caid">CA07</td><td>Idade apurada no último dia do mês</td><td><span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></td><td>Pest</td></tr><tr><td class="caid">CA08</td><td>Pessoa em dois grupos conta uma vez</td><td><span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></td><td>Pest</td></tr><tr><td class="caid">CA09</td><td>Ingresso e desligamento no meio do mês contam</td><td><span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></td><td>Pest</td></tr><tr><td class="caid">CA10</td><td>Desligada no mês anterior não conta</td><td><span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></td><td>Pest</td></tr><tr><td class="caid">CA11</td><td>Participação cancelada não conta</td><td><span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></td><td>Pest</td></tr><tr><td class="caid">CA12</td><td>Ausência de informação de deficiência não vira negativa</td><td><span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></td><td>Pest</td></tr><tr><td class="caid">CA13</td><td>Participação vigente há muito tempo é sinalizada</td><td><span class="pill" style="background:#0a7d33">ATENDIDO</span></td><td>Print + Pest</td></tr><tr><td class="caid">CA14</td><td>O oitavo contador segue vindo da F1</td><td><span class="pill" style="background:#0a7d33">ATENDIDO</span></td><td>Print + Pest</td></tr><tr><td class="caid">CA15</td><td>Operacional vê apenas as suas unidades</td><td><span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></td><td>Pest</td></tr><tr><td class="caid">CA16</td><td>Isolamento entre municípios</td><td><span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></td><td>Pest (TenantIsolation)</td></tr><tr><td class="caid">Extra</td><td>Zero declarado</td><td><span class="pill" style="background:#0a7d33">ATENDIDO</span></td><td>Print + Pest</td></tr></tbody></table>
+<section class="ca"><h2>CA01 — Contadores de faixa etária <span class="pill" style="background:#0a7d33">ATENDIDO</span></h2><div class="gherkin"><p><strong>Quando</strong> consulto a apuração de uma unidade, <strong>então</strong> os quatro contadores de faixa etária apresentam os números apurados.</p></div><div class="results"><ul><li>Os sete contadores do 15.8 aparecem, e a tela os <strong>agrupa pela natureza da contagem</strong> — famílias, faixas etárias e o contador restrito por serviço — em vez de enfileirar sete números que não somam entre si.</li><li>O <strong>oitavo</strong> campo do leiaute (atividade coletiva não continuada) continua vindo dos atendimentos da fase F1, com a origem marcada na tela.</li></ul></div><div class="evid"><figure><img src="screenshots/scfv03-a-sete-contadores.png" alt="Os sete contadores, agrupados pela natureza de cada contagem"><figcaption>scfv03-a-sete-contadores.png — Os sete contadores, agrupados pela natureza de cada contagem</figcaption></figure></div></section><section class="ca"><h2>CA02 — Famílias contam uma vez <span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></h2><div class="gherkin"><p><strong>Dado</strong> uma família com três integrantes participando de grupos, <strong>então</strong> ela é contada uma vez.</p></div><div class="results"><ul><li>Famílias <strong>distintas</strong>, não linhas.</li></ul></div><div class="evid"><p class="noimg">Sem prova visual: critério verificado pela suíte automatizada (ver anexo).</p></div></section><section class="ca"><h2>CA03 — Grupo do PAIF conta como grupo, mas não nas faixas etárias <span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></h2><div class="gherkin"><p><strong>Dado</strong> um integrante só em grupo do PAIF, <strong>então</strong> a família conta em "famílias em grupos" e ele <strong>não</strong> conta em nenhuma faixa etária.</p></div><div class="results"><ul><li>A elegibilidade é lida dos <strong>atributos do serviço</strong>, nunca do código.</li><li>⚠️ <strong>Interpretação declarada:</strong> se o TCE-AL entender que grupo do PAIF é serviço de convivência, os quatro contadores de faixa aumentam — e a correção é <code>UPDATE</code> em duas linhas do cadastro.</li></ul></div><div class="evid"><p class="noimg">Sem prova visual: critério verificado pela suíte automatizada (ver anexo).</p></div></section><section class="ca"><h2>CA04 — Idosos conta pelo serviço, não pela idade <span class="pill" style="background:#0a7d33">ATENDIDO</span></h2><div class="gherkin"><p><strong>Dado</strong> pessoas no SCFV para idosos e outras com mais de 60 anos em SCFV de adultos, <strong>então</strong> o contador de idosos apresenta apenas as primeiras.</p></div><div class="results"><ul><li>É o <strong>único</strong> contador restrito pelo serviço, e não pela idade.</li><li>A tela <strong>declara esse escopo</strong> — sem isso, o número parece estar faltando gente.</li></ul></div><div class="evid"><figure><img src="screenshots/scfv03-b-idosos-pelo-servico.png" alt="O contador de idosos e o escopo declarado"><figcaption>scfv03-b-idosos-pelo-servico.png — O contador de idosos e o escopo declarado</figcaption></figure></div></section><section class="ca"><h2>CA05 — Idoso em SCFV de adultos pode não contar em faixa alguma <span class="pill" style="background:#0a7d33">ATENDIDO</span></h2><div class="gherkin"><p><strong>Dado</strong> uma pessoa de mais de 60 anos participando do SCFV para adultos, <strong>então</strong> ela não entra em "idosos" nem em "adultos", e a tela indica que isso é consequência da redação do leiaute.</p></div><div class="results"><ul><li><strong>O cenário move de verdade a participação entre serviços</strong> e recarrega a apuração — prova a assimetria no comportamento, não em mock.</li><li>O aviso só acende para quem ficou fora de <strong>todo</strong> contador: quem está em "idosos" não o dispara.</li><li>Sem essa explicação, o número parece errado para quem lê de fora e vira chamado.</li></ul></div><div class="evid"><figure><img src="screenshots/scfv03-c-idoso-fora-de-faixa.png" alt="O aviso do idoso fora de toda faixa"><figcaption>scfv03-c-idoso-fora-de-faixa.png — O aviso do idoso fora de toda faixa</figcaption></figure></div></section><section class="ca"><h2>CA06 — Pessoas com deficiência incluem os grupos do PAIF e do PAEFI <span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></h2><div class="gherkin"><p><strong>Dado</strong> pessoas com deficiência em SCFV e em grupo do PAEFI, <strong>então</strong> o contador soma as duas situações.</p></div><div class="results"><ul><li>Conjunto <strong>ampliado</strong>: o universo é o de "grupo", não o de SCFV.</li><li>Não evidenciado no navegador: o seed E2E não tem integrante com deficiência marcada.</li></ul></div><div class="evid"><p class="noimg">Sem prova visual: critério verificado pela suíte automatizada (ver anexo).</p></div></section><section class="ca"><h2>CA07 — Idade apurada no último dia do mês <span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></h2><div class="gherkin"><p><strong>Dado</strong> uma criança que completou 7 anos no meio do mês, <strong>então</strong> ela é contada na faixa de 7 a 14.</p></div><div class="results"><ul><li>O critério vive em <strong>um único ponto</strong> do service — sem ele, dois cálculos do mesmo mês divergem.</li><li>⚠️ <strong>Inferência declarada</strong> (pergunta 3 ao TCE-AL).</li></ul></div><div class="evid"><p class="noimg">Sem prova visual: critério verificado pela suíte automatizada (ver anexo).</p></div></section><section class="ca"><h2>CA08 — Pessoa em dois grupos conta uma vez <span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></h2><div class="gherkin"><p><strong>Dado</strong> um adolescente em SCFV e também em grupo do PAIF, <strong>então</strong> ele é contado uma vez na sua faixa.</p></div><div class="results"><ul><li>Os campos contam <strong>pessoas</strong>, não participações.</li></ul></div><div class="evid"><p class="noimg">Sem prova visual: critério verificado pela suíte automatizada (ver anexo).</p></div></section><section class="ca"><h2>CA09 — Ingresso e desligamento no meio do mês contam <span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></h2><div class="gherkin"><p><strong>Dado</strong> quem ingressou no dia 20 e quem se desligou no dia 5, <strong>então</strong> os dois contam.</p></div><div class="results"><ul><li>Vigência em <strong>qualquer dia</strong> do mês — ⚠️ <strong>inferência de maior impacto do épico</strong> (pergunta 1 ao TCE-AL).</li></ul></div><div class="evid"><p class="noimg">Sem prova visual: critério verificado pela suíte automatizada (ver anexo).</p></div></section><section class="ca"><h2>CA10 — Desligada no mês anterior não conta <span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></h2><div class="gherkin"><p><strong>Dado</strong> quem se desligou no mês anterior, <strong>então</strong> não conta neste mês e conta naquele.</p></div><div class="results"><ul><li>O leiaute é do <strong>período de referência</strong>.</li></ul></div><div class="evid"><p class="noimg">Sem prova visual: critério verificado pela suíte automatizada (ver anexo).</p></div></section><section class="ca"><h2>CA11 — Participação cancelada não conta <span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></h2><div class="gherkin"><p><strong>Dado</strong> uma participação cancelada, <strong>então</strong> os contadores diminuem.</p></div><div class="results"><ul><li>Cancelar mantém a linha no prontuário e a tira da apuração.</li></ul></div><div class="evid"><p class="noimg">Sem prova visual: critério verificado pela suíte automatizada (ver anexo).</p></div></section><section class="ca"><h2>CA12 — Ausência de informação de deficiência não vira negativa <span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></h2><div class="gherkin"><p><strong>Dado</strong> um participante sem informação de deficiência, <strong>então</strong> ele não é contado, e isso não é apresentado como declaração de que ele não tem.</p></div><div class="results"><ul><li>⚠️ <strong>Limitação de schema registrada:</strong> <code>has_disability</code> é boolean NOT NULL default <code>false</code> — o banco <strong>não distingue</strong> "não tem" de "não informado". A decisão foi contar apenas <code>true</code> e nunca afirmar o contrário na tela, sem migration em tabela alimentada pelo CadÚnico.</li></ul></div><div class="evid"><p class="noimg">Sem prova visual: critério verificado pela suíte automatizada (ver anexo).</p></div></section><section class="ca"><h2>CA13 — Participação vigente há muito tempo é sinalizada <span class="pill" style="background:#0a7d33">ATENDIDO</span></h2><div class="gherkin"><p><strong>Dado</strong> participações em andamento há mais de doze meses, <strong>então</strong> são sinalizadas como ponto de atenção.</p></div><div class="results"><ul><li>Conta <strong>participações</strong>, não pessoas — é a única contagem da história que não é por pessoa distinta.</li><li>O limiar vem do payload e é ajustável por configuração, sem deploy.</li><li>Corte de 12 meses, mais generoso que os 6 do acompanhamento, porque SCFV é serviço continuado.</li></ul></div><div class="evid"><figure><img src="screenshots/scfv03-a-sete-contadores.png" alt="O ponto de atenção, na mesma tela"><figcaption>scfv03-a-sete-contadores.png — O ponto de atenção, na mesma tela</figcaption></figure></div></section><section class="ca"><h2>CA14 — O oitavo contador segue vindo da F1 <span class="pill" style="background:#0a7d33">ATENDIDO</span></h2><div class="gherkin"><p><strong>Quando</strong> olho o contador de atividade coletiva não continuada, <strong>então</strong> ele vem dos atendimentos e não é afetado pelas participações desta fase.</p></div><div class="results"><ul><li>Verificado que permanece inalterado; a tela marca a <strong>origem</strong> para o gestor não procurar o número no lugar errado.</li></ul></div><div class="evid"><figure><img src="screenshots/scfv03-a-sete-contadores.png" alt="O oitavo campo, com a origem marcada"><figcaption>scfv03-a-sete-contadores.png — O oitavo campo, com a origem marcada</figcaption></figure></div></section><section class="ca"><h2>CA15 — Operacional vê apenas as suas unidades <span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></h2><div class="gherkin"><p><strong>Dado</strong> que sou Operacional lotado em uma unidade, <strong>então</strong> vejo apenas ela.</p></div><div class="results"><ul><li>Reusa o recorte por perfil já existente.</li><li>A tela exige <code>attendance-reports.view</code>, que o Operacional não possui — é tela de gestão; o add-on LGPD <strong>não</strong> é exigido, por ser agregada.</li></ul></div><div class="evid"><p class="noimg">Sem prova visual: critério verificado pela suíte automatizada (ver anexo).</p></div></section><section class="ca"><h2>CA16 — Isolamento entre municípios <span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></h2><div class="gherkin"><p><strong>Quando</strong> consulto a apuração, <strong>então</strong> vejo apenas unidades do meu município.</p></div><div class="results"><ul><li>93 testes verdes no diretório de isolamento.</li></ul></div><div class="evid"><p class="noimg">Sem prova visual: critério verificado pela suíte automatizada (ver anexo).</p></div></section><section class="ca"><h2>Extra — Zero declarado <span class="pill" style="background:#0a7d33">ATENDIDO</span></h2><div class="gherkin"><p><strong>Dado</strong> uma unidade sem participação, <strong>então</strong> ela aparece com zero apurado.</p></div><div class="results"><ul><li>O selo só existe quando os contadores vêm apurados valendo zero — a diferença entre "apuramos e deu zero" e "não sabemos".</li><li>Mesma ressalva das fases anteriores: o sistema não distingue "não participa" de "não registrou".</li></ul></div><div class="evid"><figure><img src="screenshots/scfv03-e-zero-declarado.png" alt="Unidade sem participação, com zero declarado"><figcaption>scfv03-e-zero-declarado.png — Unidade sem participação, com zero declarado</figcaption></figure></div></section>
+<h2>Observações e ressalvas</h2>
+<section class="note"><h3>⚠️ QUATRO REGRAS QUE DETERMINAM NÚMEROS DECLARADOS SÃO INFERÊNCIA — validação do TCE-AL necessária</h3><p>Esta é a ressalva mais importante do dossiê. Quatro decisões que <strong>mudam os números enviados na remessa</strong> não vieram do instrumento nem do PO. Cada uma está isolada em um ponto do código para cair barato — mas <strong>depois de declarado, corrigir significa reenviar</strong>.</p><ul><li><strong>O que é participação regular</strong> — adotado: vigente em qualquer dia do mês. <strong>É a de maior impacto do épico:</strong> se o Tribunal esperar frequência efetiva, a fase deixa de ser uma extensão de apuração e passa a exigir registro de presença por encontro.</li><li><strong>Quando a idade é apurada</strong> — adotado: último dia do mês de referência.</li><li><strong>Grupos do PAIF e do PAEFI contam nas faixas etárias?</strong> — adotado: não. Se sim, <strong>os quatro contadores de faixa aumentam</strong>. A correção é <code>UPDATE</code> em duas linhas do cadastro global, sem migration e sem código.</li><li><strong>Pessoas distintas, não participações</strong> — adotado: cada pessoa conta uma vez na sua faixa.</li></ul></section><section class="note"><h3>Nenhuma migration criada — o índice já estava lá</h3><p>O <code>EXPLAIN</code> das cinco consultas, em PostgreSQL, mostrou que <strong>todas</strong> usam o índice parcial criado na US-SCFV-02 exatamente para elas. Nenhuma faz varredura sequencial. É o <strong>segundo épico seguido</strong> em que antecipar o índice na HU anterior evita migration na HU de apuração.</p></section><section class="note"><h3>A assimetria provada em comportamento, não em mock</h3><p>O cenário do idoso fora de faixa é o mais caro de montar e o mais valioso: ele <strong>move de verdade</strong> a participação do SCFV para idosos para o SCFV de adultos e recarrega a apuração. A pessoa deixa de contar em "idosos" (restrito pelo serviço) e não entra em "adultos" (que vai até 59 anos) — ficando fora de toda faixa. O aviso só acende para quem ficou fora de <strong>todo</strong> contador.</p></section><section class="note"><h3>O que este dossiê não prova</h3><ul><li><strong>Pessoas com deficiência (CA06)</strong> na tela — o seed E2E não tem integrante com deficiência marcada. Coberto pela suíte, com o conjunto ampliado verificado.</li><li>As faixas de crianças e pré-adolescentes na tela — exigem massa etária que o seed não monta. Cobertas pela suíte.</li></ul></section>
+<h2>Anexo I — Cobertura automatizada (Pest 4, --filter=&quot;AttendanceReport|Scfv&quot;)</h2><pre class="pest">PASS  Tests\Unit\ParticipationDomainsSeedTest
+  ✓ it marca counts_as_scfv_elderly em exatamente um servico — o codigo… 0.44s  
+  ✓ it respeita a invariante elderly ⟹ scfv ⟹ group em todas as linhas   0.02s  
+
+   PASS  Tests\Unit\ParticipationServiceInvariantTest
+  ✓ it nao tem nenhuma linha violando elderly ⟹ scfv ⟹ group             0.03s  
+
+   PASS  Tests\Feature\Api\Client\AttendanceReportReferralCrossTest
+  ✓ it never feeds the CadUnico counters from attendance type 4 — 9 att… 0.13s  
+
+   PASS  Tests\Feature\Api\Client\AttendanceReportTest
+  ✓ it derives the four counters per unit and the total includes types…  0.06s  
+  ✓ it declares exactly the one remaining unavailable counter — the F2…  0.05s  
+  ✓ it excludes cancelled attendances from the report while they remain… 0.07s  
+  ✓ it counts a retroactive attendance in the month it happened, not th… 0.06s  
+  ✓ it reflects a type correction on the next query and stores nothing…  0.06s  
+  ✓ it reports attendances without an identified person separately, via… 0.06s  
+  ✓ it scopes the Operacional to units with an assignment in force TODA… 0.07s  
+  ✓ it shows the master every unit of the tenant, and a unit without mo… 0.06s  
+  ✓ it never leaks citizen data in the serialized payload — no name, no… 0.06s  
+  ✓ it keeps counting past attendances of a type inactivated in the Glo… 0.06s  
+  ✓ it narrows the report to a single unit when social_unit_uuid is giv… 0.07s  
+  ✓ it keeps unit_count at the Operacional full scope when filtering on… 0.19s  
+  ✓ it rejects with a named 422 a unit outside the user scope — never a… 0.11s  
+  ✓ it rejects an out-of-range reference month with the SIAP named mess… 0.07s  
+  ✓ it denies the Operacional without the manual grant — the restricted… 0.06s  
+  ✓ it denies a granted user without an ACTIVE professional bond in the… 0.06s  
+  ✓ it lights the three referral counters with distinct families and pe… 0.07s  
+  ✓ it counts the same family ONCE with two inclusion referrals in the…  0.06s  
+  ✓ it counts two distinct people of the SAME family in the BPC counter… 0.06s  
+  ✓ it counts the family once in EACH counter — distinct per counter, n… 0.06s  
+  ✓ it drops a cancelled referral from the counters while it stays visi… 0.07s  
+  ✓ it keeps counting a referral whose outcome became not_attended — th… 0.06s  
+  ✓ it counts a retroactive referral in the month it was made, not the…  0.06s  
+  ✓ it keeps counting past referrals of a code inactivated in the Globa… 0.05s  
+  ✓ it keeps counting past referrals of a code SOFT-DELETED in the Glob… 0.06s  
+  ✓ it declares zero on the three referral counters for a unit without…  0.06s  
+  ✓ it never feeds the BPC counter from a referral row without a person… 0.06s  
+
+   PASS  Tests\Feature\Client\AttendanceReportFollowUpTest
+  ✓ it reproduces the canonical scenario of §9 in the HTTP payload — 3…  0.07s  
+  ✓ it lights up families_in_follow_up inside counters and removes it f… 0.06s  
+  ✓ it declares the four profiles that depend on F6/F7 — never omitted,… 0.05s  
+  ✓ it keeps the four unavailable profiles declared even for a unit wit… 0.06s  
+  ✓ it exposes stale_follow_ups as a quantity and the configured thresh… 0.06s  
+  ✓ it carries the threshold from config so the cut can move without a…  0.06s  
+  ✓ it shows the operator only the units of the current assignment, wit… 0.06s  
+  ✓ it never counts follow-ups of another organization in any of the ne… 0.06s  
+  ✓ it persists absolutely nothing — identical row counts before and af… 0.05s  
+  ✓ it never leaks any citizen data through the new follow-up fields (D… 0.06s  
+  ✓ it never counts a cancelled follow-up in the HTTP payload (CA11/RN1… 0.05s  
+  ✓ it keeps the new blocks consistent when the report is narrowed to a… 0.06s  
+
+   PASS  Tests\Feature\Client\AttendanceReportScfvTest
+  ✓ it acende os sete contadores do 15.8 no payload da unidade, com os…  0.08s  
+  ✓ it nao altera o oitavo contador do 15.8, que vem dos ATENDIMENTOS c… 0.08s  
+  ✓ it mantem o oitavo contador em zero quando a unidade so tem partici… 0.06s  
+  ✓ it devolve a nota da RN05 e o ponto de atencao da RN11 POR UNIDADE,… 0.06s  
+  ✓ it declara ZERO para a unidade sem nenhuma participacao, nunca ause… 0.05s  
+  ✓ it mostra ao Operacional apenas a unidade em que esta lotado, com o… 0.07s  
+  ✓ it nega o acesso ao Operacional sem a concessao do Master, antes de… 0.05s  
+  ✓ it nunca conta participacao de outra organizacao no payload (CA16/R… 0.08s  
+  ✓ it nao persiste absolutamente nada ao apurar o payload (RN10)        0.08s  
+  ✓ it nunca devolve identificador de pessoa ou familia nos campos do 1… 0.06s  
+
+   PASS  Tests\Feature\Client\FamilyMemberParticipationTest
+  ✓ it registers the member participation in the elderly SCFV, signed a… 0.07s  
+  ✓ it KEEPS listing a participation whose service or location was late… 0.07s  
+
+   PASS  Tests\Feature\Client\ScfvReportServiceTest
+  ✓ it conta a familia com TRES integrantes em grupos UMA unica vez (CA… 0.03s  
+  ✓ it conta o ingresso no dia 20 e o encerramento no dia 5 do mes apur… 0.03s  
+  ✓ it nao conta a participacao encerrada no mes anterior, mas conta na… 0.02s  
+  ✓ it nao conta a participacao CANCELADA em contador nenhum (CA11/RN09… 0.02s  
+  ✓ it nao conta participacao em servico que nao alimenta o 15.8 (D04)   0.03s  
+  ✓ it conta 1 em cada unidade quando a familia participa em duas (RN08… 0.02s  
+  ✓ it acende as quatro faixas etarias com pessoas distintas do SCFV (C… 0.12s  
+  ✓ it conta o integrante so do grupo do PAIF como familia em grupo e e… 0.02s  
+  ✓ it apura a idade no ULTIMO DIA do mes: quem faz 7 anos em 15/08 est… 0.03s  
+  ✓ it conta UMA vez a pessoa que participa de dois grupos (CA08/RN06)   0.02s  
+  ✓ it nao coloca em faixa alguma o participante sem data de nascimento… 0.02s  
+  ✓ it conta idosos pelo SERVICO e nao inclui quem tem mais de 60 anos…  0.07s  
+  ✓ it nao conta em faixa alguma o idoso matriculado no SCFV de adultos… 0.07s  
+  ✓ it nao acende a nota do CA05 quando todo idoso do recorte esta decl… 0.07s  
+  ✓ it conta em idosos quem esta no SCFV de idosos mesmo com menos de 6… 0.02s  
+  ✓ it conta pessoas com deficiencia somando os grupos do PAIF e do PAE… 0.04s  
+  ✓ it conta UMA vez a pessoa com deficiencia que participa de dois gru… 0.03s  
+  ✓ it nao conta o participante sem informacao de deficiencia, e nao af… 0.03s  
+  ✓ it apura as tres naturezas com numeros DIFERENTES entre si, sem der… 0.04s  
+  ✓ it sinaliza as participacoes em andamento ha mais de 12 meses (CA13… 0.05s  
+  ✓ it conta PARTICIPACOES, e nao pessoas, no ponto de atencao (RN11)    0.03s  
+  ✓ it respeita o corte configurado sem deploy (D10)                     0.02s  
+  ✓ it devolve zero DECLARADO para a unidade sem nenhuma participacao (… 0.02s  
+  ✓ it curto-circuita sem tocar o banco quando o recorte de unidades e…  0.02s  
+  ✓ it nao conta participacao de outro municipio (CA16/RN13)             0.03s  
+  ✓ it nao persiste absolutamente nada — a apuracao e derivada (RN10/D0… 0.03s  
+  ✓ it nao devolve nenhum identificador de pessoa ou familia no resulta… 0.02s  
+
+   PASS  Tests\Feature\Manager\ParticipationDomainsTest
+  ✓ it identifica o SCFV para adultos como extensao do produto, e so el… 0.03s  
+  ✓ it recusa a combinacao que viola elderly ⟹ scfv ⟹ group na criacao   0.02s  
+  ✓ it recusa desligar o grupo de um servico que continua contando como… 0.02s  
+
+   PASS  Tests\Feature\TenantIsolation\AttendanceReportIsolationTest
+  ✓ it shows the tenant A master only tenant A units and numbers (CA12/… 0.05s  
+  ✓ it rejects a tenant B unit used as filter with the same named 422 —… 0.05s  
+  ✓ it never counts tenant B referrals in the tenant A referral counter… 0.06s  
+
+  Tests:    88 passed (438 assertions)
+  Duration: 5.66s</pre><h2>Anexo II — Cenários Playwright do prontuário e da apuração (37 cenários, F3 + F4)</h2><pre class="pest">[globalSetup] Rate-limiter cache do Laravel zerado.
+
+Running 37 tests using 2 workers
+
+  ✓   1 [setup] › tests/auth.setup.ts:10:6 › autentica super admin (UI) e propaga cookies para o api-client (1.3s)
+[tenant-auth.setup] sessão de tenant pronta em /Users/binho/Projetos/esuas-all/e2e/.auth/tenant.json
+  ✓   2 [setup] › tests/tenant-auth.setup.ts:82:6 › autentica usuário do tenant (client) e propaga cookies para o api-client (1.7s)
+  ✓   3 [chromium-tenant] › tests/client/family-follow-up.spec.ts:222:7 › US-ACOMP-02 — acompanhamento familiar no prontuário (client) › (g) família nunca acompanhada mostra o estado vazio do bloco (6.6s)
+  ✓   4 [chromium-tenant] › tests/client/family-follow-up.spec.ts:245:7 › US-ACOMP-02 — acompanhamento familiar no prontuário (client) › (b) num CRAS o select oferece só o PAIF — o PAEFI não é ofertado (7.2s)
+  ✓   5 [chromium-tenant] › tests/client/family-follow-up.spec.ts:263:7 › US-ACOMP-02 — acompanhamento familiar no prontuário (client) › (d) data futura é barrada no próprio formulário (7.9s)
+  ✓   6 [chromium-tenant] › tests/client/family-follow-up.spec.ts:291:7 › US-ACOMP-02 — acompanhamento familiar no prontuário (client) › (a) registra o ingresso no PAIF a partir de um CRAS (9.3s)
+  ✓   7 [chromium-tenant] › tests/client/family-follow-up.spec.ts:324:7 › US-ACOMP-02 — acompanhamento familiar no prontuário (client) › (c) segundo ingresso na mesma unidade e serviço é recusado, apontando o existente (9.3s)
+  ✓   8 [chromium-tenant] › tests/client/family-follow-up.spec.ts:352:7 › US-ACOMP-02 — acompanhamento familiar no prontuário (client) › (e) cancelar com motivo mantém a linha no prontuário, marcada (7.6s)
+  ✓   9 [chromium-tenant] › tests/client/family-follow-up.spec.ts:417:7 › US-ACOMP-02 — negativa de acesso ao bloco de acompanhamento (client) › (f) Operacional sem acesso não vê o bloco, e a negativa não nomeia unidade (6.4s)
+  ✓  10 [chromium-tenant] › tests/client/family-follow-up.spec.ts:540:7 › US-ACOMP-03 — desligamento e avaliação de resultados (client) › (c) os meses de acompanhamento são apresentados calculados e NÃO digitáveis (6.6s)
+  ✓  11 [chromium-tenant] › tests/client/family-follow-up.spec.ts:561:7 › US-ACOMP-03 — desligamento e avaliação de resultados (client) › (d) &quot;não se aplica&quot; vem sugerida quando não houve encaminhamento — e é alterável (7.4s)
+  ✓  12 [chromium-tenant] › tests/client/family-follow-up.spec.ts:591:7 › US-ACOMP-03 — desligamento e avaliação de resultados (client) › (b) concluir sem a avaliação é recusado, e o acompanhamento continua vigente (7.9s)
+  ✓  13 [chromium-tenant] › tests/client/family-follow-up.spec.ts:617:7 › US-ACOMP-03 — desligamento e avaliação de resultados (client) › (e) a combinação incoerente pede confirmação — e, confirmada, é salva como informada (9.8s)
+  ✓  14 [chromium-tenant] › tests/client/family-follow-up.spec.ts:665:7 › US-ACOMP-03 — desligamento e avaliação de resultados (client) › (a) o desligamento aparece no prontuário com a avaliação ao lado (6.6s)
+  ✓  15 [chromium-tenant] › tests/client/family-follow-up.spec.ts:688:7 › US-ACOMP-03 — desligamento e avaliação de resultados (client) › (f) a avaliação não tem ação de excluir nem de editar — e não há reabertura (6.6s)
+  ✓  16 [chromium-tenant] › tests/client/family-follow-up.spec.ts:709:7 › US-ACOMP-03 — desligamento e avaliação de resultados (client) › reingresso após desligamento é aceito, e a linha anterior permanece intacta (9.2s)
+  ✓  17 [chromium-tenant] › tests/client/family-follow-up.spec.ts:821:7 › US-SCFV-02 — participação em serviços no prontuário (client) › (h) família sem participação mostra o estado vazio, não uma tabela vazia (6.6s)
+  ✓  18 [chromium-tenant] › tests/client/family-follow-up.spec.ts:838:7 › US-SCFV-02 — participação em serviços no prontuário (client) › (e) data futura é barrada no próprio formulário (6.6s)
+  ✓  19 [chromium-tenant] › tests/client/family-follow-up.spec.ts:856:7 › US-SCFV-02 — participação em serviços no prontuário (client) › (b) local fora da unidade exige a identificação de onde acontece (8.1s)
+  ✓  20 [chromium-tenant] › tests/client/family-follow-up.spec.ts:881:7 › US-SCFV-02 — participação em serviços no prontuário (client) › (CA15) o serviço &quot;Outros&quot; exige descrição; os demais não (8.1s)
+  ✓  21 [chromium-tenant] › tests/client/family-follow-up.spec.ts:899:7 › US-SCFV-02 — participação em serviços no prontuário (client) › (CA04) integrante desvinculado não é oferecido na escolha (7.4s)
+  ✓  22 [chromium-tenant] › tests/client/family-follow-up.spec.ts:915:7 › US-SCFV-02 — participação em serviços no prontuário (client) › (a) registra a participação no SCFV para idosos — happy path (10.2s)
+  ✓  23 [chromium-tenant] › tests/client/family-follow-up.spec.ts:945:7 › US-SCFV-02 — participação em serviços no prontuário (client) › (c) segundo registro no mesmo serviço é recusado, apontando o existente (10.3s)
+  ✓  24 [chromium-tenant] › tests/client/family-follow-up.spec.ts:1008:7 › US-SCFV-02 — participação em serviços no prontuário (client) › (d) a mesma pessoa participa de serviços diferentes ao mesmo tempo (10.1s)
+  ✓  25 [chromium-tenant] › tests/client/family-follow-up.spec.ts:1027:7 › US-SCFV-02 — participação em serviços no prontuário (client) › (f) cancelar com motivo mantém a linha no prontuário, marcada (7.7s)
+  ✓  26 [chromium-tenant] › tests/client/family-follow-up.spec.ts:1233:7 › US-ACOMP-04 — acesso ao prontuário pela unidade que acompanha (client) › (a) quando a minha unidade acompanha, o prontuário da família de outra unidade abre (5.9s)
+  ✓  27 [chromium-tenant] › tests/client/family-follow-up.spec.ts:1244:7 › US-ACOMP-04 — acesso ao prontuário pela unidade que acompanha (client) › (b) o acesso é ao prontuário INTEIRO — composição, atendimentos e encaminhamentos (6.0s)
+  ✓  28 [chromium-tenant] › tests/client/family-follow-up.spec.ts:1261:7 › US-ACOMP-04 — acesso ao prontuário pela unidade que acompanha (client) › (c) cancelado NÃO concede: o acesso fecha, e a negativa declara os dois eixos sem nomear unidade (12.7s)
+  ✓  29 [chromium-tenant] › tests/client/family-follow-up.spec.ts:1308:7 › US-ACOMP-04 — acesso ao prontuário pela unidade que acompanha (client) › DESLIGADO mantém o acesso — só o cancelamento fecha (US-ACOMP-03 destrava este par) (17.4s)
+  ✓  30 [chromium-tenant] › tests/client/family-follow-up.spec.ts:1463:7 › US-ACOMP-05 — contadores de acompanhamento na apuração (client) › (a) os contadores do 15.6 e do 15.7 aparecem ACESOS, onde antes diziam indisponível (55ms)
+  ✓  31 [chromium-tenant] › tests/client/family-follow-up.spec.ts:1485:7 › US-ACOMP-05 — contadores de acompanhamento na apuração (client) › (b) os quatro perfis indisponíveis são IDENTIFICADOS com a fase de que dependem (57ms)
+  ✓  32 [chromium-tenant] › tests/client/family-follow-up.spec.ts:1527:7 › US-ACOMP-05 — contadores de acompanhamento na apuração (client) › (c) o ponto de atenção lista acompanhamentos vigentes sem nenhum atendimento (25ms)
+  ✓  33 [chromium-tenant] › tests/client/family-follow-up.spec.ts:1543:7 › US-ACOMP-05 — contadores de acompanhamento na apuração (client) › (e) unidade sem nenhum acompanhamento aparece com ZERO DECLARADO (29ms)
+  ✓  34 [chromium-tenant] › tests/client/family-follow-up.spec.ts:1661:7 › US-SCFV-03 — contadores do leiaute 15.8 na apuração (client) › (a) os sete contadores do 15.8 aparecem, agrupados pela NATUREZA de cada contagem (57ms)
+  ✓  35 [chromium-tenant] › tests/client/family-follow-up.spec.ts:1699:7 › US-SCFV-03 — contadores do leiaute 15.8 na apuração (client) › (b) idosos é contado pelo SERVIÇO — a tela explica o escopo (32ms)
+  ✓  36 [chromium-tenant] › tests/client/family-follow-up.spec.ts:1720:7 › US-SCFV-03 — contadores do leiaute 15.8 na apuração (client) › (c) idoso em SCFV que não é o de idosos pode não contar em faixa alguma — e a tela avisa (11.7s)
+  ✓  37 [chromium-tenant] › tests/client/family-follow-up.spec.ts:1782:7 › US-SCFV-03 — contadores do leiaute 15.8 na apuração (client) › (e) unidade sem participação aparece com ZERO DECLARADO (33ms)
+
+  37 passed (4.5m)</pre>
+<footer>SigSUAS — eSUAS · Dossiê de aceite gerado a partir de execução real contra a stack E2E · US-SCFV-03 · o leiaute 15.8 fecha por completo</footer>
+</div></body></html>

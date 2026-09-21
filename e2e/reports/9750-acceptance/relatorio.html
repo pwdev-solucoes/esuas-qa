@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — HU #9750 (Visualizar resultado consolidado da importação)</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:980px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-wrap:wrap; gap:14px; margin-top:12px; }
+  figure { margin:0; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:300px; background:#fff; }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:11px; color:var(--muted); padding:6px 8px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { .evid, section.ca { break-inside:avoid; } figure { width:280px; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — HU #9750 (Visualizar resultado consolidado da importação)</h1>
+    <div class="sub">Sprint 8 · HU #9750 (fatia HU03) · Evidências end-to-end no client</div>
+    <div class="meta"><div><span>Gerado em:</span> 30/06/2026</div><div><span>Branch:</span> sprint8-cadunico</div><div><span>Spec:</span> .planning/specs/sprint8/9750-conformidade-resultado-consolidado.md</div><div><span>Ambiente:</span> API Sail/PostgreSQL (api-laravel.test-1) · fila cadunico · client Vite :5175 (não-mock)</div><div><span>Organização (tenant):</span> Organização E2E CadÚnico · IBGE 2304400 (Fortaleza/CE)</div><div><span>Massa de dados:</span> e2e/fixtures/cadunico/massa-dados/ (remessa1 + remessa2)</div><div><span>Ferramenta:</span> playwright-cli (Chromium) + Pest</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">HU #9750 cobre a visualização do resultado consolidado da importação (CA08). Foram evidenciados ao vivo no client os 6 itens exigidos: na sheet de detalhe de cada lote — Total de Registros Analisados, Novas Famílias Criadas, Famílias Atualizadas por Data, Registros Ignorados, Total de Linhas com Erros — e a lista detalhada dos motivos das falhas. O histórico do tenant lista os lotes com status (processamento × sincronização), data e o executor com o sufixo [Master] (RN05/RN08), restrito ao próprio tenant (RN10). A suíte Pest (37 testes, 126 asserções, 100% verde) acompanha como apêndice.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA08</td><td>Exibição de métricas detalhadas (resultado consolidado)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA08">
+      <h2>CA08 — Exibição de métricas detalhadas (resultado consolidado) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o processamento do lote foi finalizado em segundo plano
+Quando o usuário acessa a tela de resultado ou consulta o histórico
+Então devem ser exibidos os contadores de negócio (Total de Registros Analisados, Novas Famílias Criadas, Famílias Atualizadas por Data, Registros Ignorados, Total de Linhas com Erros) e a lista detalhada dos motivos das falhas</p>
+      <p class="steps"><strong>Como foi testado:</strong> Logado como <b>Master</b>, na tela <code>Importações do CadÚnico</code>: (1) o <b>histórico</b> lista os lotes com status, data e executor; (2) <code>Ver detalhes</code> abre a sheet com o <b>Resumo da sincronização</b> (5 contadores) e a seção <b>Erros de linha</b> com os motivos. Massa: remessa1 (11 criadas + 2 erros) e remessa2 (1 criada, 2 atualizadas, 1 ignorada).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Histórico: 2 lotes do tenant, com status "Processamento do arquivo"/"Sincronização das famílias", data e "Enviado por E2E Master CadÚnico [Master]" (RN05/RN08); só do próprio tenant (RN10).</li><li>Detalhe remessa2 — Resumo da sincronização: Total analisado 5, Novas famílias 1, Atualizadas por data 2, Ignoradas por sincronização 1, Linhas com erro 0.</li><li>Detalhe remessa1 — Total analisado 17, Novas famílias 11, Linhas com erro 2, com a seção "Erros de linha (2)" listando os motivos: missing_family_code ("Código Familiar ausente no bloco.") e invalid_date ("Data de última atualização (dat_atual_fam) inválida.") — sem PII (RN07/RN09).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca08-historico.png" alt="CA08 evidência"/><figcaption>ca08-historico.png</figcaption></figure><figure><img src="screenshots/ca08-detalhe-remessa2.png" alt="CA08 evidência"/><figcaption>ca08-detalhe-remessa2.png</figcaption></figure><figure><img src="screenshots/ca08-detalhe-remessa1-erros.png" alt="CA08 evidência"/><figcaption>ca08-detalhe-remessa1-erros.png</figcaption></figure></div>
+    </section>
+  
+  <h2>Anexo — Cobertura automatizada (Pest — suíte CadÚnico completa, 37 testes / 126 asserções)</h2>
+  <pre class="pest">
+   PASS  Tests\Unit\Models\CadunicoImportErrorTest
+  ✓ it is tenant-scoped and immutable (no updated_at)                    0.53s  
+  ✓ it casts raw_row to array and line_number to integer                 0.01s  
+  ✓ it persists raw_row as json and relates to its import                0.13s  
+
+   PASS  Tests\Unit\Models\CadunicoImportTest
+  ✓ it uses tenant scope, soft deletes, HasUuid and LogsActivity         0.02s  
+  ✓ it casts both statuses to their enums and defaults them              0.01s  
+  ✓ it casts counters to integers                                        0.01s  
+  ✓ it generates a uuid on create and resolves route by uuid             0.02s  
+  ✓ it relates to tenant, executor and errors                            0.02s  
+  ✓ it hydrates the completed and synced factory states                  0.02s  
+
+   PASS  Tests\Feature\Api\Client\CadunicoImportControllerTest
+  ✓ it validates a well-formed CSV and returns an upload token (CA01)    0.10s  
+  ✓ it rejects a CSV from a different município (RN01)                   0.04s  
+  ✓ it rejects validation when the tenant has no município configured    0.03s  
+  ✓ it rejects a CSV with a divergent header (CA02)                      0.03s  
+  ✓ it blocks validation when an import is already active (RN11/CA07)    0.03s  
+  ✓ it confirms the import and queues stage 1 (HU02)                     0.03s  
+  ✓ it records the executor label with [Master] suffix when not a profe… 0.03s  
+  ✓ it rejects store with an unknown upload token                        0.03s  
+  ✓ it does not sync an import that is not completed                     0.03s  
+  ✓ it queues stage 2 when the import is completed (Etapa 2 manual)      0.03s  
+  ✓ it blocks sync when another batch is active in the tenant (RN11)     0.03s  
+  ✓ it lists only the tenant own history (CA12)                          0.04s  
+  ✓ it returns 404 for a cross-tenant import (CA12/RN10)                 0.03s  
+  ✓ it hides the module from an operador without the permission (CA03)   0.03s  
+  ✓ it stores a generic failure message without leaking exception detai… 0.03s  
+
+   PASS  Tests\Feature\Services\Cadunico\CadunicoIngestServiceTest
+  ✓ it loads persons (1 per row), dedups families and captures the muni… 0.02s  
+  ✓ it sanitizes CPF/NIS digits in the staging (RN09)                    0.02s  
+  ✓ it throws when the header is missing required columns                0.02s  
+
+   PASS  Tests\Feature\Services\Cadunico\CadunicoSyncServiceTest
+  ✓ it creates a new family, domicile and members (CA04)                 0.06s  
+  ✓ it updates by newer date and unlinks absent members without deletin… 0.06s  
+  ✓ it ignores the block when the file date is not newer (CA06)          0.05s  
+  ✓ it catalogs a block with missing update date (RN07)                  0.05s  
+  ✓ it creates the family but catalogs a member without CPF as a warnin… 0.06s  
+  ✓ it discards the block when the responsible has no CPF (RN07)         0.05s  
+  ✓ it parses income in both decimal formats (#1)                        0.05s  
+  ✓ it snapshots the responsible CPF on the family (#2)                  0.05s  
+  ✓ it updates the SAME family when CadÚnico reissues the code, by resp… 0.05s  
+  ✓ it does not mass-unlink when the new block has members without NIS…  0.06s  
+
+  Tests:    37 passed (126 assertions)
+  Duration: 2.37s
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

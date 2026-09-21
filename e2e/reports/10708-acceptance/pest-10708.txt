@@ -1,0 +1,66 @@
+
+   PASS  Tests\Unit\Models\AttendanceTypeTest
+  ✓ it has correct fillable, casts and defaults                          0.90s  
+  ✓ it uses soft deletes, HasUuid, LogsActivity and resolves by uuid     0.10s  
+  ✓ it is a GLOBAL lookup — never tenant-scoped (RN04/RN10)              0.03s  
+  ✓ it has no global scope of is_active — history and remittance never…  0.03s  
+  ✓ it keeps the remittance rule as data, cast to the enum (RN03/D03)    0.03s  
+  ✓ it accepts NULL as a legitimate remittance counter value (CA03)      0.03s  
+  ✓ it enforces unique code — even against soft-deleted rows (RN02)      0.03s  
+  ✓ it configures the activity log with the audited fields (RN07/§14)    0.02s  
+
+   PASS  Tests\Feature\Api\AttendanceTypeControllerTest
+  ✓ it lists attendance types exposing uuid and the remittance rule — n… 0.11s  
+  ✓ it shows the remittance counter with its label (CA02)                0.03s  
+  ✓ it shows NULL counter as an explicit "no specific counter" label (C… 0.08s  
+  ✓ it creates an attendance type with the code informed by the admin (… 0.06s  
+  ✓ it rejects a duplicate code (CA04)                                   0.03s  
+  ✓ it requires code and name — the code is never generated (CA04)       0.03s  
+  ✓ it rejects a remittance counter outside the enum                     0.03s  
+  ✓ it audits the change of the remittance rule with old and new values… 0.03s  
+  ✓ it exposes the audit trail with causer and pagination (CA09)         0.03s  
+  ✓ it soft deletes an attendance type                                   0.03s  
+  ✓ it bulk deactivates and bulk activates attendance types, logging th… 0.03s  
+  ✓ it filters actives for the new-entry select, and returns inactives…  0.03s  
+  ✓ it filters by remittance_counter                                     0.03s  
+  ✓ it blocks write without permission                                   0.03s  
+  ✓ it refuses to delete a type in use with 422, guiding deactivation (… 0.03s  
+  ✓ it still soft deletes a type NOT referenced by any consumer (CA05)   0.03s  
+  ✓ it ignores a registered consumer whose table does not exist yet (D0… 0.04s  
+  ✓ it bulk destroy is ATOMIC: one item in use blocks all and is identi… 0.04s  
+  ✓ it rejects soft-deleted uuids in every bulk action at validation ti… 0.04s  
+  ✓ it bulk destroys unused types, logging the bulk event with author (… 0.04s  
+  ✓ it gives the admin_operador read-only access — every write is 403 (… 1.56s  
+  ✓ it lets the ADMIN role exercise all eight abilities end to end       1.37s  
+  ✓ it rejects client-guard tokens on every write route with 401, creat… 0.04s  
+  ✓ it keeps the shared read alive for the client guard — the tenant se… 0.03s  
+
+   PASS  Tests\Feature\Seeders\AttendanceTypeSeederTest
+  ✓ it seeds the eight attendance types of the instrument — codes 1..7…  0.04s  
+  ✓ it carries the remittance rule of RN03 as data — three counters, fi… 0.03s  
+  ✓ it is idempotent — running the seeder twice does not duplicate nor…  0.03s  
+
+  Tests:    35 passed (166 assertions)
+  Duration: 5.78s
+
+
+===== SyncPermissionsTest (contrato de permissoes — CA08/RN08) =====
+
+   PASS  Tests\Feature\Console\SyncPermissionsTest
+  ✓ it extracts the can: abilities declared by controllers from the rou… 0.49s  
+  ✓ it keeps full parity with the previous hardcoded permission set (no… 0.03s  
+  ✓ it seeds permissions for both guards and assigns them to roles       1.45s  
+  ✓ it runs permissions:sync idempotently without duplicating permissio… 3.36s  
+  ✓ it prunes orphan permissions not present in the registry             5.39s  
+  ✓ it does not write anything on --dry-run                              0.13s  
+  ✓ it does not assign RESTRICTED_PERMISSIONS to any role                1.52s  
+  ✓ it permissions:sync --coverage fails when an authenticated route ha… 1.43s  
+  ✓ it never mirrors any platform-versions ability into the client guar… 1.54s  
+  ✓ it never mirrors any cbo-access-profiles ability into the client gu… 1.59s  
+  ✓ it grants the Operacional Global read-only access to the CBO map (H… 1.80s  
+  ✓ it keeps attendance-types write abilities out of the client guard r… 1.98s  
+  ✓ it grants the Operacional Global read-only access to attendance typ… 1.54s  
+
+  Tests:    13 passed (115 assertions)
+  Duration: 22.82s
+

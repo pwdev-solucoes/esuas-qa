@@ -1,0 +1,156 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — US-BENEF-02",
+    "subtitle": "Épico HU-PRONT-BENEF (fase F5) · Registrar a concessão de benefício eventual no prontuário da família",
+    "rows": [
+      [
+        "Gerado em",
+        "15/09/2026"
+      ],
+      [
+        "História",
+        "US-BENEF-02 — Registrar a concessão de benefício eventual"
+      ],
+      [
+        "Spec",
+        ".planning/specs/US-BENEF-02-registrar-concessao-de-beneficio.md"
+      ],
+      [
+        "Branch",
+        "feature/benef-prontuario-bloco-12"
+      ],
+      [
+        "Commits (api/)",
+        "b723e27 · 7c00efb · 129fe56 · 96318f4 · 4319e4e · 5ad3c6f · 2abd505"
+      ],
+      [
+        "Commits (client/)",
+        "1db8a39 · 1f37365"
+      ],
+      [
+        "Commits (e2e/)",
+        "a ser fixado pelo orquestrador junto com este dossiê"
+      ],
+      [
+        "Ambiente",
+        "Stack E2E Docker · API em :8090 · client em :4174 · base recém-semeada, com massa acumulada de execuções anteriores"
+      ],
+      [
+        "Perfil usado",
+        "Operacional do Tenant (guard client), sessão herdada de tenant-auth.setup"
+      ],
+      [
+        "Ferramenta",
+        "Playwright (Chromium) + Pest 4"
+      ]
+    ]
+  },
+  "summary": "Quinze critérios de aceite (CA01–CA14, com o CA05b do tipo \"Outros\"). Seis evidenciados no navegador (CA01, CA02, CA03, CA05, CA07 e CA10, com sete prints) e nove cobertos pela suíte automatizada (CA04, CA05b, CA06, CA08, CA09, CA11, CA12, CA13, CA14). A suíte fecha com 28 testes e 160 asserções, distribuídos em FamilyEventualBenefitTest, FamilyEventualBenefitLifecycleTest, FamilyEventualBenefitShowTest e a isolação de tenant. Os 8 cenários Playwright passam contra base recém-semeada e persistente, compartilhada com outros specs da fase. Nenhum critério em falha. O CA08 (aviso de remessa) fica fora do E2E por ausência de massa — ver Observações e ressalvas.",
+  "criteria": [
+    {
+      "id": "CA01",
+      "title": "Registrar cesta básica (happy path)",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "ca01-registra-uma-cesta-basica-com-data-tipo-unidade-e-assinatura-concessao-registrada.png"
+      ]
+    },
+    {
+      "id": "CA02",
+      "title": "Auxílio natalidade exige o registro de nascimento",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "ca02-os-campos-condicionais-sao-exigidos-com-erro-no-campo-erro-natalidade-sem-registro.png"
+      ]
+    },
+    {
+      "id": "CA03",
+      "title": "Auxílio funeral exige o CPF da pessoa falecida",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "ca03-os-campos-condicionais-sao-exigidos-com-erro-no-campo-erro-funeral-sem-cpf.png"
+      ]
+    },
+    {
+      "id": "CA04",
+      "title": "Pessoa falecida não precisa integrar a família",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "CA05",
+      "title": "Campos condicionais não aparecem (nem são aceitos) nos demais tipos",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "ca05-o-campo-condicional-aparece-no-funeral-e-some-no-aluguel-soc-campo-cpf-aparece-no-funeral.png",
+        "ca05-o-campo-condicional-aparece-no-funeral-e-some-no-aluguel-soc-sem-campos-condicionais-no-aluguel.png"
+      ]
+    },
+    {
+      "id": "CA05b",
+      "title": "O tipo \"Outros\" exige a observação",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "CA06",
+      "title": "Repetição do mesmo benefício no mesmo mês",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "ca06-repetir-a-mesma-cesta-basica-no-mesmo-mes-nao-e-bloqueado.png"
+      ]
+    },
+    {
+      "id": "CA07",
+      "title": "Data futura recusada",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "ca07-data-futura-e-recusada-erro-data-futura.png"
+      ]
+    },
+    {
+      "id": "CA08",
+      "title": "Retroativo em período já declarado",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "CA09",
+      "title": "Observação fora da trilha de auditoria",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "CA10",
+      "title": "Cancelar em vez de excluir",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "ca10-cancelar-exige-motivo-mantem-a-linha-marcada-e-nao-existe-ex-concessao-cancelada.png"
+      ]
+    },
+    {
+      "id": "CA11",
+      "title": "Acesso pela unidade que acompanha",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "CA12",
+      "title": "Negativa declara o motivo",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "CA13",
+      "title": "Isolamento entre municípios",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "CA14",
+      "title": "Conceder não é encaminhar",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+
+   PASS  Tests\Feature\Dashboard\TerritorialTest
+  ✓ it ranks neighborhoods by family volume desc and applies Top-N (CA-… 0.61s  
+  ✓ it counts null income as extreme poverty in the extreme-poverty ran… 0.06s  
+  ✓ it partitions the domicile situation into urban/rural/not-informed…  0.07s  
+  ✓ it keeps rankings municipal (only highlighting) while domicile reca… 0.09s  
+  ✓ it returns empty rankings and zeroed domicile when the scope has no… 0.04s  
+  ✓ it returns 422 for a neighborhood_uuid outside the tenant municipal… 0.05s  
+  ✓ it returns 422 for a limit out of the 1..100 range (RN06)            0.04s  
+  ✓ it denies the panel to the base operator without the dedicated role  0.04s  
+  ✓ it grants the panel to the Master without any add-on role            0.04s  
+
+   PASS  Tests\Feature\TenantIsolation\DashboardTerritorialIsolationTest
+  ✓ it never counts families or neighborhoods from another tenant in th… 0.06s  
+
+  Tests:    10 passed (58 assertions)
+  Duration: 1.20s
+

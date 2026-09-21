@@ -1,0 +1,59 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — HU #9752",
+    "subtitle": "Consultar histórico de importações realizadas · Sprint 8 · Evidências end-to-end no client",
+    "rows": [
+      ["Gerado em", "30/06/2026"],
+      ["HU", "#9752 — Consultar histórico de importações realizadas (HU05 da spec)"],
+      ["Branch", "sprint8-cadunico"],
+      ["Spec", ".planning/specs/sprint8/cadunico-imports-importacao-cadastro-unico.md (§5 CA11/CA12, §7 Fluxo D, RN05/RN08/RN10)"],
+      ["Ambiente", "API Sail/PostgreSQL (:80) · fila cadunico · client Vite (:5175)"],
+      ["Organização (tenant)", "CA11: E2E CadÚnico · CA12: PMA + PMM (usuário multi-tenant)"],
+      ["Dados", "CA11: 2 lotes reais no tenant E2E (remessa1/2). CA12: lotes próprios em PMA e PMM"],
+      ["Ferramenta", "playwright-cli (Chromium) + Pest"]
+    ]
+  },
+  "summary": "História de auditoria/gestão: o histórico de importações do CadÚnico do tenant, com data/hora, nome do arquivo, resultado estatístico e executor (RN05), isolado por município (RN10). Foram verificados os 2 critérios de aceite — CA11 (histórico auditável) dirigido ao vivo no client, e CA12 (isolamento multi-tenant) demonstrado na UI com um mesmo usuário vinculado a duas organizações (PMA e PMM): ao trocar a organização ativa, o histórico muda para os lotes do respectivo município, sem vazamento entre tenants — reforçado pela suíte Pest (listagem só do tenant + 404 cross-tenant). Resultado: CA11 e CA12 ATENDIDOS.",
+  "cas": [
+    {
+      "id": "CA11",
+      "title": "Consulta ao histórico auditável",
+      "status": "nav",
+      "gherkin": "Dado que sou Master ou um Profissional com permissão, Quando visito o menu de Histórico de Importações, Então visualizo uma listagem cronológica indicando a data/hora, nome do arquivo, resultado estatístico e o nome do Profissional ou Usuário (RN05) que executou o procedimento.",
+      "steps_html": "Logado como <b>Master</b> (CPF 52998224725), acessar <code>Cadastros › Importações do CadÚnico</code>. Conferir a listagem e, em um lote, abrir <b>Mais ações › Ver detalhes</b> para inspecionar o resultado estatístico.",
+      "results": [
+        "Listagem cronológica (mais recente no topo) com as colunas Arquivo, Tamanho, Processamento do arquivo, Sincronização das famílias, Concluída em e Ações.",
+        "Cada lote exibe o nome do arquivo (massa-cadunico-remessa1.csv / remessa2.csv) e o executor \"Enviado por E2E Master CadÚnico [Master]\" — RN05: o executor é Master sem cadastro de Profissional local, então o nome do Usuário Global recebe o sufixo [Master].",
+        "Status por etapa (\"Concluída\" / \"Sincronizada\") e data/hora de conclusão (ex.: 30/06/2026, 06:35).",
+        "No detalhe do lote, o \"Resumo da sincronização\" traz o resultado estatístico (RN08): Total analisado 5, Novas famílias 1, Atualizadas por data 2, Ignoradas por sincronização 1, Linhas com erro 0.",
+        "Pest (apêndice): \"it records the executor label with [Master] suffix when not a professional\" cobre a regra RN05."
+      ],
+      "images": [
+        "screenshots/ca11-historico-lista.png",
+        "screenshots/ca11-detalhe-estatistico.png"
+      ]
+    },
+    {
+      "id": "CA12",
+      "title": "Garantia de isolamento multi-tenant",
+      "status": "nav",
+      "gherkin": "Dado que estou consultando o histórico de importações, Quando a lista é carregada, Então o sistema exibe apenas os lotes processados no meu próprio município, impossibilitando a visualização de dados ou atividades de outros tenants da plataforma.",
+      "steps_html": "Demonstração com um <b>mesmo usuário vinculado a duas organizações</b> — o coordenador João Coordenador (CPF 15543849079), Master em <b>PMA</b> (Prefeitura de Arapiraca) e <b>PMM</b> (Prefeitura de Maceió). Ao logar, o sistema apresenta o gate <code>Selecione a organização</code>. Entrando em <b>PMA</b>, abrir <code>Importações do CadÚnico</code> e conferir o histórico; em seguida, trocar a sessão para <b>PMM</b> (re-login → selecionar a outra organização → o interceptor passa a enviar outro <code>X-Tenant-UUID</code>) e conferir o histórico novamente. Os dois conjuntos devem ser <b>disjuntos</b>.",
+      "results": [
+        "Em PMA, o histórico exibe somente os lotes de Arapiraca (arapiraca-cadunico-2026-05.csv e -06.csv).",
+        "Trocando a sessão para PMM, o mesmo usuário vê somente o lote de Maceió (maceio-cadunico-2026-06.csv) — nenhum lote de PMA aparece, e vice-versa.",
+        "Isolamento confirmado para o mesmo usuário em organizações diferentes: o histórico segue o tenant ativo (header X-Tenant-UUID → Global Scope BelongsToTenant), sem qualquer vazamento entre municípios (RN10).",
+        "Pest (apêndice): \"it lists only the tenant own history (CA12)\" confirma a listagem escopada e \"it returns 404 for a cross-tenant import (CA12/RN10)\" confirma o bloqueio de acesso, pela rota, a um lote de outro tenant."
+      ],
+      "images": [
+        "screenshots/ca12-select-tenant.png",
+        "screenshots/ca12-pma-historico.png",
+        "screenshots/ca12-pmm-historico.png"
+      ]
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Pest — CadunicoImportControllerTest)",
+    "file": "pest-hu9752.txt"
+  }
+}

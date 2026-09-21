@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — HU #9865 Painel de Resumo por Setor Censitário e Busca de Território</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — HU #9865 Painel de Resumo por Setor Censitário e Busca de Território</h1>
+    <div class="sub">Painel de Georreferenciamento (rota /georreferenciamento) · módulo client · Evidências end-to-end no app real</div>
+    <div class="meta"><div><span>Gerado em:</span> 10/07/2026</div><div><span>História:</span> HU #9865 — Painel de Resumo por Unidade Territorial (Setor Censitário) e Busca de Território</div><div><span>Critérios:</span> CA06, CA07 e CA08 (3 critérios)</div><div><span>Submódulos:</span> client 99e397d · api 7731b50 (branch feature/geo-9862-google-satelite-zindex, base develop)</div><div><span>Ambiente:</span> API Sail/PostgreSQL · client Vite :5175 (não-mock) → http://localhost/api</div><div><span>Organização (tenant):</span> Maceió Geo (massa geo) · 12 famílias geocodificadas · 1.620 setores censitários</div><div><span>Perfil de acesso:</span> Master (CPF 27043020140) com geo-panel.view — RN10/RN21</div><div><span>Ferramenta:</span> playwright-cli (Chromium, viewport 1680×1050) + Vitest + Pest</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">Os 3 critérios de aceite da HU #9865 sobre o resumo por unidade territorial (setor censitário) e a busca de território foram verificados dirigindo o app real no navegador (tenant Maceió Geo) e reforçados pela suíte automatizada — todos ATENDIDOS. CA06: com um filtro de vulnerabilidade aplicado (Bolsa Família, 5 famílias) e as manchas de calor no mapa, o painel lateral (Resumo analítico → “Distribuição por setor censitário”) lista os códigos das Unidades Territoriais com as respectivas contagens de famílias afetadas. CA07: pesquisando e selecionando o código de um setor específico (270430205060001) na barra de pesquisa do mapa (combobox “Setor censitário”, busca por código IBGE), o mapa foca automaticamente no perímetro desse setor e o resumo passa a exibir apenas a linha e os indicadores dessa unidade territorial (Famílias nos filtros ativos: 1, um único setor na distribuição). CA08: a métrica fixa “Famílias com Endereço Inconsistente: 1” é exibida de forma permanente no cabeçalho e na faixa de resumo, indicando a volumetria total do município (RN07). Cobertura automatizada: Vitest do GeoPanelSectorCombobox (16 testes) + Pest de geo (agregação por setor, restrição/validação de setor RN08, indicador fixo RN07).</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA06</td><td>Atualização estatística por Setor Censitário</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA07</td><td>Isolamento de dados por busca de Setor Censitário</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA08</td><td>Visibilidade de endereços inconsistentes (métrica fixa RN07)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA06">
+      <h2>CA06 — Atualização estatística por Setor Censitário <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que apliquei um filtro de vulnerabilidade, Quando as manchas de calor aparecem no mapa, Então o painel lateral exibe os códigos das Unidades Territoriais (Setores Censitários) com suas respectivas contagens de famílias afetadas.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Aplicado o filtro <b>Bolsa Família</b> (5 famílias) na Busca avançada e expandida a faixa <b>Resumo analítico</b> na parte inferior do painel, com as manchas de calor projetadas no mapa.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O painel “Distribuição por setor censitário” lista os códigos das Unidades Territoriais (270430205060001, 270430205070115, 270430205080097, 270430205100065, 270430205110048) com as respectivas contagens de famílias afetadas.</li><li>O indicador “Famílias nos filtros ativos: 5” consolida o total sob o filtro aplicado.</li><li>Pest: GeoPanelQueryServiceTest/GeoPanelTest cobrem a agregação por setor sob os filtros ativos (ver Anexo).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca06-distribuicao-setores.png" alt="CA06 evidência"/><figcaption>ca06-distribuicao-setores.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA07">
+      <h2>CA07 — Isolamento de dados por busca de Setor Censitário <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que pesquiso e seleciono o código de um setor censitário específico na barra de pesquisa do mapa, Quando a ação é processada, Então o mapa foca automaticamente no perímetro desse setor e o painel lateral de resumos passa a exibir apenas a linha e os indicadores estatísticos dessa unidade territorial.</p>
+      <p class="steps"><strong>Como foi testado:</strong> No campo <b>Setor censitário</b> da Busca avançada (combobox “Pesquisar por código IBGE ou nome…”), digitado e selecionado o código <b>270430205060001</b>; em seguida <b>Buscar</b> → <b>Aplicar no mapa</b>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A barra de pesquisa filtra os setores pelo código IBGE digitado e permite selecionar a Unidade Territorial desejada.</li><li>Ao aplicar, o mapa foca automaticamente (auto-zoom) no perímetro do setor 270430205060001 (nível de rua) e o setor entra como filtro ativo.</li><li>O painel lateral de resumos passa a exibir apenas a linha desse setor: “Famílias nos filtros ativos: 1” e um único setor (270430205060001) na Distribuição por setor censitário.</li><li>Pest: GeoPanelQueryServiceTest confirma a restrição por sector_uuid e a validação de que o setor pertence ao município do tenant (RN08) — ver Anexo.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca07-busca-setor.png" alt="CA07 evidência"/><figcaption>ca07-busca-setor.png</figcaption></figure><figure><img src="screenshots/ca07-isolamento-setor.png" alt="CA07 evidência"/><figcaption>ca07-isolamento-setor.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA08">
+      <h2>CA08 — Visibilidade de endereços inconsistentes (métrica fixa RN07) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o painel de georreferenciamento está aberto, Quando olho para os indicadores laterais, Então visualizo de forma fixa a métrica "Famílias com Endereço Inconsistente: X", indicando a volumetria total do município.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Observado o cabeçalho e a faixa de <b>Resumo analítico</b> do painel, em qualquer estado (neutro ou com filtro aplicado).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A métrica “Famílias com Endereço Inconsistente: 1” é exibida de forma fixa no cabeçalho do painel e na faixa de resumo, independentemente dos filtros — indicando a volumetria total do município.</li><li>Pest: GeoPanelTest confirma que o indicador fixo (RN07) está sempre presente no resumo, mesmo sem filtro (ver Anexo).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca08-endereco-inconsistente.png" alt="CA08 evidência"/><figcaption>ca08-endereco-inconsistente.png</figcaption></figure></div>
+    </section>
+  
+  <h2>Anexo — Cobertura automatizada — Vitest GeoPanelSectorCombobox + Pest de geo (agregação/restrição por setor, RN07/RN08)</h2>
+  <pre class="pest">=== frontend: combobox test (se houver) ===
+
+ RUN  v2.1.9 /Users/paulosoares/Projetos/esuas-all/client
+
+ ✓ src/modules/geo-panel/components/GeoPanelSectorCombobox.test.ts (16 tests) 55ms
+
+ Test Files  1 passed (1)
+      Tests  16 passed (16)
+   Start at  05:32:01
+   Duration  694ms (transform 80ms, setup 11ms, collect 149ms, tests 55ms, environment 268ms, prepare 43ms)
+
+
+=== backend: agregação por setor, restrição de setor (RN08) e indicador fixo (RN07) ===
+  ✓ it restricts by sector_uuid (SQLite fallback: sector city = family…  0.02s  
+  ✓ it aggregates by sector, groups anonymous points and computes the b… 0.02s  
+  ✓ it scopes every aggregate to the given tenant (RN01)                 0.02s  
+  ✓ it validates that a sector belongs to the tenant municipality (RN08… 0.01s  
+  ✓ it serves the census sectors of the tenant municipality as a GeoJSO… 0.02s  
+  ✓ it rejects a sector_uuid that belongs to another municipality (RN08… 0.02s  
+  ✓ it always includes the fixed RN07 indicator in the summary, even wi… 0.03s  
+  ✓ it aggregates the summary by census sector under the active filters… 0.03s  
+  Tests:    34 passed (101 assertions)
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

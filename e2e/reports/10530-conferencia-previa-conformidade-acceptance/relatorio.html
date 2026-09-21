@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — HU #10530 · Conferência prévia de conformidade SIAP</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  section.note { border:1px solid var(--line); border-left:4px solid #b06a00; border-radius:6px; padding:10px 14px; margin:10px 0; background:#fffdf7; font-size:13px; }
+  section.note h3 { margin:0 0 6px; font-size:13.5px; color:#8a5200; }
+  section.note p { margin:6px 0; }
+  section.note ul { margin:6px 0 6px 18px; padding:0; }
+  section.note pre { background:var(--bg); border:1px solid var(--line); border-radius:4px; padding:8px; overflow-x:auto; font-size:11px; white-space:pre-wrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — HU #10530 · Conferência prévia de conformidade SIAP</h1>
+    <div class="sub">US-SIAP-02 · Épico HU-SIAP-AS · O município vê quais registros e campos impedem a remessa, pelo nome, com atalho para corrigir</div>
+    <div class="meta"><div><span>Gerado em:</span> 17/08/2026</div><div><span>Capturas anexadas em:</span> 17/08/2026 — client :5175 dirigido via playwright-cli, tenant E2E, cada imagem conferida individualmente quanto a PII</div><div><span>Branch (meta-repo):</span> feature/10530-conferencia-previa-conformidade-siap</div><div><span>Spec (contrato):</span> .planning/specs/10530-conferencia-previa-conformidade-siap.md</div><div><span>Commits api/:</span> 4317730 (etapa 01) · fdb1617 (etapa 02b) · f0cac17 (residual Zona B)</div><div><span>Commits client/:</span> 8abc773 (etapa 02) · 46221dc (etapa 02b) · 733bb67 (residual Zona B)</div><div><span>Ambiente:</span> API Sail :8000 · PostgreSQL :4000 · client Vite :5175 (o :5174 servia o admin — conferido pelo processo) · E2ESeeder</div><div><span>Suíte api:</span> pest --filter=Siap — 245 testes, 1343 asserções, verdes (pest-10530.txt); suíte cheia 3398 passed / 26 skipped</div><div><span>Suíte client:</span> npm run test:run — 183 arquivos, 1429 testes, verdes (vitest-10530.txt)</div><div><span>Ferramenta:</span> playwright-cli (Chromium) + Pest + harness de payloads</div><div><span>LGPD:</span> dados FABRICADOS; nome → 'Maria S. L.' e CPF → 999.***.***-99 em todo artefato versionado</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">Onze critérios de aceite (CA01–CA11, mais os desdobramentos CA03b e CA06b) demonstrados em três camadas: payloads reais do pre-check (payloads/*.json, gerados por harness Pest com mascaramento na gravação), suíte automatizada (245 testes Siap na api + 1429 no client, incluindo os testes dedicados de cada CA) e capturas do client dirigido no navegador para as zonas visíveis. A HU fechou três lacunas (RN03 subject_label, RN04 atalho completo, RN10 Operacional) e corrigiu dois defeitos no caminho: o cartão da pendência de profissional que apontava os Parâmetros TCE/AL (bug §1.2 da spec, o 'antes' está no dossiê da #10529) e o 404 do atalho — inclusive o residual da Zona B, onde o mesmo 404 sobrevivia na lista por leiaute (commits f0cac17 + 733bb67). O follow-up aberto pela #10529 sobre o SiapBlockingIssueCallout está FECHADO.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA01</td><td>Conferência sem pendências — geração liberada</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA02</td><td>Pendência impeditiva com o NOME da unidade e o campo (RN03 — a lacuna central)</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA03</td><td>Atalho leva à FICHA da entidade, não à listagem (D05)</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA03b</td><td>Atalho da pendência de profissional — o bug §1.2 corrigido em TRÊS camadas</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA04</td><td>Pendência de organização (CARDUG) em destaque, separada — e as demais completas</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA05</td><td>Código de domínio sem correspondência → Painel Global, sem atalho de tenant</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA06</td><td>Pendência informativa não bloqueia (aviso da Folha de Pagamento)</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA06b</td><td>Vínculo de prestação de serviço vazio é impeditivo (US-SIAP-08)</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA07</td><td>Correção some na conferência seguinte (RN08 — sem materialização)</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA08</td><td>A conferência não altera cadastro nenhum (RN07 — leitura pura)</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA09</td><td>Isolamento entre municípios</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA10</td><td>Operacional consulta a conferência e NÃO vê a ação de gerar (RN10) — com nota sobre o acesso ao histórico</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA11</td><td>LGPD: o nome não é persistido (D03) — schema E linha gravada</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA01">
+      <h2>CA01 — Conferência sem pendências — geração liberada <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Master, o CARDUG está informado com 6 dígitos E todos os registros de 08/2026 têm os campos obrigatórios preenchidos, quando eu solicitar a conferência de 08/2026, então blocking.can_generate é true, blocking.pendencies é vazio e a ação de gerar a remessa fica disponível.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Harness Pest semeia CARDUG <code>004821</code>, unidade e entidade completas e chama <code>GET /siap-remittances/pre-check?exercise=2026&reference_month=8</code>. Payload íntegro em <code>payloads/CA01-happy-path.json</code>. Teste dedicado: <i>releases the generation when every record is complete (CA01 da #10530)</i>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>blocking.can_generate = true e blocking.pendencies = [] no payload capturado.</li><li>A disponibilidade da ação de gerar na UI é o gate por siap-remittances.store já coberto no CA10 (mesmo mecanismo, visão do Master nos testes de RemessasSiapPage).</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA02">
+      <h2>CA02 — Pendência impeditiva com o NOME da unidade e o campo (RN03 — a lacuna central) <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que a unidade 'CRAS Centro' está sem número MDS, quando eu solicitar a conferência de 08/2026, então a pendência aparece em layouts[UnidadeSocial].pendencies, subject_label é 'CRAS Centro', field_name é 'NumeroMDS', blocks_entire_remittance é true e blocking.can_generate é false.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Payload em <code>payloads/CA02-unidade-sem-mds.json</code>: a mesma pendência aparece na zona de bloqueio E na lista do leiaute (promoção D08 da #10370), com <code>subject_label</code> nas duas visões. No navegador, a conferência exibe 'Registro: CRAS Centro · Campo: NumeroMDS' no cartão. Testes: <i>names the unit without MDS number by its own name (CA02/RN03)</i>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>subject_label = 'CRAS Centro' + field_name = 'NumeroMDS' nas duas zonas; can_generate = false.</li><li>O rótulo é DERIVADO na resposta (resolver em lote, 1 query por subject_type — testes R2) e nunca persistido (ver CA11).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/CA02-pendencia-nomeada-cras-centro.png" alt="CA02 evidência"/><figcaption>CA02-pendencia-nomeada-cras-centro.png</figcaption></figure><figure><img src="screenshots/zona-bloqueio-quatro-cartoes.png" alt="CA02 evidência"/><figcaption>zona-bloqueio-quatro-cartoes.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA03">
+      <h2>CA03 — Atalho leva à FICHA da entidade, não à listagem (D05) <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que existe pendência impeditiva na entidade 'Instituto Esperança' por falta de e-mail, quando eu acionar o atalho da pendência, então sou levado à ficha DESSA entidade (social-entities-detail, param = subject_uuid) e não à listagem de entidades.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Payload em <code>payloads/CA03-entidade-sem-email.json</code>: <code>resolution = {scope: tenant, resource: social-entities, subject_uuid: uuid-da-entidade}</code>. O <code>SiapPendencyLink</code> monta <code>social-entities-detail</code> com esse uuid (mapa DETAIL_ROUTES). Testes: <i>CA03 (D05): leva à ficha DESSA entidade, não à listagem</i> (client) + <i>carries the subject_uuid inside the resolution (RN04)</i> (api).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>resolution.subject_uuid = uuid da própria entidade; o teste do client afirma data-to com social-entities-detail + uuid e not.toContain('social-entities-list').</li><li>No navegador, o clique no atalho abre a ficha da entidade pendente.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/CA03-cartao-atalho-entidade.png" alt="CA03 evidência"/><figcaption>CA03-cartao-atalho-entidade.png</figcaption></figure><figure><img src="screenshots/CA03-ficha-entidade-aberta.png" alt="CA03 evidência"/><figcaption>CA03-ficha-entidade-aberta.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA03b">
+      <h2>CA03b — Atalho da pendência de profissional — o bug §1.2 corrigido em TRÊS camadas <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que existe pendência impeditiva de matrícula em profissional municipal, quando a conferência for exibida, então o cartão oferece atalho para professionals-municipais-detail e NÃO exibe 'Solicite a correção nos Parâmetros TCE/AL'.</p>
+      <p class="steps"><strong>Como foi testado:</strong> TRÊS camadas de evidência, uma por commit: <b>(1)</b> o cartão aponta o cadastro certo — <code>resolution.resource = tenant-professionals</code> com redação própria, sem o texto do CARDUG (client 8abc773); <b>(2)</b> a ficha realmente ABRE — <code>resolution.subject_uuid</code> é o uuid do PROFISSIONAL, e <code>GET /professionals/{uuid}</code> responde 200, enquanto o uuid da LOTAÇÃO (o subject_uuid da pendência) responde 404 (api fdb1617); <b>(3)</b> o MESMO atalho funciona na Zona B — a lista por leiaute serve resolution idêntico ao da zona de bloqueio (api f0cac17 + client 733bb67, o residual da 02b). Payload com as três provas em <code>payloads/CA03b-atalho-profissional.json</code>. O 'antes' do bug está preservado no dossiê da #10529 (primeira imagem abaixo): o cartão da pendência de matrícula mandava o município aos Parâmetros TCE/AL.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Camada 1 — resolution.resource = tenant-professionals; teste do client afirma a AUSÊNCIA de blocking_ask_master no cartão.</li><li>Camada 2 — GET professionals/{resolution.subject_uuid} → 200 (data.uuid do profissional); GET professionals/{subject_uuid da lotação} → 404, mantido como prova negativa.</li><li>Camada 3 — pendencia_zona_leiaute.resolution === pendencia_zona_bloqueio.resolution no payload; captura do atalho na própria Zona B.</li><li>Follow-up da #10529 sobre o SiapBlockingIssueCallout: FECHADO.</li></ul></div>
+      <div class="evid"><figure><img src="../10529-leiaute-profissional-social-acceptance/screenshots/CA08-recusa-da-geracao.png" alt="CA03b evidência"/><figcaption>CA08-recusa-da-geracao.png</figcaption></figure><figure><img src="screenshots/CA03b-depois-cartao-profissional.png" alt="CA03b evidência"/><figcaption>CA03b-depois-cartao-profissional.png</figcaption></figure><figure><img src="screenshots/CA03b-zona-b-atalho-profissional.png" alt="CA03b evidência"/><figcaption>CA03b-zona-b-atalho-profissional.png</figcaption></figure><figure><img src="screenshots/CA03b-depois-ficha-profissional-aberta.png" alt="CA03b evidência"/><figcaption>CA03b-depois-ficha-profissional-aberta.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA04">
+      <h2>CA04 — Pendência de organização (CARDUG) em destaque, separada — e as demais completas <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o CARDUG não está informado, quando eu solicitar a conferência de qualquer referência, então a pendência sai em blocking.pendencies, fora de layouts, blocks_entire_remittance é true e as pendências por leiaute continuam sendo devolvidas completas.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Payload em <code>payloads/CA04-cardug-ausente.json</code>: kind <code>cardug_identifier_missing</code> só em <code>blocking.pendencies</code> (nenhum layout o contém — separação estrutural da #10367), sem sujeito (<code>subject_label: null</code>), e a unidade sem MDS segue listada no leiaute dela. Teste: <i>keeps the CARDUG pendency without subject_label and outside the layouts (CA04)</i>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Pendência de organização fora de layouts, blocks_entire_remittance = true.</li><li>As pendências por leiaute continuam completas, com os rótulos delas.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/CA04-cardug-em-destaque.png" alt="CA04 evidência"/><figcaption>CA04-cardug-em-destaque.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA05">
+      <h2>CA05 — Código de domínio sem correspondência → Painel Global, sem atalho de tenant <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que uma unidade tem tipo cujo código não corresponde a nenhuma classificação do Manual, quando eu solicitar a conferência, então há pendência de domínio indicando a unidade e 'Classificação da Unidade Social', resolution.scope é 'global' e a orientação aponta o Painel de Administração Global, sem atalho.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Payload em <code>payloads/CA05-dominio-fora-escala.json</code>: unidade com tipo de código <code>888</code> (fora da escala) → pendência <code>message_key = unit_type_unmapped</code>, campo <code>ClassificacaoUnidadeSocial</code>, <code>resolution.scope = global</code> e a mensagem pt-BR citando o Painel de Administração Global. Nota de contrato: no leiaute UnidadeSocial o <code>kind</code> segue <code>record_incomplete</code>; a natureza 'domínio sem correspondência' é expressa pelo message_key e pelo escopo global (contrato validado na etapa 01). Teste: <i>marks the unmapped domain code resolution as global, without a tenant shortcut (CA05)</i>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>resolution.scope = global e resolution sem rota de tenant — o SiapPendencyLink não renderiza atalho, exibe a orientação de acionar o Admin da plataforma.</li><li>Mensagem pt-BR: aponta o Painel de Administração Global.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/CA05-dominio-sem-atalho-painel-global.png" alt="CA05 evidência"/><figcaption>CA05-dominio-sem-atalho-painel-global.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA06">
+      <h2>CA06 — Pendência informativa não bloqueia (aviso da Folha de Pagamento) <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que a única pendência de 08/2026 é o aviso da Folha de Pagamento, quando eu solicitar a conferência, então scope é 'informative' e blocking.can_generate é true.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Payload em <code>payloads/CA06-informativa-folha.json</code>: profissional completo lotado → única pendência é <code>payroll_cross_reference</code> (informativa, sem sujeito) e <code>can_generate = true</code>. Teste: <i>keeps the generation available when the only pendency is informative (CA06 da #10530)</i>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>scope = informative, subject_label = null (aviso sobre a REMESSA, não sobre um registro).</li><li>can_generate permanece true, blocking.pendencies vazio.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/CA06-informativa-nao-bloqueia.png" alt="CA06 evidência"/><figcaption>CA06-informativa-nao-bloqueia.png</figcaption></figure><figure><img src="screenshots/CA06-zona-informativa-apenas-aviso.png" alt="CA06 evidência"/><figcaption>CA06-zona-informativa-apenas-aviso.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA06b">
+      <h2>CA06b — Vínculo de prestação de serviço vazio é impeditivo (US-SIAP-08) <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que 'Instituto Esperança' está com o vínculo de prestação de serviço vazio, quando eu solicitar a conferência de 08/2026, então a pendência aparece em layouts[EntidadeSocial].pendencies e é impeditiva.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Payload em <code>payloads/CA06b-entidade-sem-vinculo.json</code> (mesmo tenant do CA06 — o contraste informativa × impeditiva no mesmo cenário): entidade com <code>has_active_service_agreement = null</code> → pendência <code>SituacaoUnidade</code> no leiaute EntidadeSocial E na zona de bloqueio, <code>can_generate</code> vira false. Teste: <i>names the entity whose service agreement was never informed</i>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Pendência em layouts[EntidadeSocial].pendencies com scope blocking e subject_label = 'Instituto Esperanca'.</li><li>R5 da spec segue de pé: a US-SIAP-08 deixou o campo vazio em toda a base — o CA06b torna a lacuna visível antes do TCE.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA07">
+      <h2>CA07 — Correção some na conferência seguinte (RN08 — sem materialização) <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que corrigi o número MDS de 'CRAS Centro', quando eu solicitar a conferência da mesma referência, então aquela pendência não aparece e as demais continuam listadas.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Payload duplo em <code>payloads/CA07-antes-depois-da-correcao.json</code>: ANTES, CRAS Centro e CRAS Ponta Verde pendentes; corrigido o NumeroMDS do CRAS Centro, a conferência SEGUINTE da mesma referência não o lista — e o CRAS Ponta Verde permanece. Teste: <i>drops only the fixed pendency on the next pre-check (CA07/RN08)</i>. Qualquer cache do resultado quebraria os dois.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Antes: 2 pendências; depois: só a não corrigida — resultado calculado a cada chamada.</li><li>Nada foi materializado entre as duas chamadas (ver CA08).</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA08">
+      <h2>CA08 — A conferência não altera cadastro nenhum (RN07 — leitura pura) <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que existem 12 registros com campo obrigatório em falta, quando eu solicitar a conferência, então nenhum registro é alterado, excluído ou preenchido e activity_log não registra modificação decorrente da conferência.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Evidência em <code>payloads/CA08-leitura-pura.json</code>: 12 unidades incompletas reportadas; atributos de TODAS idênticos antes/depois (comparação registro a registro), <code>activity_log</code> com a MESMA contagem, zero linhas em <code>siap_remittances</code>/<code>siap_remittance_pendencies</code>. Teste: <i>changes nothing and logs nothing while reporting 12 incomplete records (CA08/RN07)</i>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>registros_intactos = true; activity_log antes = depois; nenhuma tabela de remessa tocada.</li><li>A resolução de rótulos em lote (D02) também não gera trilha — coberto pelo mesmo teste.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA09">
+      <h2>CA09 — Isolamento entre municípios <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou usuário do município A, quando eu solicitar a conferência, então só unidades, entidades e profissionais de A são considerados.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Evidência em <code>payloads/CA09-isolamento.json</code>: municípios A e B semeados, ambos com unidade pendente; a conferência de A lista o CRAS Centro e o payload NÃO contém nem o uuid nem o nome da unidade de B (busca literal sobre a resposta crua). A D02 exigiu ir além do isolamento de REGISTROS: o resolver de rótulos também é escopado — o nome do vizinho não vaza pela resolução em lote. Testes: <i>never leaks another tenant records or labels into the pre-check (CA09)</i> + suíte tests/Feature/TenantIsolation.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>payload_contem_uuid_da_unidade_vizinha = false; payload_contem_nome_da_unidade_vizinha = false.</li><li>Defesa em profundidade: BelongsToTenant (Global Scope) + EnsureTenantScope + resolver escopado.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA10">
+      <h2>CA10 — Operacional consulta a conferência e NÃO vê a ação de gerar (RN10) — com nota sobre o acesso ao histórico <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Operacional do Tenant, quando eu solicitar a conferência, então recebo 200 com o mesmo payload do Master e a ação de gerar a remessa NÃO fica disponível para mim.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Payload em <code>payloads/CA10-operacional.json</code>: autenticado como CLIENT_OPERADOR, o pre-check responde 200 com a MESMA estrutura (subject_label incluso). O papel tem <code>siap-remittances.pre-check</code> (mecanismo OPERATOR_GRANTED_PERMISSIONS da etapa 01) e NÃO tem <code>store</code> nem <code>index</code>. No client, o gate da rota virou OR (<code>index</code> OU <code>pre-check</code>, etapa 02b) — o Operacional alcança a tela, vê o painel e o seletor de período, sem o botão de gerar e sem o histórico. No navegador: login como operador (CPF de teste 390.***.***-05) e captura da tela sem a ação. Testes: <i>lets the tenant Operacional run the pre-check without unlocking the generation (CA10/RN10)</i> (api) + <i>CA10/CA10b</i> em RemessasSiapPage.test.ts e guards.test.ts (client).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>HTTP 200 com payload completo; o Operacional consulta a conferência normalmente e NÃO recebe a ação de gerar a remessa — que é o que a RN10 desta HU determina e o que o critério afirma.</li><li>Na tela: painel da conferência presente e ação de gerar ausente.</li><li>SUPERADO EM PARTE, POR DECISÃO POSTERIOR: esta entrega também negava ao Operacional o acesso ao HISTÓRICO de remessas (index = false, tabela não montada), por supor que consultar o histórico fosse ato de gestão. A HU seguinte (US-SIAP-01 / #10531) decidiu o contrário e ampliou o acesso do Operacional para consultar o histórico e baixar os pacotes já gerados. Conferido no ambiente em 18/08/2026: o Operacional hoje tem consulta, detalhe e download; apenas a GERAÇÃO segue exclusiva do Master.</li><li>O que o critério desta HU exige continua valendo integralmente: o Operacional confere e não gera.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/CA10-operacional-sem-acao-de-gerar.png" alt="CA10 evidência"/><figcaption>CA10-operacional-sem-acao-de-gerar.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA11">
+      <h2>CA11 — LGPD: o nome não é persistido (D03) — schema E linha gravada <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que a conferência apontou pendência com subject_label preenchido, quando a remessa for gerada, então siap_remittance_pendencies grava subject_uuid e NÃO grava o nome, e nenhum log ou exceção contém o nome.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Evidência dupla em <code>payloads/CA11-linha-persistida-sem-nome.json</code>: <b>(1)</b> SCHEMA — a lista real de colunas de <code>siap_remittance_pendencies</code>, sem subject_label/subject_name; <b>(2)</b> LINHA — a pendência congelada pela geração, atributo a atributo: só <code>subject_uuid</code> identifica o registro, 'CRAS Centro' não aparece em nenhum campo. Complemento D04 em <code>payloads/D04-nome-fora-de-log-e-422.json</code>: a recusa 422 informa QUANTIDADE (nunca identidade), activity_log sem linha nova e nenhuma mensagem de log de aplicação (listener MessageLogged) carrega o nome. Testes: <i>persists the pendency by subject_uuid only, never by name (CA11/D03)</i> + <i>keeps the name out of the 422 payload, the activity log and the app log (D04)</i>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Schema sem coluna de nome (a tentação de espelhar o payload é o erro que a D03 impede).</li><li>linha_contem_nome = false; recusa_contem_nome = false; log_contem_nome = false; activity_log antes = depois.</li><li>O nome vive SÓ no payload de leitura efêmero do pre-check — exatamente o desenho D02+D03+D04.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+  
+  <h2>Observações e ressalvas</h2>
+  <section class="note"><h3>Uma afirmação deste dossiê foi superada por decisão posterior — e é bom que tenha sido</h3><p>A cobertura extra do CA10 registrava que o perfil Operacional também <b>não</b> enxergava o histórico de remessas já geradas. Aquela era a leitura desta entrega: consultar o histórico pareceu ato de gestão.</p><p>A história seguinte do épico decidiu o oposto e <b>ampliou o acesso do Operacional</b>, que hoje consulta o histórico e baixa os pacotes já gerados. Conferido no ambiente em 18/08/2026. A geração da remessa segue exclusiva do Master.</p><p>Isso <b>não afeta nenhum critério deste chamado</b>: o que se pediu aqui é que o Operacional consultasse a conferência e não visse a ação de gerar, e isso continua valendo. O registro fica para que a leitura do dossiê não induza a erro sobre o que vale hoje.</p></section><section class="note"><h3>Esta é a entrega que corrigiu o que os dossiês anteriores reportaram</h3><p>Vários dossiês do épico registraram, como achado, que a conferência prévia não identificava o registro pendente e que o cartão de impedimento oferecia orientação e atalho de outra pendência — em um caso, mandando o operador ao cadastro errado.</p><p>Foi esta entrega que fechou essas lacunas: a conferência passou a identificar o registro pelo nome com que o usuário o reconhece, e cada pendência passou a apontar o caminho de correção do próprio recurso. Por isso as evidências de tela das histórias anteriores precisaram ser recapturadas — elas retratavam o comportamento de antes desta correção.</p></section>
+  
+  <h2>Anexo — Cobertura automatizada (api — pest --filter=Siap: 245 testes, 1343 asserções; suíte cheia 3398 passed / 26 skipped). Anexos adicionais: vitest-10530.txt (client, 1429 testes) e consultas-8.1-8.4.txt (dimensionamento — base local NÃO representativa).</h2>
+  <pre class="pest">
+   PASS  Tests\Unit\Services\Siap\SiapDomainMapTest
+  ✓ it inverts Parda and Amarela between the eSUAS and SIAP scales       0.01s  
+  ✓ it keeps the race colors that coincide in both scales
+  ✓ it returns null for a race color without counterpart
+  ✓ it maps social unit types to the SIAP classification
+  ✓ it refuses to translate a unit status the SIAP does not define
+  ✓ it derives the extinction status from the end date against the exer… 0.01s  
+  ✓ it lets the derivation win over the code chosen in the lookup (D04)
+  ✓ it turns an extinct unit without a usable end date into a pendency (D05)
+  ✓ it ignores the end date for statuses that are not extinction
+  ✓ it only translates the entity status that has a safe counterpart
+  ✓ it translates the paralysed entity added by the HU #10371 (CA05d)
+  ✓ it derives the entity extinction status from the end date against the exercise (RN08)
+  ✓ it turns an extinct entity without a usable end date into a pendency (D08)
+  ✓ it keeps the four original cadastral statuses out of the SIAP scale (CA05e / D03)
+  ✓ it ignores the end date for the entity in activity
+  ✓ it collapses the four SUAS participation types into the three of SIAP
+  ✓ it maps the contract modality to the SIAP scale (HU #10369 / D06)
+  ✓ it refuses to translate a contract modality outside the SIAP scale
+  ✓ it maps kinship to the family position scale
+  ✓ it leaves the ambiguous education level unmapped
+  ✓ it maps booleans to the SIM/NAO pair
+  ✓ it strips the zero padding only for the auxiliary tables
+  ✓ it maps the 14 equipment types of the SIAP Table 35 (RN04)
+  ✓ it refuses an equipment code outside the SIAP Table 35 (RN04)
+  ✓ it keeps paddedCode permissive where unitEquipment is strict (D09)
+  ✓ it maps the 21 structures of the SIAP Table 36 (RN04)
+  ✓ it refuses a structure code outside the SIAP Table 36 (RN04)
+  ✓ it keeps paddedCode permissive where unitStructure is strict (D04)
+  ✓ it refuses a numeric value with a size different from the exact one
+  ✓ it never sanitizes a non numeric value to make it fit
+  ✓ it flags truncation instead of cutting text in silence
+  ✓ it formats dates in ISO and decimals with two places
+  ✓ it registers exactly the 11 layouts of the SIAP social assistance section
+  ✓ it puts UnidadeSocial first, since 8 other layouts depend on it
+  ✓ it names every file after its layout, as the Manual requires
+
+   PASS  Tests\Unit\Siap\SiapSubjectLabelResolverTest
+  ✓ it resolves the three tenant subject types in one query each (R2)    0.42s  
+  ✓ it dedupes repeated subject uuids before querying                    0.01s  
+  ✓ it ignores an unknown subject type without breaking                  0.01s  
+  ✓ it leaves an orphan uuid out of the map instead of failing           0.01s  
+  ✓ it leaves a soft deleted record out of the map                       0.01s  
+  ✓ it never resolves a label that belongs to another tenant (CA09)      0.01s  
+
+   PASS  Tests\Feature\Api\SiapRemittanceGenerationTest
+  ✓ it refuses the generation when the identifier is missing (CA06)      0.05s  
+  ✓ it refuses the generation for a legacy identifier outside the TCE-A… 0.02s  
+  ✓ it creates the remittance and dispatches the job when the identifie… 0.03s  
+  ✓ it generates a zip with all 11 layouts, including the ones without…  0.03s  
+  ✓ it emits the service agreement and the operating status as independ… 0.04s  
+  ✓ it emits the informed service agreement as SIM (CA08b)               0.03s  
+  ✓ it refuses the generation when the service agreement was never info… 0.02s  
+  ✓ it emits the unit address in the Manual order, with street number a… 0.04s  
+  ✓ it brings every unit of the municipality with the seven fields of t… 0.04s  
+  ✓ it keeps the paralysed unit inside the remittance (CA02)             0.03s  
+  ✓ it emits the unit extinct within the reference exercise as 3 (CA03)  0.04s  
+  ✓ it emits the unit extinct in a previous exercise as 4 (CA04)         0.03s  
+  ✓ it lets the end date override the status code chosen in the lookup…  0.04s  
+  ✓ it turns the extinct unit without a usable end date into a blocking… 0.03s  
+  ✓ it blocks the remittance while an inactive unit has no SIAP counter… 0.02s  
+  ✓ it translates the unit classification to the SIAP domain (CA05)      0.04s  
+  ✓ it suppresses the reference point first and keeps the complement (C… 0.03s  
+  ✓ it also suppresses the complement when the reference point is not e… 0.04s  
+  ✓ it never lets the address exceed 255 characters, not even in the wo… 0.03s  
+  ✓ it delivers the layout with the header only when there is no unit (… 0.03s  
+  ✓ it contains exclusively the units of my municipality (CA11)          0.04s  
+  ✓ it leaves the soft-deleted unit out of the remittance                0.03s  
+  ✓ it records the layout outcome of a layout without movement           0.03s  
+  ✓ it re-evaluates the block inside the job (TOCTOU)                    0.02s  
+  ✓ it refuses the generation when a unit has no MDS number (CA07)       0.02s  
+  ✓ it refuses the generation when the unit classification is outside t… 0.02s  
+  ✓ it refuses the generation when the unit address has no postal code…  0.02s  
+  ✓ it counts municipalities, not fields: one unit missing two values i… 0.02s  
+  ✓ it keeps the unit block with its own message alongside the new enti… 0.02s  
+  ✓ it re-evaluates the unit block inside the job (D07/TOCTOU)           0.03s  
+  ✓ it refuses a second generation while one is still running            0.02s  
+  ✓ it never lists or downloads a remittance from another tenant         0.02s  
+  ✓ it refuses the download while the remittance is not completed        0.02s  
+  ✓ it brings every entity of the municipality with the seventeen field… 0.04s  
+  ✓ it keeps the entity without foundation date and head office CNPJ in… 0.03s  
+  ✓ it emits the declared service agreement regardless of the contract…  0.04s  
+  ✓ it emits the yes or no indicators as 1 and 2 (CA04)                  0.03s  
+  ✓ it emits the entity extinct within the reference exercise as 3 (CA0… 0.04s  
+  ✓ it emits the entity extinct in a previous exercise as 4 (CA05b)      0.03s  
+  ✓ it turns the extinct entity without a usable end date into a blocki… 0.03s  
+  ✓ it emits the paralysed entity as 2 (CA05d)                           0.04s  
+  ✓ it keeps the cadastral statuses without a SIAP counterpart as block… 0.03s  
+  ✓ it emits the contract amount with two decimal places and a dot sepa… 0.04s  
+  ✓ it delivers the entity layout with the header only when there is no… 0.03s  
+  ✓ it contains exclusively the entities of my municipality (CA11)       0.04s  
+  ✓ it keeps the soft deleted entity out of the file (RN01 — regressão)  0.03s  
+  ✓ it emits the entity address in the Manual order, ending with the mu… 0.03s  
+  ✓ it suppresses the entity reference point first and keeps the comple… 0.04s  
+  ✓ it also suppresses the entity complement when the reference point i… 0.03s  
+  ✓ it never lets the entity address exceed 255 characters, not even in… 0.04s  
+  ✓ it refuses the generation when an entity has no CNEAS number (CA06)  0.03s  
+  ✓ it refuses the generation when an entity has no e-mail (CA07)        0.02s  
+  ✓ it refuses the generation when an entity has no contract amount (CA… 0.03s  
+  ✓ it does not block the remittance when the contract amount is zero (… 0.03s  
+  ✓ it counts entities, not fields: one entity missing two values is on… 0.02s  
+  ✓ it evaluates the CARDUG before the entity records                    0.02s  
+  ✓ it re-evaluates the entity block inside the job (TOCTOU)             0.02s  
+  ✓ it generates the remittance when every entity and unit is complete   0.04s  
+  ✓ it never carries the entity name, CNPJ or e-mail into the entity bl… 0.02s  
+  ✓ it brings the inventory of every unit into the layout (CA01)         0.04s  
+  ✓ it consolidates distinct purchases of the same equipment into one r… 0.04s  
+  ✓ it emits the equipment without a purchase date and reports nothing…  0.03s  
+  ✓ it keeps the only informed purchase date after consolidating (CA04)  0.04s  
+  ✓ it keeps the row in the file when the in-use quantity exceeds the t… 0.03s  
+  ✓ it omits the equipment with zero total quantity, without any penden… 0.03s  
+  ✓ it omits the zeroed row but still reports the contradiction (CA07b)  0.04s  
+  ✓ it reports nothing for a unit without any equipment (CA08)           0.04s  
+  ✓ it delivers the layout with header only when no unit has equipment…  0.04s  
+  ✓ it contains exclusively the equipment of my municipality (CA10)      0.04s  
+  ✓ it keeps emitting an equipment type that was deactivated in the glo… 0.03s  
+  ✓ it refuses the generation when an equipment code is outside Table 3… 0.03s  
+  ✓ it refuses the generation for a non numeric equipment code (CA05b)   0.02s  
+  ✓ it points the equipment refusal to the Global Administration Panel…  0.02s  
+  ✓ it counts equipment codes, not links: the same code in two units is… 0.02s  
+  ✓ it does not block a municipality for an invalid code it does not us… 0.03s  
+  ✓ it keeps the inventory contradiction informative after the block (D… 0.04s  
+  ✓ it re-evaluates the equipment block inside the job (TOCTOU)          0.02s  
+  ✓ it evaluates the CARDUG, the unit and the entity before the equipme… 0.03s  
+  ✓ it keeps the unit and entity blocks with their own messages (não-re… 0.02s  
+  ✓ it generates the remittance when every equipment code is inside Tab… 0.04s  
+  ✓ it brings every structure of every unit into the layout (CA01)       0.04s  
+  ✓ it refuses the generation when a structure code is outside Table 36… 0.03s  
+  ✓ it refuses the generation when a structure code is outside Table 36… 0.02s  
+  ✓ it refuses the generation when a structure code is outside Table 36… 0.02s  
+  ✓ it refuses the generation for a non numeric structure code (CA02b)   0.03s  
+  ✓ it never drops a linked structure in silence anymore (RN04d)         0.02s  
+  ✓ it offers the two ways out in the structure refusal (CA03c)          0.02s  
+  ✓ it counts structure codes, not links: the same code in two units is… 0.02s  
+  ✓ it keeps emitting a structure whose lookup item was deactivated (CA… 0.04s  
+  ✓ it does not filter out a school-profile structure (CA03b)            0.03s  
+  ✓ it reports nothing for a unit without any structure (CA04)           0.04s  
+  ✓ it delivers the layout with header only when no unit has a structur… 0.03s  
+  ✓ it contains exclusively the structures of my municipality (CA06)     0.04s  
+  ✓ it does not block a municipality for a structure code it does not u… 0.04s  
+  ✓ it re-evaluates the structure block inside the job (TOCTOU)          0.03s  
+  ✓ it evaluates the professional block last, after the structure one    0.04s  
+  ✓ it generates the remittance when every structure code is inside Tab… 0.04s  
+  ✓ it brings every professional assigned in the reference month into t… 0.05s  
+  ✓ it emits one line per unit for a professional assigned to two units… 0.05s  
+  ✓ it includes assignments that started or ended in the middle of the…  0.04s  
+  ✓ it leaves out assignments that ended before or started after the mo… 0.04s  
+  ✓ it keeps a professional inactivated after the reference month in th… 0.05s  
+  ✓ it leaves a soft deleted professional out of the layout without a p… 0.04s  
+  ✓ it reports nothing for a professional without any assignment (CA07)  0.04s  
+  ✓ it delivers the layout with header only when nobody is assigned (CA… 0.03s  
+  ✓ it contains exclusively the professionals of my municipality (CA11)  0.04s  
+  ✓ it emits the registration number as is and never sanitizes it (D05)  0.04s  
+  ✓ it refuses the generation when an assigned professional has no regi… 0.03s  
+  ✓ it refuses a malformed registration number without transforming it…  0.03s  
+  ✓ it refuses a malformed registration number without transforming it…  0.03s  
+  ✓ it refuses the generation when the assigned professional has no usa… 0.02s  
+  ✓ it refuses the generation when the assigned professional has no usa… 0.03s  
+  ✓ it counts assignments, not pendencies, in the professional refusal   0.02s  
+  ✓ it re-evaluates the professional block inside the job (TOCTOU)       0.03s  
+
+   PASS  Tests\Feature\Api\SiapRemittancePreCheckTest
+  ✓ it separates the blocking identifier pendency from the per-layout o… 0.04s  
+  ✓ it states that the identifier pendency blocks the entire remittance… 0.02s  
+  ✓ it still lists every layout while the remittance is blocked (CA06)   0.02s  
+  ✓ it marks per-layout pendencies as non blocking                       0.02s  
+  ✓ it reports a required field that has no source in the system         0.02s  
+  ✓ it does not persist anything during the pre-check                    0.02s  
+  ✓ it releases the generation when the identifier is valid              0.02s  
+  ✓ it counts records only from the active tenant                        0.02s  
+  ✓ it names the entity whose service agreement was never informed (CA0… 0.03s  
+  ✓ it shows the incomplete entity pendency in the blocking zone AND in… 0.02s  
+  ✓ it counts the promoted entity pendency only once (CA12b)             0.02s  
+  ✓ it keeps record_incomplete and domain_unmapped apart after the prom… 0.03s  
+  ✓ it carries the entity legal name as subject_label but never the CNP… 0.02s  
+  ✓ it drops the pendency as soon as the municipality informs the value… 0.02s  
+  ✓ it turns a contract modality outside the SIAP scale into a pendency… 0.03s  
+  ✓ it stops reporting EntidadeSocial as a layout without data source    0.02s  
+  ✓ it shows the incomplete unit pendency in the blocking zone AND in t… 0.02s  
+  ✓ it counts the promoted pendency only once (D08b)                     0.02s  
+  ✓ it sends the unmapped unit classification to the Global Panel (CA08… 0.03s  
+  ✓ it names the unit without postal code by subject_label, never by ad… 0.03s  
+  ✓ it keeps the CARDUG pendency blocking alongside the unit ones (não-… 0.02s  
+  ✓ it releases the pre-check as soon as every unit is complete (happy…  0.02s  
+  ✓ it rejects an invalid reference month                                0.02s  
+  ✓ it accepts the special reference months 13 and 14 with (13)          0.02s  
+  ✓ it accepts the special reference months 13 and 14 with (14)          0.02s  
+  ✓ it reports the inventory contradiction without blocking the generat… 0.03s  
+  ✓ it evaluates the contradiction over the consolidated value, not per… 0.02s  
+  ✓ it emits one informative pendency per consolidated pair, not per pu… 0.02s  
+  ✓ it does not turn the layout partial because of an informative pende… 0.03s  
+  ✓ it counts the informative pendency apart from the blocking and layo… 0.03s  
+  ✓ it still marks the layout partial for a pendency that removes a rec… 0.02s  
+  ✓ it shows the equipment code pendency in the blocking zone AND in th… 0.02s  
+  ✓ it blocks the pre-check for a non numeric equipment code as well (C… 0.02s  
+  ✓ it names the offending code and the Global Panel in the equipment p… 0.02s  
+  ✓ it counts the promoted equipment pendency only once                  0.02s  
+  ✓ it keeps the informative pendency out of the blocking zone (D05)     0.02s  
+  ✓ it still releases the generation when only the inventory is contrad… 0.02s  
+  ✓ it shows the structure code pendency in the blocking zone AND in th… 0.03s  
+  ✓ it blocks the pre-check for a non numeric structure code as well (C… 0.02s  
+  ✓ it offers the two ways out in the structure pendency (CA03c)         0.02s  
+  ✓ it points the structure block to the global support register (CA08)  0.03s  
+  ✓ it does not raise a pendency for an unlinked structure outside Tabl… 0.02s  
+  ✓ it counts the promoted structure pendency only once (CA07)           0.02s  
+  ✓ it keeps the equipment pendencies untouched by the structure block…  0.03s  
+  ✓ it stops reporting ProfissionalSocial as a header only layout (HU #… 0.02s  
+  ✓ it carries the professional name as subject_label but never CPF or…  0.02s  
+  ✓ it names the assignment without CPF by uuid and by subject_label (D… 0.03s  
+  ✓ it shows the professional pendency in the blocking zone AND in the…  0.02s  
+  ✓ it points the professional block to the tenant own register          0.02s  
+  ✓ it warns about the payroll cross reference without blocking (CA09)   0.03s  
+  ✓ it does not warn about the payroll when the layout has no line (CA0… 0.02s  
+  ✓ it counts the professionals that exist only in the parallel registr… 0.03s  
+  ✓ it never carries the parallel professionals identity into the pende… 0.03s  
+  ✓ it does not count a professional who exists in both registries (CA1… 0.02s  
+  ✓ it releases the generation when every record is complete (CA01 da #… 0.02s  
+  ✓ it names the unit without MDS number by its own name (CA02/RN03)     0.02s  
+  ✓ it keeps the CARDUG pendency without subject_label and outside the…  0.02s  
+  ✓ it marks the unmapped domain code resolution as global, without a t… 0.03s  
+  ✓ it keeps the generation available when the only pendency is informa… 0.02s  
+  ✓ it drops only the fixed pendency on the next pre-check (CA07/RN08)   0.03s  
+  ✓ it changes nothing and logs nothing while reporting 12 incomplete r… 0.05s  
+  ✓ it never leaks another tenant records or labels into the pre-check…  0.02s  
+  ✓ it lets the tenant Operacional run the pre-check without unlocking…  0.72s  
+  ✓ it persists the pendency by subject_uuid only, never by name (CA11/… 0.04s  
+  ✓ it keeps the name out of the 422 payload, the activity log and the…  0.03s  
+  ✓ it carries the subject_uuid inside the resolution for the three ten… 0.03s  
+  ✓ it resolves the professional shortcut to the professional, not to t… 0.03s  
+  ✓ it serves the same correction shortcut in the per-layout zone (CA03… 0.02s  
+  ✓ it does not offer a shortcut for pendencies with no source registry… 0.02s  
+  ✓ it returns a resolution uuid that the professional detail endpoint…  0.03s  
+  ✓ it falls back to the assignment uuid when the target cannot be reso… 0.03s  
+
+   PASS  Tests\Feature\Api\SocialEntityControllerTest
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('cne… 0.04s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('leg… 0.02s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('cnp… 0.02s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('hea… 0.02s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('ema… 0.02s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('add… 0.02s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('soc… 0.02s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('loc… 0.02s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('sua… 0.02s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('con… 0.02s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('has… 0.02s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('pro… 0.02s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('exe… 0.02s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('has… 0.02s  
+  ✓ it CA02: store requires all mandatory SIAP layout fields with ('con… 0.02s  
+
+   PASS  Tests\Feature\Api\TenantTceParameterControllerTest
+  ✓ it saves the TCE parameters without the identifier and warns about…  0.02s  
+
+   PASS  Tests\Feature\Api\TenantTceParameterSiapReadinessTest
+  ✓ it does not block other modules when the identifier is missing (RN1… 0.02s  
+  ✓ it reports readiness as true once the identifier is in the TCE-AL f… 0.02s  
+  ✓ it reports readiness as false for a legacy value outside the TCE-AL… 0.02s  
+
+  Tests:    245 passed (1343 assertions)
+  Duration: 7.25s
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

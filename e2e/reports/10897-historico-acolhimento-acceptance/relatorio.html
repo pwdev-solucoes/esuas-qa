@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — HU #10897</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  section.note { border:1px solid var(--line); border-left:4px solid #b06a00; border-radius:6px; padding:10px 14px; margin:10px 0; background:#fffdf7; font-size:13px; }
+  section.note h3 { margin:0 0 6px; font-size:13.5px; color:#8a5200; }
+  section.note p { margin:6px 0; }
+  section.note ul { margin:6px 0 6px 18px; padding:0; }
+  section.note pre { background:var(--bg); border:1px solid var(--line); border-radius:4px; padding:8px; overflow-x:auto; font-size:11px; white-space:pre-wrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — HU #10897</h1>
+    <div class="sub">Prontuário SUAS — fase F7 · GLPI #10897 · Histórico de acolhimento de criança ou adolescente</div>
+    <div class="meta"><div><span>Gerado em:</span> 18/09/2026 (complementado no mesmo dia com o CA10 e o CA11)</div><div><span>História:</span> HU #10897 — Registrar o histórico de acolhimento de criança ou adolescente</div><div><span>Spec:</span> .planning/specs/10897-historico-acolhimento.md</div><div><span>Branch:</span> feature/10897-historico-acolhimento (api 3cce854 · client 5580033), não pushada</div><div><span>Ambiente:</span> API Laravel/Sail (container api-laravel.test-1, porta 80) + PostgreSQL · client (Vite dev) em :5174</div><div><span>Organização (tenant):</span> E2E CadÚnico · família E2E Família No CRAS (prontuário E2E-9900000001)</div><div><span>Perfil usado:</span> Operacional do Tenant com add-on LGPD, lotado no E2E CRAS Centro (CPF 111.***.***-35)</div><div><span>Ferramenta:</span> playwright-cli (Chromium headless) + Pest 4 (--filter=Sheltering, 54 testes)</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">Os 12 critérios de aceite da HU #10897 foram verificados: 11 no navegador, combinados com a suíte automatizada, e 1 só pela suíte (CA12, isolamento entre municípios, que exige um segundo município). Nenhum critério ficou em falta e nenhum defeito funcional foi encontrado. O CA10 foi complementado depois da HU #10898: o cancelamento do acolhimento tirou a família do perfil de acolhimento da apuração (de 1 para 0). A suíte do acolhimento teve 54 testes aprovados.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA01</td><td>Registrar acolhimento em curso (happy path)</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA02</td><td>Registrar acolhimento passado</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA03</td><td>Instituição é opcional</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA04</td><td>Motivo é obrigatório</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA05</td><td>Motivo fora da trilha de auditoria</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA06</td><td>Pessoa precisa integrar a família</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA07</td><td>Data de fim anterior ao início é recusada</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA08</td><td>Vários acolhimentos para a mesma pessoa</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA09</td><td>Retroativo em período já declarado</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA10</td><td>Cancelar em vez de excluir</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA11</td><td>Negativa declara o motivo</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA12</td><td>Isolamento entre municípios</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA01">
+      <h2>CA01 — Registrar acolhimento em curso (happy path) <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Operacional do Tenant com o add-on LGPD, lotado no "CREAS"
+E que a criança Lucas, de 9 anos, integra a família Silva
+Quando eu registrar o acolhimento dele com data de início em 10/07/2026, sem data de fim,
+  informando o motivo e a instituição
+Então o registro é salvo
+E consta no prontuário como acolhimento em curso, com meu nome e a data do lançamento.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Login como <b>E2E Operador Prontuário</b> (Operacional do Tenant com add-on LGPD, lotado no E2E CRAS Centro). Prontuário da família <b>E2E Família No CRAS</b>, aba <b>Acolhimento</b> → <b>Registrar acolhimento</b>. Integrante <b>E2E Integrante Local</b>, início <b>10/09/2026</b>, sem data de fim, modalidade <b>Institucional</b>, instituição e motivo informados. Salvar e expandir a linha.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Toast “Acolhimento registrado no prontuário.” e a linha E2E Integrante Local · 10/09/2026 · Em curso · Institucional · &lt;b&gt;Em curso&lt;/b&gt;.</li><li>Expandida, a linha traz a assinatura “Registrado por E2E Operador Prontuário em 18/09/2026” (RN12).</li><li>Pest (--filter=Sheltering): “registers an ongoing sheltering without end date, signed and dated”.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca00-aba-vazia.png" alt="CA01 evidência"/><figcaption>ca00-aba-vazia.png</figcaption></figure><figure><img src="screenshots/ca01-formulario-preenchido.png" alt="CA01 evidência"/><figcaption>ca01-formulario-preenchido.png</figcaption></figure><figure><img src="screenshots/ca01-em-curso-assinado.png" alt="CA01 evidência"/><figcaption>ca01-em-curso-assinado.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA02">
+      <h2>CA02 — Registrar acolhimento passado <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que a adolescente Júlia esteve acolhida entre 03/2022 e 11/2023
+Quando eu registrar esse período
+Então o registro é salvo com as duas datas
+E permanece no prontuário como histórico.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Novo registro para o mesmo integrante: início <b>01/03/2022</b>, fim <b>30/11/2023</b>, modalidade <b>Familiar</b>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A linha aparece com as duas datas e a situação &lt;b&gt;Encerrado&lt;/b&gt;, permanecendo no histórico.</li><li>Pest (--filter=Sheltering): “registers a past sheltering with both dates and keeps it as history”.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca02-ca08-historico-dois-registros.png" alt="CA02 evidência"/><figcaption>ca02-ca08-historico-dois-registros.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA03">
+      <h2>CA03 — Instituição é opcional <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que a equipe ainda não sabe em qual instituição a criança foi acolhida
+Quando eu salvar sem informar a instituição
+Então o registro é salvo normalmente.</p>
+      <p class="steps"><strong>Como foi testado:</strong> No registro do CA02, os campos de instituição e contato foram deixados em branco.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O registro foi salvo normalmente, sem a instituição.</li><li>Pest (--filter=Sheltering): “saves normally without any institution”.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca03-sem-instituicao.png" alt="CA03 evidência"/><figcaption>ca03-sem-instituicao.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA04">
+      <h2>CA04 — Motivo é obrigatório <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que estou registrando um acolhimento
+Quando eu tentar salvar sem informar o motivo
+Então o registro não é salvo
+E o sistema indica que o motivo precisa ser informado.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Novo registro para <b>E2E Integrante Sem Nascimento</b>, início 10/07/2026, modalidade Institucional, <b>sem motivo</b>. Clicar em Registrar.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O registro não foi salvo e o campo mostra “Informe o motivo do acolhimento.”.</li><li>Pest (--filter=Sheltering): “refuses to save without a reason and says so” (3 variações: ausente, vazio, só espaços).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca04-motivo-obrigatorio.png" alt="CA04 evidência"/><figcaption>ca04-motivo-obrigatorio.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA05">
+      <h2>CA05 — Motivo fora da trilha de auditoria <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que corrigi o motivo de um acolhimento
+Quando eu consultar a trilha de auditoria
+Então consta que o motivo foi alterado, com autor e data
+E o conteúdo anterior e o novo não aparecem.</p>
+      <p class="steps"><strong>Como foi testado:</strong> No registro de 01/03/2022, <b>Corrigir</b> → alterar o texto do motivo → salvar. Em seguida, consulta à trilha (<code>activity_log</code>, log <code>family_sheltering</code>) no banco.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A entrada da trilha (evento &lt;code&gt;updated&lt;/code&gt;, autor = o operador, data 18/09/2026 20:22) registra só &lt;code&gt;sensitive_fields_changed: ["reason"]&lt;/code&gt; e a descrição “Campos de texto livre alterados (conteúdo não registrado na trilha).”.</li><li>Nem o texto anterior nem o novo aparecem em nenhuma coluna da linha (verificado por busca no JSON da linha; saída em &lt;code&gt;ca05-activity-log.txt&lt;/code&gt;).</li><li>Pest (--filter=Sheltering): “records THAT the reason changed, with author and date, never the content” e “keeps reason and cancel_reason out of the trail on create and cancel”.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca05-corrigindo-motivo.png" alt="CA05 evidência"/><figcaption>ca05-corrigindo-motivo.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA06">
+      <h2>CA06 — Pessoa precisa integrar a família <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que estou registrando um acolhimento no prontuário da família Silva
+Quando eu tentar escolher alguém que não integra a composição vigente
+Então o registro não é salvo.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Abrir a lista de integrantes do formulário. A família tem quatro vínculos, um deles <b>desvinculado</b> da composição.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O seletor oferece só os três integrantes da composição vigente; o desvinculado não aparece.</li><li>Pela API, integrante de outra família, desvinculado ou de outro município é recusado com 422 e nada é gravado.</li><li>Pest (--filter=Sheltering): “refuses a member of ANOTHER family”, “refuses an UNLINKED member” e “refuses a member uuid from ANOTHER tenant with 422”.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca06-select-so-composicao-vigente.png" alt="CA06 evidência"/><figcaption>ca06-select-so-composicao-vigente.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA07">
+      <h2>CA07 — Data de fim anterior ao início é recusada <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que informei início em 10/07/2026
+Quando eu informar fim em 05/07/2026
+Então o registro não é salvo.</p>
+      <p class="steps"><strong>Como foi testado:</strong> No mesmo formulário do CA04, motivo preenchido, início <b>10/07/2026</b> e fim <b>05/07/2026</b>. Clicar em Registrar.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O registro não foi salvo e o formulário mostra “A data de fim não pode ser anterior à data de início.”; a lista continuou com dois registros.</li><li>Pest (--filter=Sheltering): “refuses an end date BEFORE the start date” e “refuses a start date in the FUTURE”.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca07-fim-antes-do-inicio.png" alt="CA07 evidência"/><figcaption>ca07-fim-antes-do-inicio.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA08">
+      <h2>CA08 — Vários acolhimentos para a mesma pessoa <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que Lucas já teve um acolhimento encerrado em 2024
+Quando eu registrar um novo acolhimento iniciado em 2026
+Então os dois constam
+E o primeiro não foi substituído.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Mesmo integrante com dois registros: o encerrado (2022–2023) e o em curso (10/09/2026).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Os dois constam na lista; o primeiro não foi substituído.</li><li>Pest (--filter=Sheltering): “keeps BOTH an ended and an ongoing sheltering of the same member” e “has NO unique index on the shelterings table”.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca02-ca08-historico-dois-registros.png" alt="CA08 evidência"/><figcaption>ca02-ca08-historico-dois-registros.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA09">
+      <h2>CA09 — Retroativo em período já declarado <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que a remessa da referência 07/2026 já foi gerada
+Quando eu registrar um acolhimento iniciado em 10/07/2026
+Então o registro é salvo
+E o sistema avisa que o perfil daquele período mudou e que a remessa precisa ser gerada novamente
+  caso ainda não tenha sido enviada.</p>
+      <p class="steps"><strong>Como foi testado:</strong> A remessa SIAP de referência <b>07/2026</b> já estava gerada (situação concluída) para a organização. Registro para <b>E2E Integrante Sem Nascimento</b> com início <b>10/07/2026</b>, sem fim.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O registro foi salvo e a tela mostrou o aviso “A remessa de 07/2026 já foi gerada. O perfil daquele período mudou — gere a remessa novamente caso ainda não tenha sido enviada.” (faixa e toast).</li><li>Pest (--filter=Sheltering): “saves a retroactive sheltering in a remitted month WITH the regeneration warning”, “warns about the END month too”, “does NOT warn when the month has no COMPLETED remittance” e “emits the same warning when CANCELLING in a remitted month”.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca09-aviso-remessa-gerada.png" alt="CA09 evidência"/><figcaption>ca09-aviso-remessa-gerada.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA10">
+      <h2>CA10 — Cancelar em vez de excluir <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que registrei um acolhimento na pessoa errada
+Quando eu cancelá-lo informando o motivo
+Então ele permanece visível marcado como cancelado
+E deixa de compor o perfil do período.</p>
+      <p class="steps"><strong>Como foi testado:</strong> No registro de 10/07/2026, <b>Cancelar registro</b> → motivo “Registrado no integrante errado.” → confirmar.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A linha continua visível, marcada como &lt;b&gt;Cancelado&lt;/b&gt;. No banco, o registro segue sem exclusão (&lt;code&gt;deleted_at&lt;/code&gt; nulo), com situação cancelada e autor do cancelamento.</li><li>A saída do perfil do período foi conferida na apuração, depois que a HU #10898 acendeu o perfil de acolhimento: com a família E2E acompanhada pelo E2E CREAS desde 01/09/2026, o perfil “Famílias com membros em serviço de acolhimento” de 09/2026 marcava &lt;b&gt;1&lt;/b&gt;; após cancelar o acolhimento em curso de 10/09/2026, a mesma consulta passou a marcar &lt;b&gt;0&lt;/b&gt;.</li><li>Pest (--filter=Sheltering): “cancels instead of deleting”, “never calls delete() nor forceDelete() when cancelling”, “requires cancel_reason on the DELETE” e “answers 409 when cancelling an ALREADY cancelled sheltering”.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca10-dialogo-cancelamento.png" alt="CA10 evidência"/><figcaption>ca10-dialogo-cancelamento.png</figcaption></figure><figure><img src="screenshots/ca10-cancelado-visivel.png" alt="CA10 evidência"/><figcaption>ca10-cancelado-visivel.png</figcaption></figure><figure><img src="screenshots/ca10-perfil-antes-do-cancelamento.png" alt="CA10 evidência"/><figcaption>ca10-perfil-antes-do-cancelamento.png</figcaption></figure><figure><img src="screenshots/ca10-perfil-apos-cancelamento.png" alt="CA10 evidência"/><figcaption>ca10-perfil-apos-cancelamento.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA11">
+      <h2>CA11 — Negativa declara o motivo <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Operacional lotado apenas no "CRAS Rural"
+E que a família Silva é referenciada no "CRAS Centro" e acompanhada pelo "CREAS"
+Quando eu tentar registrar um acolhimento para ela
+Então não é permitido
+E a tela informa o motivo, sem nomear as unidades envolvidas.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Login como <b>E2E Operador Prontuário</b> (Operacional com add-on LGPD, lotado no E2E CRAS Centro e no E2E CRAS Sem MDS) e abertura direta da aba <b>Acolhimento</b> do prontuário da família <b>E2E-9900000002</b>, referenciada no <b>E2E CREAS</b>, onde o operador não tem lotação.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A tela bloqueia o prontuário com “Acesso restrito — Esta família é referenciada, acompanhada ou encaminhada a unidades onde você não possui lotação vigente. Procure o gestor Master do município.”</li><li>Nenhuma unidade é nomeada na mensagem (conferido no texto da página: não aparece E2E CREAS, E2E CRAS Centro nem E2E CRAS Sem MDS).</li><li>Pest (--filter=Sheltering): “answers 403 with a stable error_code, without naming the units”, “applies the same denial to the READ side and to options”, “refuses an operator WITHOUT the LGPD add-on”.</li><li>O acesso é o mesmo ponto único do prontuário: nenhuma permissão própria de acolhimento e nenhum middleware &lt;code&gt;can:&lt;/code&gt; nas rotas (testes “declares NO sheltering ability anywhere” e “carries NO can: middleware”).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca11-negativa-sem-nomear-unidade.png" alt="CA11 evidência"/><figcaption>ca11-negativa-sem-nomear-unidade.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA12">
+      <h2>CA12 — Isolamento entre municípios <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou usuário do município A
+Quando eu registrar ou consultar acolhimentos
+Então alcanço somente famílias do município A.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Coberto pela suíte automatizada: exige um segundo município com famílias próprias.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Pest (--filter=Sheltering): “answers 404 — never 403 — for a family of ANOTHER tenant, on ALL routes”, “never reaches a sheltering of ANOTHER tenant through MY family uuid”, “scopes the listing by tenant_id” e “blocks the request when the X-Tenant-UUID points at a tenant the user has no access to”.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+  
+  <h2>Observações e ressalvas</h2>
+  <section class="note"><h3>Perfil de acolhimento do leiaute 15.7</h3><p>O perfil foi aceso pela HU #10898, na mesma branch. Por isso o CA10 pôde ser conferido também na apuração. A composição do 15.7 na remessa segue fora do escopo.</p></section><section class="note"><h3>Decisões a confirmar com o PO</h3><ul><li><b>Modalidade (RN06):</b> o próprio ticket marca a regra como inferida. O campo Institucional/Familiar ficou obrigatório e nada no sistema depende dele.</li><li><b>Aviso de remessa (CA09):</b> só os meses de início e de fim do período disparam o aviso; meses intermediários de um acolhimento longo não disparam.</li><li><b>Data de fim no futuro:</b> hoje é aceita. A regra só proíbe início no futuro.</li></ul></section><section class="note"><h3>Observação de tela</h3><p>Os avisos flutuantes (toasts) ficam sobre a coluna de ações das primeiras linhas por alguns segundos e, durante esse tempo, impedem o clique em “Corrigir”. Não afeta nenhum critério, mas vale um ajuste de posição.</p></section><section class="note"><h3>Marcas deixadas na base</h3><p>Ficaram na família E2E Família No CRAS: E2E Integrante Local de 01/03/2022 a 30/11/2023 (motivo corrigido) e em curso desde 10/09/2026 (cancelado na complementação do CA10); E2E Integrante Sem Nascimento desde 10/07/2026 (cancelado) e desde 01/03/2024, em curso (massa do aviso de acolhimento longo da HU #10898). A família também passou a ter acompanhamento PAEFI no E2E CREAS desde 01/09/2026.</p></section><section class="note"><h3>Ambiente</h3><p>Captura contra o client em <code>:5174</code>, identificado pelo diretório do processo. A migration da fase foi aplicada no banco de desenvolvimento antes da captura. Nenhum arquivo de configuração foi alterado.</p></section>
+  
+  <h2>Anexo — Cobertura automatizada (Pest, --filter=Sheltering)</h2>
+  <pre class="pest">
+   PASS  Tests\Unit\Models\FamilyShelteringTest
+  ✓ it uses BelongsToTenant, HasUuid, SoftDeletes and LogsActivity (RN1… 0.33s  
+  ✓ it keeps reason, cancel_reason and the institution OUT of logOnly()… 0.01s  
+  ✓ it declares the two modalities and the two statuses (RN06/RN09)      0.01s  
+  ✓ it casts dates, modality and status, and reports an ongoing shelter… 0.06s  
+  ✓ it has NO unique index besides the uuid (RN08)                       0.01s  
+  ✓ it enforces the state invariant (registered x cancelled) before eve… 0.03s  
+
+   PASS  Tests\Feature\Api\Client\FamilyShelteringTest
+  ✓ it registers an ongoing sheltering without end date, signed and dat… 0.08s  
+  ✓ it registers a past sheltering with both dates and keeps it as hist… 0.04s  
+  ✓ it saves normally without any institution (CA03)                     0.04s  
+  ✓ it refuses to save without a reason and says so (CA04) with dataset… 0.04s  
+  ✓ it refuses to save without a reason and says so (CA04) with dataset… 0.04s  
+  ✓ it refuses to save without a reason and says so (CA04) with dataset… 0.04s  
+  ✓ it requires the modality, validated against the enum (RN06)          0.04s  
+  ✓ it offers the two modalities and the start-date ceiling through opt… 0.05s  
+  ✓ it records THAT the reason changed, with author and date, never the… 0.05s  
+  ✓ it keeps reason and cancel_reason out of the trail on create and ca… 0.04s  
+  ✓ it refuses a member of ANOTHER family (CA06)                         0.04s  
+  ✓ it refuses an UNLINKED member — not part of the CURRENT composition… 0.04s  
+  ✓ it lets a correction keep the ORIGINAL member even after they were…  0.04s  
+  ✓ it refuses an end date BEFORE the start date (CA07)                  0.04s  
+  ✓ it refuses a start date in the FUTURE (RN07)                         0.04s  
+  ✓ it accepts a same-day period — end equal to start (RN07)             0.04s  
+  ✓ it accepts very old periods — no retroactivity limit beyond RN07 (R… 0.04s  
+  ✓ it keeps BOTH an ended and an ongoing sheltering of the same member… 0.05s  
+  ✓ it has NO unique index on the shelterings table (RN08)               0.04s  
+  ✓ it saves a retroactive sheltering in a remitted month WITH the rege… 0.04s  
+  ✓ it warns about the END month too and deduplicates months (CA09)      0.05s  
+  ✓ it does NOT warn when the month has no COMPLETED remittance (CA09)   0.04s  
+  ✓ it emits the same warning when CANCELLING in a remitted month (CA09… 0.04s  
+  ✓ it cancels instead of deleting: status cancelled, reason recorded,…  0.05s  
+  ✓ it never calls delete() nor forceDelete() when cancelling (CA10)     0.04s  
+  ✓ it requires cancel_reason on the DELETE (CA10)                       0.04s  
+  ✓ it answers 409 when cancelling an ALREADY cancelled sheltering       0.04s  
+  ✓ it answers 409 when EDITING a cancelled sheltering                   0.04s  
+  ✓ it corrects a sheltering registered on the WRONG member, keeping th… 0.05s  
+  ✓ it refuses server-owned fields on the write (RN09/RN12) with datase… 0.04s  
+  ✓ it refuses server-owned fields on the write (RN09/RN12) with datase… 0.05s  
+  ✓ it refuses server-owned fields on the write (RN09/RN12) with datase… 0.04s  
+  ✓ it refuses server-owned fields on the write (RN09/RN12) with datase… 0.04s  
+  ✓ it refuses server-owned fields on the write (RN09/RN12) with datase… 0.04s  
+  ✓ it refuses server-owned fields on the write (RN09/RN12) with datase… 0.04s  
+  ✓ it refuses server-owned fields on the write (RN09/RN12) with datase… 0.04s  
+  ✓ it answers an EMPTY list and asserts NOTHING about the absence (RN1… 0.04s  
+  ✓ it answers 403 with a stable error_code, without naming the units (… 0.06s  
+  ✓ it applies the same denial to the READ side and to options (CA11)    0.04s  
+  ✓ it refuses an operator WITHOUT the LGPD add-on (RN11)                0.04s  
+  ✓ it declares NO sheltering ability anywhere (RN11)                    0.07s  
+  ✓ it carries NO can: middleware on the sheltering routes and is not a… 0.04s  
+
+   PASS  Tests\Feature\TenantIsolation\FamilyShelteringIsolationTest
+  ✓ it answers 404 — never 403 — for a family of ANOTHER tenant, on ALL… 0.06s  
+  ✓ it never reaches a sheltering of ANOTHER tenant through MY family u… 0.05s  
+  ✓ it answers 404 when the sheltering belongs to ANOTHER family of the… 0.05s  
+  ✓ it scopes the listing by tenant_id — never shows the other municipa… 0.05s  
+  ✓ it blocks the request when the X-Tenant-UUID points at a tenant the… 0.04s  
+  ✓ it refuses a member uuid from ANOTHER tenant with 422 and creates n… 0.05s  
+
+  Tests:    54 passed (255 assertions)
+  Duration: 3.14s
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

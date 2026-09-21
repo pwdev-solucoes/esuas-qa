@@ -1,0 +1,20 @@
+
+   PASS  Tests\Feature\Dashboard\RegistrationQualityTest
+  ✓ it counts single-person families equal to the strategic indicators…  0.39s  
+  ✓ it counts duplicate records by repeated NIS per record, not per gro… 0.06s  
+  ✓ it counts duplicate records by repeated CPF (same person in more th… 0.06s  
+  ✓ it does not treat empty CPF/NIS as duplicates (RN03.1)               0.05s  
+  ✓ it counts distinct citizens with missing CPF or NIS (CA06)           0.05s  
+  ✓ it deduplicates a pending citizen linked to more than one family     0.05s  
+  ✓ it recalculates for a neighborhood, covering only geocoded families… 0.06s  
+  ✓ it returns zeroed indicators without error when the scope has no me… 0.04s  
+  ✓ it returns 422 for a neighborhood_uuid outside the tenant municipal… 0.04s  
+  ✓ it denies the panel to the base operator without the dedicated role  0.04s  
+  ✓ it grants the panel to the Master without any add-on role            0.04s  
+
+   PASS  Tests\Feature\TenantIsolation\DashboardRegistrationQualityIsolationTest
+  ✓ it never counts families/members from another tenant in the registr… 0.04s  
+
+  Tests:    12 passed (37 assertions)
+  Duration: 1.01s
+

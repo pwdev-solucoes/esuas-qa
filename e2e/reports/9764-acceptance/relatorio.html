@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — Controle de Acesso ao Painel de Inconsistências (LGPD)</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:980px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-wrap:wrap; gap:14px; margin-top:12px; }
+  figure { margin:0; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:300px; background:#fff; }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:11px; color:var(--muted); padding:6px 8px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { .evid, section.ca { break-inside:avoid; } figure { width:280px; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — Controle de Acesso ao Painel de Inconsistências (LGPD)</h1>
+    <div class="sub">Sprint 8 · HU #9764 · Evidências end-to-end no frontend do tenant</div>
+    <div class="meta"><div><span>Gerado em:</span> 02/07/2026 08:25</div><div><span>Branch:</span> sprint9-familias (api 179feb5+25ca310 · client 12ecbea)</div><div><span>Spec:</span> .planning/specs/sprint8/9764-controle-acesso-painel-inconsistencias.md</div><div><span>Ambiente:</span> API Sail/PostgreSQL (localhost:80) · client Vite :5174 (não-mock)</div><div><span>Organização (tenant):</span> E2E CadÚnico · uuid 00000000-0000-4000-8000-0000000000c1 · IBGE 2304400 (Fortaleza)</div><div><span>Usuários:</span> Master E2E (governa) · Operador E2E (Profissional ativo que recebe/perde o papel territorial_qualifier)</div><div><span>Ferramenta:</span> playwright-cli (Chromium 1440×900, 2 sessões simultâneas) + Pest 4</div><div><span>Modelo LGPD:</span> Papel dedicado territorial_qualifier (level 26, add-on) com address-inconsistencies.index + .export (restritas) — semeadas também no papel master; nunca grant por usuário</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">HU #9764: 6 Critérios de Aceite evidenciados — CA06 (menu oculto sem permissão), CA07 (revogação com efeito imediato), CA-extra-A (concessão habilita no request seguinte) e CA-extra-B (Master gerencia e sempre acessa) demonstrados ao vivo no navegador com duas sessões simultâneas; CA-extra-C (isolamento territorial da concessão) e CA-extra-D (inativação bloqueia de imediato) cobertos pela suíte automatizada. O drawer de perfis exibe o papel "Acesso ao Painel de Inconsistências (LGPD)" com selo vermelho LGPD e descrição da finalidade. Suíte: 45 testes, 186 assertions, 100% verdes. Resultado geral: todos os critérios atendidos.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA06</td><td>Bloqueio de acesso por falta de permissão (RN05)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA07</td><td>Revogação de acesso imediata (RN05/RN08)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA-extra-A</td><td>Concessão habilita o acesso (RN05)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA-extra-B</td><td>Master gerencia e sempre acessa (RN08)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA-extra-C</td><td>Isolamento territorial da concessão (RN07)</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA-extra-D</td><td>Inativação bloqueia de imediato (RN08)</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA06">
+      <h2>CA06 — Bloqueio de acesso por falta de permissão (RN05) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Operacional do Tenant e o Master NÃO me concedeu o "Acesso ao Painel de Inconsistências"
+Quando realizo login na Área do Cliente
+Então o menu/botão de acesso à tela de Qualificação Territorial não é exibido para mim</p>
+      <p class="steps"><strong>Como foi testado:</strong> Operador E2E sem o papel territorial_qualifier autenticado na Área do Cliente (estado pós-revogação do CA07 — mesmo estado de quem nunca recebeu).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A sidebar do Operador NÃO exibe o item "Qualificação Territorial" (gate por address-inconsistencies.index).</li><li>Acesso direto por URL cai na página 403 (evidenciado também no dossiê do #9762, CA-extra-C).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca06-operador-sem-menu.png" alt="CA06 evidência"/><figcaption>ca06-operador-sem-menu.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA07">
+      <h2>CA07 — Revogação de acesso imediata (RN05/RN08) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o Master acessa a gestão de equipes e desmarca minha permissão de acesso ao painel
+Quando eu (pelo meu Usuário único logado) tento forçar a entrada na tela
+Então o sistema nega o carregamento dos dados
+E exibe um alerta de acesso restrito</p>
+      <p class="steps"><strong>Como foi testado:</strong> Com o Operador logado e o painel ABERTO em outra sessão, o Master desmarca "Acesso ao Painel de Inconsistências (LGPD)" no drawer e salva. O Operador recarrega a página do painel (novo request, sem logout).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O request seguinte à revogação recebe 403 do backend: nenhum dado é carregado e o sistema exibe a tela de acesso negado ("403 — Acesso negado — Você não tem permissão para acessar esta página").</li><li>O client re-sincroniza /auth/me ao receber o 403 — o menu "Qualificação Territorial" desaparece da sidebar imediatamente (sem depender de logout).</li><li>A decisão é do backend a cada request (cache do frontend nunca é a autoridade) — RN08.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca07-revogacao-acesso-negado.png" alt="CA07 evidência"/><figcaption>ca07-revogacao-acesso-negado.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA-extra-A">
+      <h2>CA-extra-A — Concessão habilita o acesso (RN05) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Master e atribuo ao Profissional o papel de acesso ao painel
+Quando salvo a alteração
+Então o Profissional, no próximo request, vê o menu e carrega o painel com sucesso (200)</p>
+      <p class="steps"><strong>Como foi testado:</strong> Master marca "Acesso ao Painel de Inconsistências (LGPD)" no drawer do profissional e salva (toast de sucesso). O Operador loga e acessa o painel.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>No request seguinte, o Operador vê o menu "Qualificação Territorial" na sidebar e o painel carrega com sucesso (200): 6 famílias listadas com CPF/NIS mascarados.</li><li>O botão "Exportar Lista para Busca Ativa" também aparece (o papel territorial_qualifier carrega .index + .export).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca-extra-a-operador-painel-liberado.png" alt="CA-extra-A evidência"/><figcaption>ca-extra-a-operador-painel-liberado.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA-extra-B">
+      <h2>CA-extra-B — Master gerencia e sempre acessa (RN08) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Master
+Quando acesso a Qualificação Territorial
+Então vejo o painel (permissão semeada no papel master) e posso conceder acesso a outros</p>
+      <p class="steps"><strong>Como foi testado:</strong> Master acessa o painel (evidências do dossiê #9762/#9763) e abre o drawer "Gerenciar perfis de acesso" do profissional.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Master acessa o painel e exporta sem necessitar do papel add-on: as permissões restritas são semeadas diretamente no papel master (preservadas entre execuções do permissions:sync — testado).</li><li>O drawer exibe o papel "Acesso ao Painel de Inconsistências (LGPD)" com selo vermelho LGPD e a descrição: painel de Endereços Não Localizados + exportação para Busca Ativa; atribuível pelo Master; toda exportação auditada.</li><li>Os dois papéis add-on LGPD da feature (family_viewer e territorial_qualifier) convivem no mesmo drawer, cada um com seu selo.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca-extra-b-drawer-papel-territorial-lgpd.png" alt="CA-extra-B evidência"/><figcaption>ca-extra-b-drawer-papel-territorial-lgpd.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA-extra-C">
+      <h2>CA-extra-C — Isolamento territorial da concessão (RN07) <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que concedo o acesso a um Profissional no Tenant A
+Quando o mesmo Usuário atua no Tenant B sem o papel lá
+Então ele não vê nem carrega o painel no Tenant B</p>
+      <p class="steps"><strong>Como foi testado:</strong> Coberto pela suíte automatizada (apêndice): papel concedido no Tenant A; requests autenticados no Tenant B.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>As checagens do gate são tenant-scoped via user_tenant_role — papel do Tenant A não habilita index/export no Tenant B (403).</li><li>O usuário global permanece válido nos demais tenants.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA-extra-D">
+      <h2>CA-extra-D — Inativação bloqueia de imediato (RN08) <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um Operador com acesso ao painel
+Quando o Master o inativa como Profissional do município
+Então o acesso ao painel é negado no próximo request
+E seu Usuário global continua válido em outros tenants</p>
+      <p class="steps"><strong>Como foi testado:</strong> Coberto pela suíte automatizada (apêndice): o enforcement exige vínculo de Profissional ATIVO no tenant além do papel (mesmo predicado do prontuário #9760).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Profissional inativado recebe 403 no request seguinte no index e no export, mesmo mantendo o papel.</li><li>Usuário global preservado em outros tenants.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+  
+  <h2>Anexo — Cobertura automatizada (Pest, --filter=AddressInconsistency) — 45 passed, 186 assertions (inclui concessão/revogação/inativação/isolamento e o gate tenant-scoped de index+export)</h2>
+  <pre class="pest">
+   PASS  Tests\Unit\Models\FamilyAddressInconsistencyTest
+  ✓ it uses tenant scope, soft deletes, HasUuid and LogsActivity         0.39s  
+  ✓ it casts status/failure_reason to enums and defaults status to open  0.01s  
+  ✓ it generates a uuid on create and resolves route by uuid             0.08s  
+  ✓ it relates to family, address and both imports                       0.01s  
+  ✓ it hydrates the resolved factory state                               0.03s  
+  ✓ it never logs the rejected address text in the activity log (LGPD)   0.01s  
+  ✓ it enforces one open inconsistency per (tenant, family) via partial… 0.03s  
+
+   PASS  Tests\Unit\Services\AddressInconsistencyExportServiceTest
+  ✓ it builds the CSV row with the 5 RN04 columns in the spec order      0.02s  
+  ✓ it renders missing phone and nulls as empty strings (RN04)           0.01s  
+  ✓ it quotes only fields containing separator, comma, quotes or line b… 0.01s  
+  ✓ it prefixes an apostrophe on fields starting with a formula-trigger… 0.01s  
+  ✓ it does not alter fields without a leading formula-trigger char      0.02s  
+  ✓ it exposes the pt-BR spreadsheet format constants (BOM UTF-8, semic… 0.01s  
+  ✓ it records the export audit with masked causer CPF and no raw PII (… 0.02s  
+  ✓ it does not throw when the audit write fails — logs a technical err… 0.02s  
+
+   PASS  Tests\Feature\Api\Client\AddressInconsistencyAccessTest
+  ✓ it denies the panel to the base operator without the dedicated role… 0.07s  
+  ✓ it grants panel + export on the next request when the Master assign… 0.06s  
+  ✓ it blocks with 403 on the request right after the Master revokes th… 0.06s  
+  ✓ it lets the Master always view, export and manage the panel (CA-ext… 0.03s  
+  ✓ it offers the role as assignable in the drawer with the LGPD label…  0.04s  
+  ✓ it does not let a grant in Tenant A open the panel in Tenant B (CA-… 0.05s  
+  ✓ it blocks immediately when the professional is inactivated, keeping… 0.05s  
+
+   PASS  Tests\Feature\Api\Client\AddressInconsistencyExportTest
+  ✓ it downloads a CSV with BOM, semicolon and the 5 RN04 columns in or… 0.05s  
+  ✓ it neutralizes CSV formula injection in free-text fields without al… 0.04s  
+  ✓ it leaves the phone column empty when the family has no contact pho… 0.05s  
+  ✓ it quotes fields containing the separator and skips resolved incons… 0.05s  
+  ✓ it records exactly ONE audit line per download with causer, datetim… 0.04s  
+  ✓ it applies the same filters as the panel and audits them (RN04/RN06… 0.04s  
+  ✓ it denies the export without the .export permission — even holding…  0.05s  
+  ✓ it exports only families of the active tenant (CA-extra-C/RN07)      0.05s  
+
+   PASS  Tests\Feature\Api\Client\AddressInconsistencyPanelTest
+  ✓ it lists Código Familiar, RUF name and rejected address for open in… 0.04s  
+  ✓ it always masks CPF and NIS on screen (CA03/LGPD)                    0.04s  
+  ✓ it shows only open inconsistencies (resolved leave the panel — RN01… 0.05s  
+  ✓ it filters by failure_reason and searches by family code or RUF nam… 0.05s  
+  ✓ it denies access without the address-inconsistencies.index permissi… 0.03s  
+  ✓ it isolates the panel by tenant (CA-extra-D / RN07)                  0.05s  
+  ✓ it seeds the dedicated role with the restricted permissions and gra… 0.03s  
+  ✓ it keeps the permission away from the base operador and preserves t… 1.04s  
+  ✓ it is a read-only resource: no write routes are registered (RN03)    0.02s  
+
+   PASS  Tests\Feature\Services\Cadunico\CadunicoSyncAddressInconsistencyTest
+  ✓ it flags the family as open inconsistency when the CEP is missing (… 0.10s  
+  ✓ it flags cep_not_found when the CEP does not exist in the DNE base…  0.10s  
+  ✓ it accumulates new failures over previous batches (CA02: 50 + 10 =…  0.50s  
+  ✓ it resolves the open inconsistency when a future import fixes the a… 0.09s  
+  ✓ it does not duplicate the open row when the same family fails again… 0.08s  
+  ✓ it never breaks the sync when the checker fails internally (regress… 0.07s  
+
+  Tests:    45 passed (186 assertions)
+  Duration: 4.15s
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

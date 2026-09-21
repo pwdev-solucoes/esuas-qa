@@ -1,0 +1,87 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — HU #9885 Gerenciar o ciclo de vida das camadas",
+    "subtitle": "Construtor de Camadas (rota admin /geo-layers) · efeito no Painel de Georreferenciamento do tenant (client) · Evidências end-to-end no app real",
+    "rows": [
+      ["Gerado em", "10/07/2026"],
+      ["História", "HU #9885 — Gerenciar o ciclo de vida das camadas (editar, inativar, reativar, auditoria)"],
+      ["Critérios", "CA47, CA48, CA49 e CA50 (4 critérios)"],
+      ["Submódulos", "admin (branch develop) · client (branch develop) · api develop"],
+      ["Ambiente", "API Sail/PostgreSQL · admin Vite :5173 (Sanctum-stateful, não-mock) · client Vite :5174 (não-mock) → http://localhost/api"],
+      ["Personas", "Administrador (CPF 44983702016, papel admin) · Master-geo do tenant Maceió Geo (CPF 27043020140, papéis master + geo_panel_viewer)"],
+      ["Camadas de trabalho", "\"Famílias em Extrema Pobreza\" (global) e \"Programa Bolsa Família — Cobertura\" (direcionada a Maceió Geo + Arapiraca Geo)"],
+      ["Ferramenta", "playwright-cli (Chromium, viewport 1680×1050, duas sessões: admin + client) + Pest"]
+    ]
+  },
+  "summary": "Os 4 critérios de aceite da HU #9885 sobre o ciclo de vida das camadas do Construtor de Camadas (rota admin /geo-layers, com efeito no Painel de Georreferenciamento /georreferenciamento do tenant no client) foram verificados dirigindo os apps reais (admin e client) no navegador e reforçados pela suíte automatizada — todos ATENDIDOS. CA47: como Administrador, editando a descrição e os critérios de busca de uma camada PUBLICADA (o form avisa \"ao salvar, a nova definição vale imediatamente para todas as organizações contempladas\") e salvando, a nova definição passa a valer — confirmado no painel do tenant, que já exibe a descrição atualizada. CA48: ao inativar uma camada publicada e em uso por um tenant, o diálogo avisa o efeito imediato; a camada some da barra lateral do painel do tenant e, na reconciliação, o usuário afetado recebe o toast \"A camada ... não está mais disponível — ela foi removida ou inativada pelo administrador.\". CA49: ao reativar uma camada inativa, ela volta ao público configurado anteriormente (Global) e reaparece na barra lateral do tenant desligada por padrão (aria-checked=false). CA50: o detalhe da camada exibe o \"Histórico de alterações\" com cada ação (Criação, Pré-visualização, Publicação, Inativação, Reativação), o autor (Administrador eSUAS) e a data/hora — espelhado no activity_log. Cobertura automatizada: Pest GeoLayerControllerTest (26 testes/150 asserções) cobre a atualização da definição corrente de camada publicada (CA47), a inativação e a rejeição de transições inválidas (CA48/RN06), a reativação de volta ao público configurado com revalidação RN03 (CA49), e o detalhe com o histórico auditável completo (CA50).",
+  "cas": [
+    {
+      "id": "CA47",
+      "title": "Edição de camada publicada (nova definição vale para os tenants contemplados)",
+      "status": "nav",
+      "gherkin": "Dado que uma camada está publicada, Quando edito sua descrição ou seus critérios de busca e salvo, Então a nova definição passa a valer para todos os tenants contemplados.",
+      "steps_html": "Como <b>Administrador</b>, aberta a edição da camada PUBLICADA \"Programa Bolsa Família — Cobertura\": alterada a descrição e adicionado um 2º critério (Bolsa Família, além de Extrema pobreza) → <b>Salvar alterações</b>.",
+      "results": [
+        "O form da camada publicada exibe o aviso: \"Esta camada está publicada: ao salvar, a nova definição vale imediatamente para todas as organizações contempladas.\"",
+        "PUT /geo-layers/{uuid} responde 200; a camada permanece <b>Publicada</b> com a definição corrente atualizada (criteria = extreme_poverty + receives_pbf).",
+        "No painel do tenant Maceió Geo (contemplado), a camada já exibe a descrição atualizada (\"…DEFINIÇÃO ATUALIZADA…\") — a nova definição valeu imediatamente."
+      ],
+      "images": [
+        "screenshots/ca47-form-edicao-publicada.png",
+        "screenshots/ca47-catalogo-atualizado.png"
+      ]
+    },
+    {
+      "id": "CA48",
+      "title": "Inativação com efeito imediato (remoção da barra lateral + aviso ao usuário)",
+      "status": "nav",
+      "gherkin": "Dado que uma camada está publicada e em uso por um tenant, Quando eu a inativo, Então ela é removida da barra lateral dos tenants e desligada das visualizações em uso, com aviso ao usuário afetado.",
+      "steps_html": "No painel do tenant Maceió Geo, ligada a camada global \"Famílias em Extrema Pobreza\" (em uso). Em seguida, como Administrador, ação <b>Inativar</b> dessa camada → confirmação. De volta ao painel do tenant, reconciliação do catálogo de camadas.",
+      "results": [
+        "O diálogo de inativação avisa: \"Efeito imediato: a camada é removida da barra lateral das organizações e desligada das visualizações em uso, com aviso ao usuário afetado.\"",
+        "A camada passa a Status <b>Inativa</b> no catálogo (POST /geo-layers/{uuid}/inactivate).",
+        "No painel do tenant, a camada <b>desaparece da barra lateral</b> (some da seção \"Camadas de informação\") e é desligada; o usuário afetado recebe o <b>toast</b>: \"A camada \\\"Famílias em Extrema Pobreza\\\" não está mais disponível — ela foi removida ou inativada pelo administrador.\""
+      ],
+      "images": [
+        "screenshots/ca48-dialog-inativar.png",
+        "screenshots/ca48-catalogo-inativa.png",
+        "screenshots/ca48-client-aviso-removida.png"
+      ]
+    },
+    {
+      "id": "CA49",
+      "title": "Reativação (volta ao público configurado, desligada por padrão)",
+      "status": "nav",
+      "gherkin": "Dado que uma camada está inativa, Quando eu a reativo, Então ela volta a ficar disponível para o público configurado, desligada por padrão nos painéis.",
+      "steps_html": "Como Administrador, na camada inativa \"Famílias em Extrema Pobreza\" (menu com apenas Ver detalhes / Editar / Reativar — RN06), ação <b>Reativar</b> → confirmação. Em seguida, reaberto o painel do tenant Maceió Geo.",
+      "results": [
+        "O diálogo de reativação confirma: \"Ela volta para o público configurado anteriormente (Global), desligada por padrão nos painéis.\"",
+        "A camada volta a Status <b>Publicada</b> / público <b>Global</b> (inactivated_at limpo) — POST /geo-layers/{uuid}/reactivate.",
+        "No painel do tenant, a camada <b>reaparece</b> na barra lateral <b>desligada por padrão</b> (aria-checked=false)."
+      ],
+      "images": [
+        "screenshots/ca49-dialog-reativar.png",
+        "screenshots/ca49-catalogo-reativada.png",
+        "screenshots/ca49-client-reaparece-desligada.png"
+      ]
+    },
+    {
+      "id": "CA50",
+      "title": "Rastreabilidade das ações (ação, autor e data/hora)",
+      "status": "nav",
+      "gherkin": "Dado que realizei qualquer ação sobre uma camada (criação, edição, publicação, alteração de público, inativação ou reativação), Quando o registro de auditoria é consultado, Então constam a ação, o autor e a data/hora.",
+      "steps_html": "Aberto o detalhe da camada \"Famílias em Extrema Pobreza\" → seção <b>Histórico de alterações</b>.",
+      "results": [
+        "O histórico lista cada evento do ciclo de vida com <b>ação</b>, <b>autor</b> e <b>data/hora</b>: Reativação (10/07/2026, 13:38 · Administrador eSUAS), Inativação (13:35), Publicação (12:00), Pré-visualização (08:47) e Criação (08:45).",
+        "Espelho no backend (anexo): activity_log registra os eventos created / previewed / published / inactivated / reactivated (subject GeoLayer) com causer e timestamp — a mesma fonte consumida pelo GeoLayerHistoryList."
+      ],
+      "images": [
+        "screenshots/ca50-auditoria-historico.png"
+      ]
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada — Pest GeoLayerControllerTest (CA47–CA50, RN06–RN08)",
+    "file": "tests-9885.txt"
+  }
+}

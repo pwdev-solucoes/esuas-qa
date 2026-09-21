@@ -1,0 +1,95 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — HU #9883 Construir camada a partir de busca específica",
+    "subtitle": "Construtor de Camadas (rota admin /geo-layers) · módulo admin (Super Admin) · Evidências end-to-end no app real",
+    "rows": [
+      ["Gerado em", "10/07/2026"],
+      ["História", "HU #9883 — Construir camada a partir de busca específica (Construtor de Camadas)"],
+      ["Critérios", "CA37, CA38, CA39, CA40 e CA41 (5 critérios)"],
+      ["Submódulos", "admin 0fe34af (branch develop) · api develop"],
+      ["Ambiente", "API Sail/PostgreSQL · admin Vite :5174 (não-mock) → http://localhost/api"],
+      ["Personas", "Administrador (CPF 44983702016, papel admin) · Operacional Global (papel admin_operador, criado p/ o teste)"],
+      ["Município de referência (preview)", "Maceió Geo · IBGE 2704302 · malha + 1.620 setores homologados"],
+      ["Ferramenta", "playwright-cli (Chromium, viewport 1680×1050) + Pest"]
+    ]
+  },
+  "summary": "Os 5 critérios de aceite da HU #9883 sobre o Construtor de Camadas (rota admin /geo-layers — base estrutural do painel /georreferenciamento do client) foram verificados dirigindo o app admin real no navegador e reforçados pela suíte automatizada — todos ATENDIDOS. CA37: como Administrador, informando nome, descrição, um critério de busca (Extrema pobreza) e a forma de representação (Manchas/heatmap) e salvando, a camada é criada com status Rascunho e passa a constar no catálogo (POST /geo-layers 201). CA38: ao tentar salvar sem nome e sem critério, o sistema bloqueia e indica claramente os pendentes (\"Informe o nome da camada.\" e \"Informe ao menos um critério efetivo...\"). CA39: ao salvar outra camada com o mesmo nome, o sistema bloqueia (422) e informa \"Já existe uma camada com este nome.\" (unicidade case-insensitive). CA40: na camada em rascunho (modo edição), escolhendo o município de referência Maceió Geo e acionando a pré-visualização, o mapa (OpenLayers) exibe a representação (heatmap) sobre o município conforme os critérios — 6 famílias em extrema pobreza, com distribuição por setor censitário. CA41: como Operacional Global (só geo-layers.index/show), o catálogo mostra a lista com status e público de cada camada, sem os comandos de criação/edição/publicação (botão \"Nova camada\" oculto; menu de ações apenas \"Ver detalhes\"). Cobertura automatizada: Pest GeoLayerControllerTest (26 testes/150 asserções) cobre criar rascunho, bloqueio por obrigatórios, nome duplicado case-insensitive, preview WYSIWYG por tenant e o gate read-only do admin_operador (writes 403 — RN01).",
+  "cas": [
+    {
+      "id": "CA37",
+      "title": "Criação de camada válida (rascunho no catálogo)",
+      "status": "nav",
+      "gherkin": "Dado que sou Administrador e as bases geográficas primárias estão homologadas, Quando informo nome, descrição, critérios de busca e forma de representação e salvo, Então a camada é criada com status de rascunho e passa a constar no catálogo.",
+      "steps_html": "Como <b>Administrador</b> (44983702016), em Construtor de Camadas → <b>Nova camada</b>: informado nome \"Famílias em Extrema Pobreza\", descrição, critério <b>Extrema pobreza</b> e forma de representação <b>Manchas (mapa de calor)</b> → <b>Criar camada</b>.",
+      "results": [
+        "POST /geo-layers responde 201 Created e a interface retorna ao catálogo.",
+        "A camada consta no catálogo com os critérios (Extrema pobreza + Manchas), status Rascunho e público Global (Todas as organizações)."
+      ],
+      "images": [
+        "screenshots/ca37-form-preenchido.png",
+        "screenshots/ca37-camada-rascunho.png"
+      ]
+    },
+    {
+      "id": "CA38",
+      "title": "Bloqueio por dados obrigatórios",
+      "status": "nav",
+      "gherkin": "Dado que estou criando uma camada, Quando tento salvar sem nome ou sem ao menos um critério de busca, Então o sistema bloqueia a ação e indica claramente os itens pendentes.",
+      "steps_html": "Em <b>Nova camada</b>, acionado <b>Criar camada</b> sem preencher nome e sem marcar nenhum critério.",
+      "results": [
+        "O sistema bloqueia o salvamento (não envia o POST) e indica os pendentes: \"Informe o nome da camada.\" no campo Nome e \"Informe ao menos um critério efetivo — os critérios são aplicados em conjunto (interseção)...\" no bloco de critérios.",
+        "Espelho no backend: StoreGeoLayerRequest + assertEffectiveCriteria retornam 422 com as mesmas mensagens."
+      ],
+      "images": [
+        "screenshots/ca38-bloqueio-obrigatorios.png"
+      ]
+    },
+    {
+      "id": "CA39",
+      "title": "Nome duplicado",
+      "status": "nav",
+      "gherkin": "Dado que já existe uma camada com determinado nome, Quando tento salvar outra camada com o mesmo nome, Então o sistema bloqueia e informa que o nome já está em uso.",
+      "steps_html": "Em <b>Nova camada</b>, informado o nome já existente \"Famílias em Extrema Pobreza\" (+ 1 critério e representação) → <b>Criar camada</b>.",
+      "results": [
+        "POST /geo-layers responde 422 e o sistema bloqueia, exibindo no campo Nome a mensagem \"Já existe uma camada com este nome.\".",
+        "A unicidade é case-insensitive (índice parcial lower(name) ignorando soft-deleted)."
+      ],
+      "images": [
+        "screenshots/ca39-nome-duplicado.png"
+      ]
+    },
+    {
+      "id": "CA40",
+      "title": "Pré-visualização sobre município de referência",
+      "status": "nav",
+      "gherkin": "Dado que criei uma camada em rascunho, Quando aciono a pré-visualização escolhendo um município de referência, Então o sistema exibe a representação da camada sobre o mapa daquele município conforme os critérios definidos.",
+      "steps_html": "Aberta a camada rascunho em modo edição, selecionada a <b>Organização de referência</b> \"Maceió Geo\" no combobox e acionado <b>Pré-visualizar</b>.",
+      "results": [
+        "POST /geo-layers/{uuid}/preview responde 200 e o mapa (OpenLayers) desenha a representação (heatmap) sobre a malha do município de Maceió, conforme o critério Extrema pobreza.",
+        "O resumo lateral indica 6 famílias encontradas e a distribuição por setor censitário — WYSIWYG: a camada é executada como o painel daquela organização a veria (agregados e pontos anônimos)."
+      ],
+      "images": [
+        "screenshots/ca40-previa.png"
+      ]
+    },
+    {
+      "id": "CA41",
+      "title": "Consulta sem permissão de edição (Operacional Global)",
+      "status": "nav",
+      "gherkin": "Dado que sou Operacional Global, Quando acesso o catálogo de camadas, Então visualizo a lista com status e público de cada camada, sem comandos de criação, edição ou publicação.",
+      "steps_html": "Reautenticado como <b>Operacional Global</b> (papel admin_operador) e aberto o catálogo Construtor de Camadas; aberto o menu de ações da linha.",
+      "results": [
+        "O catálogo lista a camada com Status (Rascunho) e Público (Global) — porém o botão \"Nova camada\" fica oculto (gate v-can geo-layers.store).",
+        "O menu de ações da linha oferece apenas \"Ver detalhes\" — sem Editar, Publicar, Alterar público, Inativar ou Reativar (RN01: exclusividade do Administrador).",
+        "Backend (anexo): GeoLayerControllerTest confirma que o admin_operador tem acesso somente de leitura — toda escrita responde 403."
+      ],
+      "images": [
+        "screenshots/ca41-operacional-somente-leitura.png"
+      ]
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada — Pest GeoLayerControllerTest (CA37–CA41, RN01–RN08)",
+    "file": "tests-9883.txt"
+  }
+}

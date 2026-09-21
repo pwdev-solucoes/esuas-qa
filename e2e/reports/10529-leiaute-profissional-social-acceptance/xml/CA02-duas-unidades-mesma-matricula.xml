@@ -1,0 +1,20 @@
+<!-- HU #10529 — CA02 — a mesma profissional lotada no CRAS (MDS 1234567890123) e no CREAS (MDS 9876543210987): duas linhas, o MDS de cada unidade e a MESMA matricula 1234567. -->
+<!-- Remessa gerada de verdade; XML extraido do zip. CPF e nome mascarados (RN12). Dados fabricados. -->
+<?xml version="1.0"?>
+<SIAP>
+    <Codigo>004821</Codigo>
+    <Exercicio>2026</Exercicio>
+    <Mes>08</Mes>
+    <ProfissionalSocial>
+        <CPF>390.***.***-05</CPF>
+        <Nome>Maria S. L.</Nome>
+        <NumeroMDS>1234567890123</NumeroMDS>
+        <Matricula>1234567</Matricula>
+    </ProfissionalSocial>
+    <ProfissionalSocial>
+        <CPF>390.***.***-05</CPF>
+        <Nome>Maria S. L.</Nome>
+        <NumeroMDS>9876543210987</NumeroMDS>
+        <Matricula>1234567</Matricula>
+    </ProfissionalSocial>
+</SIAP>

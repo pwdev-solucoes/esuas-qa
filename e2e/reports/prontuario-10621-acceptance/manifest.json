@@ -1,0 +1,257 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — Especificidade Social da Família",
+    "subtitle": "Épico Prontuário SUAS F0 · HU #10621 · 11 critérios · evidências dirigidas no client",
+    "rows": [
+      [
+        "Gerado em",
+        "27/08/2026"
+      ],
+      [
+        "História",
+        "#10621 — Especificidade social da família (Tabela 38 / leiaute 15.11)"
+      ],
+      [
+        "Spec",
+        ".planning/specs/10621-especificidade-social-familia.md"
+      ],
+      [
+        "Branch",
+        "prontuario (api, client, admin)"
+      ],
+      [
+        "Ambiente",
+        "API Laravel :8090 (esuas_app) · PostgreSQL esuas_e2e · client vite preview :4174"
+      ],
+      [
+        "Organização (tenant)",
+        "E2E CadÚnico"
+      ],
+      [
+        "Ferramenta",
+        "playwright-cli (Chromium headless) + Pest 4"
+      ]
+    ]
+  },
+  "summary": "11 critérios de aceite. <b>9 evidenciados no navegador</b> e <b>2 por suíte automatizada</b> (CA02, por a massa não conter família com indicador quilombola, e CA10, que exigiria processar uma nova remessa do CadÚnico). Nenhum critério reprovado, e <b>nenhum defeito encontrado</b> — é a história mais limpa do épico até aqui. A suíte fecha <b>71 testes / 281 asserções</b>. Três verificações merecem destaque: as conversões de código com zeros à esquerda estão corretas nos três casos de risco, a família indígena chega sem nenhuma linha (o sistema não escolhe por ninguém entre aldeada e não aldeada) e o texto livre de povo/etnia não vaza para a trilha de auditoria. Detalhes em “Observações e ressalvas”.",
+  "cas": [
+    {
+      "id": "CA01",
+      "title": "Especificidade derivada do grupo populacional",
+      "status": "nav",
+      "gherkin": "Dado que a família Silva foi importada do CadÚnico com o grupo \"204 Família Ribeirinha\"\nQuando eu abrir o prontuário dela\nEntão a especificidade social consta como \"Família Ribeirinha\", correspondente ao código 3 da Tabela 38\n  E está identificada como derivada do CadÚnico",
+      "steps_html": "Prontuário da família importada com o grupo populacional 204 → bloco <b>Especificidade social</b>.",
+      "results": [
+        "A especificidade consta como “Família Ribeirinha”, sob “Especificidades vigentes”.",
+        "O código é apresentado como <b>“Código 3 da Tabela 38”</b> — a conversão do valor importado (<code>'003'</code>) para o inteiro do leiaute está correta.",
+        "A origem é identificada com selo próprio: <b>Derivada do CadÚnico</b>, com a explicação “Atribuída a partir do CadÚnico — o município já declarou isto ao MDS.”",
+        "O insumo que gerou a derivação fica à vista: “Grupo populacional 204 — Família Ribeirinha.”",
+        "A ação oferecida é “Corrigir” — o valor derivado não é intocável (ver CA08)."
+      ],
+      "images": [
+        "screenshots/ca01-derivada-cadunico.png"
+      ]
+    },
+    {
+      "id": "CA02",
+      "title": "Quilombola derivada do indicador",
+      "status": "auto",
+      "gherkin": "Dado que a família Souza foi importada com o indicador de família quilombola\nQuando eu abrir o prontuário dela\nEntão a especificidade consta como \"Família Quilombola\"",
+      "steps_html": "Evidência <b>automatizada</b>. A massa de evidência não contém uma família importada com o indicador de quilombola — ela cobre a derivação por grupo populacional (CA01), por indicador indígena (CA05) e por marcação de integrante (CA06).",
+      "results": [
+        "Pest: “it shows the quilombola specificity derived from the import indicat…” — PASS.",
+        "A derivação por indicador é o mesmo caminho exercitado no navegador para a família indígena (CA05): ambas nascem de indicador da importação, não do grupo populacional.",
+        "O registro global da Tabela 38 apresenta “Família Quilombola” como código 2, verificado na lista de opções durante o CA07/CA09."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA03",
+      "title": "Sem especificidade é valor informado",
+      "status": "nav",
+      "gherkin": "Dado que a família Lima foi importada com o grupo \"0 Nenhuma\"\nQuando eu abrir o prontuário dela\nEntão a especificidade consta como \"Família Sem Especificidades\"\n  E isso não gera pendência, porque é um valor declarado",
+      "steps_html": "Prontuário da família importada com o grupo <code>0 Nenhuma</code>, e conferência da relação de pendências.",
+      "results": [
+        "A especificidade consta como “Família Sem Especificidades”, <b>Código 19 da Tabela 38</b>.",
+        "Aparece sob “Especificidades vigentes” com o selo “Derivada do CadÚnico” — é uma resposta dada, não uma lacuna.",
+        "O insumo é apresentado como <b>“Grupo populacional 0 — Nenhuma”</b>: o zero é preservado como valor, e não confundido com ausência de informação.",
+        "<b>Não gera pendência</b>: a família NÃO aparece na relação “Famílias sem especificidade social” — verificado programaticamente na lista das 9 pendências.",
+        "A própria relação de pendências explica a distinção: “«Família Sem Especificidades» é uma resposta dada — essa família não aparece aqui. Aqui está quem ainda não respondeu nada.”"
+      ],
+      "images": [
+        "screenshots/ca03-sem-especificidade-declarada.png"
+      ]
+    },
+    {
+      "id": "CA04",
+      "title": "Família sem informação alguma fica pendente",
+      "status": "nav",
+      "gherkin": "Dado que a família Costa foi cadastrada sem qualquer informação de grupo populacional ou especificidade\nQuando eu abrir o prontuário dela\nEntão a especificidade aparece sem valor\n  E a família consta na relação de pendências como especificidade não informada",
+      "steps_html": "Prontuário de uma família sem qualquer insumo de especificidade, e menu <b>Especificidade Pendente</b>.",
+      "results": [
+        "No prontuário, o bloco aparece sem valor: “Especificidade ainda não informada / NÃO INFORMADA”.",
+        "A consequência é declarada ao profissional: “Ninguém informou a especificidade social desta família. Enquanto isso não acontecer, a remessa 15.11 fica impedida.”",
+        "A família consta na relação de pendências, com o motivo “Nenhuma informação registrada”.",
+        "A relação identifica cada família pela pessoa de referência, nº do prontuário e unidade, e oferece “Registrar” como caminho direto.",
+        "A pendência é recalculada a cada consulta: “a família sai desta relação assim que a especificidade for informada”."
+      ],
+      "images": [
+        "screenshots/ca04-pendente-sem-informacao.png",
+        "screenshots/ca04-relacao-pendencias.png"
+      ]
+    },
+    {
+      "id": "CA05",
+      "title": "Indígena exige escolha do profissional",
+      "status": "nav",
+      "gherkin": "Dado que a família Xukuru foi importada com o indicador de família indígena\nQuando eu abrir o prontuário dela\nEntão a especificidade aparece pendente, indicando que é preciso escolher entre residente e não residente\n  E nenhum dos dois códigos foi atribuído pelo sistema\n  E, ao escolher, posso registrar o povo ou etnia",
+      "steps_html": "Prontuário da família importada com indicador indígena → escolha do caso aplicável + povo/etnia → <b>Registrar escolha</b>.",
+      "results": [
+        "O bloco aparece como “Família indígena — informação incompleta / INFORMAÇÃO INCOMPLETA”.",
+        "<b>Nenhum dos dois códigos foi atribuído</b>: verificado em banco antes da ação — a família não possui NENHUMA linha de especificidade. O sistema não escolheu.",
+        "A recusa em decidir é explícita na tela: “O CadÚnico não informa se a família reside em aldeia ou reserva. O sistema não escolhe por você: indique qual dos dois casos se aplica.”",
+        "Os dois casos são oferecidos lado a lado (residente e não residente em aldeia/reserva), com campo livre para <b>povo ou etnia</b>.",
+        "Ao registrar, a especificidade passa a “Código 5 da Tabela 38” com o selo “Informada pela equipe”, e o povo registrado é apresentado.",
+        "Detalhe de contorno declarado na própria tela: o povo/etnia é “Texto livre. Não vai para a remessa — o leiaute recebe apenas o código.”",
+        "Na relação de pendências, esta família tem motivo PRÓPRIO, distinto das demais: “Indígena — falta escolher aldeia ou não-aldeia”."
+      ],
+      "images": [
+        "screenshots/ca05-indigena-pendente.png",
+        "screenshots/ca05-indigena-escolhida.png"
+      ]
+    },
+    {
+      "id": "CA06",
+      "title": "Situação de rua entra pré-marcada e exige confirmação",
+      "status": "nav",
+      "gherkin": "Dado que a família Alves tem um integrante marcado em situação de rua\nQuando eu abrir a especificidade social dela\nEntão \"Família/pessoa em situação de rua\" aparece sugerida, com a indicação de que foi deduzida\n  E só passa a valer depois que eu confirmar",
+      "steps_html": "Prontuário da família com integrante marcado em situação de rua → <b>Confirmar</b> → confirmação no diálogo.",
+      "results": [
+        "A especificidade aparece com selo <b>SUGERIDA</b> e o rótulo “Sugestão a confirmar”.",
+        "A dedução é declarada: “Deduzida pelo sistema a partir da marcação de um integrante. Ainda NÃO vale como especificidade da família: só passa a valer depois que alguém confirmar.”",
+        "A coerência é verificável na mesma tela: enquanto não confirmada, a família <b>continua</b> exibindo “Especificidade ainda não informada” e permanece na relação de pendências — a sugestão não conta como valor.",
+        "A confirmação é em duas etapas, com diálogo próprio que reforça: “Não é uma informação declarada ao MDS: só passa a valer como especificidade da família depois da sua confirmação.”",
+        "Após confirmar (PUT .../confirm → 200 OK), passa a “Especificidades vigentes”, Código 1 da Tabela 38, com selo “Sugestão confirmada pela equipe”.",
+        "A ORIGEM é preservada: em banco, source continua <code>suggested</code> mesmo após a confirmação — o sistema não passa a fingir que o dado foi declarado.",
+        "A ação alternativa “Descartar” está disponível ao lado — confirmar não é o único caminho."
+      ],
+      "images": [
+        "screenshots/ca06-sugerida-situacao-rua.png",
+        "screenshots/ca06-dialogo-confirmar.png",
+        "screenshots/ca06-sugerida-confirmada.png"
+      ]
+    },
+    {
+      "id": "CA07",
+      "title": "Estrangeira e migrante são informadas manualmente",
+      "status": "nav",
+      "gherkin": "Dado que a família Mendoza é estrangeira\nQuando eu registrar a especificidade \"Família Estrangeira\"\nEntão o valor é salvo\n  E não havia como o sistema derivá-lo de nenhum dado existente",
+      "steps_html": "Família sem especificidade → <b>Registrar</b> → marcação de “Família Estrangeira” na Tabela 38 → salvar.",
+      "results": [
+        "PUT /families/{uuid}/social-specificities → 200 OK; o valor é salvo.",
+        "Consta como “Família Estrangeira — Código 17 da Tabela 38”, com selo <b>“Informada pela equipe”</b> e a explicação “Registrada por um profissional no prontuário.”",
+        "Em banco, a origem é <code>manual</code> — distinta de <code>derived_cadunico</code> e de <code>suggested</code>. Não há caminho de derivação para este código: nenhum grupo populacional, indicador ou marcação de integrante produz “Família Estrangeira”.",
+        "O formulário apresenta os 20 códigos da Tabela 38 e explicita a diferença entre não responder e responder “sem especificidades”: “Deixar tudo em branco devolve a família à relação de pendências.”"
+      ],
+      "images": [
+        "screenshots/ca09-duas-especificidades-principal.png"
+      ]
+    },
+    {
+      "id": "CA08",
+      "title": "Corrigir valor derivado",
+      "status": "nav",
+      "gherkin": "Dado que a família Silva recebeu \"Família Ribeirinha\" derivada do CadÚnico\n  E que a equipe verificou em atendimento que a informação está errada\nQuando eu alterar a especificidade\nEntão o novo valor é salvo\n  E a trilha de auditoria registra a alteração, identificando que substituiu um valor derivado",
+      "steps_html": "Na família com especificidade derivada, <b>Corrigir</b> → desmarcar “Família Ribeirinha” e marcar “Família de Pescadores Artesanais” → salvar.",
+      "results": [
+        "O novo valor é salvo e passa a constar como “Família de Pescadores Artesanais — Código 7”, com selo “Informada pela equipe”.",
+        "A trilha registra uma entrada DEDICADA à substituição: description <code>replaced_derived_specificity</code>, com properties <code>{\"replaced_derived_value\": true, \"old\": [{…, \"source\": \"derived_cadunico\"}], \"attributes\": [{…, \"source\": \"manual\"}]}</code> — fica explícito que substituiu um valor derivado, e qual.",
+        "O valor derivado NÃO é apagado: em banco a linha original recebe <code>deleted_at</code> (soft delete). O município continua podendo demonstrar o que declarou ao MDS e quando deixou de declarar.",
+        "As entradas granulares de created/updated/deleted acompanham, todas com o autor e o horário."
+      ],
+      "images": [
+        "screenshots/ca08-corrigir-derivada.png"
+      ]
+    },
+    {
+      "id": "CA09",
+      "title": "Mais de uma especificidade",
+      "status": "nav",
+      "gherkin": "Dado que a família Souza é quilombola e também de agricultores familiares\nQuando eu registrar as duas especificidades e indicar a principal\nEntão ambas constam do prontuário\n  E a remessa leva a que foi indicada como principal",
+      "steps_html": "Marcação de duas especificidades no formulário e escolha explícita da principal antes de salvar.",
+      "results": [
+        "Ambas constam do prontuário sob “Especificidades vigentes”.",
+        "A principal é identificada com rótulo próprio: <b>“Principal — vai na remessa”</b>, ligando a escolha diretamente ao destino no TCE-AL.",
+        "Marcar um item revela o seletor “Principal” ao lado dele — a escolha é do profissional, item a item.",
+        "Em banco: as duas linhas com source <code>manual</code>, apenas uma com <code>is_primary = true</code>.",
+        "A unicidade da principal é defendida em DUAS camadas — comprovado acidentalmente durante a restauração da massa, quando o banco recusou uma segunda principal com <code>fss_family_primary_unique</code>. A suíte cobre as duas: “it REJECTS two primaries in the Form Request (1st layer)” e “…in the PARTIAL UNIQUE INDEX as well”."
+      ],
+      "images": [
+        "screenshots/ca09-duas-especificidades-principal.png"
+      ]
+    },
+    {
+      "id": "CA10",
+      "title": "Importação seguinte não sobrescreve",
+      "status": "auto",
+      "gherkin": "Dado que corrigi a especificidade da família Silva no prontuário\n  E que a remessa seguinte do CadÚnico traz o grupo populacional anterior\nQuando a importação for processada\nEntão o valor do prontuário é mantido\n  E a divergência é apresentada para a equipe resolver",
+      "steps_html": "Evidência <b>automatizada</b>. Exercer este critério no navegador exigiria processar uma nova remessa do CadÚnico sobre a família corrigida — um ciclo de importação que está fora do alcance deste dossiê.",
+      "results": [
+        "Pest: “it keeps the record value on re-import and shows the divergence (CA…)” — PASS.",
+        "O mecanismo de divergência foi observado em funcionamento no dossiê da #10620, no painel “Divergências com a importação”, que declara: “A remessa seguinte discordou do que a equipe registrou. Nada foi alterado automaticamente.”",
+        "A regra de preservação está declarada no código: a linha derivada mantida NÃO é reescrita, e o <code>source</code> de uma linha que permanece nunca é sobrescrito (SyncFamilySocialSpecificitiesAction)."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA11",
+      "title": "Acesso restrito à unidade",
+      "status": "nav",
+      "gherkin": "Dado que sou Operacional lotado apenas no \"CRAS Centro\"\nQuando eu tentar registrar a especificidade de uma família referenciada no \"CREAS\"\nEntão o prontuário não é acessível a mim, conforme o corte de acesso vigente",
+      "steps_html": "Como operador, acesso direto ao prontuário da família referenciada no <code>E2E CREAS</code>. <b>Reexecutado após a revisão da RN08 da #10617.</b>",
+      "results": [
+        "O prontuário NÃO é acessível — o resultado exigido pelo critério é atendido.",
+        "GET /families/{uuid}/details → <b>403 Forbidden</b>, com “Acesso restrito” e o motivo declarado. Sem o prontuário não há bloco de especificidade a registrar.",
+        "MUDANÇA EM RELAÇÃO À VERSÃO ANTERIOR DESTE RELATÓRIO: até 27/08/2026 este caso respondia 404. O critério não especifica o código — exige apenas que o prontuário não seja acessível —, e segue atendido.",
+        "A suíte de isolamento confirma que a especificidade principal de outro município não vaza para a organização atual."
+      ],
+      "images": [
+        "screenshots/ca11-creas-acesso-negado.png"
+      ]
+    }
+  ],
+  "notes": [
+    {
+      "title": "Revisão da RN08 da #10617 — o CA11 foi reevidenciado",
+      "html": "<p>Em 27/08/2026 a regra de acesso da HU #10617 foi revisada: a família referenciada em unidade fora da lotação do profissional deixou de ser tratada como registro inexistente (404) e passou a responder acesso negado (403), com o motivo declarado.</p><p>O CA11 desta história foi <b>reexecutado</b> após a mudança e segue atendido: o critério exige que o prontuário não seja acessível, sem especificar o código de retorno. Nenhum outro critério desta história é afetado.</p>"
+    },
+    {
+      "title": "CA09 se apoia numa premissa ainda não ratificada pelo Tribunal",
+      "html": "<p>A RN09 do chamado reconhece que o campo de especificidade do leiaute 15.11 é <b>singular</b>, enquanto o instrumento do MDS permite múltiplas marcações. A regra declara que a forma de declarar isso ao Tribunal <i>depende de resposta dele</i> e que, enquanto a resposta não vier, a remessa leva <b>uma</b> especificidade — a indicada pelo município como principal.</p><p>O CA09 foi evidenciado exatamente sobre essa premissa: as duas especificidades constam do prontuário e a escolhida como principal é a que segue para a remessa, com rótulo explícito na tela (“Principal — vai na remessa”).</p><p><b>Consequência se a resposta do Tribunal for outra:</b> a estrutura de dados já suporta múltiplas especificidades por família, então acomodar uma resposta diferente é mudança na geração da remessa, não no prontuário. O que foi validado aqui — registrar todas as que se aplicam e marcar uma como principal — permanece válido em qualquer cenário.</p>"
+    },
+    {
+      "title": "LGPD — o povo/etnia não entra na trilha de auditoria",
+      "html": "<p>O campo “povo ou etnia” da família indígena é texto livre e identifica um grupo étnico — dado sensível. Registramos um valor pelo navegador e conferimos a trilha: <b>zero ocorrências</b> do texto e de <code>ethnicity_note</code> no <code>activity_log</code>, enquanto o valor está corretamente gravado na tabela da especificidade.</p><p>Há teste dedicado sustentando isso: “it NEVER writes ethnicity_note into the activity log (§10/§14)”. Somado ao mesmo cuidado verificado na #10619 com o motivo do ingresso, forma um padrão consistente no épico: o texto livre do profissional fica no dado, não na auditoria.</p>"
+    },
+    {
+      "title": "As três conversões que costumam quebrar em silêncio — todas corretas",
+      "html": "<p>O leiaute 15.11 recebe inteiros, mas a importação traz códigos com zeros à esquerda. Três casos foram verificados na tela:</p><ul><li><code>'003'</code> → <b>“Código 3 da Tabela 38”</b> (CA01);</li><li><code>'019'</code> → <b>“Código 19 da Tabela 38”</b> (CA03);</li><li>grupo populacional <code>'000'</code> → <b>“Grupo populacional 0 — Nenhuma”</b> — o caso que mais engana, porque um zero mal convertido vira ausência de informação e a família cairia indevidamente na relação de pendências.</li></ul><p>Internamente os códigos seguem zero-padded (os controles da tela usam identificadores como <code>specificity-checkbox-009</code>), e a apresentação converte para inteiro. A separação está coerente nas duas pontas.</p>"
+    },
+    {
+      "title": "A distinção entre “não respondeu” e “respondeu que não tem”",
+      "html": "<p>É a decisão de produto mais delicada desta história, e a interface a sustenta em três lugares diferentes, com a mesma leitura:</p><ul><li>na relação de pendências: “«Família Sem Especificidades» é uma resposta dada — essa família não aparece aqui. Aqui está quem ainda não respondeu nada.”;</li><li>no formulário de registro: “Deixar tudo em branco devolve a família à relação de pendências.”;</li><li>no prontuário da família sem informação: “Enquanto isso não acontecer, a remessa 15.11 fica impedida.”</li></ul><p>A suíte guarda a fronteira com um teste explícito: “it accepts an EMPTY list — which is different from declaring 019”. Vale registrar porque, do ponto de vista do banco, os dois estados são fáceis de confundir — e confundi-los significaria declarar ao TCE-AL algo que ninguém afirmou.</p>"
+    },
+    {
+      "title": "A família indígena chega sem linha nenhuma — e isso é o acerto",
+      "html": "<p>Verificado em banco antes de qualquer ação: a família importada com indicador indígena não possui <b>nenhuma</b> linha de especificidade. O sistema poderia ter escolhido um dos dois códigos (5 ou 6) e deixado para a equipe corrigir depois; não escolheu.</p><p>A diferença importa porque o código 5 e o 6 descrevem realidades distintas — residir ou não em aldeia/reserva — e a escolha errada seria declarada ao MDS como se fosse afirmação do município. A relação de pendências trata esse caso com motivo próprio (“Indígena — falta escolher aldeia ou não-aldeia”), o que permite à equipe encontrar exatamente essas famílias.</p>"
+    },
+    {
+      "title": "Integridade da massa",
+      "html": "<p>Os critérios exigiram registrar a escolha indígena com povo/etnia (CA05), confirmar uma sugestão (CA06), registrar duas especificidades manuais com principal (CA07/CA09) e substituir um valor derivado (CA08). Todas as alterações foram revertidas ao final, e o estado confirmado família a família: a derivada voltou a 003 <code>derived_cadunico</code> como principal, a declarada segue 019, as duas pendentes voltaram a não ter linha e a sugestão voltou a não confirmada.</p><p>Nota operacional: a restauração precisou remover a especificidade manual ANTES de reativar a derivada — o índice <code>fss_family_primary_unique</code> recusa duas principais simultâneas. O tropeço serviu de evidência adicional para o CA09.</p>"
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Pest — FamilySocialSpecificity, TraditionalGroupMap, Isolation)",
+    "file": "pest-10621.txt"
+  }
+}

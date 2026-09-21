@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Piloto: comportamento uniforme de tabelas — eSUAS (US-04, ticket #10137)</title>
+<style>
+:root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+* { box-sizing:border-box; }
+body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+.wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+header.cover h1 { margin:0 0 6px; font-size:23px; }
+header.cover .sub { color:var(--muted); font-size:13.5px; }
+h1 { font-size:21px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+h2 { font-size:17px; margin:22px 0 8px; }
+h3 { font-size:14.5px; margin:18px 0 6px; color:#0b5cad; }
+p, li { font-size:12.5px; }
+table { width:100%; border-collapse:collapse; margin:10px 0 16px; font-size:11px; }
+th, td { text-align:left; padding:6px 8px; border-bottom:1px solid var(--line); vertical-align:top; }
+th { background:var(--bg); font-size:10px; text-transform:uppercase; letter-spacing:.03em; color:var(--muted); }
+code { background:var(--bg); padding:1px 4px; border-radius:3px; font-size:10.5px; }
+pre { background:var(--bg); padding:10px 12px; border-radius:6px; font-size:10.5px; overflow-x:auto; border:1px solid var(--line); }
+pre code { background:none; padding:0; }
+blockquote { background:var(--bg); border-left:3px solid #0b5cad; padding:10px 14px; margin:10px 0; border-radius:4px; font-size:12px; }
+strong { color:#0b5cad; }
+.badge { display:inline-block; padding:2px 8px; border-radius:10px; font-size:10.5px; font-weight:600; }
+.badge.ok { background:#e3f6e8; color:#1c7a37; }
+.badge.parc { background:#fff3d6; color:#8a5b00; }
+.badge.pending { background:#eee; color:#666; }
+footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:11px; }
+@media print { h2, h3 { break-after:avoid; } table { break-inside:auto; } tr { break-inside:avoid; } pre { break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+<header class="cover">
+  <h1>Comportamento uniforme de tabelas entre módulos — Piloto</h1>
+  <div class="sub">US-04 · Ticket GLPI #10137 · Piloto em 1 módulo (phone-types, admin) · gerado em 2026-07-29</div>
+</header>
+
+<h1>Contexto</h1>
+<p>A HU #10137 pede comportamento uniforme entre as tabelas dos módulos do eSUAS: paginação, estado
+vazio, skeleton de carregamento, colunas ordenáveis acessíveis e estado de erro com recuperação. A
+auditoria de código feita nesta mesma frente encontrou <strong>3 dos 5 critérios não plenamente
+atendidos</strong>: estado vazio não padronizado entre módulos (cada um com sua própria marcação),
+ausência total de um padrão de erro/retry em qualquer tabela do sistema, e o componente
+<code>TableEmpty.vue</code> já existente na biblioteca de UI sem nenhum uso real. Em vez de aplicar a correção
+nos ~47 módulos tabulares de uma vez, foi decidido validar a solução em <strong>um único módulo piloto</strong>
+antes de qualquer rollout mais amplo.</p>
+
+<h1>O que foi implementado</h1>
+<h2>Componente compartilhado <code>TableStatusMessage</code></h2>
+<p>Novo componente em <code>components/ui/table/</code> (replicado, byte-idêntico, em <code>admin/</code> e <code>client/</code> —
+mesma convenção já usada pelas demais primitivas de tabela), que padroniza o miolo visual de um
+estado de tabela sem linhas: ícone, título, texto de apoio e um botão de ação opcional. Aceita
+<code>role="status"</code> (estado vazio) ou <code>role="alert"</code> (estado de erro), para leitores de tela
+distinguirem as duas situações.</p>
+<pre><code>&lt;TableStatusMessage
+  :icon="AlertTriangle"
+  :title="t('common.table_error_title')"
+  :hint="t('common.table_error_hint')"
+  :action-label="t('common.retry')"
+  role="alert"
+  @action="emit('retry')"
+/&gt;</code></pre>
+
+<h2>Piloto aplicado: módulo phone-types (admin)</h2>
+<p>Escolhido por ser um CRUD simples e representativo do padrão-molde replicado em dezenas de outros
+lookups administrativos — validar a solução aqui reduz o risco de surpresas no rollout amplo.</p>
+<table>
+<tr><th>Camada</th><th>Mudança</th></tr>
+<tr><td>Composable <code>usePhoneTypes.ts</code></td><td>novo estado <code>hasLoadError</code>, ligado ao <code>catch</code> de <code>fetchList()</code> — falha de rede/servidor passa a ser um estado persistente e consultável, não apenas um toast que desaparece</td></tr>
+<tr><td><code>PhoneTypesTable.vue</code></td><td>prop <code>hasError</code> + evento <code>retry</code>; estado de erro (<code>role="alert"</code>) renderizado antes do estado vazio</td></tr>
+<tr><td><code>PhoneTypesCardGrid.vue</code></td><td>mesmo tratamento, para a visão em cartões (mobile/grid)</td></tr>
+<tr><td><code>PhoneTypesListPage.vue</code></td><td><code>:has-error</code> e <code>@retry="resource.fetchList"</code> conectados nos dois componentes de listagem</td></tr>
+<tr><td>Locales (pt-BR + en, admin e client)</td><td>3 chaves novas em <code>common.json</code>: <code>table_error_title</code>, <code>table_error_hint</code>, <code>retry</code></td></tr>
+</table>
+
+<h1>Critérios de aceite cobertos pelo piloto</h1>
+<table>
+<tr><th>CA</th><th>Descrição</th><th>Status no piloto</th></tr>
+<tr><td>CA02</td><td>Estado vazio uniforme (ícone + título + texto de apoio, com ação quando aplicável)</td><td><span class="badge ok">atendido</span></td></tr>
+<tr><td>CA05</td><td>Estado de erro de carregamento persistente, distinto do vazio, com ação de nova tentativa</td><td><span class="badge ok">atendido</span></td></tr>
+<tr><td>CA01 / CA03 / CA04</td><td>Paginação, skeleton, colunas ordenáveis acessíveis</td><td><span class="badge pending">fora do escopo deste piloto — já atendidos globalmente pela auditoria de código prévia</span></td></tr>
+</table>
+<p>O piloto <strong>não</strong> abrange os ~46 módulos tabulares restantes nem a promoção do padrão a outras
+telas — escopo definido deliberadamente para validar a solução antes de decidir o rollout.</p>
+
+<h1>Evidência automatizada</h1>
+<p>Não há dossiê de navegador para este piloto: o ambiente Docker/Sail do eSUAS não estava no ar no
+momento da execução e a subida completa da stack (composer, migrations, seed) não se justificava para
+uma validação de escopo único, ainda em decisão de rollout. A evidência abaixo é 100% por suíte
+automatizada (Vitest), cobrindo o mesmo comportamento que seria observado na tela.</p>
+
+<h2>Componente compartilhado</h2>
+<pre><code>✓ src/components/ui/table/TableStatusMessage.test.ts (4 tests) 20ms
+  ✓ renderiza ícone, título e texto de apoio
+  ✓ não renderiza botão sem actionLabel
+  ✓ renderiza botão e emite "action" ao clicar
+  ✓ role default é "status"; pode ser "alert"</code></pre>
+
+<h2>Módulo piloto (phone-types)</h2>
+<pre><code>✓ src/modules/phone-types/composables/usePhoneTypes.test.ts (19 tests) 6ms
+  ✓ hasLoadError vai para true quando fetchList falha (US-04 CA05)
+  ✓ hasLoadError volta a false num novo fetchList bem-sucedido
+✓ src/modules/phone-types/components/PhoneTypesTable.test.ts (4 tests) 16ms
+  ✓ estado de erro renderiza com role="alert" e sem &lt;table&gt;
+  ✓ retry emite ao clicar no botão
+  ✓ estado vazio renderiza com role="status" quando hasError=false
+  ✓ estado de erro nunca mostra o texto de "vazio"
+✓ src/modules/phone-types/components/PhoneTypesCardGrid.test.ts (3 tests) 15ms
+  ✓ estado de erro renderiza (CA05)
+  ✓ retry emite ao clicar
+  ✓ estado vazio renderiza quando hasError=false</code></pre>
+<blockquote><p><strong>4 arquivos de teste, 30 testes, 30 passaram.</strong> Duração 1.13s.</p></blockquote>
+
+<h2>Regressão — suíte completa</h2>
+<table>
+<tr><th>Frontend</th><th>Type-check (<code>vue-tsc -b</code>)</th><th>Suíte completa (Vitest)</th><th>Lint (ESLint)</th></tr>
+<tr><td>admin</td><td>limpo</td><td>1318/1318 passaram</td><td>limpo</td></tr>
+<tr><td>client</td><td>limpo</td><td>1045/1046 passaram — 1 falha pré-existente e não relacionada (<code>useGeoPanelExport.test.ts</code>, módulo geo-panel/export), confirmada idêntica com as mudanças deste piloto revertidas (<code>git stash</code>)</td><td>limpo</td></tr>
+</table>
+
+<h1>Escopo e limitações</h1>
+<ul>
+<li>Piloto restrito a 1 de ~47 módulos tabulares — decisão explícita para validar o padrão antes do rollout.</li>
+<li>Sem evidência de navegador (stack local não estava no ar); evidência é 100% por suíte automatizada.</li>
+<li>Mudanças commitadas localmente (admin 4e6a0ed, client 66f73d0, meta-repo 42d9991) — não pushadas.</li>
+<li>CA01/CA03/CA04 (paginação, skeleton, ordenação acessível) não fazem parte deste piloto — já haviam sido confirmados atendidos globalmente na auditoria de código anterior desta mesma frente.</li>
+</ul>
+
+<h1>Próximos passos (aguardando decisão)</h1>
+<ol>
+<li>Revisar este piloto (código + evidência automatizada).</li>
+<li>Decidir: aprovar o padrão <code>TableStatusMessage</code> para rollout nos módulos restantes, ajustar o componente, ou manter apenas phone-types.</li>
+<li>Se aprovado o rollout: aplicar o mesmo padrão módulo a módulo (novo escopo, fora deste piloto).</li>
+<li>Retomar o fluxo de validação do ticket #10137 no GLPI (comparação CA a CA, anexo do dossiê, solicitação de validação) — pendente até a decisão de rollout, para não abrir uma validação de escopo parcial.</li>
+</ol>
+
+<footer>Relatório gerado como piloto de prova de conceito para a HU #10137 (US-04) — eSUAS · 2026-07-29</footer>
+</div></body></html>

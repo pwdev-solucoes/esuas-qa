@@ -1,0 +1,234 @@
+{
+ "meta": {
+  "title": "Relatório de Critérios de Aceite — US-DIAG-04",
+  "subtitle": "Épico HU-PRONT-DIAG (fase F6) · GLPI #10895 · Descumprimento de condicionalidades do Bolsa Família",
+  "rows": [
+   [
+    "Gerado em",
+    "18/09/2026"
+   ],
+   [
+    "História",
+    "US-DIAG-04 — Registrar o descumprimento de condicionalidades do Bolsa Família (GLPI #10895)"
+   ],
+   [
+    "Spec",
+    ".planning/specs/US-DIAG-04-descumprimento-de-condicionalidades.md"
+   ],
+   [
+    "Branch",
+    "feature/diag-prontuario-blocos-4-6-8-10 (api ad2da3b · client bebf1c0)"
+   ],
+   [
+    "Ambiente",
+    "API Laravel/Sail (container api-laravel.test-1, porta 80) + PostgreSQL · client (Vite dev) em :5175"
+   ],
+   [
+    "Organização (tenant)",
+    "E2E CadÚnico · família E2E Família No CRAS (código 9900000001, sem indicador de Bolsa Família)"
+   ],
+   [
+    "Perfis usados",
+    "Operacional do Tenant com add-on LGPD, lotado no E2E CRAS Centro (CPF 111.444.777-35); Operacional temporário lotado só no E2E CRAS Sem MDS, para o CA10"
+   ],
+   [
+    "Ferramenta",
+    "playwright-cli (Chromium headless) + Pest 4 (--filter=ConditionalityBreach)"
+   ]
+  ]
+ },
+ "summary": "Os 11 critérios de aceite da US-DIAG-04 foram verificados: 10 no navegador, combinados com a suíte automatizada, e 1 só pela suíte (isolamento entre organizações, que exige um segundo município). Nenhum critério ficou em falta e nenhum defeito foi encontrado. A família usada não tem indicador de Bolsa Família, o que permitiu exercer o aviso do CA07 no mesmo fluxo dos demais. O estado vazio (CA08) foi capturado antes de qualquer registro. Em seguida foram registradas três ocorrências para o mesmo integrante (educação 07/2026, saúde 08/2026 e educação 08/2026 com suspensão solicitada), e uma delas foi cancelada com motivo. A suíte automatizada fechou 61 testes verdes / 259 asserções.",
+ "cas": [
+  {
+   "id": "CA01",
+   "title": "Registrar ocorrência de educação (happy path)",
+   "status": "parc",
+   "gherkin": "Dado que sou Operacional do Tenant com o add-on LGPD, lotado no \"CRAS Centro\"\nQuando eu registrar a ocorrência na área de educação, com mês e ano, efeito \"advertência\" e suspensão não solicitada\nEntão a ocorrência é salva\nE consta no prontuário com meu nome e a data do lançamento",
+   "steps_html": "No prontuário da família <b>E2E Família No CRAS</b>, aba <b>Condicionalidades</b> → <b>Registrar ocorrência</b>. Integrante <b>E2E Integrante Local</b>, área <b>Educação</b>, efeito <b>1 — Advertência</b>, <b>Julho/2026</b>, suspensão <b>Não</b>. Salvar e expandir a linha.",
+   "results": [
+    "Toast “Ocorrência de descumprimento registrada no prontuário.” e a linha 07/2026 · E2E Integrante Local · Educação · 1 — Advertência · Registrada.",
+    "Expandida, a linha traz a assinatura “Registrado por E2E Operador Prontuário em 18/09/2026” (RN10).",
+    "Pest: “registers an education breach with status registered, signed and dated”."
+   ],
+   "images": [
+    "screenshots/ca01-formulario-preenchido.png",
+    "screenshots/ca01-registrada.png",
+    "screenshots/ca01-assinatura.png"
+   ]
+  },
+  {
+   "id": "CA02",
+   "title": "Registrar ocorrência de saúde",
+   "status": "parc",
+   "gherkin": "Dado que a integrante descumpriu condicionalidade de pré-natal\nQuando eu registrar a ocorrência na área de saúde\nEntão ela é salva com a mesma estrutura da ocorrência de educação\nE as duas áreas são distinguíveis na consulta",
+   "steps_html": "Novo registro no mesmo formulário, com área <b>Saúde</b>, efeito <b>1 — Advertência</b>, <b>Agosto/2026</b>.",
+   "results": [
+    "O formulário é o mesmo para as duas áreas: área, efeito, mês/ano e suspensão.",
+    "O cabeçalho da aba passa a separar “1 em educação” e “1 em saúde”, e cada linha traz a área com selo próprio.",
+    "Pest: “registers a health breach with the same structure and keeps both areas distinguishable”."
+   ],
+   "images": [
+    "screenshots/ca02-formulario-saude.png",
+    "screenshots/ca02-duas-areas-distinguiveis.png"
+   ]
+  },
+  {
+   "id": "CA03",
+   "title": "Escala de efeitos com os quatro códigos",
+   "status": "parc",
+   "gherkin": "Quando eu escolher o efeito\nEntão me são oferecidos advertência, bloqueio, suspensão e cancelamento, com os códigos 1 a 4",
+   "steps_html": "Abrir o seletor de efeito no formulário de registro.",
+   "results": [
+    "O seletor oferece exatamente “1 — Advertência”, “2 — Bloqueio”, “3 — Suspensão” e “4 — Cancelamento”, em ordem crescente de gravidade.",
+    "O texto de apoio declara a escala progressiva: advertência (1) → bloqueio (2) → suspensão (3) → cancelamento (4).",
+    "Pest: qualquer efeito fora dos quatro códigos é recusado com 422 (quatro variações testadas), e uma área fora de educação/saúde também."
+   ],
+   "images": [
+    "screenshots/ca03-quatro-efeitos.png"
+   ]
+  },
+  {
+   "id": "CA04",
+   "title": "Data em mês e ano",
+   "status": "parc",
+   "gherkin": "Quando eu informar a data\nEntão me são pedidos o mês e o ano, não o dia",
+   "steps_html": "Observar o campo “Mês e ano da ocorrência” no formulário.",
+   "results": [
+    "O campo tem dois seletores, mês (Janeiro a Dezembro) e ano. Não existe campo de dia.",
+    "A tela explica: “o efeito se refere a um período de apuração do programa — por isso se informa o mês e o ano, nunca o dia”.",
+    "Pest: o payload expõe mês e ano e nenhum campo de data completa; mês fora de 1–12 é recusado; mês futuro é recusado."
+   ],
+   "images": [
+    "screenshots/ca01-formulario-preenchido.png"
+   ]
+  },
+  {
+   "id": "CA05",
+   "title": "Várias ocorrências para o mesmo integrante",
+   "status": "parc",
+   "gherkin": "Dado que o integrante já tem uma ocorrência de advertência registrada\nQuando eu registrar outra, de bloqueio, em mês posterior\nEntão as duas constam\nE a primeira não foi substituída",
+   "steps_html": "Registrar, para o mesmo <b>E2E Integrante Local</b>, uma ocorrência de <b>Educação</b>, <b>2 — Bloqueio</b>, <b>Agosto/2026</b>.",
+   "results": [
+    "A lista passa a ter três linhas do mesmo integrante: 08/2026 Educação Bloqueio, 08/2026 Saúde Advertência e 07/2026 Educação Advertência.",
+    "A ocorrência de julho continua lá, inalterada. Nada foi substituído nem houve aviso de duplicidade.",
+    "Pest: “keeps several breaches of the SAME member, none replacing the previous” e “has NO unique index on the breaches table”."
+   ],
+   "images": [
+    "screenshots/ca05-tres-ocorrencias.png"
+   ]
+  },
+  {
+   "id": "CA06",
+   "title": "Solicitação de suspensão do efeito",
+   "status": "parc",
+   "gherkin": "Dado que o município pediu a suspensão do efeito de um bloqueio\nQuando eu marcar que a suspensão foi solicitada\nEntão o valor é salvo junto à ocorrência",
+   "steps_html": "No registro do bloqueio (CA05), marcar <b>Sim</b> em “Foi solicitada a suspensão do efeito?”.",
+   "results": [
+    "O bloqueio foi salvo com a suspensão marcada como solicitada.",
+    "A pergunta é sim ou não, com “Não” como padrão. A tela avisa que só se registra se a suspensão foi solicitada, sem acompanhar o resultado do pedido.",
+    "Pest: “stores suspension_requested alongside the breach” e “requires an ANSWER for suspension_requested — it has no third state”."
+   ],
+   "images": [
+    "screenshots/ca06-suspensao-solicitada.png"
+   ]
+  },
+  {
+   "id": "CA07",
+   "title": "Família sem indicador de Bolsa Família",
+   "status": "parc",
+   "gherkin": "Dado que a família está sem informação sobre Bolsa Família\nQuando eu registrar uma ocorrência de descumprimento para um integrante dela\nEntão a ocorrência é salva\nE o sistema avisa que a família não consta como beneficiária, sem impedir o registro",
+   "steps_html": "A família usada tem o indicador de Bolsa Família <b>vazio</b> no banco. Abrir o formulário de registro e salvar normalmente.",
+   "results": [
+    "Ao abrir o formulário, o aviso aparece antes de salvar: “Esta família não consta como beneficiária do Bolsa Família. O aviso não impede o registro: a ocorrência será salva assim mesmo.”",
+    "As três ocorrências desta família foram salvas normalmente. Em nenhum momento o registro foi recusado.",
+    "Pest: registra com 201 e devolve o aviso quando o indicador é vazio ou “não”; o aviso também vem nas opções do formulário."
+   ],
+   "images": [
+    "screenshots/ca07-aviso-nao-beneficiaria.png"
+   ]
+  },
+  {
+   "id": "CA08",
+   "title": "Ausência de ocorrência não é cumprimento",
+   "status": "parc",
+   "gherkin": "Dado que a família não tem nenhuma ocorrência registrada\nQuando eu consultar o prontuário\nEntão não há declaração de que ela está em cumprimento de condicionalidades\nE a ausência é apresentada como ausência de anotação",
+   "steps_html": "Captura feita <b>antes</b> de qualquer registro, na primeira abertura da aba Condicionalidades.",
+   "results": [
+    "A aba mostra “Nenhuma anotação registrada” e explica: “A ausência de anotação é apenas ausência de anotação: o prontuário não afirma nada sobre o que não foi registrado.”",
+    "Em nenhum lugar a tela diz que a família está em cumprimento.",
+    "Pest: a lista vazia não afirma nada sobre cumprimento, e a tabela não tem coluna de cumprimento."
+   ],
+   "images": [
+    "screenshots/ca08-ausencia-nao-e-cumprimento.png"
+   ]
+  },
+  {
+   "id": "CA09",
+   "title": "Cancelar em vez de excluir",
+   "status": "parc",
+   "gherkin": "Dado que registrei uma ocorrência no integrante errado\nQuando eu cancelá-la informando o motivo\nEntão ela permanece visível marcada como cancelada\nE deixa de compor o perfil do período",
+   "steps_html": "Na linha 07/2026, acionar <b>Cancelar ocorrência</b>, informar o motivo e confirmar.",
+   "results": [
+    "O diálogo avisa que cancelar não apaga e exige o motivo. Não existe ação de excluir.",
+    "Depois de confirmar, a linha continua na lista, marcada “Cancelada”. Expandida, mostra “Cancelada por E2E Operador Prontuário em 18/09/2026” e o motivo.",
+    "A saída do perfil do período é regra de apuração, provada pela suíte: a ocorrência cancelada é gravada como cancelada, não é apagada, e só as registradas contam.",
+    "Pest: “cancels instead of deleting”, “requires cancel_reason on the DELETE” e 409 ao cancelar ou corrigir uma já cancelada."
+   ],
+   "images": [
+    "screenshots/ca09-dialogo-cancelamento.png",
+    "screenshots/ca09-cancelada-visivel.png"
+   ]
+  },
+  {
+   "id": "CA10",
+   "title": "Negativa declara o motivo",
+   "status": "parc",
+   "gherkin": "Dado que sou Operacional lotado apenas em outra unidade\nE que a família é referenciada no \"CRAS Centro\"\nQuando eu tentar registrar uma ocorrência para ela\nEntão não é permitido\nE a tela informa o motivo, sem nomear as unidades envolvidas",
+   "steps_html": "Login com um Operacional, com add-on LGPD, lotado <b>apenas</b> no E2E CRAS Sem MDS, e abertura direta do prontuário da família.",
+   "results": [
+    "A tela exibe “Acesso restrito”: “Esta família é referenciada e acompanhada em unidades onde você não possui lotação vigente. Procure o gestor Master do município.”",
+    "Nenhuma unidade é nomeada na mensagem.",
+    "A API respondeu 403 com o código de erro estável unit_not_assigned.",
+    "Pest: a mesma negativa vale para registrar e para consultar ocorrências; nenhuma permissão nova foi criada para este bloco."
+   ],
+   "images": [
+    "screenshots/ca10-acesso-restrito.png"
+   ]
+  },
+  {
+   "id": "CA11",
+   "title": "Isolamento entre municípios",
+   "status": "auto",
+   "gherkin": "Dado que sou usuário do município A\nQuando eu registrar ou consultar ocorrências\nEntão alcanço somente famílias do município A",
+   "steps_html": "Critério de backend: exige um segundo município, que a massa do navegador não tem.",
+   "results": [
+    "Pest (6 testes de isolamento): família de outro município responde 404, nunca 403, em todos os verbos.",
+    "Uma ocorrência de outro município nunca aparece pela família do usuário, e a listagem só traz ocorrências da própria organização.",
+    "Integrante de outro município é recusado com 422 sem criar nada; cabeçalho de organização não vinculada é bloqueado."
+   ],
+   "images": []
+  }
+ ],
+ "notes": [
+  {
+   "title": "Operador temporário criado para o CA10, e removido depois",
+   "html": "<p>A massa semeada não tem nenhum Operacional com add-on LGPD lotado só numa unidade que não acesse a família. O operador sem lotação vigente não serve: ele é barrado já no login. Para exercer o critério, criei um Operacional temporário lotado apenas no <b>E2E CRAS Sem MDS</b>. Ele foi <b>removido do banco</b> ao fim da captura, com a lotação e os papéis.</p>"
+  },
+  {
+   "title": "Marcas deixadas na base",
+   "html": "<p>Ficaram três ocorrências na família E2E Família No CRAS, todas do integrante E2E Integrante Local: 07/2026 educação (cancelada, com motivo), 08/2026 saúde e 08/2026 educação com suspensão solicitada. Elas ficam no prontuário, como a regra exige.</p>"
+  },
+  {
+   "title": "Contador do cabeçalho da aba",
+   "html": "<p>O resumo no topo da aba (“2 em educação · 1 em saúde”) conta as linhas exibidas, <b>incluindo</b> a cancelada. Não é a apuração do leiaute 15.7: a saída da ocorrência cancelada do perfil do período está provada pela suíte, que só conta registros com situação “registrada”. Fica registrado para que ninguém leia o contador da tela como número apurado.</p>"
+  },
+  {
+   "title": "Ambiente",
+   "html": "<p>Captura contra o client em <code>:5175</code>, o dev server já em execução, identificado pelo diretório do processo e pelo título da página. As migrations da fase foram aplicadas e o <code>E2ESeeder</code> reexecutado antes da captura. Nenhum arquivo de configuração foi alterado.</p>"
+  }
+ ],
+ "appendix": {
+  "label": "Cobertura automatizada (Pest, --filter=ConditionalityBreach)",
+  "file": "pest-conditionality.txt"
+ }
+}

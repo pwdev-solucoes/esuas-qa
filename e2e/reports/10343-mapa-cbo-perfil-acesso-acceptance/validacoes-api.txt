@@ -1,0 +1,31 @@
+CA02  conjunto SEM o posto base operador
+  POST /api/cbo-access-profiles  ->  HTTP 422
+  {
+    "role_uuids": [
+      "Todo perfil do mapa precisa conter o posto base Operacional do Tenant."
+    ]
+  }
+
+CA03  conjunto composto APENAS por add-on LGPD
+  POST /api/cbo-access-profiles  ->  HTTP 422
+  {
+    "role_uuids": [
+      "Não é possível manter apenas perfis de ação única. O profissional precisa ter também um perfil base nesta organização."
+    ]
+  }
+
+CA04  conjunto contendo o posto Master
+  POST /api/cbo-access-profiles  ->  HTTP 422
+  {
+    "role_uuids": [
+      "O mapa só entrega o posto Operacional do Tenant. O perfil \"Master\" está acima dele e não pode ser mapeado — elevar alguém a Master permanece ato manual."
+    ]
+  }
+
+CA05  perfil que concede modulo vedado (Usuarios do tenant)
+  POST /api/cbo-access-profiles  ->  HTTP 422
+  {
+    "role_uuids": [
+      "O perfil \"Perfil de Teste — concede Usuários do tenant\" concede acesso a \"Usuários\", módulo vedado ao mapa. Esse acesso é atribuição privativa do Master no próprio tenant."
+    ]
+  }

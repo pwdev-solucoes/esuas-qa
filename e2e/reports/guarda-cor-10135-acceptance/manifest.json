@@ -1,0 +1,72 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — Guarda automatizada contra cor fora do token",
+    "subtitle": "GLPI #10135 · US-02 (HU-10008) · Evidências automatizadas em admin/ e client/",
+    "rows": [
+      ["Ticket GLPI", "#10135"],
+      ["Spec", ".planning/product/stories/US-02-guarda-cor-fora-do-token.md"],
+      ["Branch admin", "develop (merge do PR #72, commit c40de61)"],
+      ["Branch client", "develop (merge do PR #62, commit 7e48a96)"],
+      ["Ambiente", "Execução direta dos scripts scripts/check-color-tokens.mjs (Node) — nenhum CA depende de UI navegável"],
+      ["Ferramenta", "node (execução direta dos scripts de guarda) + git diff"]
+    ]
+  },
+  "summary": "4 critérios de aceite, todos de mecanismo de CI/tooling (sem UI navegável) — evidenciados via execução direta dos scripts scripts/check-color-tokens.mjs em admin/ e client/, já mergeados em develop. CA01: varredura da baseline sem violação fora da allowlist nos dois frontends. CA02: cada entrada da allowlist tem caminho e justificativa não-vazia. CA03: injeção de #ff0000 fora da allowlist faz o script falhar (exit 1) apontando arquivo:linha, nos dois frontends. CA04: adicionar uma entrada justificada à allowlist faz o script voltar a passar (exit 0), com o diff da allowlist visível — provado e revertido nos dois frontends. Resultado geral: 4/4 atendidos.",
+  "cas": [
+    {
+      "id": "CA01",
+      "title": "Varredura limpa na linha de base",
+      "status": "auto",
+      "gherkin": "Dado o código atual de admin/src e client/src Quando executo a checagem de cor literal (#rrggbb, rgb(), rgba(), hsl()) Então nenhum arquivo .vue acusa ocorrência fora da allowlist.",
+      "steps_html": "Executado <code>npm run check:colors</code> (que roda <code>node scripts/check-color-tokens.mjs</code>) na raiz de <code>admin/</code> e de <code>client/</code>, ambos no estado atual de <code>develop</code> pós-merge dos PRs #72 e #62.",
+      "results": [
+        "admin/src: 586 arquivos .vue varridos, resultado 'ZERO cor literal fora da allowlist' (exit 0).",
+        "client/src: 298 arquivos .vue varridos (inclui src/components/ui/**), resultado 'OK: zero cor literal fora do token' (exit 0)."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA02",
+      "title": "Allowlist explícita e justificada",
+      "status": "auto",
+      "gherkin": "Dado o arquivo de configuração da guarda Quando o inspeciono Então cada entrada da allowlist tem caminho e uma linha de justificativa.",
+      "steps_html": "Inspecionado o array <code>ALLOWLIST</code> declarado em <code>scripts/check-color-tokens.mjs</code> de cada frontend.",
+      "results": [
+        "admin: 2 entradas (MapPointPicker.vue, GeoLayerPreviewMap.vue), cada uma com campo file e reason não-vazio.",
+        "client: 1 entrada (MapPointPicker.vue), com campo file e reason não-vazio.",
+        "Ambos os scripts recusam rodar (erro de configuração distinto de violação) se qualquer entrada tiver reason vazio — validado no código de validateAllowlist()."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA03",
+      "title": "Violação barra o PR (caminho de erro)",
+      "status": "auto",
+      "gherkin": "Dado um PR que introduz #ff0000 em um .vue Quando o CI executa Então falha e a saída aponta arquivo:linha da ocorrência.",
+      "steps_html": "Criado um arquivo temporário <code>src/components/__proof10135__.vue</code> com <code>color: #ff0000</code> fora da allowlist, em admin/ e em client/; rodado <code>npm run check:colors</code> em cada um; arquivo removido ao final.",
+      "results": [
+        "admin: script falha (exit 1), aponta 'src/components/__proof10135__.vue:2 — #ff0000'.",
+        "client: script falha (exit 1), aponta 'src/components/__proof10135__.vue:2 #ff0000'.",
+        "Em ambos, a mensagem final orienta corrigir com token semântico ou allowlistar com justificativa."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA04",
+      "title": "Exceção nova é possível sem contornar a guarda",
+      "status": "auto",
+      "gherkin": "Dado um caso legítimo novo (lib imperativa que exige cor concreta) Quando adiciono o arquivo à allowlist com justificativa Então o CI volta a passar, e o diff da allowlist fica visível na revisão.",
+      "steps_html": "A partir do estado de violação do CA03, adicionada uma entrada <code>{ file: 'src/components/__proof10135__.vue', reason: '...' }</code> à ALLOWLIST de cada script (via <code>git diff</code>, mudança visível); rodado <code>npm run check:colors</code> novamente; allowlist e arquivo de prova revertidos ao final.",
+      "results": [
+        "admin: com a entrada adicionada, script volta a passar (exit 0), lista a nova exceção com sua justificativa entre as 'Exceções ativas'.",
+        "client: mesmo resultado — exit 0, nova exceção listada entre 'Excecoes declaradas'.",
+        "O diff da allowlist (git diff) é a evidência de que a mudança fica visível na revisão do PR — nenhum mecanismo de silenciamento fora da allowlist foi usado."
+      ],
+      "images": []
+    }
+  ],
+  "appendix": {
+    "label": "Saída bruta dos scripts de guarda (admin + client) — CA01 a CA04",
+    "file": "evidencia-completa.txt"
+  }
+}

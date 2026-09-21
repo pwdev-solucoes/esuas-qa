@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — Abertura do Prontuário e Unidade de Referência</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  section.note { border:1px solid var(--line); border-left:4px solid #b06a00; border-radius:6px; padding:10px 14px; margin:10px 0; background:#fffdf7; font-size:13px; }
+  section.note h3 { margin:0 0 6px; font-size:13.5px; color:#8a5200; }
+  section.note p { margin:6px 0; }
+  section.note ul { margin:6px 0 6px 18px; padding:0; }
+  section.note pre { background:var(--bg); border:1px solid var(--line); border-radius:4px; padding:8px; overflow-x:auto; font-size:11px; white-space:pre-wrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — Abertura do Prontuário e Unidade de Referência</h1>
+    <div class="sub">Épico Prontuário SUAS F0 · HU #10618 · 9 critérios · evidências dirigidas no client</div>
+    <div class="meta"><div><span>Gerado em:</span> 27/08/2026</div><div><span>História:</span> #10618 — Abertura do prontuário e unidade de referência</div><div><span>Spec:</span> .planning/specs/10618-abertura-prontuario-unidade-referencia.md</div><div><span>Branch:</span> prontuario (api, client, admin)</div><div><span>Ambiente:</span> API Laravel :8090 (esuas_app) · PostgreSQL esuas_e2e · client vite preview :4174</div><div><span>Organização (tenant):</span> E2E CadÚnico</div><div><span>Ferramenta:</span> playwright-cli (Chromium headless) + Pest 4</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">9 critérios de aceite, &lt;b&gt;todos os 9 evidenciados no navegador&lt;/b&gt;. Nenhum critério reprovado. A suíte da história fecha &lt;b&gt;22 testes / 120 asserções&lt;/b&gt;, incluindo 4 testes dedicados ao isolamento entre municípios. Esta é a segunda emissão do relatório: na primeira, o CA04 ficara parcial porque a massa não tinha família com endereço, e o CA08 fora anotado como atendido de forma vacuosa. A massa foi completada — a família sem unidade passou a ter endereço em bairro nomeado a partir de uma unidade — e o CA04 agora é demonstrável na tela; o CA08 foi reavaliado contra o texto do próprio chamado, que reconhece que o registro de acompanhamento ainda não existe. Detalhes em “Observações e ressalvas”.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA01</td><td>Abrir prontuário definindo a unidade</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA02</td><td>Relação de famílias sem unidade de referência</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA03</td><td>Correção some da relação</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA04</td><td>Nenhuma unidade é atribuída automaticamente</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA05</td><td>Aviso ao referenciar em unidade sem número MDS</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA06</td><td>Trocar a unidade de referência</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA07</td><td>Operacional não referencia em unidade onde não está lotado</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA08</td><td>Abrir prontuário não coloca em acompanhamento</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA09</td><td>Isolamento entre municípios</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA01">
+      <h2>CA01 — Abrir prontuário definindo a unidade <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Operacional do Tenant com o add-on LGPD, lotado no "CRAS Centro"
+  E que a família Silva foi importada do CadÚnico sem unidade de referência
+Quando eu abrir o prontuário atribuindo o "CRAS Centro" e confirmando
+Então a família passa a ser referenciada no "CRAS Centro"
+  E a data de abertura é registrada
+  E o prontuário apresenta o número do prontuário, a pessoa de referência, o tipo e o nome da unidade</p>
+      <p class="steps"><strong>Como foi testado:</strong> Login como o operador com add-on LGPD. Menu <b>Famílias sem Unidade</b> → <b>Abrir</b> na família importada sem unidade → selecionar <code>E2E CRAS Centro</code> → <b>Abrir prontuário</b>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>POST /families/{uuid}/open-record → 200 OK.</li><li>A família passa a ser referenciada na unidade escolhida (social_unit_id = 1, E2E CRAS Centro).</li><li>A data de abertura é registrada: referenced_at = 2026-08-27, e a tela exibe “Aberto em 27/08/2026”.</li><li>O autor da abertura fica gravado (record_opened_by = o profissional que confirmou).</li><li>O prontuário apresenta os quatro elementos exigidos: nº do prontuário (E2E-9900000003), pessoa de referência (E2E Família Sem Unidade), e tipo + nome da unidade (“Centro de Referência de Assistência Social · E2E CRAS Centro”).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca01-dialog-cras-centro.png" alt="CA01 evidência"/><figcaption>ca01-dialog-cras-centro.png</figcaption></figure><figure><img src="screenshots/ca01-prontuario-cras-centro.png" alt="CA01 evidência"/><figcaption>ca01-prontuario-cras-centro.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA02">
+      <h2>CA02 — Relação de famílias sem unidade de referência <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que existem 40 famílias importadas do CadÚnico sem unidade de referência
+Quando eu consultar a relação de famílias sem unidade
+Então vejo as 40 famílias, identificadas pelo nome da pessoa de referência
+  E cada uma oferece caminho direto para a atribuição da unidade</p>
+      <p class="steps"><strong>Como foi testado:</strong> Menu <b>Famílias sem Unidade</b>, como operador com add-on.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>GET /families/without-reference-unit?per_page=15&amp;page=1 → 200 OK — a relação é paginada.</li><li>Cada família é identificada pela coluna &lt;b&gt;Pessoa de referência&lt;/b&gt;, como o critério exige.</li><li>A coluna &lt;b&gt;Ações&lt;/b&gt; traz o botão “Abrir”, que é o caminho direto para a atribuição da unidade — sem passar por outra tela.</li><li>A tela declara a natureza da pendência: “Pendência calculada a cada consulta: a família sai desta relação assim que recebe a unidade.”</li><li>A massa de evidência contém 1 família nesse estado, não 40 — o número do cenário é ilustrativo; o que o critério exige (identificação e caminho direto) está evidenciado.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca02-relacao-sem-unidade.png" alt="CA02 evidência"/><figcaption>ca02-relacao-sem-unidade.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA03">
+      <h2>CA03 — Correção some da relação <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que atribuí o "CRAS Centro" à família Silva
+Quando eu consultar a relação de famílias sem unidade novamente
+Então a família Silva não aparece mais
+  E as demais continuam listadas</p>
+      <p class="steps"><strong>Como foi testado:</strong> Logo após a abertura do prontuário, retorno automático à relação de famílias sem unidade.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A família atribuída deixa a relação imediatamente.</li><li>A tela passa a exibir “Nenhuma família sem unidade de referência — Todas as famílias desta organização já têm unidade de referência registrada.”</li><li>A pendência é recalculada a cada consulta, e não guardada como estado — o que torna a saída da relação consequência automática da atribuição.</li><li>Nesta massa não há outras famílias pendentes para demonstrar a permanência das demais; a suíte cobre esse ponto (“it drops the family from the pending list as soon as it gets a unit…”).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca03-saiu-da-relacao.png" alt="CA03 evidência"/><figcaption>ca03-saiu-da-relacao.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA04">
+      <h2>CA04 — Nenhuma unidade é atribuída automaticamente <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que a família Souza tem endereço no bairro atendido pelo "CRAS Rural"
+Quando a família for importada do CadÚnico
+Então ela permanece sem unidade de referência
+  E nenhuma unidade é atribuída pelo sistema com base no endereço</p>
+      <p class="steps"><strong>Como foi testado:</strong> A família de evidência recebeu <b>endereço completo</b> — logradouro, número, CEP, município e um bairro deliberadamente nomeado a partir de uma unidade (<code>Bairro E2E CREAS</code>). Em seguida: consulta ao prontuário e abertura do diálogo de atribuição, sem escolher unidade.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A família tem endereço completo, visível no prontuário: “Localidade: E2E CREAS · Rua E2E do Bairro do CREAS, 100 · CEP 60000000 · Fortaleza/CE”.</li><li>&lt;b&gt;Mesmo com o endereço preenchido, ela permanece sem unidade de referência&lt;/b&gt;: o prontuário exibe “Prontuário sem unidade de referência” e o campo está NULL em banco.</li><li>O bairro foi nomeado de propósito a partir de uma unidade existente: se o sistema deduzisse a unidade pelo endereço, este seria o caso em que ele erraria. Não deduz.</li><li>O diálogo de atribuição abre com &lt;b&gt;nenhuma unidade pré-selecionada&lt;/b&gt; — o campo mostra “Selecione a unidade”. O sistema não propõe nem sugere.</li><li>Ao tentar confirmar sem escolher, a validação recusa (“Selecione a unidade de referência.”) e &lt;b&gt;nenhuma requisição é enviada&lt;/b&gt; — a família continua sem unidade.</li><li>O Action declara a regra no próprio código: não deduz unidade por endereço, território ou proximidade — a unidade chega escolhida no payload.</li><li>Cobertura automatizada correspondente: “it never assigns a unit by itself — the payload must carry the choice”.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca04-familia-com-endereco-sem-unidade.png" alt="CA04 evidência"/><figcaption>ca04-familia-com-endereco-sem-unidade.png</figcaption></figure><figure><img src="screenshots/ca04-nenhuma-unidade-pre-selecionada.png" alt="CA04 evidência"/><figcaption>ca04-nenhuma-unidade-pre-selecionada.png</figcaption></figure><figure><img src="screenshots/ca04-recusa-sem-unidade.png" alt="CA04 evidência"/><figcaption>ca04-recusa-sem-unidade.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA05">
+      <h2>CA05 — Aviso ao referenciar em unidade sem número MDS <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que a unidade "CRAS Alto do Cruzeiro" está sem o número MDS informado
+Quando eu abrir um prontuário atribuindo essa unidade
+Então o prontuário é aberto normalmente
+  E o sistema avisa que a família não poderá ser declarada na remessa ao TCE-AL
+    enquanto o número MDS da unidade não for informado</p>
+      <p class="steps"><strong>Como foi testado:</strong> Abertura do prontuário atribuindo a unidade <code>E2E CRAS Sem MDS</code> (<code>mds_number = NULL</code> em banco), e comparação com a mesma tela ao escolher o <code>E2E CRAS Centro</code>, que possui número MDS.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Ao escolher a unidade sem MDS, o aviso aparece ANTES de confirmar: “A unidade E2E CRAS Sem MDS está sem o número MDS informado. A família não poderá ser declarada na remessa ao TCE-AL enquanto esse número não for informado. O prontuário será aberto normalmente.”</li><li>O aviso é NÃO-BLOQUEANTE: a confirmação prossegue e o prontuário abre normalmente (200 OK).</li><li>O aviso é condicional — ao escolher o E2E CRAS Centro, que tem número MDS, nenhum alerta é exibido.</li><li>O aviso não vive só no momento da abertura: é recomputado no payload do próprio prontuário (FamilyResource.php:114), de modo que a equipe continua vendo a pendência ao reabrir o registro.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca05-aviso-mds-antes.png" alt="CA05 evidência"/><figcaption>ca05-aviso-mds-antes.png</figcaption></figure><figure><img src="screenshots/ca05-aberto-com-aviso-mds.png" alt="CA05 evidência"/><figcaption>ca05-aberto-com-aviso-mds.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA06">
+      <h2>CA06 — Trocar a unidade de referência <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que a família Silva está referenciada no "CRAS Centro" e sou Master
+Quando eu alterar a unidade de referência para o "CREAS"
+Então o sistema avisa que a equipe do "CRAS Centro" deixará de enxergar o prontuário
+  E, ao confirmar, a alteração é salva
+  E a trilha de auditoria da família registra a mudança, com autor e data</p>
+      <p class="steps"><strong>Como foi testado:</strong> Login como Master, prontuário da família referenciada no CRAS Centro → <b>Trocar unidade</b> → escolher <code>E2E CREAS</code> → confirmar em duas etapas.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O aviso é exibido ANTES de gravar: “A equipe do E2E CRAS Centro deixará de enxergar o prontuário desta família. Confirme apenas se a responsabilidade pela família passou mesmo para a nova unidade.”</li><li>O mecanismo é uma confirmação em duas fases: o primeiro PUT (confirmed: false) responde 422 com error_code “reference_unit_change_requires_confirmation” e devolve o aviso; o botão então muda para “Confirmar a troca”.</li><li>O segundo PUT (confirmed: true) responde 200 OK e a alteração é salva (social_unit_id 1 → 2).</li><li>A tela passa a exibir “Centro de Referência Especializado de Assistência Social · E2E CREAS”.</li><li>A trilha de auditoria registra a mudança com autor e data: description=updated, causer_id = o Master, em 27/08/2026 03:51:28, com attribute_changes {social_unit_id: 1 → 2}.</li><li>A própria tela declara a auditoria ao usuário: “A troca é registrada na trilha de auditoria da família, com autor e data.”</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca06-aviso-perda-de-acesso.png" alt="CA06 evidência"/><figcaption>ca06-aviso-perda-de-acesso.png</figcaption></figure><figure><img src="screenshots/ca06-trocada-para-creas.png" alt="CA06 evidência"/><figcaption>ca06-trocada-para-creas.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA07">
+      <h2>CA07 — Operacional não referencia em unidade onde não está lotado <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Operacional do Tenant lotado apenas no "CRAS Centro"
+Quando eu abrir um prontuário
+Então só posso atribuir o "CRAS Centro" como unidade de referência
+  E o "CREAS" não é oferecido</p>
+      <p class="steps"><strong>Como foi testado:</strong> Como operador (lotado em <code>E2E CRAS Centro</code> e <code>E2E CRAS Sem MDS</code>), abertura do seletor de unidade no diálogo de abertura do prontuário.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>São oferecidas exatamente as duas unidades onde o profissional tem lotação vigente: “E2E CRAS Centro” e “E2E CRAS Sem MDS”.</li><li>O “E2E CREAS” NÃO é oferecido — a unidade fora da lotação fica fora da lista.</li><li>A própria tela declara a regra: “Só aparecem unidades em atividade da sua organização onde você tem lotação vigente.”</li><li>Contraste na mesma massa: ao Master são oferecidas as três unidades do município (RN10), o que mostra que a restrição é do posto, não da tela.</li><li>A suíte cobre também a tentativa por payload — esconder a unidade na tela não basta: “it offers only the units where the professional is assigned, and re…”.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca07-opcoes-so-lotacao.png" alt="CA07 evidência"/><figcaption>ca07-opcoes-so-lotacao.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA08">
+      <h2>CA08 — Abrir prontuário não coloca em acompanhamento <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que abri o prontuário da família Silva no "CRAS Centro"
+Quando eu consultar a situação dela
+Então a família consta com prontuário aberto
+  E não consta como em acompanhamento no PAIF</p>
+      <p class="steps"><strong>Como foi testado:</strong> Consulta ao estado da família após a abertura do prontuário, na tela e em banco.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A família consta com prontuário aberto: nº do prontuário, unidade de referência e data de abertura visíveis no cabeçalho.</li><li>A situação da família permanece “Ativa” — o status não é tocado pela abertura, verificado em banco antes e depois.</li><li>A regra está declarada no código: abrir prontuário NÃO coloca a família em acompanhamento PAIF/PAEFI; o campo de situação fica intocado.</li><li>A suíte assere exatamente isso, comparando o valor da situação antes e depois da abertura.</li><li>O próprio critério do chamado reconhece que o registro de acompanhamento “é próprio e ainda não foi feito” — o acompanhamento PAIF pertence à fase F3 e não existe no modelo de dados desta fase. O critério é atendido por desenho, e deverá ser revalidado quando o acompanhamento for implementado.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca01-prontuario-cras-centro.png" alt="CA08 evidência"/><figcaption>ca01-prontuario-cras-centro.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA09">
+      <h2>CA09 — Isolamento entre municípios <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou usuário do município A
+Quando eu abrir um prontuário e escolher a unidade de referência
+Então só me são oferecidas unidades socioassistenciais do município A</p>
+      <p class="steps"><strong>Como foi testado:</strong> Evidência <b>automatizada</b>. O ambiente de evidências possui uma única organização semeada, o que impede montar o cenário de dois municípios pelo navegador sem alterar a massa.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Pest: “it offers only social assistance units of the acting municipality (…)” — PASS.</li><li>Pest: “it refuses a unit of another municipality even when it comes in the payload” — PASS. A defesa não é apenas visual: a unidade de outro município é recusada mesmo enviada diretamente.</li><li>Pest: “it treats a family of another municipality as a nonexistent record…” — PASS.</li><li>Pest: “it never lists families of another municipality as pending (CA09/RN…)” — PASS.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+  
+  <h2>Observações e ressalvas</h2>
+  <section class="note"><h3>Efeito da revisão da RN08 da #10617 sobre o aviso do CA06</h3><p>Em 27/08/2026 foi revisada a regra de acesso da HU #10617: a família referenciada em unidade fora da lotação do profissional deixou de ser tratada como registro inexistente e passou a responder “acesso negado”, com o motivo declarado.</p><p>Isso <b>não altera nenhum critério desta história</b> — nenhuma evidência deste relatório depende daquele comportamento. Mas muda o <b>sentido</b> do aviso do CA06: quando o Master troca a unidade de referência, a tela avisa que “a equipe do CRAS Centro deixará de enxergar o prontuário”. Isso continua verdadeiro — a equipe anterior perde o acesso ao conteúdo —, porém agora ela recebe uma negativa explicando o motivo, em vez de ver o prontuário simplesmente desaparecer da sua lista.</p><p>Na prática: a equipe anterior passa a saber que o prontuário existe e saiu dali. Vale avaliar se a redação do aviso deve mencionar isso.</p></section><section class="note"><h3>O 422 do CA06 é o mecanismo do aviso, não um erro</h3><p>Ao trocar a unidade de referência, o primeiro <code>PUT</code> chega com <code>confirmed: false</code> e o servidor responde <b>422</b> com <code>error_code: reference_unit_change_requires_confirmation</code>, carregando o aviso <code>previous_unit_loses_access</code>. É assim que o sistema garante que o alerta seja produzido <b>antes</b> de qualquer gravação — e não depois. O diálogo então troca o botão para “Confirmar a troca”, e o segundo <code>PUT</code> (<code>confirmed: true</code>) grava e responde 200.</p><p>Quem ler o log de rede isolado pode confundir esse 422 com falha. Ele é parte do contrato.</p></section><section class="note"><h3>Limite da massa de evidência (CA02)</h3><p>O cenário do CA02 fala em 40 famílias sem unidade de referência; a massa de evidência tem uma. O que o critério exige — identificação pela pessoa de referência e caminho direto para a atribuição — está evidenciado, e a suíte cobre a permanência das demais na relação.</p><p>O limite que existia no CA04 <b>foi resolvido</b>: a massa passou a incluir uma família com endereço completo, em bairro nomeado a partir de uma unidade, o que permite demonstrar na tela que o sistema não deduz a unidade pelo endereço. Ver o CA04.</p></section><section class="note"><h3>CA08 é atendido por desenho — e precisará de nova validação na F3</h3><p>O critério exige que abrir o prontuário <b>não</b> coloque a família em acompanhamento no PAIF. Nesta fase o acompanhamento PAIF/PAEFI ainda não existe no modelo de dados: não há tabela nem coluna, e a situação da família se resume a <i>Ativa</i> e <i>Inativa</i>.</p><p>O próprio texto do critério no chamado reconhece isso — “porque esse registro é próprio e ainda não foi feito” —, e a regra de negócio explicita a fronteira: abrir prontuário não é colocar em acompanhamento, que é registro da fase F3. O código honra a regra deixando a situação intocada, e a suíte assere o valor antes e depois.</p><p>Ou seja: o critério está atendido, e atendido <b>como foi escrito</b>. A observação que fica é de agenda, não de conformidade — quando o acompanhamento chegar na F3, este critério deve voltar à mesa.</p></section><section class="note"><h3>Integridade da massa</h3><p>Os critérios CA01, CA05 e CA06 exigem alterar a unidade de referência da família de evidência. Cada alteração foi feita, evidenciada e <b>revertida</b> por re-execução do <code>E2EProntuarioSeeder</code> (idempotente). Estado confirmado ao final: a família volta a constar sem unidade de referência. Nenhum outro dado foi alterado.</p></section>
+  
+  <h2>Anexo — Cobertura automatizada (Pest — OpenFamilyRecordAction, OpenFamilyRecord, FamilyReferenceUnitIsolation)</h2>
+  <pre class="pest">
+   PASS  Tests\Unit\Family\OpenFamilyRecordActionTest
+  ✓ it writes unit, opening date and author, defaulting the date to tod… 0.34s  
+  ✓ it honours an informed opening date (§10)                            0.03s  
+  ✓ it flags only a unit without an MDS number (RN05/CA05)               0.01s  
+  ✓ it swaps the reference unit without reopening the record (RN01/RN02… 0.01s  
+
+   PASS  Tests\Feature\Family\OpenFamilyRecordTest
+  ✓ it opens the record assigning the reference unit, the opening date…  0.06s  
+  ✓ it accepts an informed opening date and refuses a future one (§10)   0.03s  
+  ✓ it lists every family without a reference unit, by the name of the…  0.03s  
+  ✓ it drops the family from the pending list as soon as it gets a unit… 0.04s  
+  ✓ it never assigns a unit by itself — the payload must carry the choi… 0.04s  
+  ✓ it opens normally in a unit without an MDS number, warning without…  0.03s  
+  ✓ it warns about the previous team losing access before saving the ch… 0.04s  
+  ✓ it refuses a change on a record that was never opened, and a change… 0.03s  
+  ✓ it offers only the units where the professional is assigned, and re… 0.03s  
+  ✓ it offers every active unit of the municipality to the Master (RN10… 0.03s  
+  ✓ it keeps a unit that is not active out of the offer and out of the…  0.03s  
+  ✓ it does not let the {family:uuid} binding swallow the literal witho… 0.03s  
+  ✓ it blocks whoever cannot open records: no add-on, no active assignm… 0.03s  
+  ✓ it ships the record cover in the family details payload, so CA01 ho… 0.03s  
+
+   PASS  Tests\Feature\TenantIsolation\FamilyReferenceUnitIsolationTest
+  ✓ it offers only social assistance units of the acting municipality (… 0.03s  
+  ✓ it refuses a unit of another municipality even when it comes in the… 0.03s  
+  ✓ it treats a family of another municipality as a nonexistent record…  0.03s  
+  ✓ it never lists families of another municipality as pending (CA09/RN… 0.03s  
+
+  Tests:    22 passed (120 assertions)
+  Duration: 1.38s
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

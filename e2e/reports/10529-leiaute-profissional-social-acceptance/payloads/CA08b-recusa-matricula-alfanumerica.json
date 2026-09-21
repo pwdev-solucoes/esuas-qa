@@ -1,0 +1,22 @@
+{
+    "_leitura": "CA08b (D04/D05) — matricula \"A-1234\" (fora do formato Numerico 16*). O POST devolve 422 e o valor NAO e sanitizado nem truncado: o banco segue com o literal \"A-1234\" depois da recusa, e o leiaute nao emitiu NENHUMA linha — nem com os digitos extraidos (\"1234\"), nem truncada. O Pest cobre tambem a variante com 17 digitos (dataset \"mais de 16 digitos\").",
+    "lotacao_uuid": "86ccbeb6-0adf-4bd3-88c4-5dce6bf7a5a2",
+    "http_status": 422,
+    "resposta_do_post": {
+        "message": "A remessa SIAP não pode ser gerada: 1 lotação de profissional está sem matrícula ou CPF no formato exigido pelo SIAP. Corrija o cadastro de Profissionais Municipais — veja quais dados faltam na conferência prévia.",
+        "errors": {
+            "tenant_professionals": [
+                "A remessa SIAP não pode ser gerada: 1 lotação de profissional está sem matrícula ou CPF no formato exigido pelo SIAP. Corrija o cadastro de Profissionais Municipais — veja quais dados faltam na conferência prévia."
+            ]
+        }
+    },
+    "matricula_no_banco_apos_recusa": "A-1234",
+    "linhas_emitidas_pelo_leiaute": 0,
+    "lotacoes_puladas": 1,
+    "pendencia_bloqueante": {
+        "field_name": "Matricula",
+        "is_blocking": true
+    },
+    "remessas_no_banco": 0,
+    "jobs_despachados": 0
+}

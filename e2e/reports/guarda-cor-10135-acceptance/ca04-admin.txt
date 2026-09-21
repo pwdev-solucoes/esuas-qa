@@ -1,0 +1,42 @@
+=== CA04: diff da allowlist adicionando a exceção justificada ===
+diff --git a/scripts/check-color-tokens.mjs b/scripts/check-color-tokens.mjs
+index c7cc73d..5a4510d 100644
+--- a/scripts/check-color-tokens.mjs
++++ b/scripts/check-color-tokens.mjs
+@@ -46,6 +46,10 @@ const SRC = join(ROOT, 'src')
+  * - `reason`: obrigatório e não-vazio (CA02).
+  */
+ export const ALLOWLIST = [
++  {
++    file: 'src/components/__proof10135__.vue',
++    reason: 'CA04 (GLPI #10135) — entrada de prova temporaria, removida ao final da evidencia.',
++  },
+   {
+     file: 'src/components/map/MapPointPicker.vue',
+     reason:
+
+=== CA04: CI volta a passar ===
+
+> sigsuas-frontend-admin@0.1.0 check:colors
+> node scripts/check-color-tokens.mjs
+
+Guarda de cor fora do token — GLPI #10135
+Arquivos .vue varridos: 587
+
+Exceções ativas (allowlist — listadas, nunca silenciadas):
+
+  src/components/__proof10135__.vue — 1 ocorrência(s)
+  Motivo: CA04 (GLPI #10135) — entrada de prova temporaria, removida ao final da evidencia.
+    src/components/__proof10135__.vue:2 — #ff0000
+
+  src/components/map/MapPointPicker.vue — 2 ocorrência(s)
+  Motivo: Marcador SVG do OpenLayers: a lib de mapa exige um data-URI de SVG com cor concreta (o `fill` da marca vem de brand-tokens.ts; só o branco do traço do ícone é literal). Consumidor imperativo sem alternativa via classe/token CSS.
+    src/components/map/MapPointPicker.vue:68 — #ffffff
+    src/components/map/MapPointPicker.vue:69 — #ffffff
+
+  src/modules/geo-layers/components/GeoLayerPreviewMap.vue — 1 ocorrência(s)
+  Motivo: `toRgba(hex, alpha)` converte a cor configurada na camada (ou de brand-tokens.ts) para o `rgba()` exigido pelo estilo de layer/heatmap do OpenLayers — não é cor solta, é transformação do token para o formato que a lib pede.
+    src/modules/geo-layers/components/GeoLayerPreviewMap.vue:93 — rgba(
+
+Resultado: ZERO cor literal fora da allowlist.
+exit=0

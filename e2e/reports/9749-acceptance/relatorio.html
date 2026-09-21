@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — HU #9749 (Importação e sincronização automática)</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:980px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-wrap:wrap; gap:14px; margin-top:12px; }
+  figure { margin:0; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:300px; background:#fff; }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:11px; color:var(--muted); padding:6px 8px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { .evid, section.ca { break-inside:avoid; } figure { width:280px; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — HU #9749 (Importação e sincronização automática)</h1>
+    <div class="sub">Sprint 8 · HU #9749 (fatia HU02) · Evidências end-to-end no client</div>
+    <div class="meta"><div><span>Gerado em:</span> 29/06/2026</div><div><span>Branch:</span> sprint8-cadunico</div><div><span>Spec:</span> .planning/specs/sprint8/9749-conformidade-importacao-sincronizacao.md</div><div><span>Ambiente:</span> API Sail/PostgreSQL (api-laravel.test-1) · fila cadunico (worker dedicado) · client Vite :5175 (não-mock)</div><div><span>Organização (tenant):</span> Organização E2E CadÚnico · IBGE 2304400 (Fortaleza/CE)</div><div><span>Massa de dados:</span> e2e/fixtures/cadunico/massa-dados/ (remessa1 + remessa2)</div><div><span>Ferramenta:</span> playwright-cli (Chromium) + Pest</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">HU #9749 cobre a execução da importação e a sincronização automática por comparação de datas (CA04–CA07). Os 4 critérios foram evidenciados ao vivo no client dirigindo o fluxo assíncrono real (confirmação → Etapa 1 ingestão na fila 'cadunico' → Etapa 2 sincronização): a 1ª remessa criou 11 famílias inéditas (CA04) com 2 linhas catalogadas como erro (RN07 — bloco sem Código Familiar e bloco com data inválida); a 2ª remessa, sobre a base já sincronizada, atualizou 2 famílias por data mais recente — desvinculando (sem excluir) o membro ausente — (CA05) e ignorou 1 família por data não mais recente (CA06); e o botão de nova importação fica bloqueado enquanto há lote em processamento (CA07). A suíte Pest (28 testes, 95 asserções, 100% verde) acompanha como apêndice.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA04</td><td>Criação de famílias inéditas</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA05</td><td>Atualização automática por data mais recente</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA06</td><td>Bloqueio de dados defasados ou iguais</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA07</td><td>Bloqueio por concorrência ativa</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA04">
+      <h2>CA04 — Criação de famílias inéditas <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o arquivo validado foi confirmado para processamento
+Quando o sistema encontra um Código Familiar inexistente na base do tenant
+Então ele realiza o cadastro completo da nova unidade familiar, registrando o domicílio e todos os membros presentes naquele bloco</p>
+      <p class="steps"><strong>Como foi testado:</strong> Logado como <b>Master</b>: importar <code>massa-cadunico-remessa1.csv</code> → <code>Confirmar importação</code> (Etapa 1, fila cadunico) → <code>Sincronizar</code> (Etapa 2) → abrir <code>Ver detalhes</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Resumo da sincronização: Total analisado 17, Novas famílias 11, Atualizadas 0, Ignoradas 0, Linhas com erro 2.</li><li>As 11 famílias inéditas foram cadastradas com domicílio (addresses) e membros (family_members + persons).</li><li>2 blocos foram catalogados em "Erros de linha" sem interromper o lote (RN07): um sem Código Familiar (missing_family_code) e um com data inválida (invalid_date, família 1600000012).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca04-novas-familias.png" alt="CA04 evidência"/><figcaption>ca04-novas-familias.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA05">
+      <h2>CA05 — Atualização automática por data mais recente <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o arquivo contém uma família já existente no sistema
+Quando a Data da Última Atualização do arquivo for mais recente (maior) que a do sistema local
+Então o sistema atualiza em bloco todas as informações socioeconômicas e de integrantes daquela família</p>
+      <p class="steps"><strong>Como foi testado:</strong> Sobre a base já sincronizada, importar <code>massa-cadunico-remessa2.csv</code> → sincronizar. Famílias <code>…009</code> (data maior) e <code>…011→…99911</code> (recodificação, casada pela identidade do RF — RN03) são atualizadas. Verificado no banco que o membro ausente (BRUNO) foi desvinculado, não excluído.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Resumo: Atualizadas por data 2.</li><li>Membro ausente do novo bloco → status='unlinked', unlinked_at preenchido, registro PRESERVADO no banco (RN02 — nunca exclusão física).</li><li>Apêndice Pest cobre a regra: CadunicoSyncServiceTest "updates by newer date and unlinks absent members without deleting (CA05)".</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca05-ca06-atualizadas-ignoradas.png" alt="CA05 evidência"/><figcaption>ca05-ca06-atualizadas-ignoradas.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA06">
+      <h2>CA06 — Bloqueio de dados defasados ou iguais <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o arquivo contém uma família já existente no sistema
+Quando a Data da Última Atualização do arquivo for igual ou mais antiga (menor) que a da base local
+Então o sistema ignora o bloco integralmente e contabiliza como "Ignorado por Sincronização"</p>
+      <p class="steps"><strong>Como foi testado:</strong> No mesmo resultado da remessa2: a família <code>…010</code> (data 2026-01-10, menor que a base 2026-05-20) é ignorada integralmente.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Resumo: Ignoradas por sincronização 1.</li><li>O cadastro local da família ignorada permanece intocado.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca05-ca06-atualizadas-ignoradas.png" alt="CA06 evidência"/><figcaption>ca05-ca06-atualizadas-ignoradas.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA07">
+      <h2>CA07 — Bloqueio por concorrência ativa <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que uma importação já está sendo processada no meu município
+Quando eu ou outro Profissional do mesmo tenant tenta iniciar um novo upload
+Então o sistema nega a ação e exibe o alerta: "Existe uma importação em andamento para este município. Aguarde a conclusão"</p>
+      <p class="steps"><strong>Como foi testado:</strong> Com um lote em <code>Processando</code> no tenant, o botão <code>Nova importação</code> fica desabilitado, com a dica "Já existe uma importação em andamento para esta organização." No backend, validate/store/sync rejeitam com guard atômico (advisory lock).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Botão "Nova importação" desabilitado enquanto o lote está "Processando".</li><li>Dica (title): "Já existe uma importação em andamento para esta organização." (tradução pt-BR de "município" → "organização").</li><li>Apêndice Pest: "blocks validation when an import is already active" e "blocks sync when another batch is active in the tenant".</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca07-concorrencia-bloqueada.png" alt="CA07 evidência"/><figcaption>ca07-concorrencia-bloqueada.png</figcaption></figure></div>
+    </section>
+  
+  <h2>Anexo — Cobertura automatizada (Pest — CadunicoSyncService + CadunicoImportController + CadunicoIngestService, 28 testes / 95 asserções)</h2>
+  <pre class="pest">
+   PASS  Tests\Feature\Api\Client\CadunicoImportControllerTest
+  ✓ it validates a well-formed CSV and returns an upload token (CA01)    0.92s  
+  ✓ it rejects a CSV from a different município (RN01)                   0.12s  
+  ✓ it rejects validation when the tenant has no município configured    0.09s  
+  ✓ it rejects a CSV with a divergent header (CA02)                      0.05s  
+  ✓ it blocks validation when an import is already active (RN11/CA07)    0.08s  
+  ✓ it confirms the import and queues stage 1 (HU02)                     0.11s  
+  ✓ it records the executor label with [Master] suffix when not a profe… 0.07s  
+  ✓ it rejects store with an unknown upload token                        0.04s  
+  ✓ it does not sync an import that is not completed                     0.05s  
+  ✓ it queues stage 2 when the import is completed (Etapa 2 manual)      0.05s  
+  ✓ it blocks sync when another batch is active in the tenant (RN11)     0.05s  
+  ✓ it lists only the tenant own history (CA12)                          0.07s  
+  ✓ it returns 404 for a cross-tenant import (CA12/RN10)                 0.05s  
+  ✓ it hides the module from an operador without the permission (CA03)   0.04s  
+  ✓ it stores a generic failure message without leaking exception detai… 0.05s  
+
+   PASS  Tests\Feature\Services\Cadunico\CadunicoIngestServiceTest
+  ✓ it loads persons (1 per row), dedups families and captures the muni… 0.04s  
+  ✓ it sanitizes CPF/NIS digits in the staging (RN09)                    0.03s  
+  ✓ it throws when the header is missing required columns                0.03s  
+
+   PASS  Tests\Feature\Services\Cadunico\CadunicoSyncServiceTest
+  ✓ it creates a new family, domicile and members (CA04)                 0.09s  
+  ✓ it updates by newer date and unlinks absent members without deletin… 0.10s  
+  ✓ it ignores the block when the file date is not newer (CA06)          0.07s  
+  ✓ it catalogs a block with missing update date (RN07)                  0.09s  
+  ✓ it creates the family but catalogs a member without CPF as a warnin… 0.09s  
+  ✓ it discards the block when the responsible has no CPF (RN07)         0.07s  
+  ✓ it parses income in both decimal formats (#1)                        0.07s  
+  ✓ it snapshots the responsible CPF on the family (#2)                  0.08s  
+  ✓ it updates the SAME family when CadÚnico reissues the code, by resp… 0.07s  
+  ✓ it does not mass-unlink when the new block has members without NIS…  0.07s  
+
+  Tests:    28 passed (95 assertions)
+  Duration: 3.28s
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

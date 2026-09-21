@@ -1,0 +1,139 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — US-ACOMP-02",
+    "subtitle": "Épico HU-PRONT-ACOMP (fase F3) · Registrar o ingresso da família no acompanhamento (PAIF/PAEFI)",
+    "rows": [
+      [
+        "Gerado em",
+        "09/09/2026 (revisado após a US-ACOMP-03)"
+      ],
+      [
+        "História",
+        "US-ACOMP-02 — Registrar o ingresso da família no acompanhamento"
+      ],
+      [
+        "Spec",
+        ".planning/specs/US-ACOMP-02-registrar-ingresso-no-acompanhamento.md"
+      ],
+      [
+        "Branch",
+        "feature/acomp-prontuario-bloco-24 (api/ e client/), a partir de develop"
+      ],
+      [
+        "Commits (api/)",
+        "8d60959 · b527b3f · 9fe5b06 · c4be7b3 · 73d9c02 · 1d723c5 · f29a9b6"
+      ],
+      [
+        "Commits (client/)",
+        "5a0f065 · ce953f8"
+      ],
+      [
+        "Commits (e2e/)",
+        "a4a8cfc · 4d088b8"
+      ],
+      [
+        "Ambiente",
+        "Stack E2E Docker · API em :8090 · client (vite preview) em :4174 · base esuas_e2e semeada por E2ESeeder"
+      ],
+      [
+        "Perfil usado",
+        "Operacional do tenant (guard client) — “E2E Operador Prontuário”, com lotação vigente no “E2E CRAS Centro” e add-on LGPD"
+      ],
+      [
+        "Ferramenta",
+        "Playwright (Chromium, project chromium-tenant) + Pest 4"
+      ]
+    ]
+  },
+  "summary": "Onze critérios de aceite. Sete evidenciados no navegador (CA01, CA02, CA04, CA05, CA06, CA09 e CA10, com oito prints, incluindo um cenário de borda que a spec não numera) e quatro cobertos pela suíte automatizada (CA03, CA07, CA08 e CA11). A suíte Pest fecha com 117 testes e 660 asserções no filtro FollowUp, e os 12 cenários Playwright de e2e/tests/client/family-follow-up.spec.ts passam contra a mesma stack, em duas execuções consecutivas. Nenhum critério em falha. O E2E encontrou um defeito real de produto durante a verificação, já corrigido e coberto por regressão — ver as ressalvas.",
+  "criteria": [
+    {
+      "id": "CA01",
+      "title": "Registrar ingresso no PAIF (happy path)",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "acomp02-a-ingresso.png"
+      ]
+    },
+    {
+      "id": "CA02",
+      "title": "Serviço restrito pelo tipo de unidade",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "acomp02-b-servicos-do-cras.png"
+      ]
+    },
+    {
+      "id": "CA03",
+      "title": "Acompanhamentos simultâneos em unidades diferentes",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "CA04",
+      "title": "Dois vigentes na mesma unidade e serviço são recusados",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "acomp02-c-duplicado.png"
+      ]
+    },
+    {
+      "id": "CA05",
+      "title": "Reingresso após desligamento",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "acomp03-reingresso.png"
+      ]
+    },
+    {
+      "id": "CA06",
+      "title": "Data futura recusada",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "acomp02-d-data-futura.png"
+      ]
+    },
+    {
+      "id": "CA07",
+      "title": "Retroativo em período já declarado",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "CA08",
+      "title": "Unidade que não é CRAS nem CREAS",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "CA09",
+      "title": "Cancelar ingresso lançado por engano",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "acomp02-e-cancelado.png"
+      ]
+    },
+    {
+      "id": "CA10",
+      "title": "Negativa por unidade declara o motivo",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "acomp02-f-negativa.png"
+      ]
+    },
+    {
+      "id": "CA11",
+      "title": "Isolamento entre municípios",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "Extra",
+      "title": "Cenário de borda além dos CA numerados",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "acomp02-g-estado-vazio.png"
+      ]
+    }
+  ]
+}

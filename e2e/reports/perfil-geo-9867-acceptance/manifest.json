@@ -1,0 +1,42 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — HU #9867 Gerenciar Perfis de Acesso ao Georreferenciamento",
+    "subtitle": "Painel de Georreferenciamento (rota /georreferenciamento) · módulo client · Evidências end-to-end no app real",
+    "rows": [
+      ["Gerado em", "10/07/2026"],
+      ["História", "HU #9867 — Gerenciar Perfis de Acesso ao Georreferenciamento"],
+      ["Critérios", "CA10 (1 critério)"],
+      ["Submódulos", "client 99e397d · api feature/geo-9862-google-satelite-zindex"],
+      ["Ambiente", "API Sail/PostgreSQL · client Vite :5175 (não-mock) → http://localhost/api"],
+      ["Organização (tenant)", "Maceió Geo (massa geo) · Master 27043020140 · profissional operador 27043020301 (criado p/ o teste)"],
+      ["Perfil de acesso", "Master concede o add-on geo_panel_viewer (\"Acesso ao Painel de Georreferenciamento\") — RN10/RN21"],
+      ["Ferramenta", "playwright-cli (Chromium, viewport 1680×1050) + Pest"]
+    ]
+  },
+  "summary": "O critério de aceite da HU #9867 sobre a gestão de perfil de acesso ao Georreferenciamento pelo Master foi verificado dirigindo o app real no navegador e reforçado pela suíte automatizada — ATENDIDO. Cenário: um profissional operador (Maria Operadora Territorial, tenant Maceió Geo) inicialmente SEM o perfil de inteligência territorial. CA10: (1) Antes — logado como o operador, a barra lateral NÃO exibe o menu Georreferenciamento e a navegação direta para /app/georreferenciamento é bloqueada (redireciona para /403). (2) Concessão — logado como Master, na tela de detalhes do profissional (Profissionais Municipais), abre-se \"Gerenciar perfis de acesso\" e marca-se o perfil \"Acesso ao Painel de Georreferenciamento\" (geo_panel_viewer) — o drawer informa que \"as permissões são aplicadas imediatamente após salvar\"; ao salvar, o PUT professionals/{uuid}/roles responde 200 e o chip do perfil passa a constar na seção Perfis de acesso. (3) Depois — reautenticado como o operador, a barra lateral passa a exibir o menu Georreferenciamento e o painel abre normalmente. Cobertura automatizada: Pest ProfessionalRoleController (grant/revoke, MASTER-only) + GeoPanel (nega o operador base sem geo_panel_viewer; concede o painel completo ao operador assim que o geo_panel_viewer é atribuído — RN10/RN21).",
+  "cas": [
+    {
+      "id": "CA10",
+      "title": "Atribuição de perfil pelo Master (acesso imediato ao Georreferenciamento)",
+      "status": "nav",
+      "gherkin": "Dado que sou Master e acesso a área de detalhes de um profissional do município, Quando vinculo o perfil de inteligência territorial ao seu cadastro e salvo, Então o Usuário atrelado a ele passa a visualizar o menu de Georreferenciamento de forma imediata.",
+      "steps_html": "Preparação: criado um profissional operador (Maria Operadora Territorial) no tenant Maceió Geo, sem o perfil geo. Passos: (1) login como o operador e observação da barra lateral; (2) login como <b>Master</b> → detalhe do profissional (Profissionais Municipais) → <b>Gerenciar</b> perfis → marcar <b>Acesso ao Painel de Georreferenciamento</b> → <b>Salvar perfis</b>; (3) reautenticação como o operador.",
+      "results": [
+        "Antes: como operador, a barra lateral NÃO exibe o menu Georreferenciamento; a navegação direta para /app/georreferenciamento é bloqueada e redireciona para /403 (defesa em profundidade no guard de rota).",
+        "Concessão: o Master abre o drawer Gerenciar perfis de acesso, que lista os perfis add-on e informa que as permissões são aplicadas imediatamente após salvar; marca Acesso ao Painel de Georreferenciamento e salva — PUT professionals/{uuid}/roles retorna 200 e o chip do perfil passa a constar na seção Perfis de acesso.",
+        "Depois: reautenticado como o operador (novo /auth/me), a barra lateral passa a exibir o menu Georreferenciamento e o clique abre o Painel de Georreferenciamento normalmente.",
+        "Cobertura: Pest ProfessionalRoleController (sync grant/revoke, MASTER-only) + GeoPanel (nega o operador base sem geo_panel_viewer; concede o painel ao operador assim que o geo_panel_viewer é atribuído) — ver Anexo."
+      ],
+      "images": [
+        "screenshots/ca10-antes-sem-menu.png",
+        "screenshots/ca10-gerenciar-perfil.png",
+        "screenshots/ca10-perfil-salvo.png",
+        "screenshots/ca10-depois-com-menu.png"
+      ]
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada — Pest ProfessionalRoleController (atribuição de perfil) + GeoPanel (gate por papel RN10/RN21)",
+    "file": "tests-9867.txt"
+  }
+}

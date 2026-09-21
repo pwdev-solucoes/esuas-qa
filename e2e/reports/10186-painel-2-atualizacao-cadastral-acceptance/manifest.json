@@ -1,0 +1,154 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — Painel 2: Atualização Cadastral",
+    "subtitle": "HU #10186 · Dashboard do tenant · Evidências end-to-end no client",
+    "rows": [
+      [
+        "Gerado em",
+        "30/07/2026"
+      ],
+      [
+        "HU",
+        "#10186 — Painel 2: Atualização Cadastral"
+      ],
+      [
+        "Branch",
+        "feature/10186-painel-2-atualizacao-cadastral (api + client)"
+      ],
+      [
+        "Spec",
+        ".planning/specs/10186-painel-2-atualizacao-cadastral.md"
+      ],
+      [
+        "Ambiente",
+        "API Sail/PostgreSQL+PostGIS · client :5174 (não-mock)"
+      ],
+      [
+        "Organização (tenant)",
+        "E2E CadÚnico · 96 famílias (recorte municipal)"
+      ],
+      [
+        "Limiar de vencimento",
+        "24 meses (FamilyVulnerabilityService::EXPIRED_MONTHS)"
+      ],
+      [
+        "Ferramenta",
+        "playwright-cli (Chromium) + Pest"
+      ]
+    ]
+  },
+  "summary": "8 critérios evidenciados: 5 por navegador dirigindo o client real (CA04 realce de alerta na faixa \"Mais de 24 meses\", indicadores e distribuição do RN04, evolução mensal, e o RG01 nas modalidades padrão/dinâmico/limpar) e 3 por suíte automatizada (partição + consistência com o KPI 1 da barra fixa, isolamento multi-tenant e gate de permissão). Todos atendidos. Suíte Pest do backend: 10 testes verdes (53 asserções).",
+  "cas": [
+    {
+      "id": "CA04",
+      "title": "Identificação de cadastros vencidos (realce em cor de alerta)",
+      "status": "nav",
+      "gherkin": "Dado que acesso o Painel 2 (aba \"Atualização Cadastral\")\nQuando analiso o gráfico de distribuição do tempo de atualização\nEntão o sistema destaca visualmente, em cor de alerta, a parcela de famílias no grupo \"Mais de 24 meses\".",
+      "steps_html": "Login como Master, aba <b>Atualização Cadastral</b>. Leitura do gráfico <b>Distribuição do Tempo de Atualização</b>.",
+      "results": [
+        "A faixa <b>\"Mais de 24 meses\"</b> é renderizada em <b>vermelho (alerta)</b>, distinta das demais faixas (azul).",
+        "O cartão \"Cadastro Vencido\" também aparece em vermelho, reforçando o alerta para busca ativa."
+      ],
+      "images": [
+        "screenshots/rn04-ca04-topo-distribuicao.png"
+      ]
+    },
+    {
+      "id": "RN04-ind",
+      "title": "Indicadores do Painel 2 (Atualizado / Vencido / Sem informação) e distribuição",
+      "status": "nav",
+      "gherkin": "Dado um recorte com famílias\nQuando o painel é calculado\nEntão \"Atualizado\" = famílias com atualização nos últimos 24 meses (≤24m)\nE \"Vencido\" = famílias sem atualização há mais de 24 meses (>24m)\nE a distribuição traz Até 12 / 13–18 / 19–24 / Mais de 24 meses (+ Sem informação).",
+      "steps_html": "Cartões de topo + gráfico de distribuição (Apache ECharts) no recorte municipal.",
+      "results": [
+        "Cadastro Atualizado 22 (22,9%), Cadastro Vencido 1 (1,0%), Sem Informação 73 (76,0%).",
+        "Distribuição (gráfico): a faixa \"Mais de 24 meses\" aparece com 1 família em vermelho (alerta) e \"Sem informação\" com 73; as demais faixas somam as 22 famílias atualizadas em até 24 meses."
+      ],
+      "images": [
+        "screenshots/rn04-ca04-topo-distribuicao.png"
+      ]
+    },
+    {
+      "id": "RN04-evo",
+      "title": "Evolução mensal de atualizações (gráfico de linha, 12 meses)",
+      "status": "nav",
+      "gherkin": "Dado um recorte com famílias atualizadas ao longo do tempo\nQuando o painel é calculado\nEntão a evolução mensal traz 12 pontos (mês → volume de atualizações).",
+      "steps_html": "Gráfico <b>Evolução Mensal de Atualizações</b> (linha, Apache ECharts).",
+      "results": [
+        "Série contígua de 12 meses (ago/25 → jul/26), com o volume de famílias atualizadas por mês.",
+        "Meses sem atualização aparecem com volume 0; a linha evidencia a tendência recente de alta."
+      ],
+      "images": [
+        "screenshots/rn04-evolucao-mensal.png"
+      ]
+    },
+    {
+      "id": "RG01-a",
+      "title": "Filtro global por Bairro — comportamento padrão (\"Todos os Bairros\")",
+      "status": "nav",
+      "gherkin": "Dado que acabei de carregar a aba \"Atualização Cadastral\"\nQuando nenhum bairro está selecionado\nEntão o filtro inicia em \"Todos os Bairros\"\nE os indicadores, a distribuição e a evolução refletem a consolidação municipal.",
+      "steps_html": "Ao abrir o dashboard, o filtro global (topo, à direita) inicia em <code>Todos os Bairros</code>.",
+      "results": [
+        "Filtro em \"Todos os Bairros\"; barra fixa de KPIs e Painel 2 exibem a consolidação municipal (96 famílias)."
+      ],
+      "images": [
+        "screenshots/rn04-ca04-topo-distribuicao.png"
+      ]
+    },
+    {
+      "id": "RG01-bc",
+      "title": "Filtro global por Bairro — recálculo dinâmico e \"Limpar Filtro\"",
+      "status": "nav",
+      "gherkin": "Dado que o filtro global está em \"Todos os Bairros\"\nQuando eu seleciono o bairro \"Itapoã\"\nEntão os cartões, a distribuição e a evolução recalculam para as famílias do bairro (RN09)\nE ao acionar \"Limpar Filtro\" o painel volta à consolidação municipal.",
+      "steps_html": "Seleção do bairro <b>Itapoã</b> no filtro global; um único evento recalcula a barra fixa E o painel (RG01/RN10).",
+      "results": [
+        "Recálculo instantâneo: Cadastro Atualizado 22 → 3 (100%), Vencido 1 → 0; barra fixa e painel exibem \"Recalculado por bairro: Itapoã\".",
+        "A distribuição recalcula (Até 12 meses 2, De 13 a 18 meses 1, demais 0).",
+        "O botão \"Limpar Filtro\" retorna imediatamente à visão municipal (Atualizado volta a 22, filtro a \"Todos os Bairros\")."
+      ],
+      "images": [
+        "screenshots/rg01-bairro-itapoa.png"
+      ]
+    },
+    {
+      "id": "PART",
+      "title": "Partição e consistência com a barra fixa",
+      "status": "parc",
+      "gherkin": "Então Atualizado + Vencido + Sem informação = Total de Famílias\nE up_to_12m + m13_to_18 + m19_to_24 + over_24m + no_information = Total\nE \"Atualizado\" (≤24m) é igual ao numerador do KPI 1 (% Atualização Cadastral) da barra fixa (#10184).",
+      "steps_html": "Verificado na UI (22+1+1 = 24) e por testes automatizados (Pest) — ver apêndice.",
+      "results": [
+        "Na tela: 22 (Atualizado) + 1 (Vencido) + 73 (Sem informação) = 96 (Total).",
+        "CadastralUpdateTest: partição das 5 faixas e teste cruzado \"updated == numerador do KPI 1\" (RN10)."
+      ],
+      "images": [
+        "screenshots/rn04-ca04-topo-distribuicao.png"
+      ]
+    },
+    {
+      "id": "ISO",
+      "title": "Isolamento multi-tenant",
+      "status": "auto",
+      "gherkin": "Dado um usuário vinculado ao Tenant A\nQuando ele solicita o Painel 2\nEntão apenas famílias do Tenant A entram nos cálculos\nE um neighborhood_uuid fora do município do Tenant A retorna 422.",
+      "steps_html": "Coberto por teste automatizado (Pest) — ver apêndice.",
+      "results": [
+        "DashboardCadastralUpdateIsolationTest: famílias do Tenant B nunca são contadas para o Tenant A.",
+        "CadastralUpdateTest: 422 para bairro fora do município do tenant."
+      ],
+      "images": []
+    },
+    {
+      "id": "PERM",
+      "title": "Gate de permissão (sem dashboard.view-indicators → 403 / painel oculto)",
+      "status": "auto",
+      "gherkin": "Dado um usuário sem dashboard.view-indicators\nQuando ele chama o endpoint do Painel 2\nEntão recebe 403 (e o painel não é exibido).",
+      "steps_html": "Coberto por teste automatizado (Pest) — o endpoint reusa o gate da barra fixa (#10184).",
+      "results": [
+        "CadastralUpdateTest: operador sem o papel dedicado recebe 403; Master acessa sem add-on."
+      ],
+      "images": []
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Pest — CadastralUpdate + Isolamento)",
+    "file": "cadastral-update.txt"
+  }
+}

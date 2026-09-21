@@ -1,0 +1,3 @@
+Entidade sem foundation_date e sem head_office_cnpj.
+A linha CONSTA do arquivo; o writer OMITE a tag do valor nulo.
+Pendências gravadas nos campos DataFundacao/CNPJMatriz: 0 (esperado 0).

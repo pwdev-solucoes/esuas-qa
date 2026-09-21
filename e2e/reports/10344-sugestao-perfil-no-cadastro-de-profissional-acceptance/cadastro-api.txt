@@ -1,0 +1,24 @@
+CA02  salvar SEM marcar o add-on LGPD
+  POST /api/client/professionals  ->  HTTP 201
+  {
+    "uuid": "4f188eba-cd10-4365-8058-152c913761f7",
+    "cbo": "2516-05"
+  }
+
+CA03  marcar o add-on e salvar
+  POST /api/client/professionals  ->  HTTP 201
+  {
+    "uuid": "4223193d-04db-4468-bf20-5e184182187b",
+    "cbo": "2516-05"
+  }
+
+CA04  recusar a sugestao (so o posto base)
+  POST /api/client/professionals  ->  HTTP 201
+  {
+    "uuid": "f1834c72-917f-43be-9892-61f60e8fe001",
+    "cbo": "2516-05"
+  }
+
+CA06  add-on SEM posto base (deve recusar)
+  POST /api/client/professionals  ->  HTTP 422
+  {}

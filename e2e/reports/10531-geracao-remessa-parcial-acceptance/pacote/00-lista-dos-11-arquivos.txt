@@ -1,0 +1,16 @@
+Conteúdo do .zip — remessa 08/2026 (CA01/CA02)
+Pacote: siap/remittances/1/034293ed-33c5-410e-bb19-02e645956bb6/remessa-assistencia-social-2026-08.zip
+sha256: 651ba2bd6cb646e52b67ca415a814cf913d190cc071361b8bd35077b1ef688c1
+
+arquivo                         bytes  registros  cabeçalho (Codigo/Exercicio/Mes)
+UnidadeSocial.xml                 562          1  004821 / 2026 / 08
+EntidadeSocial.xml                956          1  004821 / 2026 / 08
+EquipamentoUnidade.xml            325          1  004821 / 2026 / 08
+EstruturaUnidadeSocial.xml        252          1  004821 / 2026 / 08
+ProfissionalSocial.xml            316          1  004821 / 2026 / 08
+RegistrosUnidade.xml              115          0  004821 / 2026 / 08
+NovasFamilias.xml                 115          0  004821 / 2026 / 08
+SCFV.xml                          115          0  004821 / 2026 / 08
+CapacitacaoDivulgacao.xml         115          0  004821 / 2026 / 08
+UsuarioRede.xml                   115          0  004821 / 2026 / 08
+Familia.xml                       115          0  004821 / 2026 / 08

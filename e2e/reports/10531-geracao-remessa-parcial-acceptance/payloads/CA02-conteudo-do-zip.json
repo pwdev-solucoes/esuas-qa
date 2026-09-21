@@ -1,0 +1,86 @@
+{
+    "_cenario": "CA02 — 5 leiautes com registros; 6 fora do escopo só com o cabeçalho",
+    "preenchidos": {
+        "UnidadeSocial.xml": {
+            "bytes": 562,
+            "registros": 1,
+            "tem_cardug_no_cabecalho": true,
+            "tem_exercicio_2026": true,
+            "tem_mes_08": true
+        },
+        "EntidadeSocial.xml": {
+            "bytes": 956,
+            "registros": 1,
+            "tem_cardug_no_cabecalho": true,
+            "tem_exercicio_2026": true,
+            "tem_mes_08": true
+        },
+        "EquipamentoUnidade.xml": {
+            "bytes": 325,
+            "registros": 1,
+            "tem_cardug_no_cabecalho": true,
+            "tem_exercicio_2026": true,
+            "tem_mes_08": true
+        },
+        "EstruturaUnidadeSocial.xml": {
+            "bytes": 252,
+            "registros": 1,
+            "tem_cardug_no_cabecalho": true,
+            "tem_exercicio_2026": true,
+            "tem_mes_08": true
+        },
+        "ProfissionalSocial.xml": {
+            "bytes": 316,
+            "registros": 1,
+            "tem_cardug_no_cabecalho": true,
+            "tem_exercicio_2026": true,
+            "tem_mes_08": true
+        }
+    },
+    "em_branco": {
+        "RegistrosUnidade.xml": {
+            "bytes": 115,
+            "registros": 0,
+            "tem_cardug_no_cabecalho": true,
+            "tem_exercicio_2026": true,
+            "tem_mes_08": true
+        },
+        "NovasFamilias.xml": {
+            "bytes": 115,
+            "registros": 0,
+            "tem_cardug_no_cabecalho": true,
+            "tem_exercicio_2026": true,
+            "tem_mes_08": true
+        },
+        "SCFV.xml": {
+            "bytes": 115,
+            "registros": 0,
+            "tem_cardug_no_cabecalho": true,
+            "tem_exercicio_2026": true,
+            "tem_mes_08": true
+        },
+        "CapacitacaoDivulgacao.xml": {
+            "bytes": 115,
+            "registros": 0,
+            "tem_cardug_no_cabecalho": true,
+            "tem_exercicio_2026": true,
+            "tem_mes_08": true
+        },
+        "UsuarioRede.xml": {
+            "bytes": 115,
+            "registros": 0,
+            "tem_cardug_no_cabecalho": true,
+            "tem_exercicio_2026": true,
+            "tem_mes_08": true
+        },
+        "Familia.xml": {
+            "bytes": 115,
+            "registros": 0,
+            "tem_cardug_no_cabecalho": true,
+            "tem_exercicio_2026": true,
+            "tem_mes_08": true
+        }
+    },
+    "linha_profissional_social_mascarada": "<ProfissionalSocial>\n        <CPF>390.***.***-05</CPF>\n        <Nome>Maria S. L.</Nome>\n        <NumeroMDS>2656932565035</NumeroMDS>\n        <Matricula>202600042</Matricula>\n    </ProfissionalSocial>",
+    "nota_lgpd": "CPF mascarado na gravação; nome fabricado já em forma mascarada (Maria S. L.)"
+}

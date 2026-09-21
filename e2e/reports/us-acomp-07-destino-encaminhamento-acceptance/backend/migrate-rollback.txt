@@ -1,0 +1,40 @@
+== migrate (Postgres dev, container api-laravel.test-1) — 2026-09-15T21:09:30Z ==
+
+   INFO  Running migrations.  
+
+  2026_09_08_100000_create_follow_up_services_table ............. 40.13ms DONE
+  2026_09_08_100001_create_follow_up_exit_reasons_table .......... 4.53ms DONE
+  2026_09_08_110000_create_family_follow_ups_table .............. 23.51ms DONE
+  2026_09_08_120000_create_family_follow_up_evaluations_table .... 6.91ms DONE
+  2026_09_09_100000_create_participation_services_table .......... 4.07ms DONE
+  2026_09_09_100001_create_participation_locations_table ......... 2.23ms DONE
+  2026_09_09_110000_create_family_member_participations_table .... 9.41ms DONE
+  2026_09_14_100000_add_destination_unit_type_to_referral_codes_table  1.97ms DONE
+  2026_09_14_100100_add_destination_social_unit_to_referrals_table  1.27ms DONE
+  2026_09_14_100200_mark_internal_transit_referral_codes ........ 23.80ms DONE
+
+
+== migrate:rollback --step=3 ==
+
+   INFO  Rolling back migrations.  
+
+  2026_09_14_100200_mark_internal_transit_referral_codes ......... 1.62ms DONE
+  2026_09_14_100100_add_destination_social_unit_to_referrals_table  6.78ms DONE
+  2026_09_14_100000_add_destination_unit_type_to_referral_codes_table  1.25ms DONE
+
+
+== migrate (re-aplicar) ==
+
+   INFO  Running migrations.  
+
+  2026_09_14_100000_add_destination_unit_type_to_referral_codes_table  7.40ms DONE
+  2026_09_14_100100_add_destination_social_unit_to_referrals_table  2.50ms DONE
+  2026_09_14_100200_mark_internal_transit_referral_codes ........ 11.14ms DONE
+
+
+== migrate:status (últimas 5) ==
+  2026_09_09_110000_create_family_member_participations_table ........ [7] Ran  
+  2026_09_14_100000_add_destination_unit_type_to_referral_codes_table  [8] Ran  
+  2026_09_14_100100_add_destination_social_unit_to_referrals_table ... [8] Ran  
+  2026_09_14_100200_mark_internal_transit_referral_codes ............. [8] Ran  
+

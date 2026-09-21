@@ -1,0 +1,5 @@
+families …0f0014: 1 | family_code=9900000014 | social_unit=E2E CREAS
+referrals …0e7002: 1 | status=registered | outcome=awaiting_return | origin=E2E CREAS | destination=E2E CRAS Centro | code=14
+members of …0f0014: 1
+outcome for E2E operador: {"allowed":true,"via":"referral_received","reason":null}
+outcome for …0f0002 (must stay denied): {"allowed":false,"reason":"unit_not_assigned"}

@@ -1,0 +1,71 @@
+
+   PASS  Tests\Unit\ConditionalityBreachInvariantTest
+  ✓ it accepts a REGISTERED row with the three cancellation columns NUL… 0.54s  
+  ✓ it accepts a CANCELLED row with date, author and reason filled       0.03s  
+  ✓ it REFUSES a registered row carrying any cancellation column with d… 0.03s  
+  ✓ it REFUSES a registered row carrying any cancellation column with d… 0.03s  
+  ✓ it REFUSES a registered row carrying any cancellation column with d… 0.03s  
+  ✓ it REFUSES a cancelled row missing any of the three cancellation co… 0.03s  
+  ✓ it REFUSES a cancelled row missing any of the three cancellation co… 0.03s  
+  ✓ it REFUSES a cancelled row missing any of the three cancellation co… 0.03s  
+  ✓ it REFUSES a cancelled row missing any of the three cancellation co… 0.03s  
+  ✓ it REFUSES an unknown status — the column has exactly TWO values     0.03s  
+  ✓ it publishes the invariant as a PRODUCTION contract shared by the t… 0.03s  
+  ✓ it warns — and never throws — for a family that is not a PBF benefi… 0.03s  
+  ✓ it warns — and never throws — for a family that is not a PBF benefi… 0.03s  
+  ✓ it warns — and never throws — for a family that is not a PBF benefi… 0.03s  
+
+   PASS  Tests\Feature\Api\Client\FamilyConditionalityBreachTest
+  ✓ it registers an education breach with status registered, signed and… 0.13s  
+  ✓ it registers a health breach with the same structure and keeps both… 0.09s  
+  ✓ it offers the four effect codes 1..4 in ascending severity through…  0.08s  
+  ✓ it refuses any effect outside the four instrument codes (CA03) with… 0.07s  
+  ✓ it refuses any effect outside the four instrument codes (CA03) with… 0.07s  
+  ✓ it refuses any effect outside the four instrument codes (CA03) with… 0.07s  
+  ✓ it refuses any effect outside the four instrument codes (CA03) with… 0.07s  
+  ✓ it refuses any area outside education and health (CA03)              0.07s  
+  ✓ it exposes month and year and NO full-date field at all (CA04)       0.07s  
+  ✓ it refuses a month outside 1..12 (CA04) with (0)                     0.07s  
+  ✓ it refuses a month outside 1..12 (CA04) with (13)                    0.07s  
+  ✓ it refuses a month outside 1..12 (CA04) with (-1)                    0.07s  
+  ✓ it refuses a breach dated IN THE FUTURE, including a later month of… 0.08s  
+  ✓ it caps the form at the CURRENT month through options (§10)          0.07s  
+  ✓ it keeps several breaches of the SAME member, none replacing the pr… 0.08s  
+  ✓ it accepts two breaches of the same member, same area AND same mont… 0.09s  
+  ✓ it has NO unique index on the breaches table (D07)                   0.07s  
+  ✓ it stores suspension_requested alongside the breach (CA06)           0.07s  
+  ✓ it requires an ANSWER for suspension_requested — it has no third st… 0.07s  
+  ✓ it registers with 201 AND a warning when receives_pbf is NULL or fa… 0.07s  
+  ✓ it registers with 201 AND a warning when receives_pbf is NULL or fa… 0.07s  
+  ✓ it warns in options too, so the form can warn BEFORE the submit (CA… 0.07s  
+  ✓ it answers an EMPTY list and asserts NOTHING about compliance (CA08… 0.07s  
+  ✓ it has NO compliance column on the table (D10)                       0.06s  
+  ✓ it cancels instead of deleting: status cancelled, reason recorded,…  0.08s  
+  ✓ it requires cancel_reason on the DELETE (§7.3)                       0.08s  
+  ✓ it answers 409 when cancelling an ALREADY cancelled breach (§7.3)    0.08s  
+  ✓ it answers 409 when EDITING a cancelled breach (§7.2)                0.08s  
+  ✓ it corrects a breach registered on the WRONG member, keeping the au… 0.08s  
+  ✓ it refuses server-owned fields on the write (RN07/RN10) with datase… 0.07s  
+  ✓ it refuses server-owned fields on the write (RN07/RN10) with datase… 0.07s  
+  ✓ it refuses server-owned fields on the write (RN07/RN10) with datase… 0.07s  
+  ✓ it refuses server-owned fields on the write (RN07/RN10) with datase… 0.07s  
+  ✓ it refuses server-owned fields on the write (RN07/RN10) with datase… 0.07s  
+  ✓ it refuses server-owned fields on the write (RN07/RN10) with datase… 0.07s  
+  ✓ it refuses a member from ANOTHER family with 422, without confirmin… 0.07s  
+  ✓ it logs the structured fields and keeps notes and cancel_reason OUT… 0.08s  
+  ✓ it answers 403 with reason unit_not_assigned, without naming the un… 0.08s  
+  ✓ it applies the same denial to the READ side (CA10)                   0.08s  
+  ✓ it declares NO conditionality-breach ability anywhere (D08)          0.11s  
+  ✓ it carries NO can: middleware on the breach routes (D08)             0.06s  
+
+   PASS  Tests\Feature\TenantIsolation\FamilyConditionalityBreachIsolationTest
+  ✓ it answers 404 — never 403 — for a family of ANOTHER tenant, on ALL… 0.10s  
+  ✓ it never leaks a breach of ANOTHER tenant through MY family uuid (R… 0.07s  
+  ✓ it answers 404 when the breach belongs to ANOTHER family of the sam… 0.08s  
+  ✓ it scopes the block by tenant_id — my listing never shows the other… 0.08s  
+  ✓ it blocks the request when the X-Tenant-UUID points at a tenant the… 0.07s  
+  ✓ it refuses a member uuid from ANOTHER tenant with 422 and creates n… 0.07s  
+
+  Tests:    61 passed (259 assertions)
+  Duration: 5.21s
+

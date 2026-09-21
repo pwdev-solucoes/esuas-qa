@@ -1,0 +1,66 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — Refinamento de Conteúdo, Arquitetura de Informação e Copywriting",
+    "subtitle": "HU #10145 · Landing Page do SigSUAS · Evidências end-to-end no site público",
+    "rows": [
+      ["Gerado em", "21/08/2026"],
+      ["Branch", "develop (landind-page d06be5f)"],
+      ["Spec", "Ad-hoc — critérios extraídos do ticket GLPI #10145 (não há story oficial no repo)"],
+      ["Ambiente", "Build de produção da landing (Nuxt) servido em :3000 com NUXT_LEADS_MOCK=true"],
+      ["Ferramenta", "playwright-cli (Chromium 1440×900) + Playwright E2E"]
+    ]
+  },
+  "summary": "2 critérios de aceite, ambos evidenciados por navegador sobre o build real da landing refinada (hero v6 'decisões que geram recursos', seção de dor simplificada com ícones, FAQ de 10 itens, desfecho do IGD-SUAS no fundo do hero, conformidade MDS/TCE). CA01 comprovado por 6 capturas na ordem de leitura; CA02 comprovado por clique real nos CTAs com rolagem suave até o formulário, com apoio da suíte automatizada (30 cenários aprovados + 2 pulados).",
+  "cas": [
+    {
+      "id": "CA01",
+      "title": "Aprovação dos novos textos e fluxo de leitura",
+      "status": "nav",
+      "gherkin": "Dado que os novos textos e ajustes de seções foram aplicados, Quando um visitante navega pela Landing Page, Então a leitura flui de forma lógica e contínua, permitindo compreender a solução completa em menos de 2 minutos de navegação.",
+      "steps_html": "Abrir o build real da landing em 1440×900 e percorrer a página inteira na ordem de leitura, capturando cada estação do argumento: promessa (hero), dor, solução (benefícios), mecanismo (como funciona + desfecho do IGD-SUAS), objeções (FAQ) e ação (formulário).",
+      "results": [
+        "O argumento flui em arco único: o hero promete 'Transforme dados do território em decisões que geram recursos' e explica o mecanismo (CadÚnico desatualizado → Busca Ativa → repasse); a seção de dor nomeia papel, planilhas e achismo com ícones que confirmam cada dor; os benefícios respondem às dores na mesma ordem; 'Como Funciona' fecha com 'É assim que o indicador vira recurso' no mesmo fundo do hero, ecoando a promessa de abertura.",
+        "O FAQ cobre o funil de objeções do gestor (segurança, isolamento, hospedagem, sistemas federais, diretrizes do MDS, perfis, operação/capacitação, migração, suporte e contratação) em 10 itens, e a página encerra no formulário de demonstração — ação única de toda a página.",
+        "A página completa é percorrível em 6 estações de leitura, cada uma com uma ideia central — compatível com compreensão da solução em menos de 2 minutos de navegação."
+      ],
+      "images": [
+        "screenshots/ca01-1-hero.png",
+        "screenshots/ca01-2-dor.png",
+        "screenshots/ca01-3-beneficios.png",
+        "screenshots/ca01-4-desfecho-igd.png",
+        "screenshots/ca01-5-faq.png",
+        "screenshots/ca01-6-demonstracao.png"
+      ]
+    },
+    {
+      "id": "CA02",
+      "title": "Otimização do ponto de conversão",
+      "status": "parc",
+      "gherkin": "Dado que o visitante clica em qualquer um dos botões de chamada para ação (CTA) refinados da página, Quando o comando é disparado, Então a tela rola suavemente (smooth scroll) e foca a atenção diretamente no formulário de solicitação de demonstração.",
+      "steps_html": "Partindo do topo da página, clicar no CTA <code>Solicitar Demonstração</code> do header e, em novo teste, no CTA do hero. Medir por script a posição de aterrissagem do formulário e o valor computado de <code>scroll-behavior</code>.",
+      "results": [
+        "Rolagem suave confirmada: o valor computado de scroll-behavior no documento é 'smooth'.",
+        "Após o clique no CTA do header, a URL recebe #demonstracao e a seção do formulário aterrissa a 104px do topo do viewport (imediatamente abaixo do header fixo), com o formulário completo em vista — mesma medida para o CTA do hero.",
+        "A suíte automatizada (apêndice) cobre os demais CTAs: o cenário V2-NAV comprova que as âncoras do header e do CTA levam às 5 seções, e o cenário do CTA único garante que 'Solicitar Demonstração' é a única ação da página."
+      ],
+      "images": [
+        "screenshots/ca02-1-cta-header-form.png",
+        "screenshots/ca02-2-cta-hero-form.png"
+      ]
+    }
+  ],
+  "notes": [
+    {
+      "title": "Spec ad-hoc montada a partir do ticket",
+      "html": "<p>Não existe story oficial para a HU #10145 no repositório; os critérios foram extraídos literalmente do ticket GLPI. O refinamento de conteúdo evidenciado corresponde ao trabalho entregue em develop até o commit <code>d06be5f</code> do repositório da landing (hero v6, seção de dor simplificada, FAQ de 10 itens, conformidade MDS/TCE, desfecho do IGD-SUAS).</p>"
+    },
+    {
+      "title": "Critério de tempo de leitura",
+      "html": "<p>O limite de \"menos de 2 minutos\" do CA01 não é mensurável de forma objetiva por instrumento — a evidência apresentada é estrutural: 6 estações de leitura, uma ideia por seção, ação única. A aprovação final do fluxo de leitura é, por natureza, julgamento do Product Owner sobre as capturas.</p>"
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Playwright E2E da landing — build real, NUXT_LEADS_MOCK=true)",
+    "file": "playwright-landing.txt"
+  }
+}

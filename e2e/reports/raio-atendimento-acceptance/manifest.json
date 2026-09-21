@@ -1,0 +1,78 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — Raio de Atendimento",
+    "subtitle": "HU #10147 · Análise de Abrangência e Adensamento por Raio de Atendimento · Evidências end-to-end no client",
+    "rows": [
+      ["Gerado em", "24/07/2026"],
+      ["HU", "#10147 — Análise de Abrangência e Adensamento por Raio de Atendimento"],
+      ["Backend", "api/ · feature/10147-raio-atendimento · commit 7f7cf92"],
+      ["Frontend", "client/ · feature/10147-raio-atendimento · commit 50935b7"],
+      ["Spec", ".planning/specs/10147-analise-abrangencia-raio-atendimento.md"],
+      ["Ambiente", "API Sail/PostgreSQL+PostGIS (ST_DWithin) · client Vite :5174 (não-mock)"],
+      ["Organização (tenant)", "Maceió Geo · IBGE 2704302"],
+      ["Ferramenta", "playwright-cli (Chromium) + Pest 4"]
+    ]
+  },
+  "summary": "4 critérios de aceite (CA15–CA18) do filtro de raio de atendimento do Painel de Georreferenciamento, todos evidenciados por navegador (playwright-cli) dirigindo o client real contra a API PostGIS não-mock, com dados geo semeados no tenant Maceió (CRAS Eldorado e CREAS Central georreferenciados + famílias posicionadas a distâncias conhecidas, algumas com trabalho infantil). Os totais exibidos na UI (3 famílias em 2 km; 2 famílias com trabalho infantil em 1,5 km) foram cruzados com o resultado do GeoPanelQueryService e com a suíte Pest (48 testes, 144 asserções — apêndice), que exercita o ramo espacial ST_DWithin (PostgreSQL) e o fallback Haversine (SQLite). Resultado geral: 4/4 atendidos.",
+  "cas": [
+    {
+      "id": "CA15",
+      "title": "Aplicação do filtro de raio com sucesso",
+      "status": "nav",
+      "gherkin": "Dado que estou na modal de Busca Avançada, Quando seleciono o \"CRAS Eldorado\", informo o valor 2 no campo de raio em KM e clico em \"Aplicar no mapa\", Então o mapa renderiza as manchas de calor e atualiza o painel lateral considerando apenas as famílias localizadas a até 2 km de distância do CRAS Eldorado.",
+      "steps_html": "Na Busca Avançada, bloco <b>Área de abrangência</b>: selecionar <code>CRAS · CRAS Eldorado</code> na Unidade de referência (o campo Raio habilita), informar <code>2</code> em Raio (km) e clicar <b>Buscar</b>. O sistema semeado tem 3 famílias dentro de 2 km e 2 fora.",
+      "results": [
+        "A busca retorna \"3 família(s) encontrada(s)\" — exatamente as famílias a 0,5 / 1,0 / 1,5 km do CRAS Eldorado; as de 3 e 4 km são descartadas.",
+        "Ao aplicar, o mapa projeta o heatmap somente dessas 3 famílias (legenda \"pico: 1 família(s)/ponto\") e o chip \"CRAS Eldorado · 2 km\" fica ativo.",
+        "Total conferido com GeoPanelQueryService::search (total=3) e com a suíte Pest (\"includes families inside the radius and excludes the ones outside\")."
+      ],
+      "images": ["screenshots/ca15-busca-raio-3-familias.png"]
+    },
+    {
+      "id": "CA16",
+      "title": "Desenho gráfico da área de abrangência",
+      "status": "nav",
+      "gherkin": "Dado que apliquei o filtro de raio de 2 km no CRAS Eldorado, Quando o mapa atualiza, Então o sistema exibe um círculo translúcido delimitando a fronteira de 2 km ao redor do marcador do CRAS Eldorado e ajusta o zoom da tela para enquadrar todo o perímetro.",
+      "steps_html": "Após \"Aplicar no mapa\" com o raio de 2 km no CRAS Eldorado, observar a camada gráfica desenhada no mapa e o enquadramento automático (fit-bounds).",
+      "results": [
+        "O mapa desenha um círculo translúcido (contorno azul + preenchimento translúcido) centrado no CRAS Eldorado, delimitando a fronteira de 2 km.",
+        "O zoom é ajustado automaticamente (fit-bounds) para enquadrar todo o perímetro do círculo.",
+        "Os 3 pontos de calor das famílias dentro do raio aparecem contidos no círculo."
+      ],
+      "images": ["screenshots/ca16-circulo-raio-2km-cras-eldorado.png"]
+    },
+    {
+      "id": "CA17",
+      "title": "Cruzamento cumulativo (Raio + Vulnerabilidades)",
+      "status": "nav",
+      "gherkin": "Dado que configurei um raio de 1.5 km para o CREAS Central e marquei a vulnerabilidade \"Ocorrência de Trabalho Infantil\", Quando clico em aplicar, Então o sistema exibe no mapa e no resumo lateral estritamente os casos de trabalho infantil localizados dentro do raio de 1.5 km do CREAS Central.",
+      "steps_html": "Na Busca Avançada: marcar a vulnerabilidade <b>Trabalho infantil</b>, selecionar <code>CREAS · CREAS Central</code>, informar <code>1.5</code> em Raio (km) e Buscar/Aplicar. O tenant tem, dentro de 1,5 km do CREAS, 2 famílias com trabalho infantil e 1 sem; e 1 com trabalho infantil a 2 km (fora).",
+      "results": [
+        "A busca retorna \"2 família(s) encontrada(s)\" — apenas os casos de trabalho infantil dentro de 1,5 km (a família sem trabalho infantil e a de 2 km são excluídas).",
+        "No mapa, o círculo de 1,5 km (menor que o de 2 km) contém exatamente 2 pontos de calor; chips ativos \"Trabalho infantil\" + \"CREAS Central · 1.5 km\".",
+        "Recorte cumulativo (interseção raio × vulnerabilidade) confirmado: baseline de trabalho infantil no município é 3, mas só 2 residem dentro do raio (GeoPanelQueryService + Pest)."
+      ],
+      "images": [
+        "screenshots/ca17-cruzamento-raio-trabalho-infantil.png",
+        "screenshots/ca17b-mapa-creas-1500m-trabalho-infantil.png"
+      ]
+    },
+    {
+      "id": "CA18",
+      "title": "Limpeza do perímetro radial",
+      "status": "nav",
+      "gherkin": "Dado que há um raio delimitado visível no mapa, Quando abro a Busca Avançada e clico no botão \"Limpar critérios\", Então a camada do círculo translúcido é removida do mapa e os indicadores voltam a considerar a totalidade do município.",
+      "steps_html": "Com o perímetro de 1,5 km aplicado, abrir a Busca Avançada e clicar <b>Limpar critérios</b>; fechar a busca.",
+      "results": [
+        "A camada do círculo translúcido é removida do mapa (nenhum \"FILTROS ATIVOS\" permanece).",
+        "O painel volta ao estado neutro de Maceió (\"Selecione ao menos uma vulnerabilidade...\") — os indicadores voltam a considerar a totalidade do município, com as divisões territoriais (limite municipal / setores) novamente disponíveis.",
+        "O campo Raio volta a ficar desabilitado e a vulnerabilidade é desmarcada."
+      ],
+      "images": ["screenshots/ca18-limpeza-perimetro-visao-municipio.png"]
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Pest — GeoPanelTest + GeoPanelRadiusIsolationTest + GeoPanelQueryServiceTest)",
+    "file": "pest-geo-panel.txt"
+  }
+}

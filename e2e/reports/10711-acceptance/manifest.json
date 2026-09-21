@@ -1,0 +1,272 @@
+{
+  "meta": {
+    "title": "Critérios de Aceite — HU #10711",
+    "subtitle": "Apurar os atendimentos por unidade e período",
+    "rows": [
+      [
+        "Gerado em",
+        "01/09/2026 22:22 · complementado em 04/09/2026 14:53"
+      ],
+      [
+        "Épico",
+        "Prontuário SUAS — fase F1 (Atendimento)"
+      ],
+      [
+        "Branch",
+        "feature/10709-atendimento (não pushada)"
+      ],
+      [
+        "Commits",
+        "api 817520f · client dd152a6 · meta 000cca2"
+      ],
+      [
+        "Ambiente",
+        "API Sail :80 · Client (Vite) :5174 · banco esuas com E2EProntuarioSeeder"
+      ],
+      [
+        "Perfis",
+        "Master (CLIENT_ADMIN) e Operacional do Tenant — guard client"
+      ],
+      [
+        "Ferramenta",
+        "playwright-cli (Chromium) + Pest 4"
+      ]
+    ]
+  },
+  "summary": "12 critérios da HU mais 3 derivados. 8 evidenciados no navegador, 1 combinado e 6 pela suíte. Esta HU é a tela de conferência: ela NÃO altera os leiautes 15.6 e 15.8, que seguem HeaderOnly — a emissão é HU futura. Complemento de 04/09/2026: os dois contadores que na captura original apareciam zerados por ausência de massa — participantes em atividade coletiva não continuada (CA02) e sem pessoa identificada (CA07) — foram exercitados na tela com valor diferente de zero.",
+  "cas": [
+    {
+      "id": "CA01",
+      "title": "Apuração de uma unidade em um mês",
+      "status": "nav",
+      "gherkin": "Dado que a unidade teve atendimentos registrados no mês\nQuando eu consultar a apuração para o período\nEntão vejo o total e os contadores por natureza\nE nenhum desses números é digitável",
+      "steps_html": "Login como Master, menu <b>Prestação de Contas → Apuração de Atendimentos</b>, período 2026/Setembro.",
+      "results": [
+        "O CRAS Centro apresenta <code>1 · 1 · 0 · 0 · 0</code> — total, individualizados, visitas, coletiva não continuada e sem pessoa.",
+        "Nenhum campo é editável: a tela só tem os seletores de período e unidade.",
+        "Os números batem com o único atendimento registrado no mês pela própria tela da #10709."
+      ],
+      "images": [
+        "screenshots/ca01-ca09-ca10-apuracao-master.png"
+      ]
+    },
+    {
+      "id": "CA02",
+      "title": "Participantes de atividade coletiva não continuada",
+      "status": "parc",
+      "gherkin": "Dado que foram registrados atendimentos do tipo \"Participação em atividade coletiva de caráter não continuado\"\nQuando eu consultar a apuração\nEntão o contador de participantes apresenta a quantidade",
+      "steps_html": "Complemento de 04/09/2026: registrado pela tela do prontuário um atendimento do tipo <b>3 — Participação em atividade coletiva de caráter não continuado</b>, e consultada a apuração de 09/2026 como Master. Complementado pela suíte, que prova a derivação dos quatro contadores.",
+      "results": [
+        "A coluna <b>Participantes em atividade coletiva não continuada</b> passou de 0 para <b>1</b> assim que um atendimento desse tipo foi registrado — o contador reage ao tipo, não a um campo digitado.",
+        "Na mesma linha, o total subiu para 3 e os demais contadores permaneceram coerentes: individualizados 1 e visitas domiciliares 1.",
+        "A classificação vem de <code>attendance_types.remittance_counter</code>, não de <code>if</code> no código.",
+        "É o único dos quatro contadores que compõe o leiaute 15.8; os outros três são do 15.6."
+      ],
+      "images": [
+        "screenshots/ca02-ca07-contadores-preenchidos.png"
+      ]
+    },
+    {
+      "id": "CA03",
+      "title": "Contadores que não vêm desta fase aparecem como indisponíveis",
+      "status": "nav",
+      "gherkin": "Dado que estou consultando a apuração\nQuando eu olhar os contadores do leiaute 15.6\nEntão famílias em acompanhamento, encaminhamentos ao CadÚnico, ao BPC e benefícios eventuais aparecem identificados como ainda não disponíveis\nE a tela indica que dependem de etapas seguintes do prontuário",
+      "steps_html": "Painel abaixo da tabela de contadores.",
+      "results": [
+        "Os <b>5 contadores</b> aparecem em estado apagado, com o motivo e a fase de origem (F2/F3/F5).",
+        "O texto da tela explica a razão da regra: <i>“Aparecem aqui para que ninguém conclua que a remessa está completa.”</i>",
+        "A distinção vem do dado (<code>available: false</code>), não de inferência do front."
+      ],
+      "images": [
+        "screenshots/ca03-contadores-indisponiveis.png"
+      ]
+    },
+    {
+      "id": "CA04",
+      "title": "Atendimento cancelado não conta",
+      "status": "nav",
+      "gherkin": "Dado que a apuração apresentava um total\nQuando um atendimento for cancelado\nE eu consultar a apuração novamente\nEntão o total diminui\nE o atendimento cancelado continua visível no histórico da família",
+      "steps_html": "O atendimento de 20/07/2026 foi cancelado pela tela da #10709; apuração consultada para 07/2026.",
+      "results": [
+        "Julho apresenta o CRAS Centro com <b>zero declarado</b> e todos os contadores em 0.",
+        "O banco confirma: julho tem 1 atendimento, <b>0 válidos e 1 cancelado</b>.",
+        "O cancelado continua no histórico da família — sai da apuração, não do prontuário."
+      ],
+      "images": [
+        "screenshots/ca04-ca05-cancelado-nao-conta.png"
+      ]
+    },
+    {
+      "id": "CA05",
+      "title": "Lançamento retroativo conta no mês do atendimento",
+      "status": "nav",
+      "gherkin": "Dado que foi lançado um atendimento ocorrido em mês anterior\nQuando eu consultar a apuração daquele mês\nEntão esse atendimento está contado lá\nE não aparece na apuração do mês do lançamento",
+      "steps_html": "Comparação entre as apurações de 07/2026 e 09/2026.",
+      "results": [
+        "O atendimento de <b>20/07</b>, lançado em <b>01/09</b>, é contabilizado em julho — não em setembro.",
+        "Setembro apresenta apenas o atendimento de 01/09.",
+        "A data que vale é a do <b>atendimento</b>, não a do lançamento."
+      ],
+      "images": [
+        "screenshots/ca04-ca05-cancelado-nao-conta.png",
+        "screenshots/ca01-ca09-ca10-apuracao-master.png"
+      ]
+    },
+    {
+      "id": "CA06",
+      "title": "Correção reflete na consulta seguinte",
+      "status": "auto",
+      "gherkin": "Dado que corrigi o tipo de um atendimento\nQuando eu consultar a apuração do período novamente\nEntão o contador correspondente mudou\nE o resultado anterior não ficou guardado em lugar nenhum",
+      "steps_html": "Coberto pela suíte.",
+      "results": [
+        "Não existe tabela de apuração: o resultado é calculado a cada consulta.",
+        "Materializar criaria um segundo estado a sincronizar em cada correção e cancelamento."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA07",
+      "title": "Atendimentos sem pessoa identificada",
+      "status": "parc",
+      "gherkin": "Dado que parte dos atendimentos foi registrada sem identificar pessoa\nQuando eu consultar a apuração\nEntão esse número é apresentado à parte\nE a tela informa que esses atendimentos não farão ninguém constar como usuário da rede na remessa",
+      "steps_html": "Coluna própria na tabela, com nota explicativa. Complemento de 04/09/2026: registrado pela tela um atendimento <b>sem nenhuma pessoa identificada</b> e consultada a apuração de 09/2026.",
+      "results": [
+        "A coluna <b>Sem pessoa identificada</b> passou de 0 para <b>1</b> — o número é apresentado à parte, em coluna separada dos demais contadores, e não somado dentro deles.",
+        "A tela declara a consequência logo abaixo da tabela: “Atendimentos sem pessoa identificada somam nos contadores da unidade, mas não farão ninguém constar como usuário da rede na remessa.”",
+        "O atendimento sem pessoa continua somando no total da unidade (total 3), como a regra determina.",
+        "O cálculo é <code>NOT EXISTS</code> na tabela de pessoas atendidas — não um contador desnormalizado."
+      ],
+      "images": [
+        "screenshots/ca02-ca07-contadores-preenchidos.png"
+      ]
+    },
+    {
+      "id": "CA08",
+      "title": "Operacional vê apenas as suas unidades",
+      "status": "auto",
+      "gherkin": "Dado que sou Operacional do Tenant lotado apenas em uma unidade\nQuando eu consultar a apuração\nEntão vejo apenas essa unidade\nE as demais não são oferecidas",
+      "steps_html": "Coberto pela suíte. Na massa deste dossiê o Operacional não recebeu a permissão, o que evidencia o CA15.",
+      "results": [
+        "O recorte usa a lotação vigente <b>hoje</b>: acesso é atributo do presente; a data governa a contagem, não a visibilidade.",
+        "Unidade fora do recorte via query manual devolve <b>422 nomeado</b>, nunca tabela vazia silenciosa."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA09",
+      "title": "Master vê todas as unidades",
+      "status": "nav",
+      "gherkin": "Dado que sou Master do município\nQuando eu consultar a apuração\nEntão vejo todas as unidades socioassistenciais do município, com seus números lado a lado",
+      "steps_html": "Login como Master (CPF <code>529.982.247-25</code>).",
+      "results": [
+        "As <b>três</b> unidades do município aparecem: CRAS Centro, CRAS Sem MDS e CREAS.",
+        "O Master possui <code>attendance-reports.view</code> de verdade (via grant no papel), não por bypass de gate."
+      ],
+      "images": [
+        "screenshots/ca01-ca09-ca10-apuracao-master.png"
+      ]
+    },
+    {
+      "id": "CA10",
+      "title": "Unidade sem atendimento no período",
+      "status": "nav",
+      "gherkin": "Dado que uma unidade não registrou nenhum atendimento no período\nQuando eu consultar a apuração\nEntão a unidade aparece com todos os contadores zerados\nE isso é apresentado como zero declarado, não como ausência de informação",
+      "steps_html": "Observação das unidades sem movimento na mesma tela.",
+      "results": [
+        "CRAS Sem MDS e CREAS aparecem com selo <b>“zero declarado”</b> e quatro zeros — <b>não somem</b> da tabela.",
+        "É visualmente distinto do painel de indisponíveis, que mostra “—” apagado.",
+        "Zero afirmado e “não sabido” são coisas diferentes, e a tela mostra as duas ao mesmo tempo."
+      ],
+      "images": [
+        "screenshots/ca01-ca09-ca10-apuracao-master.png",
+        "screenshots/ca03-contadores-indisponiveis.png"
+      ]
+    },
+    {
+      "id": "CA11",
+      "title": "Nenhum dado de cidadão na tela",
+      "status": "nav",
+      "gherkin": "Dado que estou consultando a apuração\nQuando eu olhar os resultados\nEntão vejo apenas quantidades por unidade\nE nenhum nome, CPF ou identificação de família",
+      "steps_html": "Varredura do texto renderizado da página.",
+      "results": [
+        "Nenhum CPF (padrão <code>000.000.000-00</code>) e nenhum nome de família ou integrante.",
+        "Só unidades e quantidades. Nem contagem de pessoas distintas, que permitiria inferência em unidade pequena."
+      ],
+      "images": [
+        "screenshots/ca01-ca09-ca10-apuracao-master.png"
+      ]
+    },
+    {
+      "id": "CA12",
+      "title": "Isolamento entre municípios",
+      "status": "auto",
+      "gherkin": "Dado que sou usuário do município A\nQuando eu consultar a apuração\nEntão vejo apenas unidades do município A",
+      "steps_html": "Coberto por <code>AttendanceReportIsolationTest</code>.",
+      "results": [
+        "Unidade de outro tenant devolve o <b>mesmo 422</b> de unidade inexistente — sem oráculo de existência."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA13",
+      "title": "Tipo inativado continua contando no passado",
+      "status": "auto",
+      "gherkin": "Dado que um tipo foi inativado no Painel Global\nQuando eu consultar a apuração de um mês anterior\nEntão os atendimentos daquele tipo continuam contados",
+      "steps_html": "Coberto pela suíte.",
+      "results": [
+        "A query <b>nunca</b> junta <code>attendance_types.is_active</code>.",
+        "Inativar “Visita domiciliar” não pode apagar as visitas de meses já prestados."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA14",
+      "title": "O total inclui tipos sem contador específico",
+      "status": "auto",
+      "gherkin": "Dado que houve atendimentos de tipo sem contador específico\nQuando eu consultar a apuração\nEntão o total os inclui\nE eles não aparecem em nenhum contador específico",
+      "steps_html": "Coberto pela suíte.",
+      "results": [
+        "O total é a soma de todas as linhas do agrupamento, <b>incluindo</b> as de contador nulo."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA15",
+      "title": "Sem permissão, a tela não existe",
+      "status": "nav",
+      "gherkin": "Dado que sou Operacional do Tenant sem a atribuição de apuração\nQuando eu procurar a apuração no menu\nEntão a ação não existe para mim\nE o acesso direto pela URL é recusado",
+      "steps_html": "Contraste entre as duas sessões: Operacional e Master.",
+      "results": [
+        "Para o Operacional, o item <b>não existe no menu</b> e a URL direta cai em <b>/403</b>.",
+        "Para o Master, o item aparece e a tela abre normalmente.",
+        "No banco: a permissão tem 2 registros (par de guards), o papel <code>master</code> a possui e o <code>operador</code> não — a <code>RESTRICTED_PERMISSIONS</code> impediu a concessão automática."
+      ],
+      "images": [
+        "screenshots/ca15-operador-sem-permissao-403.png",
+        "screenshots/ca01-ca09-ca10-apuracao-master.png"
+      ]
+    }
+  ],
+  "notes": [
+    {
+      "title": "Esta HU é a tela de conferência, não a emissão",
+      "html": "<p>Os leiautes <b>15.6</b> e <b>15.8</b> continuam saindo da remessa apenas com cabeçalho. Passar a declarar números ao Tribunal com o leiaute ainda incompleto — sem os contadores das fases F2/F3/F5, que a própria tela mostra como indisponíveis — é decisão de PO, registrada como HU futura. O contrato está desenhado: quando a emissão vier, deve consumir <b>o mesmo serviço</b> desta tela, nunca reimplementar a contagem.</p>"
+    },
+    {
+      "title": "Débito com dono, para a HU de emissão",
+      "html": "<p>Unidade <b>soft-deletada</b> some da apuração <b>levando junto os atendimentos dela</b>. Está conforme a spec, mas na emissão faria o 15.6 declarar ao TCE-AL menos atendimentos do que o município realizou. Precisa de decisão explícita antes de o leiaute ser emitido.</p><p>E o risco de <b>dupla contagem</b>: os tipos 4 (cadastramento CadÚnico) e 6 (benefício eventual) têm campo próprio no 15.6, cuja fonte canônica é outro módulo. Hoje somam só no total; derivá-los por tipo na F2 faria o mesmo fato entrar duas vezes.</p>"
+    },
+    {
+      "title": "Sobre a massa deste dossiê",
+      "html": "<p>Os números são pequenos de propósito — dois atendimentos, um deles cancelado. O que se evidencia não é volume, e sim <b>comportamento</b>: que o cancelado sai, que o retroativo cai no mês certo, que a unidade sem movimento aparece com zero declarado, e que quem não tem a permissão não chega à tela.</p>"
+    },
+    {
+      "title": "Complemento de 04/09/2026 — os quatro contadores exercitados com valor",
+      "html": "Na geração original, a massa do ambiente não continha atendimento de participação em atividade coletiva não continuada nem atendimento sem pessoa identificada, de modo que essas duas colunas apareciam zeradas nas capturas — justamente duas das quatro que alimentam os leiautes 15.6 e 15.8. A derivação já estava provada na suíte, mas o leitor via uma tabela onde elas nunca reagiam.<br><br>Foram então registrados, pela própria tela do prontuário, um atendimento do tipo 3 e um atendimento sem pessoa identificada. A apuração de 09/2026 passou a apresentar, na linha do E2E CRAS Centro, total 3 com individualizados 1, visitas domiciliares 1, participantes em atividade coletiva não continuada 1 e sem pessoa identificada 1 — os quatro contadores desta fase reagindo ao mesmo tempo. Ao final, os dois atendimentos criados para a evidência foram removidos e a massa voltou aos 2 atendimentos originais, com os 8 tipos ativos."
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Pest — filtro Attendance: 139 testes; SyncPermissions: 14; todos verdes)",
+    "file": "pest-f1.txt"
+  }
+}

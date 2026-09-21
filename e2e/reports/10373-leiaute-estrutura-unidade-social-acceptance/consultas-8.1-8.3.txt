@@ -1,0 +1,115 @@
+Consultas de apoio §8.1–§8.3 da spec .planning/specs/10373-leiaute-estrutura-unidade-social.md
+HU #10373 (US-SIAP-06) — leiaute EstruturaUnidadeSocial
+Executado em: 2026-08-13 20:30:31
+Base: PostgreSQL LOCAL de desenvolvimento (esuas @ 127.0.0.1:4000).
+
+!! RESSALVA OBRIGATORIA — A BASE LOCAL NAO E REPRESENTATIVA !!
+A spec manda rodar EM STAGING (§8, nota). Nao ha acesso a staging nesta execucao.
+Inventario da base local, ANTES de qualquer consulta:
+
+  tenants                                   3
+  social_units                              1
+  social_unit_structures                    21
+  social_unit_social_unit_structure         0
+
+Com 0 vinculos unidade<->estrutura e 1 unidade(s) social(is), as consultas §8.1 e §8.2 devolvem ZERO por
+AUSENCIA DE DADO, e nao por ausencia de problema. Nenhum numero abaixo pode ser lido como
+dimensionamento do impacto em producao — nem como ausencia dele.
+
+===============================================================================
+§8.1 — Estruturas com codigo fora da Tabela 36 (1..21) e se estao vinculadas
+       E *a* consulta desta HU: cada linha com municipios_afetados > 0 e um municipio
+       que ficara IMPEDIDO de prestar contas. Linhas com vinculos = 0 sao a CA03d:
+       existem no cadastro global, nao bloqueiam ninguem.
+===============================================================================
+(0 rows)
+
+===============================================================================
+§8.2 — Quantos municipios ficam impedidos
+===============================================================================
+ municipios_bloqueados 
+----------------------
+ 0                     
+(1 rows)
+
+===============================================================================
+§8.3 — Distribuicao das estruturas mais vinculadas (perfil da rede)
+       Alimenta a conversa da RN04c com o TCE-AL: quanto a rede usa a "Sala de
+       Atendimento em Grupo" (18) e quanto usa os itens de perfil escolar.
+===============================================================================
+ code | name                                        | vinculos | municipios 
+------+----------------------------------------------+-----------+------------
+ 001  | Água Potável                              | 0        | 0          
+ 002  | Energia Elétrica                           | 0        | 0          
+ 003  | Esgoto Sanitário                           | 0        | 0          
+ 004  | Banheiro                                    | 0        | 0          
+ 005  | Biblioteca                                  | 0        | 0          
+ 006  | Cozinha                                     | 0        | 0          
+ 007  | Laboratório de Ciências                   | 0        | 0          
+ 008  | Laboratório Informática                   | 0        | 0          
+ 009  | Pátio                                      | 0        | 0          
+ 010  | Piscina                                     | 0        | 0          
+ 011  | Quadra de Esportes                          | 0        | 0          
+ 012  | Refeitório                                 | 0        | 0          
+ 013  | Internet                                    | 0        | 0          
+ 014  | Alimentação Escolar                       | 0        | 0          
+ 015  | Sala de Aleitamento Materno                 | 0        | 0          
+ 016  | Acondicionamento de Leite Materno           | 0        | 0          
+ 017  | Recepção                                  | 0        | 0          
+ 018  | Sala de Atendimento em Grupo                | 0        | 0          
+ 019  | Laboratório para Execução de Oficinas    | 0        | 0          
+ 020  | Almoxarifado                                | 0        | 0          
+ 021  | Arquivo Morto (guarda de arquivos físicos) | 0        | 0          
+(21 rows)
+
+===============================================================================
+COMPLEMENTAR — a duvida do artefato do PO, em tres numeros
+  (a) quantas estruturas proprias do municipio existem (fora dos 21 da Tabela 36)
+  (b) quantas delas tem vinculo com alguma unidade
+  (c) quantos municipios ficariam impedidos por causa delas
+===============================================================================
+  (a) estruturas fora da Tabela 36 no cadastro global .... 0
+  (b) destas, com vinculo a alguma unidade ............... 0
+  (c) municipios que ficariam impedidos ................. 0
+      (estruturas DENTRO da Tabela 36: 21)
+
+Conferencia complementar — os codigos que HA na base local (§3.1 da spec):
+ code | name                                        | is_active 
+------+----------------------------------------------+-----------
+ 001  | Água Potável                              | 1         
+ 002  | Energia Elétrica                           | 1         
+ 003  | Esgoto Sanitário                           | 1         
+ 004  | Banheiro                                    | 1         
+ 005  | Biblioteca                                  | 1         
+ 006  | Cozinha                                     | 1         
+ 007  | Laboratório de Ciências                   | 1         
+ 008  | Laboratório Informática                   | 1         
+ 009  | Pátio                                      | 1         
+ 010  | Piscina                                     | 1         
+ 011  | Quadra de Esportes                          | 1         
+ 012  | Refeitório                                 | 1         
+ 013  | Internet                                    | 1         
+ 014  | Alimentação Escolar                       | 1         
+ 015  | Sala de Aleitamento Materno                 | 1         
+ 016  | Acondicionamento de Leite Materno           | 1         
+ 017  | Recepção                                  | 1         
+ 018  | Sala de Atendimento em Grupo                | 1         
+ 019  | Laboratório para Execução de Oficinas    | 1         
+ 020  | Almoxarifado                                | 1         
+ 021  | Arquivo Morto (guarda de arquivos físicos) | 1         
+(21 rows)
+
+===============================================================================
+LEITURA DO RESULTADO — o que estas consultas provam e o que NAO provam
+===============================================================================
+PROVAM: os 21 itens semeados na base local estao TODOS dentro de 1..21, item a item,
+        como a §3.1 da spec afirmou. Nenhum deles bloquearia a remessa. O seed esta correto.
+NAO PROVAM: que producao esteja igual. O risco desta HU nao esta no seed — esta no CRUD do
+        Painel de Administracao Global, onde o Super Admin cria e edita codigos livremente,
+        e o seeder usa firstOrCreate (nao updateOrCreate): um codigo alterado a mao NAO e
+        corrigido ao re-semear. E exatamente o cenario das "estruturas proprias do municipio"
+        levantado pelo artefato do PO.
+PENDENCIA PARA O PO (§17.2): a §8.1 PRECISA ser rodada em staging/producao ANTES do deploy.
+        Qualquer linha com municipios_afetados > 0 e um municipio que sera impedido de gerar
+        a remessa por dado que ele nao controla. Se forem muitas e uteis a operacao, a saida
+        sugerida pelo proprio artefato e marca-las como "nao enviaveis ao TCE-AL" em HU futura.

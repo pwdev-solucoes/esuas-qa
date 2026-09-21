@@ -1,0 +1,7 @@
+registros_tenant_professional=15
+vazamentos_de_CPF_ou_nome=0
+
+amostra do registro de criacao (CPF mascarado):
+  {"tenant_id":3,"cpf":"***.000.002-**","scenario":"A"}
+
+registros_LEGADOS_com_CPF_em_claro (anteriores a esta HU)=3

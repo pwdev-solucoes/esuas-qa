@@ -1,0 +1,52 @@
+
+   PASS  Tests\Feature\Client\FamilyFollowUpDischargeTest
+  ✓ it discharges the family WITH the results evaluation, in a single t… 0.50s  
+  ✓ it carimba a autoria do SERVIDOR e RECUSA estado e contexto vindos…  0.05s  
+  ✓ it REFUSES a discharge without the evaluation and leaves the follow… 0.04s  
+  ✓ it REFUSES a discharge whose descriptive record is too short — stil… 0.05s  
+  ✓ it REFUSES not_applicable in questions 1 and 3, and ACCEPTS it in q… 0.05s  
+  ✓ it derives months_in_follow_up and DISCARDS it when sent in the req… 0.05s  
+  ✓ it REFUSES a discharge date BEFORE the admission, writing nothing (… 0.04s  
+  ✓ it REFUSES a discharge date in the FUTURE (RN03)                     0.05s  
+  ✓ it REFUSES an exit reason that does not exist or is INACTIVE (RN02)  0.05s  
+  ✓ it asks for CONFIRMATION on the incoherent combination and saves it… 0.05s  
+  ✓ it does NOT ask for confirmation when only ONE side of the combinat… 0.05s  
+  ✓ it REFUSES to discharge what is already discharged or cancelled (RN… 0.05s  
+  ✓ it NEVER logs achieved_results in the activity trail (CA10/RN05/D06… 0.05s  
+  ✓ it saves a retroactive discharge in a remitted month AND returns th… 0.06s  
+  ✓ it does NOT warn when the month has no COMPLETED remittance (CA11/R… 0.05s  
+  ✓ it keeps the whole history in the record block, evaluations in crea… 0.06s  
+  ✓ it denies the discharge of a family of ANOTHER unit, without naming… 0.05s  
+  ✓ it CORRECTS the discharge date and reason WITHOUT creating a new ev… 0.05s  
+  ✓ it REFUSES to correct the discharge of a follow-up that is NOT disc… 0.04s  
+  ✓ it REFUSES to REOPEN or to rewrite the evaluation through the corre… 0.05s  
+  ✓ it REVALIDATES RN03 and RN10 when correcting the discharge (RN12)    0.07s  
+  ✓ it warns for BOTH the old and the new month when correcting into re… 0.06s  
+
+   PASS  Tests\Feature\Client\FamilyFollowUpEvaluationTest
+  ✓ it suggests not_applicable ONLY when the period has no referral (CA… 0.06s  
+  ✓ it exposes the FOUR questions with not_applicable ONLY in the secon… 0.05s  
+  ✓ it recalculates months and the remittance warning for the PROPOSED…  0.05s  
+  ✓ it lists the referrals of the period with outcome and counter-refer… 0.06s  
+  ✓ it cuts the referrals by PERIOD and by the follow-up UNIT (D11)      0.06s  
+  ✓ it ends the period at discharged_on when the follow-up is already d… 0.05s  
+  ✓ it registers a PERIODIC evaluation that ends NOTHING (CA08/RN08)     0.05s  
+  ✓ it REFUSES a periodic evaluation that tries to discharge or to forg… 0.05s  
+  ✓ it REQUIRES an evaluation date between the admission and today (RN0… 0.05s  
+  ✓ it REFUSES not_applicable in questions 1 and 3 of the periodic eval… 0.05s  
+  ✓ it REFUSES a periodic evaluation on a follow-up that is NOT active…  0.05s  
+  ✓ it has NO route to update or delete an evaluation — the URI answers… 0.05s  
+  ✓ it places a CORRECTION beside the previous evaluation, both listed…  0.06s  
+  ✓ it admits MORE THAN ONE discharge evaluation, and latestDischargeEv… 0.04s  
+  ✓ it denies the whole evaluation surface for a family of ANOTHER unit… 0.06s  
+
+   PASS  Tests\Feature\TenantIsolation\FamilyFollowUpEvaluationIsolationTest
+  ✓ it answers 404 — never 403 — on ALL FIVE routes of another tenant (… 0.06s  
+  ✓ it never leaks a follow-up of ANOTHER tenant through MY family uuid… 0.04s  
+  ✓ it answers 404 when the follow-up belongs to ANOTHER family of the…  0.05s  
+  ✓ it scopes family_follow_up_evaluations by tenant_id even without th… 0.05s  
+  ✓ it blocks the request when the X-Tenant-UUID points at a tenant the… 0.05s  
+
+  Tests:    42 passed (397 assertions)
+  Duration: 3.17s
+

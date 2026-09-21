@@ -1,0 +1,28 @@
+
+   PASS  Tests\Unit\Http\Resources\PersonSearchResultResourceTest
+  ✓ it computes the age from birth_date without persisting it            0.14s  
+  ✓ it prefers the social name over the civil name (RN03)                0.01s  
+  ✓ it falls back to the civil name when social name is empty or null (… 0.01s  
+  ✓ it uses the member NIS when present (RN03)                           0.01s  
+  ✓ it falls back to the responsible NIS only for the RF (RN03)          0.01s  
+  ✓ it exposes null filiation and city when absent (premissa 5 — UI exi… 0.01s  
+  ✓ it defaults can_view_details to false without an authenticated user… 0.01s  
+
+   WARN  Tests\Feature\Api\Client\PersonSearchTest
+  ✓ it returns an empty collection when no criteria is given (CA01/RN01… 0.38s  
+  ✓ it denies access without the person-search.index permission          0.02s  
+  ✓ it finds a person by exact CPF, sanitizing the mask (CA02/RN02/RN08… 0.04s  
+  ✓ it rejects a partial CPF (RN02 requires the full document)           0.03s  
+  ✓ it lists every active member of the family block by family code (CA… 0.05s  
+  ✓ it finds people by partial name on full_name OR social_name (CA04/R… 0.04s  
+  - it matches a partial name case-insensitively (RN02 ILIKE) → ILIKE c… 0.03s  
+  ✓ it rejects a name shorter than 2 characters                          0.02s  
+  ✓ it combines criteria with AND (RN02)                                 0.03s  
+  ✓ it returns the RN03 triage columns with computed age and NIS fallba… 0.04s  
+  ✓ it never returns people from another tenant (CA10/RN07)              0.04s  
+  ✓ it exposes can_view_details=false for the base operator and true wh… 0.04s  
+  ✓ it keeps families.view-details out of every role on automatic assig… 0.92s  
+
+  Tests:    1 skipped, 19 passed (78 assertions)
+  Duration: 2.31s
+

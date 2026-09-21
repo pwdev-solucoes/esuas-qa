@@ -1,0 +1,28 @@
+Mensagens do bloqueio e das pendências com a aplicação em pt_BR.
+Os JSON de payload deste dossiê saíram com locale 'en' (padrão da suíte de testes);
+este arquivo mostra o texto que o município realmente lê na tela.
+==============================================================================
+
+CA03b — vínculo não informado
+  recusa da geração (422): A remessa SIAP não pode ser gerada: 1 entidade socioassistencial está com o cadastro incompleto para o SIAP. Veja quais dados faltam na conferência prévia.
+  pendência (record_incomplete · SituacaoUnidade): Esta entidade socioassistencial está sem SituacaoUnidade, exigido pelo SIAP. Corrija o cadastro da entidade: enquanto isso, nenhuma remessa pode ser gerada.
+
+CA06 — sem CNEAS
+  recusa da geração (422): A remessa SIAP não pode ser gerada: 1 entidade socioassistencial está com o cadastro incompleto para o SIAP. Veja quais dados faltam na conferência prévia.
+  pendência (record_incomplete · NumeroCNEAS): Esta entidade socioassistencial está sem NumeroCNEAS, exigido pelo SIAP. Corrija o cadastro da entidade: enquanto isso, nenhuma remessa pode ser gerada.
+
+CA07 — sem e-mail
+  recusa da geração (422): A remessa SIAP não pode ser gerada: 1 entidade socioassistencial está com o cadastro incompleto para o SIAP. Veja quais dados faltam na conferência prévia.
+  pendência (record_incomplete · Email): Esta entidade socioassistencial está sem Email, exigido pelo SIAP. Corrija o cadastro da entidade: enquanto isso, nenhuma remessa pode ser gerada.
+
+CA08 — sem valor do vínculo
+  recusa da geração (422): A remessa SIAP não pode ser gerada: 1 entidade socioassistencial está com o cadastro incompleto para o SIAP. Veja quais dados faltam na conferência prévia.
+  pendência (record_incomplete · ValorVinculo): Esta entidade socioassistencial está sem ValorVinculo, exigido pelo SIAP. Corrija o cadastro da entidade: enquanto isso, nenhuma remessa pode ser gerada.
+
+CA05c — extinta sem data
+  recusa da geração (422): A remessa SIAP não pode ser gerada: 1 entidade socioassistencial está com o cadastro incompleto para o SIAP. Veja quais dados faltam na conferência prévia.
+  pendência (record_incomplete · SituacaoEntidadeSocial): Esta entidade socioassistencial está sem SituacaoEntidadeSocial, exigido pelo SIAP. Corrija o cadastro da entidade: enquanto isso, nenhuma remessa pode ser gerada.
+
+CA05e — situação Suspensa
+  recusa da geração (422): A remessa SIAP não pode ser gerada: 1 entidade socioassistencial está com o cadastro incompleto para o SIAP. Veja quais dados faltam na conferência prévia.
+  pendência (domain_unmapped · SituacaoEntidadeSocial): O valor informado em SituacaoEntidadeSocial não tem correspondente na tabela do SIAP. Revise a classificação no cadastro da entidade: enquanto isso, nenhuma remessa pode ser gerada.

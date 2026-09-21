@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — Aba Vulnerabilidades e Alertas Ativos</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — Aba Vulnerabilidades e Alertas Ativos</h1>
+    <div class="sub">HU #9911 · CA05 + CA06 · Prontuário familiar (client) · Evidências end-to-end</div>
+    <div class="meta"><div><span>Gerado em:</span> 14/07/2026</div><div><span>História:</span> HU #9911 — Aba Vulnerabilidades e Alertas Ativos</div><div><span>Rota verificada:</span> /app/cadastros/familias/9fb588c6-...-78561d32ed3e?tab=vulnerabilidades</div><div><span>Submódulo:</span> client (esuas-frontend-client) · commit 1bf93ce</div><div><span>Ambiente:</span> API Sail/PostgreSQL 18 · client :5174 (não-mock) · API :8000</div><div><span>Organização (tenant):</span> PMM — Prefeitura Municipal de Maceió (Ativo)</div><div><span>Perfil:</span> coordenador (Master/CLIENT_ADMIN, family_viewer) · CPF 15543849079</div><div><span>Ferramenta:</span> playwright-cli (Chromium) + Vitest + Pest</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">2 Critérios de Aceite (CA05, CA06) verificados como PARCIAL (◑): evidência de UI ao vivo (navegador) somada à cobertura automatizada de backend. A aba Vulnerabilidades e Alertas exibe APENAS os marcadores ATIVOS da família, agrupados em Riscos Econômicos, Identidade e Programas — omitindo por inteiro os grupos sem marcação (CA05) — e destaca o alerta de gestão cadastral "Cadastro Vencido" quando a família está com 24+ meses de defasagem (CA06). Os códigos ativos e a janela do alerta são calculados no backend (FamilyVulnerabilityService — MESMA fonte do Painel Geo). Suítes automatizadas: Vitest 10/10 (VulnerabilidadesTab) e Pest 28/28 (FamilyVulnerabilityService + FamilyDetailsTest, inclui as janelas de 24/19 meses). Resultado geral: ATENDIDO.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA05</td><td>Exibição do painel de riscos e tags (apenas as vulnerabilidades ativas, omitindo as não marcadas)</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA06</td><td>Alerta cronológico de defasagem (Cadastro Vencido em 24+ meses de atraso)</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA05">
+      <h2>CA05 — Exibição do painel de riscos e tags (apenas as vulnerabilidades ativas, omitindo as não marcadas) <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que acesso a aba "Vulnerabilidades e Alertas", Quando a tela renderiza os dados da família, Então o sistema apresenta em blocos de destaque apenas as vulnerabilidades que aquela família possui (Ex: exibe as tags [Extrema Pobreza] e [Trabalho Infantil], mas omite as demais caso não possuam marcação na base).</p>
+      <p class="steps"><strong>Como foi testado:</strong> 1) Login como <code>coordenador</code> (Master) → organização <b>PMM</b>. 2) Abrir a rota da HU: <code>/app/cadastros/familias/9fb588c6-…?tab=vulnerabilidades</code> — família com um único marcador. 3) Abrir uma família com múltiplos marcadores (<code>05443abe-…</code>) para evidenciar o exemplo do critério (Extrema Pobreza + Trabalho Infantil) e a omissão das não marcadas.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Família da rota: exibe SOMENTE o grupo "Programas de Apoio" com a tag "Bolsa Família" — todos os demais grupos (Riscos Econômicos, Identidade) são omitidos por inteiro, pois não há marcação.</li><li>Família com múltiplos marcadores: grupo "Riscos Econômicos e de Proteção" exibe exatamente [Extrema pobreza] e [Trabalho infantil] (o exemplo do CA05); "Identidade e Inclusão" exibe Povos Indígenas e GPTE — Família Cigana; "Programas de Apoio" exibe Bolsa Família.</li><li>Marcadores NÃO presentes na base (ex.: Pessoa só, Situação de rua, Comunidades Quilombolas, Deficiência) são OMITIDOS — nunca exibidos apagados/desabilitados.</li><li>Tons de cor resolvidos numa única fonte (familyVulnerabilityTags): risco econômico laranja, identidade neutro, programa teal — idênticos ao preview do Resumo (anti-drift).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca05-rota-solicitada.png" alt="CA05 evidência"/><figcaption>ca05-rota-solicitada.png</figcaption></figure><figure><img src="screenshots/ca05-multiplas-tags.png" alt="CA05 evidência"/><figcaption>ca05-multiplas-tags.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA06">
+      <h2>CA06 — Alerta cronológico de defasagem (Cadastro Vencido em 24+ meses de atraso) <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que a data da última atualização da família no arquivo importado aponta um intervalo de 24 meses de atraso, Quando abro a aba de vulnerabilidades, Então o sistema exibe de forma destacada o alerta de gestão: [Cadastro Vencido].</p>
+      <p class="steps"><strong>Como foi testado:</strong> Abrir uma família com defasagem cadastral ≥ 24 meses (<code>b23a5497-…</code>) na aba <b>Vulnerabilidades e Alertas</b>. O código <code>expired</code> é calculado no backend (FamilyVulnerabilityService: >24 meses → expired · 19–24 → expiring).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A aba exibe a seção "Alertas de Gestão Cadastral" com o alerta "Cadastro Vencido" em destaque (tom destrutivo/vermelho + ícone de atenção).</li><li>O mesmo alerta "Cadastro Vencido" aparece SEMPRE visível no cabeçalho da tela (banner fora das abas), pois é a informação acionável do prontuário — mesma constante/fonte da aba.</li><li>A janela cronológica (24 meses = expired, 19–24 = expiring) é derivada no backend e coberta por teste de fronteira (Pest).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca06-cadastro-vencido.png" alt="CA06 evidência"/><figcaption>ca06-cadastro-vencido.png</figcaption></figure></div>
+    </section>
+  
+  <h2>Anexo — Cobertura automatizada de backend (Pest — FamilyVulnerabilityService + FamilyDetailsTest): 28 testes, 168 asserções</h2>
+  <pre class="pest">
+   PASS  Tests\Unit\Services\Family\FamilyVulnerabilityServiceTest
+  ✓ it activates extreme_poverty at the configured threshold, inclusive… 0.38s  
+  ✓ it activates single_person with exactly one ACTIVE member, ignoring… 0.04s  
+  ✓ it activates receives_pbf on the family flag                         0.03s  
+  ✓ it activates member flags (child_labor, homeless_situation, has_dis… 0.12s  
+  ✓ it activates indigenous_quilombola as an OR between the two family…  0.05s  
+  ✓ it activates gpte when the family is linked to a REAL traditional p… 0.03s  
+  ✓ it never activates gpte for the "Nenhuma" sentinel group (code 0),…  0.02s  
+  ✓ it returns every active code in the canonical order and omits nothi… 0.02s  
+  ✓ it omits every code for a family without any active marker (CA05)    0.02s  
+  ✓ it classifies the registry alert on the exact 24/19-month boundarie… 0.06s  
+  ✓ it agrees with the GeoPanel query filter for every vulnerability co… 0.13s  
+  ✓ it agrees with the GeoPanel query filter that the "Nenhuma" sentine… 0.03s  
+  ✓ it agrees with the GeoPanel query filter on the registry windows (e… 0.03s  
+  ✓ it keeps the GeoPanel vocabulary aliased to the single source of tr… 0.01s  
+
+   PASS  Tests\Feature\Api\Client\FamilyDetailsTest
+  ✓ it denies the base operator without the restricted permission (CA05… 0.13s  
+  ✓ it grants the operator with the family_viewer role and audits silen… 0.07s  
+  ✓ it lets the Master open the record via role bypass, without the res… 0.16s  
+  ✓ it blocks immediately when the professional is inactivated, even ke… 0.07s  
+  ✓ it blocks on the request right after the role is revoked, keeping t… 0.08s  
+  ✓ it returns 404 (not 403) for a family of another tenant (CA08 9760…  0.10s  
+  ✓ it does not let a grant in Tenant A open records in Tenant B (CA-ex… 0.11s  
+  ✓ it wires the dedicated family_viewer role in the seeder: level 25,…  0.05s  
+  ✓ it keeps the restricted permission out of the base roles after perm… 1.11s  
+  ✓ it lists family_viewer as assignable by the Master (listAssignable…  0.04s  
+  ✓ it returns the enriched record blocks: responsible, address with do… 0.06s  
+  ✓ it projects only the ACTIVE vulnerability codes, in canonical order… 0.07s  
+  ✓ it lists the full active composition: kinship, age, cpf and educati… 0.06s  
+  ✓ it keeps a stable shape for a sparse family: empty vulnerabilities,… 0.05s  
+
+  Tests:    28 passed (168 assertions)
+  Duration: 3.49s
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

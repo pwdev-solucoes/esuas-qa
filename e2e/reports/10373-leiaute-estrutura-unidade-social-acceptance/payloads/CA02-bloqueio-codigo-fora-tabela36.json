@@ -1,0 +1,17 @@
+{
+    "_leitura": "CA02 — estrutura de código \"099\" (fora de 1..21) vinculada ao CRAS. O POST devolve 422 em social_unit_structures, siap_remittances fica em 0 linhas, nenhum job é despachado e nenhum arquivo é escrito: \"a remessa não é gerada\", literalmente.",
+    "unidade_uuid": "f373b9b5-c5b1-4a38-9fc8-baf1e6341c5a",
+    "unidade_mds": "7793690127265",
+    "http_status": 422,
+    "resposta_do_post": {
+        "message": "A remessa SIAP não pode ser gerada: 1 estrutura vinculada às unidades está com código fora da tabela de estruturas do SIAP. Há duas saídas: corrigir o código no cadastro de apoio de estruturas de unidade, no Painel de Administração Global — acione o administrador da plataforma —, ou desvincular a estrutura da unidade. Veja quais na conferência prévia.",
+        "errors": {
+            "social_unit_structures": [
+                "A remessa SIAP não pode ser gerada: 1 estrutura vinculada às unidades está com código fora da tabela de estruturas do SIAP. Há duas saídas: corrigir o código no cadastro de apoio de estruturas de unidade, no Painel de Administração Global — acione o administrador da plataforma —, ou desvincular a estrutura da unidade. Veja quais na conferência prévia."
+            ]
+        }
+    },
+    "remessas_no_banco": 0,
+    "jobs_despachados": 0,
+    "arquivos_no_storage": 0
+}

@@ -1,0 +1,333 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — Registrar Encaminhamento",
+    "subtitle": "Épico Prontuário SUAS · fase F2 · HU #10713 — registro, correção, cancelamento e emissão do formulário",
+    "rows": [
+      [
+        "Gerado em",
+        "03/09/2026 20:35 · complementado em 04/09/2026 15:24"
+      ],
+      [
+        "HU",
+        "GLPI #10713 — Registrar encaminhamento e emitir o formulário"
+      ],
+      [
+        "Spec (contrato)",
+        ".planning/specs/10713-registrar-encaminhamento.md"
+      ],
+      [
+        "Branch",
+        "feature/10712-encaminhamentos"
+      ],
+      [
+        "Commits api/",
+        "f37d63b (registro+PDF) · df02a6e (fix soft delete) · 3d9bf0b (contra-referência) · 1abcac7 (fix updated_by)"
+      ],
+      [
+        "Commits client/",
+        "8c76ca4 (aba) · 5b70357 (fix da revisão)"
+      ],
+      [
+        "Ambiente",
+        "API Sail/PostgreSQL em localhost · client :5174 · dados reais (não-mock) · tenant E2E CadÚnico"
+      ],
+      [
+        "Ferramenta",
+        "playwright-cli (Chromium) + Pest 4 + pdftotext"
+      ]
+    ]
+  },
+  "summary": "Os 14 critérios de aceite do chamado, mais 7 derivados na spec. A evidência central da HU foi produzida no navegador com dados reais: o formulário do cidadão foi efetivamente emitido, baixado e inspecionado — e o objetivo sensível NÃO aparece nele, nem no texto extraído nem no binário. A reemissão também foi exercida na tela, com o contador de vias e as linhas gravadas. Os demais critérios são cobertos pela suíte automatizada, que fecha em 152 testes e 880 asserções, todos verdes, com a saída completa no apêndice.",
+  "cas": [
+    {
+      "id": "CA01",
+      "title": "Registrar encaminhamento no prontuário",
+      "status": "nav",
+      "gherkin": "Dado que sou profissional lotado na unidade de referência da família\nQuando eu registrar um encaminhamento\nEntão ele passa a constar do prontuário, com autor e data",
+      "steps_html": "Login como Operacional com add-on LGPD → prontuário da família → aba <b>Encaminhamentos</b> → 'Registrar o primeiro encaminhamento' → preenchimento → Registrar.",
+      "results": [
+        "A aba nasce entre 'Atendimentos' e 'Vulnerabilidades e Alertas', com contador de itens.",
+        "O estado vazio explica o que é um encaminhamento em vez de apenas informar a ausência de registros.",
+        "Após salvar: toast 'Encaminhamento registrado no prontuário.' e a linha aparece na tabela com data, código, destino e responsável.",
+        "A linha exibe os DOIS eixos em colunas separadas: 'Situação do registro: Registrado' e 'Desfecho: Aguardando retorno'."
+      ],
+      "images": [
+        "screenshots/ca01-encaminhamento-registrado.png"
+      ]
+    },
+    {
+      "id": "CA01b",
+      "title": "O autor do registro é imutável (compõe o CA01 do ticket)",
+      "status": "auto",
+      "gherkin": "Dado um encaminhamento registrado\nQuando outro profissional o corrigir\nEntão o autor original é preservado",
+      "steps_html": "<code>created_by</code> fora do fillable de atualização.",
+      "results": [
+        "Autor e editor são campos distintos; o responsável técnico é um terceiro campo, que aponta para o profissional, não para o usuário."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA02",
+      "title": "Código que conta indivíduos exige pessoa identificada",
+      "status": "nav",
+      "gherkin": "Dado que escolhi um código que conta indivíduos\nQuando eu tentar salvar sem identificar a pessoa\nEntão o registro é recusado",
+      "steps_html": "No formulário, selecionar o código <code>09 — INSS, visando acesso ao BPC</code>.",
+      "results": [
+        "O campo 'Pessoa encaminhada' ganha o marcador de obrigatório no momento da escolha do código.",
+        "O texto de apoio muda para 'O código escolhido conta indivíduos encaminhados — identifique quem foi encaminhado (integrante vigente da composição familiar)'.",
+        "A regra é dinâmica (RN05): vem de `requires_person` do código, não de uma lista fixa no front."
+      ],
+      "images": [
+        "screenshots/ca07-detalhe-emitir-formulario.png"
+      ]
+    },
+    {
+      "id": "CA03",
+      "title": "Código de CadÚnico não exige pessoa (conta famílias)",
+      "status": "auto",
+      "gherkin": "Dado um código que conta famílias\nQuando eu registrar sem identificar pessoa\nEntão o registro é aceito",
+      "steps_html": "Coberto pela suíte: o catálogo marca <code>requires_person</code> em exatamente um item (o BPC).",
+      "results": [
+        "Teste do seeder assere 'EXACTLY one item requiring an identified person — the BPC'.",
+        "A metade de contagem deste CA é da HU #10715 (etapa 06)."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA04",
+      "status": "auto",
+      "title": "Cadastramento feito na própria unidade também é encaminhamento",
+      "gherkin": "Dado que a própria unidade realizou a atualização cadastral da família no CadÚnico\nQuando eu registrar o encaminhamento de atualização cadastral\nEntão o registro é aceito normalmente\nE conta no período, ainda que a família não tenha sido enviada a outro órgão.",
+      "steps_html": "Coberto pela suíte automatizada. O instrumento é explícito em que o encaminhamento ao CadÚnico vale “inclusive quando realizada nesta própria Unidade” (RN07), então o sistema não pode impor uma regra de origem diferente de destino.",
+      "results": [
+        "<code>✓ it accepts a referral whose destination is the OWN unit — no origin≠destination rule exists (CA04/RN07)</code> — o registro é aceito com a própria unidade como destino.",
+        "Não existe, em lugar nenhum, validação que exija destino diferente da origem: a ausência da regra é que faz o critério passar, e o teste trava essa ausência.",
+        "O destino é texto livre obrigatório (RN03), então nomear a própria unidade é um preenchimento válido como qualquer outro.",
+        "A contagem no período é exercida na apuração, evidenciada no dossiê da #10715."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA05",
+      "title": "Os códigos oferecidos dependem do tipo da unidade de origem",
+      "status": "nav",
+      "gherkin": "Dado que a unidade de origem é um CRAS\nQuando eu abrir a lista de códigos\nEntão o código restrito ao CREAS não é oferecido",
+      "steps_html": "Selecionar a unidade <code>E2E CRAS Centro</code> e abrir a lista de códigos.",
+      "results": [
+        "São oferecidos 35 dos 36 códigos do catálogo.",
+        "O código 13 (CRAS → CREAS) é oferecido; o 14 (CREAS → CRAS) é o único ausente.",
+        "Trocar a unidade re-consulta o endpoint de opções — a lista não é filtrada localmente."
+      ],
+      "images": [
+        "screenshots/ca01-encaminhamento-registrado.png"
+      ]
+    },
+    {
+      "id": "CA06",
+      "title": "Destino e objetivo são obrigatórios",
+      "status": "auto",
+      "gherkin": "Dado que estou registrando\nQuando eu salvar sem órgão de destino ou sem objetivo\nEntão o registro é recusado com erro no campo",
+      "steps_html": "Coberto pelos Form Requests e pelos testes de validação; no front, os 422 vão para o campo com fallback para erro geral em chave não mapeada.",
+      "results": [
+        "Ambos NOT NULL no schema e obrigatórios na validação.",
+        "O front trata 422 explicitamente — `handleApiError` não toasta 422, então sem tratamento a falha seria silenciosa."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA07",
+      "title": "Emitir o formulário do encaminhamento",
+      "status": "nav",
+      "gherkin": "Dado um encaminhamento registrado\nQuando eu emitir o formulário\nEntão recebo o documento para entregar ao cidadão\n  E a emissão fica registrada",
+      "steps_html": "Expandir a linha → <b>Emitir formulário</b>.",
+      "results": [
+        "O PDF é baixado com nome neutro: <code>formulario-encaminhamento-2026-09-03.pdf</code> — sem PII e sem uuid no nome.",
+        "878 KB, cabeçalho <code>%PDF-1.7</code> — arquivo real, anexado a este dossiê.",
+        "A tela passa de 'Nenhuma via emitida ainda' para '1 via(s) emitida(s) · última em 03/09/2026'.",
+        "O aviso da RN14 fica fixo junto ao botão: 'A via é gerada a partir dos dados atuais — uma 2ª via emitida após correção sai com os dados corrigidos.'",
+        "Nada é guardado no servidor (P1): a tabela de emissões registra apenas quem emitiu e quando, sem coluna de caminho de arquivo."
+      ],
+      "images": [
+        "screenshots/ca07-detalhe-emitir-formulario.png"
+      ]
+    },
+    {
+      "id": "CA07b",
+      "title": "O objetivo NÃO sai no formulário do cidadão (compõe o CA07 do ticket)",
+      "status": "nav",
+      "gherkin": "Dado que o encaminhamento tem objetivo registrado\nQuando eu emitir o formulário\nEntão o objetivo não aparece no documento",
+      "steps_html": "O objetivo foi propositalmente cadastrado como <code>SEGREDO-DO-PRONTUARIO: relato sensível do trabalho social com a família.</code> e o PDF emitido foi inspecionado com <code>pdftotext</code> e <code>strings</code>.",
+      "results": [
+        "<b>Zero ocorrências</b> do texto sensível no PDF — nem no texto extraído, nem no binário cru.",
+        "O documento traz os itens da RN08: nome, órgão de destino, data, unidade de origem, telefone de contato, profissional responsável e espaço de assinatura.",
+        "O formulário explica ao órgão de destino por que não há detalhe: 'As informações detalhadas permanecem no prontuário da família, sob sigilo.' — sem essa frase, o receptor ligaria pedindo a informação, que é o mesmo vazamento por outra via.",
+        "Proteção estrutural: o serviço monta um array de 6 escalares e o model nunca chega ao template — um campo sensível acrescentado no futuro daria variável indefinida, não vazamento."
+      ],
+      "images": [
+        "screenshots/ca07-detalhe-emitir-formulario.png"
+      ]
+    },
+    {
+      "id": "CA08",
+      "status": "parc",
+      "title": "Reemissão do formulário fica registrada",
+      "gherkin": "Dado que o cidadão perdeu o formulário\nQuando eu emitir novamente\nEntão uma nova via é gerada\nE a reemissão fica registrada, com autor e data.",
+      "steps_html": "Complemento de 04/09/2026, dirigido no Painel do Tenant: no detalhe de um encaminhamento sem nenhuma via emitida, acionar <b>Emitir formulário</b> duas vezes e observar o contador de vias e as linhas gravadas. Complementado pela suíte.",
+      "results": [
+        "O detalhe parte de “Nenhuma via emitida ainda”. Após a primeira emissão passa a “<b>1 via(s) emitida(s) · última em 04/09/2026</b>”, e após a segunda a “<b>2 via(s) emitida(s) · última em 04/09/2026</b>”.",
+        "No banco, a reemissão <b>acrescenta uma linha nova</b> em vez de sobrescrever a anterior: duas emissões do mesmo encaminhamento, cada uma com o seu autor e o seu instante (18:23:50 e 18:24:05).",
+        "<code>✓ it returns a PDF stream and records WHO emitted and WHEN — re-emission adds a NEW row (CA08/RN09)</code>.",
+        "O aviso ao lado do botão é permanente: “A via é gerada a partir dos dados atuais — uma 2ª via emitida após correção sai com os dados corrigidos.” Reemitir não é reimprimir um arquivo guardado.",
+        "As duas emissões criadas para esta evidência foram removidas ao final, restaurando a massa do ambiente."
+      ],
+      "images": [
+        "screenshots/ca08-reemissao-registrada.png"
+      ]
+    },
+    {
+      "id": "CA09",
+      "title": "Data futura é recusada",
+      "status": "auto",
+      "gherkin": "Dado que informo data posterior a hoje\nQuando eu salvar\nEntão o registro é recusado",
+      "steps_html": "Validação de data no Form Request + atributo <code>max</code> no input.",
+      "results": [
+        "Coberto por teste de feature."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA10",
+      "title": "Aviso quando a remessa do mês já foi gerada",
+      "status": "auto",
+      "gherkin": "Dado que a remessa do mês do encaminhamento já foi gerada\nQuando eu registrar um encaminhamento retroativo\nEntão sou avisado de que os números declarados mudam",
+      "steps_html": "O aviso é <b>computado</b>, nunca persistido, e volta num bloco <code>warnings[]</code> irmão de <code>data</code>.",
+      "results": [
+        "Teste dedicado assere o código do aviso e o rótulo do período (07/2026).",
+        "O front exibe os avisos no registro e também no cancelamento."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA11",
+      "title": "Correção do encaminhamento fica registrada",
+      "status": "auto",
+      "gherkin": "Dado que corrijo um encaminhamento\nQuando eu consultar a trilha\nEntão a correção consta, com autor e data",
+      "steps_html": "Campos estruturados entram na trilha; os sensíveis, não.",
+      "results": [
+        "A trilha registra QUE o campo mudou, com autor e data, sem o conteúdo.",
+        "O de/para fica em `attribute_changes`, que é onde esta versão do activitylog grava as mudanças da trait."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA11b",
+      "title": "O objetivo fica fora da trilha de auditoria (compõe o CA11 do ticket)",
+      "status": "auto",
+      "gherkin": "Dado que registrei ou alterei o objetivo\nQuando eu consultar a trilha\nEntão o conteúdo do objetivo não aparece",
+      "steps_html": "Molde do projeto: <b>omissão</b> no <code>logOnly()</code> (não existe `tapActivity` neste projeto), com escrita sempre por <code>$model->save()</code>.",
+      "results": [
+        "Teste anti-vazamento cobre quatro portas: a trilha, a mensagem de validação, as respostas negativas (422 e 409) e o dump cru de propriedades.",
+        "Nem o conteúdo nem os NOMES das colunas sensíveis aparecem no dump.",
+        "Contraprova executada: trocar a escrita por query builder derruba o teste de auditoria — a premissa é travada por teste, não por inspeção."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA12",
+      "title": "Cancelar com motivo, sem excluir",
+      "status": "auto",
+      "gherkin": "Dado um encaminhamento registrado\nQuando eu cancelá-lo com motivo\nEntão ele permanece no prontuário, marcado como cancelado",
+      "steps_html": "Cancelamento por <code>status</code>, nunca soft delete. A rota DELETE mapeia para cancelar.",
+      "results": [
+        "O registro permanece visível com badge 'Cancelado', motivo e autor.",
+        "Cancelado é terminal: a edição responde 409.",
+        "A tela não oferece as ações num cancelado — as cinco (Corrigir, Cancelar, Emitir, Retorno, Desfecho) ficam ausentes, com o motivo da inércia visível. O 409 é rede de segurança para corrida, não o mecanismo principal."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA12b",
+      "title": "O cancelamento também avisa sobre a remessa",
+      "status": "auto",
+      "gherkin": "Dado que cancelo encaminhamento de mês já remetido\nQuando o cancelamento é concluído\nEntão recebo o mesmo aviso do registro",
+      "steps_html": "Se apenas o registro avisasse, cancelar em mês já remetido seria silencioso — que é o caso mais grave, porque altera número já declarado ao Tribunal.",
+      "results": [
+        "Teste dedicado assere o aviso na resposta do DELETE."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA13",
+      "title": "Profissional não registra em família de outra unidade",
+      "status": "auto",
+      "gherkin": "Dado que a família não é da minha unidade de lotação\nQuando eu tentar registrar\nEntão a ação é recusada",
+      "steps_html": "Reusa a infraestrutura de elegibilidade da fase F1 (lotação vigente na data).",
+      "results": [
+        "A negativa não nomeia a unidade de destino, evitando vazamento indireto.",
+        "Cross-tenant responde 404 com corpo idêntico ao de uuid inexistente."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA14",
+      "status": "auto",
+      "title": "Isolamento entre municípios",
+      "gherkin": "Dado que sou usuário do município A\nQuando eu registrar ou consultar encaminhamentos\nEntão alcanço somente famílias e unidades do município A.",
+      "steps_html": "Coberto por duas classes de teste dedicadas ao isolamento, presentes no apêndice: <code>ReferralIsolationTest</code> e <code>ReferralCounterReferenceIsolationTest</code>.",
+      "results": [
+        "<code>✓ it answers 404 for a family of ANOTHER tenant with the SAME body as a nonexistent uuid</code> — a resposta não funciona como oráculo de existência: não dá para descobrir que a família existe em outro município.",
+        "<code>✓ it answers 404 when the referral belongs to ANOTHER family — scoped by family, not only by tenant</code>.",
+        "<code>✓ it scopes referrals by tenant through the BelongsToTenant global scope</code> — o corte é do Global Scope no Model, não de um filtro que alguém possa esquecer na query.",
+        "<code>✓ it lists pending referrals of the OWN tenant only — the other municipality never appears</code>."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA15",
+      "title": "Cancelado continua no histórico",
+      "status": "nav",
+      "gherkin": "Dado um encaminhamento cancelado\nQuando eu consultar o histórico\nEntão ele continua listado, marcado como cancelado",
+      "steps_html": "Consequência do cancelamento por <code>status</code> em vez de soft delete.",
+      "results": [
+        "A listagem não filtra cancelados; a linha permanece com o badge e, expandida, mostra motivo e autor do cancelamento."
+      ],
+      "images": [
+        "screenshots/ca01-encaminhamento-registrado.png"
+      ]
+    },
+    {
+      "id": "CA16",
+      "title": "Correção que remove a pessoa de código que a exige é recusada",
+      "status": "auto",
+      "gherkin": "Dado que corrijo o código para um que exige pessoa\nQuando não houver pessoa identificada\nEntão a correção é recusada",
+      "steps_html": "A RN05 é avaliada no <code>withValidator</code>, com fallback para o código persistido.",
+      "results": [
+        "Coberto por teste de feature.",
+        "No front, a pessoa persistida que saiu da composição vigente é injetada no seletor — sem isso o campo apareceria vazio com valor preenchido e o salvamento levaria 422 sobre um campo em branco."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA17",
+      "title": "Família sem unidade de referência não registra",
+      "status": "auto",
+      "gherkin": "Dado que a família não tem unidade de referência\nQuando eu abrir a aba\nEntão a ação não é oferecida, com orientação",
+      "steps_html": "Regra herdada da fase F1 (D05).",
+      "results": [
+        "O botão fica ausente e a tela orienta abrir o prontuário primeiro.",
+        "No backend, 422 com código próprio."
+      ],
+      "images": []
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Pest 4, --filter=Referral) — 152 testes, 880 asserções, todos verdes",
+    "file": "pest-referral.txt"
+  },
+  "notes": [
+    {
+      "title": "Complemento de 04/09/2026 — apêndice completo e numeração alinhada ao chamado",
+      "html": "A versão original deste dossiê trazia dois problemas de empacotamento, nenhum deles de implementação. Primeiro, o apêndice guardava apenas o trecho final da execução — as duas classes de isolamento — embora dez critérios se apoiassem em testes que não apareciam ali; a suíte foi reexecutada por inteiro e o apêndice agora traz os 152 testes. Segundo, a numeração seguia a especificação técnica e não a do chamado, de modo que CA04, CA08 e CA14 do chamado caíam sobre outros assuntos. As entradas realocadas passaram a CA01b, CA07b e CA11b, indicando a qual critério do chamado cada uma pertence, e os três critérios foram escritos com a sua própria evidência. Nenhum resultado anterior foi alterado — apenas reorganizado para que a leitura acompanhe o chamado item a item."
+    }
+  ]
+}

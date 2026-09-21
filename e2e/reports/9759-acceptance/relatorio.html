@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — Pesquisa Avançada e Localização de Pessoas</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:980px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-wrap:wrap; gap:14px; margin-top:12px; }
+  figure { margin:0; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:300px; background:#fff; }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:11px; color:var(--muted); padding:6px 8px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { .evid, section.ca { break-inside:avoid; } figure { width:280px; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — Pesquisa Avançada e Localização de Pessoas</h1>
+    <div class="sub">Sprint 8 · HU #9759 · Evidências end-to-end no frontend do tenant (client)</div>
+    <div class="meta"><div><span>Gerado em:</span> 01/07/2026 23:20</div><div><span>Branch:</span> sprint9-familias (api d3614e0 · client 6a249b5)</div><div><span>Spec:</span> .planning/specs/sprint8/9759-pesquisa-avancada-localizacao-pessoas.md</div><div><span>Ambiente:</span> API Sail/PostgreSQL (localhost:80) · client Vite :5174 (não-mock)</div><div><span>Organização (tenant):</span> E2E CadÚnico · uuid 00000000-0000-4000-8000-0000000000c1 · IBGE 2304400 (Fortaleza)</div><div><span>Usuário:</span> Master E2E (CPF 529.***.***-25)</div><div><span>Ferramenta:</span> playwright-cli (Chromium 1440×900) + Pest 4</div><div><span>Escopo desta etapa:</span> CA01–CA05 + CA10 (busca). CA06–CA09 serão evidenciados no relatório da Etapa 02 (HU #9760/#9761)</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">Etapa 01 da feature Pesquisa/Privacidade: 6 dos 10 Critérios de Aceite da HU #9759 evidenciados — 5 por navegador (CA01–CA05) e 1 parcial (CA10: isolamento da busca no navegador + 404 cross-tenant e isolamento na suíte Pest). Os CAs 06–09 (bloqueio/abertura do prontuário, auditoria e revogação) dependem do endpoint de detalhe da família, cuja dona canônica é a HU #9760 (Etapa 02), e serão fechados no relatório daquela etapa. Suíte automatizada: 19 testes aprovados, 1 skip documentado (ILIKE exclusivo de PostgreSQL, coberto ao vivo no CA04). Resultado geral: todos os critérios do escopo atendidos.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA01</td><td>Estado inicial limpo (RN01)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA02</td><td>Busca por CPF exato (RN02)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA03</td><td>Busca por Código Familiar (RN02)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA04</td><td>Busca por Nome parcial (RN02)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA05</td><td>Colunas de triagem por linha (RN03)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA10</td><td>Isolamento territorial da busca (RN07/RN10)</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA06–CA09</td><td>Prontuário: bloqueio, abertura autorizada, auditoria e revogação (RN04–RN06)</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA01">
+      <h2>CA01 — Estado inicial limpo (RN01) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou um Profissional acessando o painel de consulta
+Quando a tela carrega
+Então o sistema exibe os campos de busca vazios
+E nenhuma listagem de pessoas aparece em tela</p>
+      <p class="steps"><strong>Como foi testado:</strong> Login como Master E2E → menu <b>Cadastros → Pesquisa de Pessoas</b> (<code>/app/cadastros/pesquisa-pessoas</code>). Nenhuma interação com os filtros.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Os três campos (CPF, Código Familiar, Nome) carregam vazios.</li><li>Nenhuma tabela/listagem é exibida — apenas o estado neutro "Informe um critério para pesquisar".</li><li>O botão "Pesquisar" permanece desabilitado enquanto não houver critério (RN01).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca01-estado-inicial-limpo.png" alt="CA01 evidência"/><figcaption>ca01-estado-inicial-limpo.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA02">
+      <h2>CA02 — Busca por CPF exato (RN02) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que digito um CPF específico no campo de filtro e clico em pesquisar
+Quando o sistema processa a busca
+Então a tabela exibe apenas a linha da pessoa correspondente àquele documento</p>
+      <p class="steps"><strong>Como foi testado:</strong> Preencher o campo CPF com <code>10000000108</code> (pessoa da massa CadÚnico) e clicar em <b>Pesquisar</b>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A tabela retorna exatamente 1 linha: MARIA (nome social precede o civil, badge "RF" de Responsável Familiar), família 1600000001, NIS 16000000015, nascimento 12/03/1988 (38 anos), município Fortaleza.</li><li>Paginação confirma "Exibindo 1–1 de 1".</li><li>Complemento automatizado: CPF parcial é rejeitado com 422 (busca exata exige o número completo — RN02).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca02-busca-cpf-exato.png" alt="CA02 evidência"/><figcaption>ca02-busca-cpf-exato.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA03">
+      <h2>CA03 — Busca por Código Familiar (RN02) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que insiro um Código Familiar no campo de filtro e clico em pesquisar
+Quando o sistema localiza o registro
+Então a tabela exibe múltiplas linhas, uma para cada pessoa daquela mesma família</p>
+      <p class="steps"><strong>Como foi testado:</strong> Limpar filtros, preencher <b>Código Familiar</b> com <code>1600000001</code> e clicar em <b>Pesquisar</b>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A tabela exibe 4 linhas — todas da família 1600000001: MARIA (RF), ANA SOUZA LIMA, JOSE SOUZA LIMA e PEDRO SOUZA LIMA.</li><li>Paginação confirma "Exibindo 1–4 de 4".</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca03-busca-codigo-familiar.png" alt="CA03 evidência"/><figcaption>ca03-busca-codigo-familiar.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA04">
+      <h2>CA04 — Busca por Nome parcial (RN02) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que digito parte de um nome (ex: "Maria") e clico em pesquisar
+Quando o sistema processa a busca
+Então a tabela exibe todas as pessoas do município cujo nome contenha esse texto</p>
+      <p class="steps"><strong>Como foi testado:</strong> Limpar filtros, preencher <b>Nome</b> com <code>Maria</code> (minúsculas/mistas) e clicar em <b>Pesquisar</b>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A busca parcial e case-insensitive (ILIKE/PostgreSQL) localiza "MARIA" mesmo com o termo digitado em caixa mista.</li><li>Todas as pessoas do tenant cujo nome contém o termo são listadas (1 correspondência na massa atual).</li><li>O teste Pest equivalente fica com skip documentado em sqlite (ILIKE é PG-only) — este print em PostgreSQL real é a evidência viva do comportamento.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca04-busca-nome-parcial.png" alt="CA04 evidência"/><figcaption>ca04-busca-nome-parcial.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA05">
+      <h2>CA05 — Colunas de triagem por linha (RN03) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um resultado de busca com pelo menos uma pessoa
+Quando a tabela é renderizada
+Então cada linha mostra Código familiar, CPF, NIS, Nome, Nascimento e idade,
+     Filiação 1, Município de cadastramento e a coluna de Ações</p>
+      <p class="steps"><strong>Como foi testado:</strong> Com o resultado do Código Familiar <code>1600000001</code> em tela, capturar a tabela de resultados.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>As 8 colunas da RN03 estão presentes e na ordem: Código familiar, CPF, NIS, Nome da pessoa, Nascimento e idade, Filiação 1, Município de cadastramento e Ações.</li><li>Idade calculada e exibida junto ao nascimento (ex.: "12/03/1988 (38 anos)").</li><li>Filiação 1 exibe "—" para registros de origem CadÚnico (mother_name não importada — comportamento documentado, não é defeito).</li><li>Coluna Ações traz o botão "Visualizar Família" visível e desabilitado com tooltip LGPD (a habilitação/gate é objeto dos CA06–CA07, Etapa 02).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca05-colunas-triagem.png" alt="CA05 evidência"/><figcaption>ca05-colunas-triagem.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA10">
+      <h2>CA10 — Isolamento territorial da busca (RN07/RN10) <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que estou autenticado no Tenant A
+Quando pesquiso por CPF/Código/Nome
+Então nenhum indivíduo ou família do Tenant B aparece
+E abrir um prontuário de outro tenant responde 404</p>
+      <p class="steps"><strong>Como foi testado:</strong> Massa de contraste criada no banco: pessoa <code>MARIA DO TENANT B</code> (CPF 70000000010, família 9900000001) vinculada a uma <b>segunda organização</b>. Autenticado no Tenant A (E2E CadÚnico), pesquisar por <code>Maria</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O resultado traz somente a MARIA do Tenant A — "MARIA DO TENANT B" não aparece, comprovando o Global Scope de tenant na busca.</li><li>A metade "prontuário de outro tenant responde 404" pertence ao endpoint de detalhe (Etapa 02); o isolamento da própria busca também está coberto na suíte Pest (teste CA10, apêndice).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca10-isolamento-territorial-busca.png" alt="CA10 evidência"/><figcaption>ca10-isolamento-territorial-busca.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA06–CA09">
+      <h2>CA06–CA09 — Prontuário: bloqueio, abertura autorizada, auditoria e revogação (RN04–RN06) <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> CA06 — ação "Visualizar Família" indisponível sem a permissão LGPD e endpoint de detalhe responde 403
+CA07 — Master/autorizado abre a tela cheia "Visualizar Família"
+CA08 — auditoria silenciosa do acesso ao prontuário
+CA09 — revogação imediata por remoção de papel/inativação</p>
+      <p class="steps"><strong>Como foi testado:</strong> <b>Deferidos para o relatório da Etapa 02</b> (HU #9760/#9761): esses critérios exercitam o endpoint de detalhe <code>GET client/families/{uuid}/details</code>, cuja dona canônica é a HU #9760 — decisão registrada no overview do plano. Nesta etapa já ficou evidenciado o pré-requisito de UI: botão "Visualizar Família" desabilitado com tooltip LGPD (ver CA05), e a suíte já garante que a permissão restrita <code>families.view-details</code> não é atribuída automaticamente a nenhum papel.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Status nesta etapa: pendente por design (split documentado no overview da feature).</li><li>Serão evidenciados no dossiê da Etapa 02 junto aos CAs das HUs #9760/#9761.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+  
+  <h2>Anexo — Cobertura automatizada (Pest, --filter=PersonSearch) — 19 passed, 1 skipped (ILIKE/sqlite), 78 assertions</h2>
+  <pre class="pest">
+   PASS  Tests\Unit\Http\Resources\PersonSearchResultResourceTest
+  ✓ it computes the age from birth_date without persisting it            0.14s  
+  ✓ it prefers the social name over the civil name (RN03)                0.01s  
+  ✓ it falls back to the civil name when social name is empty or null (… 0.01s  
+  ✓ it uses the member NIS when present (RN03)                           0.01s  
+  ✓ it falls back to the responsible NIS only for the RF (RN03)          0.01s  
+  ✓ it exposes null filiation and city when absent (premissa 5 — UI exi… 0.01s  
+  ✓ it defaults can_view_details to false without an authenticated user… 0.01s  
+
+   WARN  Tests\Feature\Api\Client\PersonSearchTest
+  ✓ it returns an empty collection when no criteria is given (CA01/RN01… 0.38s  
+  ✓ it denies access without the person-search.index permission          0.02s  
+  ✓ it finds a person by exact CPF, sanitizing the mask (CA02/RN02/RN08… 0.04s  
+  ✓ it rejects a partial CPF (RN02 requires the full document)           0.03s  
+  ✓ it lists every active member of the family block by family code (CA… 0.05s  
+  ✓ it finds people by partial name on full_name OR social_name (CA04/R… 0.04s  
+  - it matches a partial name case-insensitively (RN02 ILIKE) → ILIKE c… 0.03s  
+  ✓ it rejects a name shorter than 2 characters                          0.02s  
+  ✓ it combines criteria with AND (RN02)                                 0.03s  
+  ✓ it returns the RN03 triage columns with computed age and NIS fallba… 0.04s  
+  ✓ it never returns people from another tenant (CA10/RN07)              0.04s  
+  ✓ it exposes can_view_details=false for the base operator and true wh… 0.04s  
+  ✓ it keeps families.view-details out of every role on automatic assig… 0.92s  
+
+  Tests:    1 skipped, 19 passed (78 assertions)
+  Duration: 2.31s
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

@@ -1,0 +1,16 @@
+<!-- HU #10373 — CA03d/D08 — existem "099", "EST" e "077" no cadastro de apoio global, fora da Tabela 36. Nenhuma está vinculada a uma unidade DESTE município (a "077" está vinculada em outro). A remessa sai normal -->
+<!-- Remessa GERADA de verdade via POST /api/client/siap-remittances; XML extraído do zip. -->
+<?xml version="1.0"?>
+<SIAP>
+    <Codigo>004821</Codigo>
+    <Exercicio>2026</Exercicio>
+    <Mes>07</Mes>
+    <EstruturaUnidadeSocial>
+        <NumeroMDS>3960928166039</NumeroMDS>
+        <Estrutura>1</Estrutura>
+    </EstruturaUnidadeSocial>
+    <EstruturaUnidadeSocial>
+        <NumeroMDS>3960928166039</NumeroMDS>
+        <Estrutura>17</Estrutura>
+    </EstruturaUnidadeSocial>
+</SIAP>

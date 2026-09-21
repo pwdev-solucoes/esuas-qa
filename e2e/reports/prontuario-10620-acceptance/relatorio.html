@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — Composição Familiar Editável</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  section.note { border:1px solid var(--line); border-left:4px solid #b06a00; border-radius:6px; padding:10px 14px; margin:10px 0; background:#fffdf7; font-size:13px; }
+  section.note h3 { margin:0 0 6px; font-size:13.5px; color:#8a5200; }
+  section.note p { margin:6px 0; }
+  section.note ul { margin:6px 0 6px 18px; padding:0; }
+  section.note pre { background:var(--bg); border:1px solid var(--line); border-radius:4px; padding:8px; overflow-x:auto; font-size:11px; white-space:pre-wrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — Composição Familiar Editável</h1>
+    <div class="sub">Épico Prontuário SUAS F0 · HU #10620 · 11 critérios · evidências dirigidas no client</div>
+    <div class="meta"><div><span>Gerado em:</span> 27/08/2026</div><div><span>História:</span> #10620 — Composição familiar editável</div><div><span>Spec:</span> .planning/specs/10620-composicao-familiar-editavel.md</div><div><span>Branch:</span> prontuario (api, client, admin)</div><div><span>Ambiente:</span> API Laravel :8090 (esuas_app) · PostgreSQL esuas_e2e · client vite preview :4174</div><div><span>Organização (tenant):</span> E2E CadÚnico</div><div><span>Ferramenta:</span> playwright-cli (Chromium headless) + Pest 4</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">11 critérios de aceite, &lt;b&gt;todos os 11 evidenciados no navegador&lt;/b&gt;. Nenhum critério reprovado. A suíte da história fecha &lt;b&gt;31 testes / 183 asserções&lt;/b&gt;, incluindo o isolamento por tenant das duas tabelas novas. O ponto central da história foi confirmado em banco: o desvínculo &lt;b&gt;não apaga&lt;/b&gt; e o conflito de dupla vinculação responde com aviso &lt;b&gt;sem desvincular por conta própria&lt;/b&gt;. Esta é a segunda emissão do relatório: o CA11 foi reevidenciado após a revisão da regra de acesso da #10617, e o CA01 deixou de ser parcial depois que a mensagem enganosa da vinculação foi corrigida — ela mandava o profissional pedir ao Master uma permissão que ele já tinha. Permanece registrado um defeito de apresentação no painel de divergências. Detalhes em “Observações e ressalvas”.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA01</td><td>Incluir integrante</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA02</td><td>Desvincular com data e motivo</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA03</td><td>Desvínculo não apaga a pessoa</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA04</td><td>Pessoa já vinculada a outra família</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA05</td><td>Documentação civil a providenciar</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA06</td><td>Completar o nome da mãe pelo prontuário</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA07</td><td>Nome da mãe já preenchido não é sobrescrito</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA08</td><td>Perfil etário é calculado</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA09</td><td>Parentesco é sempre em relação à pessoa de referência</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA10</td><td>Divergência com a importação seguinte</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA11</td><td>Acesso restrito à unidade</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA01">
+      <h2>CA01 — Incluir integrante <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Operacional do Tenant com o add-on LGPD e o prontuário da família Silva está aberto
+Quando eu pesquisar uma pessoa já cadastrada, vinculá-la à família e informar o parentesco "filho"
+Então o integrante passa a constar da composição
+  E o perfil etário da família é recalculado
+  E a inclusão consta da trilha de auditoria, com meu nome e a data</p>
+      <p class="steps"><strong>Como foi testado:</strong> Aba <b>Composição Familiar</b> → <b>Incluir integrante</b> → pesquisa por CPF → escolha do parentesco. <b>Reexecutado após a correção da mensagem</b> descrita em “Observações e ressalvas”.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O diálogo pesquisa por CPF e alcança tanto o cadastro do município quanto o repositório global.</li><li>Quando a pessoa TEM vínculo ativo neste município, ela é apresentada com nome e nascimento sob o título “Pessoas encontradas neste município”, com as ações Selecionar e Abrir família — e é por esse caminho que a inclusão se completa.</li><li>O parentesco é exigido e vale sempre em relação à pessoa de referência (ver CA09).</li><li>Quando a pessoa NÃO tem vínculo neste município, o diálogo explica o caminho correto: “Pessoa de outro município é vinculada pelo fluxo de atendimento do balcão, com confirmação de identidade.” Esse fluxo é o da US-PRONT-06 e foi evidenciado no dossiê da HU #10660, onde a vinculação se completa com confirmação de identidade e os dados passam a ser visíveis no prontuário.</li><li>O comportamento é o previsto pela RN03 desta própria história, que declara que a pesquisa não alcança quem ainda não foi vinculado a nenhuma família do município e que esta HU depende da US-PRONT-06 para estender esse alcance.</li><li>A inclusão e o recálculo do perfil etário são cobertos pela suíte automatizada.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca01-mensagem-corrigida.png" alt="CA01 evidência"/><figcaption>ca01-mensagem-corrigida.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA02">
+      <h2>CA02 — Desvincular com data e motivo <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que a integrante Maria consta da composição da família Silva
+Quando eu desvinculá-la informando a data e o motivo "mudança para outra família"
+Então Maria deixa de constar da composição vigente
+  E o registro dela permanece no histórico da família, com a data e o motivo
+  E o perfil etário é recalculado</p>
+      <p class="steps"><strong>Como foi testado:</strong> <b>Desvincular</b> na linha do integrante → data do desvínculo + motivo <code>Mudança para outra família</code> → confirmar.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>DELETE /families/{uuid}/members/{member} → 200 OK.</li><li>O integrante deixa a composição vigente: o contador cai de 3 para 2.</li><li>O perfil etário é recalculado na hora: a faixa “15 a 17 anos” cai de 1 para 0 e o total de 3 para 2.</li><li>O registro passa ao histórico “Integrantes desvinculados”, com data (27/08/2026), motivo (“Mudança para outra família”) e autoria (“E2E Operador Prontuário”).</li><li>Em banco: unlinked_at, unlinked_reason_id e unlinked_by preenchidos.</li><li>O diálogo antecipa a regra ao profissional: “Desvincular não exclui a pessoa. O registro permanece no histórico desta família, com data e motivo, e a pessoa continua existindo e poderá integrar outra família.”</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca02-desvincular-data-motivo.png" alt="CA02 evidência"/><figcaption>ca02-desvincular-data-motivo.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA03">
+      <h2>CA03 — Desvínculo não apaga a pessoa <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que desvinculei Maria da família Silva
+Quando eu pesquisá-la no sistema
+Então ela continua existindo como pessoa
+  E pode ser vinculada a outra família</p>
+      <p class="steps"><strong>Como foi testado:</strong> Verificação do estado do vínculo e da pessoa em banco após o desvínculo do CA02.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O vínculo NÃO é apagado: status = 'unlinked' e &lt;b&gt;deleted_at = NULL&lt;/b&gt;. O verbo HTTP é DELETE, mas o efeito é desvincular, não excluir.</li><li>A pessoa continua existindo em persons, com deleted_at = NULL.</li><li>O histórico da família preserva o registro, como o próprio painel promete: “Ninguém é excluído da composição: quem sai permanece aqui, com a data e o motivo registrados.”</li><li>SOBRE A SEGUNDA METADE: “pode ser vinculada a outra família” se cumpre pelo fluxo de balcão da #10660, com confirmação de identidade — e não pelo diálogo “Incluir integrante”. É coerente com a RN12: sem vínculo ativo, a pessoa deixa de “pertencer ao município” e volta a exigir confirmação de identidade. Ver a ressalva sobre a mensagem exibida nesse caminho.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca03-historico-desvinculados.png" alt="CA03 evidência"/><figcaption>ca03-historico-desvinculados.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA04">
+      <h2>CA04 — Pessoa já vinculada a outra família <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que João consta como integrante da família Souza
+Quando eu tentar incluí-lo na família Silva
+Então o sistema avisa que ele já integra outra família do município
+  E exige que o desvínculo anterior seja registrado, com data e motivo, antes de concluir
+  E não desvincula por conta própria</p>
+      <p class="steps"><strong>Como foi testado:</strong> Pesquisa da pessoa que já integra outra família → <b>Selecionar</b> → <b>Incluir na composição</b>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>POST /families/{uuid}/members → 409 Conflict — a inclusão é recusada.</li><li>O sistema avisa com clareza: “A pessoa já integra outra família do município. Registre o desvínculo anterior, com data e motivo, antes de incluí-la aqui.”</li><li>E declara explicitamente que não age sozinho: “O sistema não desvincula por conta própria: quem conhece o caso é a equipe.”</li><li>O aviso identifica a família atual (nº do prontuário e pessoa de referência) e oferece o caminho direto “Abrir a família atual”.</li><li>Verificado em banco após a tentativa: o vínculo original permanece intacto (status = active, unlinked_at = NULL). Nada foi desvinculado automaticamente.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca04-ja-integra-outra-familia.png" alt="CA04 evidência"/><figcaption>ca04-ja-integra-outra-familia.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA05">
+      <h2>CA05 — Documentação civil a providenciar <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o integrante Pedro está sem certidão de nascimento e sem CPF
+Quando eu marcar essas duas documentações como a providenciar
+Então as marcações constam do prontuário junto ao integrante
+  E podem ser desmarcadas quando os documentos forem obtidos</p>
+      <p class="steps"><strong>Como foi testado:</strong> <b>Detalhes</b> do integrante → bloco <b>Documentação a providenciar</b> → marcar “Certidão de nascimento” e “CPF” → salvar; depois desmarcar “CPF” e salvar de novo.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>PUT /members/{member}/pending-documents → 200 OK.</li><li>As marcações constam junto ao integrante: a coluna “Documentação pendente” da linha passa a exibir 2.</li><li>Ao desmarcar um documento obtido, a contagem cai para 1 — as marcações são reversíveis, como o critério exige.</li><li>Desmarcar NÃO apaga: em banco, a linha desmarcada recebe resolved_at (27/08/2026 04:22:04) e mantém deleted_at = NULL. A que segue pendente fica com resolved_at = NULL.</li><li>A tela declara esse comportamento antes da ação: “Desmarcar registra a pendência como resolvida, sem apagar o histórico.”</li><li>As opções oferecidas são as do instrumento: certidão de nascimento, CPF, RG, título de eleitor e carteira de trabalho.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca05-documentacao-providenciar.png" alt="CA05 evidência"/><figcaption>ca05-documentacao-providenciar.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA06">
+      <h2>CA06 — Completar o nome da mãe pelo prontuário <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o integrante Pedro está sem o nome da mãe informado
+Quando eu informar o nome da mãe pelo prontuário
+Então o dado é gravado no cadastro da pessoa
+  E a alteração consta da trilha de auditoria, identificando que veio do prontuário</p>
+      <p class="steps"><strong>Como foi testado:</strong> <b>Detalhes</b> do integrante cujo cadastro está sem o nome da mãe → preenchimento do campo → <b>Salvar</b>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>PATCH /persons/{uuid}/mother-name → 200 OK — o dado é gravado no cadastro da PESSOA, não numa cópia do prontuário.</li><li>A trilha registra a mudança do dado: log “person”, description “updated”, mother_name null → o valor informado.</li><li>E registra a ORIGEM, que é o que o critério exige: log “person_global_access”, description &lt;code&gt;person.mother_name_filled_from_family_record&lt;/code&gt;, com properties {"source": "family_record", "family_id": 1, "user_id": …} — fica explícito que veio do prontuário, de qual família e por quem.</li><li>Assim que salvo, o campo alterna para somente leitura e passa a exibir o texto do CA07 — os dois critérios são dois estados do mesmo controle.</li><li>A tela explica a regra antes da ação: “O campo está vazio no cadastro da pessoa e pode ser completado pelo prontuário. A alteração fica registrada na trilha de auditoria.”</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca06-nome-da-mae.png" alt="CA06 evidência"/><figcaption>ca06-nome-da-mae.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA07">
+      <h2>CA07 — Nome da mãe já preenchido não é sobrescrito <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o integrante Ana já tem o nome da mãe informado no cadastro de pessoas
+Quando eu abrir a composição familiar
+Então o nome da mãe é apresentado
+  E não é oferecido para edição pelo prontuário</p>
+      <p class="steps"><strong>Como foi testado:</strong> <b>Detalhes</b> do integrante cujo cadastro JÁ tem o nome da mãe.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O nome da mãe é apresentado como texto.</li><li>Não há campo de edição nem botão de salvar para esse integrante — a edição não é oferecida.</li><li>A razão é declarada na tela: “Informado no cadastro de pessoas. O prontuário apresenta o dado e não o sobrescreve.”</li><li>Contraste na mesma tela: o integrante sem o dado recebe campo editável (CA06). A diferença é o estado do cadastro, não a permissão do usuário.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca05-ca06-detalhes-integrante.png" alt="CA07 evidência"/><figcaption>ca05-ca06-detalhes-integrante.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA08">
+      <h2>CA08 — Perfil etário é calculado <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que a família Silva tem duas crianças de 4 e 9 anos, um adolescente de 16 e dois adultos de 34 e 38
+Quando eu consultar o perfil etário
+Então consta uma pessoa de 0 a 6, uma de 7 a 14, uma de 15 a 17, duas de 30 a 59 e total de cinco
+  E nenhum desses números é digitável</p>
+      <p class="steps"><strong>Como foi testado:</strong> Bloco <b>Perfil etário da família</b>, no topo da aba de composição.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>As oito faixas do instrumento são apresentadas (0-6, 7-14, 15-17, 18-29, 30-59, 60-64, 65-69, 70+), com o total de integrantes e a data do cálculo.</li><li>O bloco declara a origem do número: “calculado a partir das datas de nascimento”.</li><li>&lt;b&gt;Nenhum número é digitável&lt;/b&gt;: verificação programática no bloco encontrou 0 campos de entrada (input, textarea, select ou contenteditable).</li><li>O cálculo responde à composição: ao desvincular um integrante de 16 anos (CA02), a faixa “15 a 17” caiu de 1 para 0 e o total de 3 para 2, sem qualquer ação adicional.</li><li>Caso de borda tratado à vista: “1 integrante(s) sem data de nascimento: fora das faixas, mas contados no total” — o total não mente quando falta o dado.</li><li>OBSERVAÇÃO: a composição da massa difere da do cenário escrito (que descreve 5 integrantes em faixas específicas). O que o critério exige — faixas calculadas e não digitáveis — está evidenciado.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca08-perfil-etario.png" alt="CA08 evidência"/><figcaption>ca08-perfil-etario.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA09">
+      <h2>CA09 — Parentesco é sempre em relação à pessoa de referência <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que estou incluindo a avó materna da pessoa de referência
+Quando eu escolher o parentesco
+Então as opções oferecidas são as onze do instrumento, sempre em relação à pessoa de referência
+  E "outro parente" é a opção aplicável neste caso</p>
+      <p class="steps"><strong>Como foi testado:</strong> Abertura do seletor de parentesco no diálogo de inclusão de integrante.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>São oferecidas exatamente &lt;b&gt;11 opções&lt;/b&gt;, conforme o instrumento: Cônjuge/companheiro(a), Enteado(a), Filho(a), Genro/Nora, Irmão/Irmã, Não parente (agregado), Neto(a)/Bisneto(a), Outro parente, Pai/Mãe, Responsável pela Unidade Familiar e Sogro(a).</li><li>A direção da relação fica provada pela própria lista: existe “Neto(a)/Bisneto(a)” e &lt;b&gt;não existe&lt;/b&gt; “Avô/Avó”. Só faz sentido se o parentesco for lido a partir da pessoa de referência.</li><li>Por consequência, a avó materna da pessoa de referência cai em &lt;b&gt;“Outro parente”&lt;/b&gt; — exatamente o que o critério afirma.</li><li>A tela reforça a leitura: “As opções são as do instrumento e valem sempre em relação à pessoa de referência da família.”</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca09-parentescos-instrumento.png" alt="CA09 evidência"/><figcaption>ca09-parentescos-instrumento.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA10">
+      <h2>CA10 — Divergência com a importação seguinte <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que registrei o desvínculo de Maria no prontuário
+  E que a remessa seguinte do CadÚnico ainda traz Maria como integrante da família Silva
+Quando a importação for processada
+Então Maria não é revinculada automaticamente
+  E a divergência é apresentada para a equipe resolver</p>
+      <p class="steps"><strong>Como foi testado:</strong> Aba de composição da família com divergência de importação aberta, no painel <b>Divergências com a importação</b>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A pessoa NÃO é revinculada: a composição vigente não a inclui, e o painel declara “Nada foi alterado automaticamente.”</li><li>A divergência é apresentada para a equipe resolver, classificada pelo tipo: “A remessa traz um integrante que a equipe desvinculou”, com a data de detecção.</li><li>O confronto é mostrado lado a lado — o que veio “Na remessa” contra o que está “No prontuário”.</li><li>A resolução é uma decisão humana e não mexe no dado: “Marcar como resolvida encerra a análise e não altera a composição. Se a decisão for trazer a pessoa de volta, inclua o integrante informando o parentesco.”</li><li>A suíte cobre a idempotência (“it does not stack the same divergence on every remittance”) e garante que o payload da divergência não vaza para o activity_log.</li><li>RESSALVA DE APRESENTAÇÃO: este painel exibe conteúdo técnico ao profissional — ver “Observações e ressalvas”.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca10-divergencia-importacao.png" alt="CA10 evidência"/><figcaption>ca10-divergencia-importacao.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA11">
+      <h2>CA11 — Acesso restrito à unidade <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Operacional lotado apenas no "CRAS Centro"
+Quando eu tentar editar a composição de uma família referenciada no "CREAS"
+Então o prontuário não é acessível a mim, conforme o corte de acesso vigente</p>
+      <p class="steps"><strong>Como foi testado:</strong> Como operador, acesso direto ao prontuário da família referenciada no <code>E2E CREAS</code>. <b>Reexecutado após a revisão da RN08 da #10617.</b></p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O prontuário NÃO é acessível — o resultado exigido pelo critério é atendido.</li><li>GET /families/{uuid}/details → &lt;b&gt;403 Forbidden&lt;/b&gt;, com “Acesso restrito” e o motivo declarado. Sem o prontuário não há composição a editar.</li><li>MUDANÇA EM RELAÇÃO À VERSÃO ANTERIOR DESTE RELATÓRIO: até 27/08/2026 este caso respondia 404. O critério não especifica o código — exige apenas que o prontuário não seja acessível —, e segue atendido.</li><li>A suíte de isolamento confirma o corte entre municípios: recusa a leitura da composição de família de outro município.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca11-creas-acesso-negado.png" alt="CA11 evidência"/><figcaption>ca11-creas-acesso-negado.png</figcaption></figure></div>
+    </section>
+  
+  <h2>Observações e ressalvas</h2>
+  <section class="note"><h3>Revisão da RN08 da #10617 — o CA11 foi reevidenciado</h3><p>Em 27/08/2026 a regra de acesso da HU #10617 foi revisada: a família referenciada em unidade fora da lotação do profissional deixou de ser tratada como registro inexistente (404) e passou a responder acesso negado (403), com o motivo declarado.</p><p>O CA11 desta história foi <b>reexecutado</b> após a mudança e segue atendido: o critério exige que o prontuário não seja acessível, sem especificar o código de retorno. A evidência anterior foi substituída pela tela atual de “Acesso restrito”. Nenhum outro critério desta história é afetado.</p></section><section class="note"><h3>Mensagem enganosa na vinculação — encontrada e CORRIGIDA durante esta validação</h3><p>Ao pesquisar, no diálogo “Incluir integrante”, uma pessoa que existe na plataforma mas não tem vínculo ativo neste município, a tela exibia: <i>“A vinculação exige a permissão de Visualização de Detalhes da Família. Solicite ao gestor Master da sua organização.”</i></p><p>O profissional usado nesta validação <b>já possui</b> essa permissão, e a API responde que a vinculação é possível. A recusa não vinha de permissão alguma: o diálogo desliga a vinculação de propósito, porque vincular pessoa de outro município é o fluxo de balcão da US-PRONT-06. O componente de resultado, porém, tinha uma única mensagem de recusa, escrita para o caso de falta de permissão — e era ela que aparecia, contradizendo a explicação correta exibida logo abaixo.</p><p><b>Correção aplicada:</b> o componente passou a distinguir <i>por que</i> a vinculação não é oferecida. Quando o motivo é falta de permissão, a mensagem orientando a procurar o Master permanece. Quando o motivo é roteamento de fluxo, o componente se cala e deixa o chamador explicar o caminho certo. Isso corrige os <b>dois</b> pontos de entrada onde o sintoma aparecia — a inclusão de integrante e a identificação do responsável no cadastro de família.</p><p><b>Verificação:</b> o diálogo passou a exibir apenas “Pessoa de outro município é vinculada pelo fluxo de atendimento do balcão, com confirmação de identidade”, sem nenhuma menção a permissão. Suíte do frontend: 1726 testes, todos verdes; lint limpo.</p></section><section class="note"><h3>O painel de divergências mostra conteúdo técnico ao profissional</h3><p>No painel <b>Divergências com a importação</b>, o confronto entre remessa e prontuário é renderizado como despejo do payload do backend (<code>ImportDivergencesPanel.vue:130-136</code>). Duas consequências visíveis na tela:</p><ul><li>Um rótulo aparece como <b>chave de tradução crua</b>: <code>families.composition.divergences.sides.import_id</code>. O dicionário só traduz as chaves <code>prontuario</code> e <code>remessa</code>, mas o <code>v-for</code> percorre TODAS as chaves do payload — qualquer chave nova vaza como caminho de i18n.</li><li>Os valores são exibidos com <code>JSON.stringify</code>: o profissional lê <code>{"status":"active"}</code> e <code>{"status":"unlinked"}</code> em vez de “Ativo” e “Desvinculado”.</li></ul><p>O comentário no código assume a escolha (“como o backend gravou”), o que é adequado a um painel de diagnóstico — mas o público desta tela é o profissional da assistência social. <b>Severidade média:</b> a mensagem essencial do CA10 (“nada foi alterado automaticamente”) chega íntegra, mas a evidência que sustenta a decisão da equipe está em formato de desenvolvedor, e um rótulo está visivelmente quebrado.</p></section><section class="note"><h3>O que o DELETE realmente faz — e por que isso importa</h3><p>Vale registrar para quem for auditar: a desvinculação usa o verbo <code>DELETE</code>, mas <b>não exclui nada</b>. Verificado em banco após a operação: <code>status = 'unlinked'</code>, <code>deleted_at = NULL</code>, e a pessoa intacta em <code>persons</code>.</p><p>Num sistema de política pública isso é a diferença entre perder e preservar o histórico de atendimento de uma família. O comportamento está correto; o alerta aqui é apenas para que a leitura do verbo HTTP não induza a conclusão oposta.</p></section><section class="note"><h3>Integridade da massa</h3><p>Os critérios exigiram desvincular um integrante (CA02), marcar e desmarcar documentação (CA05) e preencher o nome da mãe de uma pessoa (CA06). Todas as alterações foram revertidas ao final: o integrante voltou a <code>active</code> com os campos de desvínculo limpos, as pendências de documento foram removidas e o <code>mother_name</code> voltou a NULL. Estado confirmado: a família de evidência tem novamente 3 integrantes ativos.</p><p>Nota operacional: re-executar o <code>E2EProntuarioSeeder</code> <b>não</b> desfaz essas alterações — ele usa <code>updateOrCreate</code> e não remove registros extras nem restaura estados. A limpeza precisa ser explícita.</p></section>
+  
+  <h2>Anexo — Cobertura automatizada (Pest — FamilyComposition, PendingDocuments, ImportDivergences, MotherName, Isolation)</h2>
+  <pre class="pest">
+   PASS  Tests\Unit\Models\FamilyMemberTest
+  ✓ it has the base and snapshot fillable attributes                     0.37s  
+  ✓ it casts booleans, dates and the unlinked timestamp                  0.01s  
+  ✓ it defaults is_responsible to false and status to active             0.01s  
+  ✓ it uses tenant scope, soft deletes, HasUuid and LogsActivity         0.01s  
+  ✓ it relates to family, person, kinship type and snapshot lookups      0.01s  
+  ✓ it creates a member tied to the same tenant as its family            0.07s  
+  ✓ it enforces unique person per family and tenant                      0.01s  
+
+   PASS  Tests\Feature\Family\FamilyCompositionTest
+  ✓ it includes a member with the kinship, recalculates the age profile… 0.09s  
+  ✓ it unlinks a member with date and reason WITHOUT deleting anything…  0.05s  
+  ✓ it lets the unlinked person be linked to ANOTHER family (CA03)       0.05s  
+  ✓ it answers 409 and does NOT unlink on its own when the person is in… 0.04s  
+  ✓ it refuses to include someone already in THIS family with its own e… 0.04s  
+  ✓ it marks and unmarks the civil documentation to be provided (CA05/R… 0.05s  
+  ✓ it fills an EMPTY mother name from the family record and declares t… 0.04s  
+  ✓ it answers 422 for a mother name ALREADY filled and tells the scree… 0.04s  
+  ✓ it denies mother-name for a person OUTSIDE the tenant link (§12)     0.04s  
+  ✓ it denies mother-name when the person only links to a family OUTSID… 0.04s  
+  ✓ it calculates the age profile and never accepts it from the client…  0.05s  
+  ✓ it offers the eleven kinships of the instrument and reserves the re… 0.05s  
+  ✓ it denies editing the composition of a family referenced in ANOTHER… 0.05s  
+  ✓ it requires date AND reason to unlink, and a note when the reason i… 0.04s  
+  ✓ it refuses to unlink the reference person and an already unlinked m… 0.05s  
+  ✓ it NEVER leaks unlinked_reason_note into the activity_log (§14)      0.04s  
+  ✓ it corrects the kinship of an existing member without touching the…  0.04s  
+
+   PASS  Tests\Feature\Family\FamilyImportDivergenceTest
+  ✓ it does NOT relink an unlinked member and CREATES the divergence (C… 0.06s  
+  ✓ it does not stack the same divergence on every remittance (idempotê… 0.05s  
+  ✓ it NEVER leaks the divergence payload into the activity_log (§14)    0.05s  
+  ✓ it lists the open divergences of the family and resolves one (CA10)  0.06s  
+
+   PASS  Tests\Feature\TenantIsolation\FamilyCompositionIsolationTest
+  ✓ it applies BelongsToTenant to FamilyMemberPendingDocument            0.03s  
+  ✓ it applies BelongsToTenant to FamilyImportDivergence                 0.02s  
+  ✓ it refuses to read the composition of a family from ANOTHER municip… 0.02s  
+
+  Tests:    31 passed (183 assertions)
+  Duration: 1.99s
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

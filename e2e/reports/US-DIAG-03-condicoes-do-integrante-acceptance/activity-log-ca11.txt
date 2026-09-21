@@ -1,0 +1,38 @@
+Trilha de auditoria — log_name family_member_condition / family_member_pregnancy
+(US-DIAG-03 · CA11/D09/RN11 — autor, data e valores antes/depois)
+====================================================================================================
+
+NOTA TECNICA: no spatie/laravel-activitylog 5.0.0 os valores antes/depois
+ficam na coluna `attribute_changes`; `properties` guarda apenas o que e gravado
+manualmente (aqui, o `tenant_id` injetado pelo Model App\Models\Activity).
+
+activity #3157  log=family_member_condition  evento=created
+   sujeito: App\Models\FamilyMemberCondition #1
+   autor:   E2E Operador Prontuário (user #14)  em 2026-09-17 21:38:39
+   properties:        {"tenant_id":5}
+   attribute_changes: {"attributes":{"own_income":null,"is_literate":null,"schooling_level_id":2,"schooling_source":"derived_cadunico","schooling_confirmed_at":"2026-09-17T21:38:39.000000Z","school_situation_id":null,"has_serious_illness":null,"disability_type_id":null}}
+
+activity #3158  log=family_member_pregnancy  evento=created
+   sujeito: App\Models\FamilyMemberPregnancy #1
+   autor:   E2E Operador Prontuário (user #14)  em 2026-09-17 21:39:18
+   properties:        {"tenant_id":5}
+   attribute_changes: {"attributes":{"recorded_on":"2026-09-17"}}
+
+activity #3159  log=family_member_condition  evento=created
+   sujeito: App\Models\FamilyMemberCondition #2
+   autor:   E2E Operador Prontuário (user #14)  em 2026-09-17 21:41:09
+   properties:        {"tenant_id":5}
+   attribute_changes: {"attributes":{"own_income":"1200.00","is_literate":null,"schooling_level_id":4,"schooling_source":"manual","schooling_confirmed_at":"2026-09-17T21:41:09.000000Z","school_situation_id":3,"has_serious_illness":null,"disability_type_id":null}}
+
+activity #3160  log=family_member_condition  evento=updated
+   sujeito: App\Models\FamilyMemberCondition #2
+   autor:   E2E Operador Prontuário (user #14)  em 2026-09-17 21:42:02
+   properties:        {"tenant_id":5}
+   attribute_changes: {"attributes":{"is_literate":true,"schooling_confirmed_at":"2026-09-17T21:42:02.000000Z","has_serious_illness":false},"old":{"is_literate":null,"schooling_confirmed_at":"2026-09-17T21:41:09.000000Z","has_serious_illness":null}}
+
+activity #3161  log=family_member_condition  evento=updated
+   sujeito: App\Models\FamilyMemberCondition #1
+   autor:   E2E Operador Prontuário (user #14)  em 2026-09-17 21:43:09
+   properties:        {"tenant_id":5}
+   attribute_changes: {"attributes":{"schooling_level_id":3,"schooling_source":"manual","schooling_confirmed_at":"2026-09-17T21:43:09.000000Z"},"old":{"schooling_level_id":2,"schooling_source":"derived_cadunico","schooling_confirmed_at":"2026-09-17T21:38:39.000000Z"}}
+

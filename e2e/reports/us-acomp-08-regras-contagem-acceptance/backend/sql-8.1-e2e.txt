@@ -1,0 +1,42 @@
+# §8.1 — base E2E (esuas_e2e): NAO RODADA — BASE AUSENTE neste ciclo (2026-09-16 06:47)
+
+## Onde a base e2e vive (e2e/scripts/start-stack.sh):
+75:  echo "DB_DATABASE=${DB_DATABASE:-esuas_e2e}"
+77:  echo "DB_PASSWORD=${DB_PASSWORD:-esuas_e2e_pwd}"
+98:echo "▶ Subindo docker compose (staging + e2e override)..."
+101:docker compose \
+114:docker compose -f docker-compose-staging.yml exec -T app php artisan key:generate --force || true
+117:docker compose -f docker-compose-staging.yml exec -T app \
+
+## Bases existentes no Postgres da stack Sail no ar (api-pgsql-1):
+esuas
+postgres
+sigsaude_scratch
+template0
+template1
+template_postgis
+testing
+
+## Containers no ar (nenhum da stack e2e):
+api-laravel.cron-1
+api-laravel.worker-1
+api-laravel.test-1
+api-redis-1
+api-pgsql-1
+api-mailpit-1
+api-minio-1
+esus-monitor-app
+esus-monitor-postgres
+esus-monitor-redis
+
+## Decisao (plano §6 premissa 8): 'Se a base e2e nao existir no momento, registrar nao rodada (base ausente) — nao re-semear so para isso.'
+## Observacao (plano premissa 13): E2ESeeder/E2EProntuarioSeeder nao criam acompanhamentos; so os specs Playwright registram via HTTP, e a API recusa PAEFI em CRAS (422).
+## SQL a rodar quando a stack e2e subir (identico ao de sql-8.1-dev.txt):
+SELECT f.tenant_id, su.id AS social_unit_id, s.code AS service_code, COUNT(*) AS qty
+FROM family_follow_ups f
+JOIN social_units su       ON su.id = f.social_unit_id
+JOIN follow_up_services s  ON s.id  = f.follow_up_service_id
+WHERE f.deleted_at IS NULL
+  AND f.status <> 'cancelled'
+  AND s.social_unit_type_id <> su.type_id
+GROUP BY f.tenant_id, su.id, s.code;

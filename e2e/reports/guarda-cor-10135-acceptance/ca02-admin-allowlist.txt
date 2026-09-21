@@ -1,0 +1,18 @@
+export const ALLOWLIST = [
+  {
+    file: 'src/components/map/MapPointPicker.vue',
+    reason:
+      'Marcador SVG do OpenLayers: a lib de mapa exige um data-URI de SVG com cor concreta ' +
+      '(o `fill` da marca vem de brand-tokens.ts; só o branco do traço do ícone é literal). ' +
+      'Consumidor imperativo sem alternativa via classe/token CSS.',
+  },
+  {
+    file: 'src/modules/geo-layers/components/GeoLayerPreviewMap.vue',
+    reason:
+      '`toRgba(hex, alpha)` converte a cor configurada na camada (ou de brand-tokens.ts) para ' +
+      'o `rgba()` exigido pelo estilo de layer/heatmap do OpenLayers — não é cor solta, é ' +
+      'transformação do token para o formato que a lib pede.',
+  },
+]
+
+// --- varredura de arquivos ------------------------------------------------

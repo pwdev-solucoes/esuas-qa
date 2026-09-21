@@ -1,0 +1,234 @@
+{
+  "meta": {
+    "title": "Critérios de Aceite — HU #10710",
+    "subtitle": "Consultar o histórico de atendimentos da família",
+    "rows": [
+      [
+        "Gerado em",
+        "01/09/2026 22:21 · complementado em 04/09/2026 14:40"
+      ],
+      [
+        "Épico",
+        "Prontuário SUAS — fase F1 (Atendimento)"
+      ],
+      [
+        "Branch",
+        "feature/10709-atendimento (não pushada)"
+      ],
+      [
+        "Commits",
+        "api 817520f · client dd152a6 · meta 000cca2"
+      ],
+      [
+        "Ambiente",
+        "API Sail :80 · Client (Vite) :5174 · banco esuas com E2EProntuarioSeeder"
+      ],
+      [
+        "Perfis",
+        "Operacional c/ add-on LGPD (CRAS Centro) e Master — guard client"
+      ],
+      [
+        "Ferramenta",
+        "playwright-cli (Chromium) + Pest 4"
+      ]
+    ]
+  },
+  "summary": "10 critérios, mais 3 derivados na spec. 7 evidenciados no navegador dirigindo o Painel do Tenant, 3 de forma combinada e 3 pela suíte. Esta HU é somente leitura: nenhum atendimento é criado, corrigido ou cancelado por ela. Complemento de 04/09/2026: o detalhe do atendimento (CA03) e os filtros de período e tipo (CA05 e CA06), que antes tinham prova apenas de contrato e de componente, passaram a ser evidenciados na tela.",
+  "cas": [
+    {
+      "id": "CA01",
+      "title": "Histórico em ordem cronológica",
+      "status": "nav",
+      "gherkin": "Dado que a família tem atendimentos registrados\nQuando eu abrir o histórico de atendimentos no prontuário\nEntão vejo os atendimentos do mais recente para o mais antigo pela data do atendimento\nE cada linha apresenta data, tipo, pessoa atendida quando houver, responsável técnico e unidade",
+      "steps_html": "Aba <b>Atendimentos</b> no prontuário da família <code>…f0001</code>.",
+      "results": [
+        "A tabela lista do mais recente ao mais antigo <b>pela data do atendimento</b>.",
+        "Cada linha traz data, tipo, pessoa (ou “Sem pessoa identificada”), responsável e unidade.",
+        "É <b>tabela</b>, não linha do tempo — o molde do histórico da composição familiar."
+      ],
+      "images": [
+        "screenshots/ca01-ca02-ordem-cronologica.png"
+      ]
+    },
+    {
+      "id": "CA02",
+      "title": "Lançamento retroativo aparece na posição cronológica",
+      "status": "nav",
+      "gherkin": "Dado que um atendimento de 05/07/2026 foi lançado em 20/08/2026\nQuando eu consultar o histórico\nEntão ele aparece entre os atendimentos de julho, não no topo da lista",
+      "steps_html": "O atendimento de <b>20/07/2026</b> foi lançado hoje, <b>01/09/2026</b>, depois do de 01/09.",
+      "results": [
+        "A ordem exibida é <code>01/09/2026</code> e depois <code>20/07/2026</code>: o retroativo aparece <b>abaixo</b>, na posição cronológica.",
+        "A ordenação é por <code>attended_on</code>, não por data de lançamento."
+      ],
+      "images": [
+        "screenshots/ca01-ca02-ordem-cronologica.png"
+      ]
+    },
+    {
+      "id": "CA03",
+      "title": "Abrir o atendimento mostra a descrição",
+      "status": "parc",
+      "gherkin": "Dado que estou no histórico da família\nQuando eu abrir um atendimento\nEntão vejo a descrição sumária registrada\nE o autor do registro, além do responsável técnico",
+      "steps_html": "Complemento de 04/09/2026, dirigido no Painel do Tenant como <b>Operacional com add-on LGPD</b>: na aba <b>Atendimentos</b> do prontuário, abrir o atendimento de 01/09/2026 pelo botão de detalhes da linha. Complementado por teste de componente do painel expandido.",
+      "results": [
+        "O painel expandido exibe o bloco <b>DESCRIÇÃO SUMÁRIA</b> com o texto registrado: “Atendimento individualizado na unidade. Familia orientada sobre atualizacao cadastral e encaminhamento para o CRAS de referencia.”",
+        "Logo abaixo consta o <b>autor do registro</b> e a data do lançamento: “Registrado por E2E Operador Prontuário em 01/09/2026”.",
+        "O <b>responsável técnico</b> permanece visível na própria linha do histórico, ao lado da unidade — os três dados que o critério pede aparecem juntos.",
+        "Expandir não dispara requisição: a descrição já vem no payload da listagem. O corte de acesso foi decidido na abertura do prontuário; esconder atrás de um segundo endpoint não protegeria nada."
+      ],
+      "images": [
+        "screenshots/ca03-detalhe-descricao-autor.png"
+      ]
+    },
+    {
+      "id": "CA04",
+      "title": "Atendimento cancelado permanece visível",
+      "status": "nav",
+      "gherkin": "Dado que um atendimento da família foi cancelado\nQuando eu consultar o histórico\nEntão ele aparece marcado como cancelado, com o motivo e o autor do cancelamento",
+      "steps_html": "Histórico após o cancelamento do atendimento de 20/07/2026.",
+      "results": [
+        "A linha continua na tabela, com marcação de <b>cancelado</b>.",
+        "No banco, <code>deleted_at = NULL</code> — o registro não foi apagado, apenas mudou de estado.",
+        "Some da apuração, não do histórico."
+      ],
+      "images": [
+        "screenshots/ca04-cancelado-visivel.png"
+      ]
+    },
+    {
+      "id": "CA05",
+      "title": "Filtrar por período",
+      "status": "parc",
+      "gherkin": "Dado que a família tem atendimentos de 2025 e de 2026\nQuando eu filtrar pelo período de agosto de 2026\nEntão vejo apenas os atendimentos daquele mês",
+      "steps_html": "Complemento de 04/09/2026: no painel <b>Filtros</b> da aba Atendimentos, informar o período de 01/09/2026 a 30/09/2026 e observar a lista e o contador. Complementado pela suíte (<code>attended_on_from</code>/<code>to</code>) e por teste de componente.",
+      "results": [
+        "Com o período de setembro aplicado, o contador do cabeçalho cai de <b>(2)</b> para <b>(1)</b> e resta apenas o atendimento de 01/09/2026 — o de 20/07/2026 sai da lista.",
+        "Ao limpar o período, a lista volta a <b>(2)</b> — o filtro não é destrutivo.",
+        "O período é intervalo de datas, com dois campos de data — não seletor exercício+mês.",
+        "Período invertido é barrado na tela, sem disparar consulta inválida em laço, e o backend recusa (<code>it rejects an inverted period</code>)."
+      ],
+      "images": [
+        "screenshots/ca05-filtro-periodo.png"
+      ]
+    },
+    {
+      "id": "CA06",
+      "title": "Filtrar por tipo",
+      "status": "parc",
+      "gherkin": "Dado que quero saber quantas visitas domiciliares a família recebeu\nQuando eu filtrar pelo tipo \"Visita Domiciliar\"\nEntão vejo apenas os atendimentos desse tipo",
+      "steps_html": "Complemento de 04/09/2026: no painel <b>Filtros</b>, escolher o tipo <b>Visita domiciliar</b> e observar a lista e o contador. Complementado pela suíte e por teste de componente.",
+      "results": [
+        "Com o tipo “Visita domiciliar” aplicado, o contador vai para <b>(1)</b> e resta apenas o atendimento de 20/07/2026 desse tipo.",
+        "As opções do filtro são a união dos tipos ativos com os presentes no histórico — um tipo inativado depois continua filtrável (CA06b).",
+        "O filtro de responsável é derivado apenas do histórico carregado — limitação documentada no componente."
+      ],
+      "images": [
+        "screenshots/ca06-filtro-tipo.png"
+      ]
+    },
+    {
+      "id": "CA07",
+      "title": "Atendimentos de unidades diferentes",
+      "status": "auto",
+      "gherkin": "Dado que a família foi atendida pelo \"CRAS Centro\" e, em outro período, pelo \"CREAS\"\nQuando eu consultar o histórico\nEntão vejo os atendimentos das duas unidades\nE cada linha identifica a unidade que realizou o atendimento",
+      "steps_html": "Coberto pela suíte: a listagem <b>não</b> recorta por unidade do usuário.",
+      "results": [
+        "O corte de acesso é <b>do prontuário</b>, decidido uma vez na abertura — não por linha.",
+        "Filtrar por unidade dentro da lista produziria histórico mutilado, pior que negar o acesso inteiro."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA08",
+      "title": "Família sem atendimento registrado",
+      "status": "nav",
+      "gherkin": "Dado que o prontuário da família foi aberto e nenhum atendimento foi registrado\nQuando eu consultar o histórico\nEntão a tela informa que ainda não há atendimentos registrados\nE oferece a ação de registrar o primeiro",
+      "steps_html": "Aba Atendimentos antes de qualquer registro.",
+      "results": [
+        "<i>“Ainda não há atendimentos registrados”</i> com a ação <b>Registrar o primeiro atendimento</b>.",
+        "É estado distinto de “nenhum resultado para o filtro”, que oferece limpar o filtro."
+      ],
+      "images": [
+        "screenshots/ca08-sem-atendimentos.png"
+      ]
+    },
+    {
+      "id": "CA09",
+      "title": "Negativa por unidade declara o motivo",
+      "status": "nav",
+      "gherkin": "Dado que sou Operacional do Tenant lotado apenas no \"CRAS Centro\"\nE que a família é referenciada no \"CREAS\"\nQuando eu tentar consultar o histórico dela\nEntão o histórico não é apresentado\nE a tela informa que a família é referenciada em unidade onde não tenho lotação vigente, orientando procurar o gestor Master",
+      "steps_html": "Acesso ao prontuário da família <code>…f0002</code>.",
+      "results": [
+        "A tela declara o motivo e orienta procurar o gestor Master.",
+        "<b>Não nomeia a unidade</b> — confirmado por varredura: “CREAS” não aparece na página."
+      ],
+      "images": [
+        "screenshots/ca09-negativa-por-unidade.png"
+      ]
+    },
+    {
+      "id": "CA10",
+      "title": "Isolamento entre municípios",
+      "status": "auto",
+      "gherkin": "Dado que sou usuário do município A\nQuando eu consultar o histórico de atendimentos\nEntão alcanço somente prontuários do município A",
+      "steps_html": "Coberto por <code>AttendanceIsolationTest</code>.",
+      "results": [
+        "Prontuário de outra organização devolve <b>404</b>, idêntico ao de uuid inexistente."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA01b",
+      "title": "Paginação estável com vários atendimentos no mesmo dia",
+      "status": "auto",
+      "gherkin": "Dado que uma oficina gerou cinco atendimentos na mesma data\nQuando eu avançar para a segunda página\nEntão nenhum atendimento se repete\nE nenhum é pulado",
+      "steps_html": "Coberto pela suíte, com cinco linhas de mesma data servidas em três páginas.",
+      "results": [
+        "A ordenação é <code>attended_on DESC, created_at DESC, id DESC</code>.",
+        "Um teste-irmão prova que remover qualquer um dos desempates <b>quebra</b> a ordem — verificado por reversão do predicado, não por leitura."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA06b",
+      "title": "Tipo inativado continua filtrável",
+      "status": "auto",
+      "gherkin": "Dado que o tipo \"Outros\" foi inativado no Painel Global\nQuando eu filtrar o histórico por \"Outros\"\nEntão os atendimentos anteriores continuam sendo exibidos",
+      "steps_html": "Coberto pela suíte e por teste de componente.",
+      "results": [
+        "A listagem <b>nunca</b> filtra por <code>attendance_types.is_active</code> — inativar um tipo não pode apagar o passado."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA11",
+      "title": "A consulta não gera auditoria própria",
+      "status": "parc",
+      "gherkin": "Dado que abri o prontuário e naveguei pelo histórico, mudando filtros e páginas\nQuando eu consultar a trilha de auditoria\nEntão consta UM registro de abertura de prontuário\nE nenhum registro por listagem, filtro ou paginação",
+      "steps_html": "Varredura do <code>activity_log</code> após navegar pelo histórico, e teste que compara a contagem antes/depois de listar, filtrar e paginar.",
+      "results": [
+        "Os 4 registros de <code>attendance</code> na trilha vieram todos de <b>escrita</b> (registrar e cancelar) — nenhum de leitura.",
+        "A abertura do prontuário já grava a trilha LGPD; auditar listagem inundaria o log e tornaria inútil o registro que a lei exige."
+      ],
+      "images": []
+    }
+  ],
+  "notes": [
+    {
+      "title": "Somente leitura, por desenho",
+      "html": "<p>Esta HU não altera nada: registrar, corrigir e cancelar são da #10709. Os prints deste dossiê mostram a mesma aba, mas o que se evidencia aqui é a <b>apresentação</b> — ordem, marcação do cancelado, estados vazios e a negativa de acesso.</p>"
+    },
+    {
+      "title": "O que os filtros conseguem e o que não conseguem",
+      "html": "<p>As opções do filtro de <b>tipo</b> são a união dos tipos ativos com os presentes no histórico, o que preserva o tipo inativado (CA06b). Já as de <b>responsável</b> vêm apenas das linhas carregadas, porque o endpoint de opções só devolve responsáveis quando recebe uma unidade — limitação registrada no componente e levada ao PO, não escondida.</p>"
+    },
+    {
+      "title": "Complemento de 04/09/2026 — três critérios saíram do apêndice para a tela",
+      "html": "Na geração original, CA03, CA05 e CA06 estavam apoiados em teste de componente e na suíte de backend. O teste de componente roda em outra ferramenta e não entra no apêndice deste dossiê, de modo que o leitor via a afirmação sem poder conferi-la. Os três foram então dirigidos na tela, com o ambiente já de pé: o detalhe do atendimento mostrando descrição e autor, e os dois filtros reduzindo o contador do cabeçalho de forma observável. Os filtros foram limpos ao final e nenhum dado do ambiente foi alterado — esta HU é somente leitura."
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Pest — filtro Attendance: 139 testes; SyncPermissions: 14; todos verdes)",
+    "file": "pest-f1.txt"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — Aba Resumo e Identificação Territorial",
+    "subtitle": "HU #9909 · CA01 · Prontuário familiar (client) · Evidências end-to-end",
+    "rows": [
+      ["Gerado em", "14/07/2026"],
+      ["História", "HU #9909 — Aba Resumo e Identificação Territorial"],
+      ["Rota verificada", "/app/cadastros/familias/9fb588c6-...-78561d32ed3e?tab=resumo"],
+      ["Submódulo", "client (esuas-frontend-client) · commit 1bf93ce"],
+      ["Ambiente", "API Sail/PostgreSQL 18 · client :5174 (não-mock) · API :8000"],
+      ["Organização (tenant)", "PMM — Prefeitura Municipal de Maceió (Ativo)"],
+      ["Perfil", "coordenador (Master/CLIENT_ADMIN, family_viewer) · CPF 15543849079"],
+      ["Ferramenta", "playwright-cli (Chromium) + Vitest + Pest"]
+    ]
+  },
+  "summary": "1 Critério de Aceite (CA01) verificado como PARCIAL (◑): evidência de UI ao vivo (navegador) somada à cobertura automatizada de backend. A aba Resumo renderiza os dados civis do responsável ABERTOS (sem mascaramento de privacidade — RN01), o endereço postal estruturado completo e a Situação do Domicílio (Urbana/Rural) de forma explícita, exibindo \"Não informada\" quando o dado é nulo (nunca inventa default). Suítes automatizadas: Vitest 17/17 (ResumoTab, FamilyHttp, useFamilyDetail) e Pest 30/30 (FamilyDetailsTest, DomicileSituation, FamilyVulnerabilityService). Resultado geral: ATENDIDO.",
+  "cas": [
+    {
+      "id": "CA01",
+      "title": "Renderização de dados integrados de moradia (dados civis + endereço postal + zona Urbana/Rural, sem mascaramento)",
+      "status": "parc",
+      "gherkin": "Dado que possuo o perfil autorizado e clico em visualizar os detalhes de uma família, Quando a aba \"Resumo\" é carregada, Então o sistema exibe os dados civis do responsável ao lado do endereço postal completo e traz a informação explícita se o domicílio fica em área Urbana ou Rural, de forma aberta e sem mascaramento.",
+      "steps_html": "1) Login como <code>coordenador</code> (Master, CPF 15543849079) → gate <b>Selecionar organização</b> → <b>PMM</b>. 2) Abrir a rota exata da HU: <code>/app/cadastros/familias/9fb588c6-…?tab=resumo</code>. 3) Repetir em famílias com domicílio <b>Urbano</b> (<code>c5e89c11-…</code>) e <b>Rural</b> (<code>898d0423-…</code>) do mesmo tenant, para evidenciar a zona explícita. O acesso dispara a auditoria silenciosa LGPD no backend (RN05).",
+      "results": [
+        "Bloco \"Dados da Referência Familiar\" exibe Nome, CPF, NIS, Data de Nascimento (com idade derivada no backend) e Telefones — CPF ABERTO e apenas formatado (100.000.001-08), NUNCA mascarado com asteriscos (RN01).",
+        "Bloco \"Endereço e Zona de Residência\" exibe o endereço postal estruturado completo: Localidade, Tipo e Nome do Logradouro, Número, Complemento, CEP e Município/UF (Fortaleza/CE).",
+        "Chip de destaque \"Situação do Domicílio\" mostra explicitamente a zona: \"Urbana\" e \"Rural\" nas famílias correspondentes; \"Não informada\" quando o valor é nulo — nunca inventa um default (comportamento exigido pelo CA01).",
+        "Auditoria LGPD (RN05) confirmada no banco: 4 registros family_access/record_opened gravados ANTES do payload, sem PII (apenas family_code)."
+      ],
+      "images": [
+        "screenshots/ca01-rota-solicitada.png",
+        "screenshots/ca01-domicilio-urbana.png",
+        "screenshots/ca01-domicilio-rural.png"
+      ]
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada de backend (Pest — FamilyDetails + DomicileSituation): 30 testes, 179 asserções",
+    "file": "pest-familia-resumo.txt"
+  }
+}

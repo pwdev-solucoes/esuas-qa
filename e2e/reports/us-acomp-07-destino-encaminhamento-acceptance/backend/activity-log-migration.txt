@@ -1,0 +1,20 @@
+== activity_log da migration de dados — 2026-09-15T21:18:42Z ==
+activity_log — log_name='referral_code', subject 13/14 (base dev Postgres, que JA tinha os codigos antes da migration)
+NOTA: a marcacao aparece 2x por codigo porque a evidencia de rollback (migrate:rollback --step=3 + migrate) re-executou a migration de dados.
+
+id=3100 code=13 event=created causer_type=NULL causer_id=NULL created_at=2026-09-03 20:46:22
+  attribute_changes={"attributes":{"code":"13","name":"Encaminhamento do CRAS para o CREAS","destination_area":"social_assistance","remittance_counter":null,"requires_person":false,"requires_free_description":false,"restricted_to_unit_type_id":1,"is_active":true}}
+id=3101 code=14 event=created causer_type=NULL causer_id=NULL created_at=2026-09-03 20:46:22
+  attribute_changes={"attributes":{"code":"14","name":"Encaminhamento do CREAS para o CRAS","destination_area":"social_assistance","remittance_counter":null,"requires_person":false,"requires_free_description":false,"restricted_to_unit_type_id":2,"is_active":true}}
+id=3164 code=13 event=updated causer_type=NULL causer_id=NULL created_at=2026-09-15 21:09:31
+  attribute_changes={"attributes":{"destination_unit_type_id":2},"old":{"destination_unit_type_id":null}}
+id=3165 code=14 event=updated causer_type=NULL causer_id=NULL created_at=2026-09-15 21:09:31
+  attribute_changes={"attributes":{"destination_unit_type_id":1},"old":{"destination_unit_type_id":null}}
+id=3166 code=13 event=updated causer_type=NULL causer_id=NULL created_at=2026-09-15 21:09:31
+  attribute_changes={"attributes":{"destination_unit_type_id":2},"old":{"destination_unit_type_id":null}}
+id=3167 code=14 event=updated causer_type=NULL causer_id=NULL created_at=2026-09-15 21:09:31
+  attribute_changes={"attributes":{"destination_unit_type_id":1},"old":{"destination_unit_type_id":null}}
+
+referral_codes 13/14 hoje:
+  13 | origem=001 (Centro de Referência de Assistência Social) | destino=002 (Centro de Referência Especializado de Assistência Social) | is_internal_transit=true
+  14 | origem=002 (Centro de Referência Especializado de Assistência Social) | destino=001 (Centro de Referência de Assistência Social) | is_internal_transit=true

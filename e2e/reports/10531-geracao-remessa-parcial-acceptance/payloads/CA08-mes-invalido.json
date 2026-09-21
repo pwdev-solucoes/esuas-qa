@@ -1,0 +1,39 @@
+{
+    "_cenario": "CA08/D03 — 13 (Encerramento Contábil), 14 (Restos a Pagar) e 0 recusados com a mensagem própria; o pre-check recusa junto (R4); 12 segue aceito",
+    "store_422": {
+        "mes_13": {
+            "message": "The Social Assistance Partial Remittance only accepts months 1 to 12.",
+            "errors": {
+                "reference_month": [
+                    "The Social Assistance Partial Remittance only accepts months 1 to 12."
+                ]
+            }
+        },
+        "mes_14": {
+            "message": "The Social Assistance Partial Remittance only accepts months 1 to 12.",
+            "errors": {
+                "reference_month": [
+                    "The Social Assistance Partial Remittance only accepts months 1 to 12."
+                ]
+            }
+        },
+        "mes_0": {
+            "message": "The Social Assistance Partial Remittance only accepts months 1 to 12.",
+            "errors": {
+                "reference_month": [
+                    "The Social Assistance Partial Remittance only accepts months 1 to 12."
+                ]
+            }
+        }
+    },
+    "pre_check_13_422": {
+        "message": "The Social Assistance Partial Remittance only accepts months 1 to 12.",
+        "errors": {
+            "reference_month": [
+                "The Social Assistance Partial Remittance only accepts months 1 to 12."
+            ]
+        }
+    },
+    "mensagem_pt_br": "A Remessa Parcial de Assistência Social aceita apenas meses de 1 a 12.",
+    "mes_12_aceito": true
+}

@@ -1,0 +1,89 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — Exportar Inconsistências para Busca Ativa",
+    "subtitle": "Sprint 8 · HU #9763 · Evidências end-to-end no frontend do tenant",
+    "rows": [
+      ["Gerado em", "02/07/2026 08:20"],
+      ["Branch", "sprint9-familias (api 179feb5+25ca310 · client 12ecbea)"],
+      ["Spec", ".planning/specs/sprint8/9763-exportar-inconsistencias-busca-ativa.md"],
+      ["Ambiente", "API Sail/PostgreSQL (localhost:80) · client Vite :5174 (não-mock)"],
+      ["Organização (tenant)", "E2E CadÚnico · uuid 00000000-0000-4000-8000-0000000000c1 · IBGE 2304400 (Fortaleza)"],
+      ["Usuários", "Master E2E (address-inconsistencies.export semeada no papel master)"],
+      ["Ferramenta", "playwright-cli (Chromium 1440×900) + Pest 4"],
+      ["Artefato anexo", "inconsistencias-busca-ativa-2026-07-02.csv — arquivo REAL baixado pelo navegador durante a evidência"]
+    ]
+  },
+  "summary": "HU #9763: 5 Critérios de Aceite evidenciados — CA04 (download do CSV pelo botão \"Exportar Lista para Busca Ativa\") demonstrado ao vivo no navegador, com o arquivo real anexado ao dossiê (BOM UTF-8, separador ';', 6 famílias); CA05 (auditoria do export) verificado no banco com CPF do usuário mascarado e contagem exportada; CA-extra-A (5 colunas RN04 na ordem) conferido no próprio arquivo; CA-extra-B (bloqueio sem permissão) e CA-extra-C (isolamento territorial) cobertos pela suíte automatizada. A revisão de código desta etapa adicionou proteção contra CSV Formula Injection (CWE-1236) — campos de texto livre iniciados por caracteres de fórmula são neutralizados com apóstrofo (fix 25ca310, testado com payload real). Suíte: 45 testes, 186 assertions, 100% verdes. Resultado geral: todos os critérios atendidos.",
+  "cas": [
+    {
+      "id": "CA04",
+      "title": "Geração do arquivo para download",
+      "status": "nav",
+      "gherkin": "Dado que estou no Painel de Inconsistências com permissão de exportação\nQuando clico no botão \"Exportar Lista para Busca Ativa\"\nE o processamento do arquivo termina\nEntão o sistema baixa uma planilha (CSV) com os dados estruturados das famílias\n     e seus respectivos endereços textuais inválidos",
+      "steps_html": "Login como <b>Master E2E</b> → <b>Qualificação Territorial</b> → clicar em <b>Exportar Lista para Busca Ativa</b> (botão no cabeçalho do painel).",
+      "results": [
+        "O navegador baixa o arquivo <code>inconsistencias-busca-ativa-2026-07-02.csv</code> — nome vindo do Content-Disposition do backend (header exposto via CORS, fix da revisão).",
+        "Conteúdo íntegro: BOM UTF-8 (EF BB BF), separador ';', 6 famílias com endereços textuais rejeitados (campos com vírgula corretamente entre aspas RFC-4180).",
+        "Streaming no backend (cursor) — o dataset não é materializado em memória.",
+        "Arquivo real anexado ao dossiê: <code>inconsistencias-busca-ativa-2026-07-02.csv</code>."
+      ],
+      "images": ["screenshots/ca04-painel-com-botao-exportar.png", "screenshots/ca04-export-toast-sucesso.png"]
+    },
+    {
+      "id": "CA05",
+      "title": "Registro de auditoria do Usuário",
+      "status": "parc",
+      "gherkin": "Dado que o download foi concluído com sucesso (CA04)\nQuando o sistema encerra a operação\nEntão uma linha de log de auditoria é gravada com o dia, o horário e o\n     Usuário único (CPF/Login) que extraiu as informações daquele município",
+      "steps_html": "Após o download do CA04, consulta direta à tabela <code>activity_log</code> no PostgreSQL (saída em <code>auditoria-export.txt</code>).",
+      "results": [
+        "Registro #3172 gravado no ato do download via UI: log_name=address_inconsistency_export, event=exported, causer (Usuário global), tenant_id, datetime, exported_count=6 (bate com o CSV), filtros aplicados, IP e user-agent.",
+        "CPF do usuário MASCARADO na trilha (***.982.247-**) — a auditoria em si não vaza PII.",
+        "Suíte cobre: 1 registro por export e comportamento em caso de falha da trilha (log técnico sem PII; débito conhecido registrado sobre durabilidade da contingência)."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA-extra-A",
+      "title": "Colunas obrigatórias do arquivo (RN04)",
+      "status": "parc",
+      "gherkin": "Dado um export gerado\nQuando abro a planilha\nEntão cada linha traz Código Familiar, Nome do RUF, NIS do RUF, Telefone (se houver)\n     e o texto completo do Endereço Inconsistente",
+      "steps_html": "Inspeção do arquivo baixado no CA04 (anexo ao dossiê).",
+      "results": [
+        "Header exato na ordem da RN04: <code>codigo_familiar;nome_ruf;nis_ruf;telefone;endereco_inconsistente</code>.",
+        "NIS e telefone EM CLARO no arquivo (finalidade legítima: Busca Ativa em campo) — diferente do painel em tela, que permanece mascarado (LGPD, RN03 do #9762).",
+        "Proteção CSV Formula Injection: campos de texto livre iniciados por =, +, -, @, TAB ou CR são prefixados com apóstrofo (fix 25ca310, testado com payload =cmd|'/c calc'!A1).",
+        "Suíte confirma colunas/ordem/valores, telefone vazio quando ausente e ordenação por Código Familiar."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA-extra-B",
+      "title": "Bloqueio sem permissão (RN05)",
+      "status": "auto",
+      "gherkin": "Dado um Operador SEM o papel de Qualificação Territorial\nQuando acesso o painel\nEntão o botão \"Exportar Lista para Busca Ativa\" não aparece\nE o endpoint de exportação responde 403 se acessado diretamente",
+      "steps_html": "Coberto pela suíte automatizada (apêndice) + Vitest do botão <code>v-can</code>. Evidência visual complementar no dossiê #9764 (operador sem papel não acessa sequer o painel).",
+      "results": [
+        "Endpoint GET address-inconsistencies/export responde 403 sem a permissão address-inconsistencies.export (rota com can:).",
+        "Botão \"Exportar Lista para Busca Ativa\" oculto sem a permissão (v-can, testado no Vitest).",
+        "Permissão restrita: nunca atribuída automaticamente a papéis base; semeada apenas em territorial_qualifier e master."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA-extra-C",
+      "title": "Isolamento territorial do arquivo (RN07)",
+      "status": "auto",
+      "gherkin": "Dado que estou no Tenant A\nQuando exporto a lista\nEntão o arquivo contém apenas famílias do meu município, sem dados de outro tenant",
+      "steps_html": "Coberto pela suíte automatizada (apêndice): inconsistências em dois tenants; export autenticado no Tenant A.",
+      "results": [
+        "O CSV traz somente famílias do tenant ativo (Global Scope + enforcement tenant-scoped no controller, molde do prontuário #9760).",
+        "Papel concedido em um tenant não habilita export em outro (checagens via user_tenant_role, tenant-scoped)."
+      ],
+      "images": []
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Pest, --filter=AddressInconsistency) — 45 passed, 186 assertions · Trilha de auditoria em auditoria-export.txt · CSV real anexado",
+    "file": "pest-export.txt"
+  }
+}

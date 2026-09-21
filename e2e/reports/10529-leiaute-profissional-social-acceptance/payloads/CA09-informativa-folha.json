@@ -1,0 +1,35 @@
+{
+    "_leitura": "CA09 (D07/RN08) — com ao menos uma linha, a conferencia apresenta a pendencia INFORMATIVA da Folha de Pagamento: scope informative, SEM subject_uuid e SEM subject_type (primeira pendencia do modulo sem sujeito — e um aviso sobre a remessa, nao sobre um registro). A geracao permanece disponivel (can_generate true) e o leiaute nao vira PARTIAL (outcome complete).",
+    "leiaute": {
+        "name": "ProfissionalSocial",
+        "sort_order": 5,
+        "file_name": "ProfissionalSocial.xml",
+        "outcome": "complete",
+        "record_count": 1,
+        "skipped_count": 0,
+        "pendencies": [
+            {
+                "scope": "informative",
+                "kind": "inconsistent_data",
+                "field_name": null,
+                "subject_type": null,
+                "subject_uuid": null,
+                "affected_count": 1,
+                "message_key": "siap_remittance.pendency.payroll_cross_reference",
+                "message": "O TCE-AL só aceita o leiaute ProfissionalSocial se os CPFs e as matrículas informados também constarem da remessa de Folha de Pagamento (leiautes Servidor e Vínculo), produzida fora do SigSUAS. Não é uma inconsistência do seu cadastro — é a natureza do cruzamento: a geração da remessa permanece disponível.",
+                "blocks_entire_remittance": false
+            }
+        ]
+    },
+    "zona_bloqueio": {
+        "can_generate": true,
+        "pendencies": []
+    },
+    "summary": {
+        "layout_count": 11,
+        "record_count": 2,
+        "blocking_pendency_count": 0,
+        "informative_pendency_count": 1,
+        "layout_pendency_count": 16
+    }
+}

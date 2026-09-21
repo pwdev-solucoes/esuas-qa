@@ -1,0 +1,61 @@
+# Consultas SQL de apoio — spec §8.1–§8.4 · HU #10530 (US-SIAP-02)
+# Executadas em 2026-08-17 na base LOCAL de desenvolvimento (container api-pgsql-1, db esuas, 4 tenants).
+#
+# ⚠️ RESSALVA VINCULANTE (R3 da spec, herdada das HUs #10367→#10529): a base local é
+# praticamente VAZIA e NÃO é representativa. Os números abaixo NÃO são dimensionamento.
+# As consultas precisam ser rodadas em STAGING antes de dimensionar o impacto real
+# (o levantamento do volume de pendências de domínio segue com o PO — R4, pendente).
+#
+# Adaptações de coluna (a spec referencia colunas que não existem no schema real):
+#   §8.2 — cneas_code → cneas_number; o vínculo do CA06b é has_active_service_agreement (US-SIAP-08)
+#   §8.3 — sut.siap_code → social_unit_types.code
+
+=== Consultas de apoio §8.1–§8.4 da spec 10530 — base LOCAL (api-pgsql-1, db esuas) ===
+
+--- Tenants presentes na base local ---
+ tenant_id | uuid_prefixo | status_id | excluido 
+-----------+--------------+-----------+----------
+         1 | 6c4749d7     |         1 | f
+         2 | f3ce4c62     |         1 | f
+         3 | 00000000     |         1 | f
+         4 | 5a49f253     |         1 | f
+(4 rows)
+
+
+--- §8.1 — Unidades sem campo obrigatório do SIAP (dimensiona CA02), por tenant ---
+ tenant_id | sem_mds | sem_tipo_localizacao | total 
+-----------+---------+----------------------+-------
+         3 |       0 |                    0 |     3
+         4 |       1 |                    0 |     1
+(2 rows)
+
+
+--- §8.2 — Entidades sem campo obrigatório (dimensiona CA06b), por tenant ---
+--- (adaptada: a spec cita cneas_code/contract_modality_id; as colunas reais são cneas_number ---
+---  e o vínculo do CA06b é has_active_service_agreement, da US-SIAP-08) ---
+ tenant_id | sem_cneas | sem_email | sem_vinculo | sem_modalidade_contrato | total 
+-----------+-----------+-----------+-------------+-------------------------+-------
+         3 |         0 |         0 |           0 |                       0 |     2
+(1 row)
+
+
+--- §8.3 — Códigos de domínio fora da escala do SIAP (dimensiona CA05) ---
+--- (adaptada: a spec cita sut.siap_code; a coluna real é social_unit_types.code) ---
+ id | name | code 
+----+------+------
+(0 rows)
+
+
+--- §8.4 — Organizações sem CARDUG (dimensiona CA04) ---
+ sem_cardug 
+------------
+          0
+(1 row)
+
+
+--- §8.4 (apoio) — tenants SEM linha em tenant_tce_parameters (também sem CARDUG) ---
+ tenants_sem_parametro 
+-----------------------
+                     2
+(1 row)
+

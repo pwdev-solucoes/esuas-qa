@@ -1,0 +1,250 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — HU #10369 (US-SIAP-08)",
+    "subtitle": "Reativar no cadastro de entidades o vínculo de prestação de serviço com a unidade",
+    "rows": [
+      [
+        "Gerado em",
+        "18/08/2026 (recaptura integral)"
+      ],
+      [
+        "Ticket GLPI",
+        "#10369 · US-SIAP-08 · épico HU-SIAP-AS"
+      ],
+      [
+        "Spec (contrato)",
+        ".planning/specs/10369-vinculo-prestacao-servico-entidade.md (CA01–CA10)"
+      ],
+      [
+        "Branch verificada",
+        "staging (api 22fa09a · client c45b2ad)"
+      ],
+      [
+        "Ambiente",
+        "API Sail/PostgreSQL :80 · client Vite :5175 (não-mock) · fila siap"
+      ],
+      [
+        "Organização (tenant)",
+        "E2E CadÚnico · uuid 00000000-0000-4000-8000-0000000000c1"
+      ],
+      [
+        "Parâmetros TCE/AL do tenant",
+        "CARDUG 004821 informado (sem ele o impedimento da #10367 bloquearia toda a remessa e a pendência desta HU não seria observável)"
+      ],
+      [
+        "Perfis usados",
+        "Operacional do Tenant (CPF 111.444.777-35) no cadastro · Master (CPF 529.982.247-25) no painel de remessa"
+      ],
+      [
+        "Ferramenta",
+        "playwright-cli (Chromium 1440×900) + Pest 4"
+      ],
+      [
+        "Origem normativa",
+        "Manual de Referência do SIAP (2026, 2ª ed.) — item 15.2, leiaute EntidadeSocial, campo SituacaoUnidade"
+      ]
+    ]
+  },
+  "summary": "10 critérios avaliados, 10 atendidos — nenhum reprovado. Esta é uma RECAPTURA INTEGRAL contra a branch staging, feita porque o dossiê anterior (12/08/2026) havia sido produzido antes de a HU irmã #10371 alterar o efeito da pendência de entidade incompleta. Naquela entrega, a pendência apenas reduzia a remessa; hoje ela BLOQUEIA a remessa inteira — que é justamente o que o CA04 deste ticket sempre pediu (\"pendência impeditiva\"). Nove critérios foram dirigidos no navegador, no app real do tenant (CA01–CA07, CA09 e CA10), somando 10 prints. O CA08 é o único sem print, por natureza do critério: sua evidência é o conteúdo do EntidadeSocial.xml, conferido dentro do teste automatizado. Suítes anexas: 141 testes (435 asserções) em --filter=SocialEntity e 277 testes (1448 asserções) em --filter=Siap, todas verdes.",
+  "cas": [
+    {
+      "id": "CA01",
+      "title": "Cadastrar entidade com o campo informado (happy path)",
+      "status": "parc",
+      "gherkin": "Dado que sou Operacional do Tenant e estou cadastrando uma entidade socioassistencial\nQuando eu preencher os dados e marcar que a entidade possui vínculo de prestação de serviço ativo\nEntão a entidade é salva com esse valor\nE o valor aparece no detalhe da entidade",
+      "steps_html": "No painel do tenant → <code>Entidades Socioassistenciais</code> → <b>Nova Entidade Socioassistencial</b> → preencher os dados, marcar <b>Sim</b> em <b>Vínculo de Prestação de Serviço Ativo</b> (grupo “Convênio e Operação”) → <b>Salvar</b> → abrir o detalhe da entidade criada.",
+      "results": [
+        "A entidade “Instituto Aurora do Agreste” é salva sem erro, o sistema exibe “Entidade cadastrada com sucesso!” e navega para a listagem.",
+        "No card “Convênio e Operação” do detalhe, o campo VÍNCULO DE PRESTAÇÃO DE SERVIÇO ATIVO exibe “Sim”, ao lado dos demais indicadores (Parceria com Poder Público, Benefício Eventual, Execução de Serviços), como pede a RN01.",
+        "Confirmação no banco: social_entities.has_active_service_agreement = true para essa entidade.",
+        "Backend: “CA01: store persists has_active_service_agreement and returns it” e “CA01: store accepts false as an informed value” — “não” também é um valor informado, distinto de “não informado”."
+      ],
+      "images": [
+        "screenshots/ca01-entidade-salva-com-sim.png"
+      ]
+    },
+    {
+      "id": "CA02",
+      "title": "Bloqueio ao salvar sem informar o campo",
+      "status": "parc",
+      "gherkin": "Dado que estou cadastrando uma entidade socioassistencial\nQuando eu tentar salvar sem informar se ela possui vínculo de prestação de serviço ativo\nEntão o cadastro não é salvo\nE o sistema indica que esse campo precisa ser informado, apontando o campo em falta",
+      "steps_html": "Formulário de <code>Nova Entidade Socioassistencial</code> com todos os demais campos preenchidos e o <b>RadioGroup</b> de vínculo <b>sem seleção</b> → <b>Salvar</b>.",
+      "results": [
+        "O cadastro não é salvo e a página permanece no formulário (/app/entidades/novo).",
+        "A mensagem aparece imediatamente abaixo do próprio campo, em vermelho: “Informe se a entidade possui vínculo de prestação de serviço ativo” — aponta o campo em falta, não uma mensagem genérica de formulário.",
+        "O controle nasce sem seleção (nem “Sim” nem “Não” marcados): um Switch binário representaria automaticamente “não”, que é justamente o que a RN03 proíbe.",
+        "O texto de apoio do campo explica a razão: “Informe se a unidade possui vínculo de prestação de serviço ativo (leiaute SIAP). Entidades cadastradas antes desta informação aparecem sem seleção até serem revisadas.”",
+        "Backend: “CA02: store without has_active_service_agreement returns 422 with the pt-BR label” — a mensagem carrega o rótulo de negócio e NÃO o nome técnico da coluna; “CA02: store with explicit null is rejected” cobre o envio explícito de null."
+      ],
+      "images": [
+        "screenshots/ca02-bloqueio-campo-obrigatorio.png"
+      ]
+    },
+    {
+      "id": "CA03",
+      "title": "Entidade antiga permanece sem valor até ser revisada",
+      "status": "parc",
+      "gherkin": "Dado que a entidade \"Instituto Esperança\" foi cadastrada antes desta HU\nQuando eu abrir o detalhe dessa entidade\nEntão o campo de vínculo de prestação de serviço está vazio\nE nenhum valor foi atribuído automaticamente pelo sistema",
+      "steps_html": "Abrir o detalhe da entidade legada <b>Instituto Esperanca Alagoana</b> (gravada com o campo <code>NULL</code>, sem backfill) e observar o card “Convênio e Operação”.",
+      "results": [
+        "O campo VÍNCULO DE PRESTAÇÃO DE SERVIÇO ATIVO exibe “—” (vazio) — e não “Não”. A distinção é o coração da RN03: o sistema não declara ao Tribunal aquilo que o município não declarou.",
+        "Os demais indicadores da mesma entidade seguem preenchidos (Parceria com Poder Público “Sim”, Benefício Eventual “Não”), o que mostra que o “—” é ausência de valor e não falha de renderização.",
+        "Confirmação no banco: has_active_service_agreement IS NULL para essa entidade, após a migration ter sido aplicada.",
+        "Backend: “CA03: legacy entity keeps a null agreement and is exposed as null”.",
+        "Não existe backfill nem comando de preenchimento em massa: grep por has_active_service_agreement em database/seeders/ e app/Console/ não devolve nada."
+      ],
+      "images": [
+        "screenshots/ca03-entidade-legada-sem-valor.png"
+      ]
+    },
+    {
+      "id": "CA04",
+      "title": "Entidade antiga sem valor bloqueia a remessa",
+      "status": "parc",
+      "gherkin": "Dado que a entidade \"Instituto Esperança\" está com o campo vazio\nQuando eu solicitar a conferência prévia de uma referência\nEntão é apresentada pendência impeditiva no leiaute EntidadeSocial identificando essa entidade\n  e o campo de vínculo de prestação de serviço",
+      "steps_html": "Como <b>Master</b>, com os parâmetros TCE/AL do tenant já com o CARDUG <code>004821</code> informado, abrir <code>Prestação de Contas → Remessas SIAP</code> e observar a conferência prévia da referência 08/2026.",
+      "results": [
+        "A conferência prévia abre com o bloco “IMPEDIMENTOS QUE BLOQUEIAM TODA A REMESSA” em destaque, no topo, antes de qualquer pendência de leiaute.",
+        "O impedimento traz o selo “Bloqueia os 11 arquivos” e identifica o registro e o campo: “Registro: Instituto Esperanca Alagoana · Campo: SituacaoUnidade”.",
+        "A mensagem é acionável: “Esta entidade socioassistencial está sem SituacaoUnidade, exigido pelo SIAP. Corrija o cadastro da entidade: enquanto isso, nenhuma remessa pode ser gerada.” — com atalho “Abrir o cadastro da entidade”.",
+        "O botão “Gerar remessa” aparece DESABILITADO: o bloqueio é efetivo, não apenas informativo.",
+        "O bloco “PENDÊNCIAS POR LEIAUTE” aparece separado, abaixo, e a própria tela avisa que “Estas pendências serão reavaliadas depois que o impedimento acima for resolvido”.",
+        "Conferência no serviço (SiapPreCheckService, referência 2026/08): ready = false; a única pendência bloqueante é { scope: 'blocking', kind: 'record_incomplete', fieldName: 'SituacaoUnidade', subjectType: 'social_entity', subjectUuid: '97e13d72-…' }; no leiaute EntidadeSocial, recordCount 2 e skippedCount 1.",
+        "O efeito bloqueante vem da D04 da HU #10371 (SiapPendency::entityIncomplete → SCOPE_BLOCKING). Na entrega de 12/08 esta pendência ainda era de leiaute e apenas reduzia a remessa; o comportamento atual é o que este critério sempre pediu.",
+        "A identificação do registro na API é feita só por subject_uuid — CNPJ, e-mail e endereço nunca entram na pendência (RN09/LGPD). O nome exibido na tela é acrescentado na resposta via withLabel(), decisão D02/D03 da #10530."
+      ],
+      "images": [
+        "screenshots/ca04-impedimento-bloqueia-remessa.png"
+      ]
+    },
+    {
+      "id": "CA05",
+      "title": "Preencher o campo resolve a pendência",
+      "status": "parc",
+      "gherkin": "Dado que informei o valor do campo na entidade \"Instituto Esperança\"\nQuando eu solicitar a conferência prévia novamente\nEntão aquela pendência não aparece mais",
+      "steps_html": "Informar o vínculo na entidade legada <b>Instituto Esperanca Alagoana</b> pelo formulário de edição (perfil <b>Operacional do Tenant</b>, RN06), marcando <b>Não</b>; em seguida reabrir <code>Prestação de Contas → Remessas SIAP</code> na mesma referência 08/2026 como <b>Master</b>.",
+      "results": [
+        "O bloco “Impedimentos que bloqueiam toda a remessa” deixa de existir na tela.",
+        "EntidadeSocial desaparece por completo das pendências: a lista passa a começar em RegistrosUnidade, e as demais pendências, alheias a esta HU (leiautes que dependem de módulos de atendimento ainda inexistentes), seguem intactas.",
+        "O botão “Gerar remessa” volta a ficar HABILITADO.",
+        "Conferência no serviço, mesma referência: ready = true, nenhuma pendência bloqueante, e o leiaute EntidadeSocial com recordCount 4, skippedCount 0 e nenhuma pendência — as quatro entidades do tenant passam a entrar no arquivo.",
+        "O valor informado foi “Não” e a entidade continua com situação de funcionamento “Ativa”. A pendência sai porque o município declarou, não porque o vínculo existe (RN04).",
+        "Confirmação no banco: has_active_service_agreement = false na entidade que antes estava NULL.",
+        "Backend: “it drops the pendency as soon as the municipality informs the value (CA05)”; “it does not persist anything during the pre-check” garante que a conferência é derivada em tempo de leitura, sem pendência residual."
+      ],
+      "images": [
+        "screenshots/ca05-conferencia-sem-pendencia.png"
+      ]
+    },
+    {
+      "id": "CA06",
+      "title": "Edição exige o campo preenchido",
+      "status": "parc",
+      "gherkin": "Dado que estou editando uma entidade antiga que está com o campo vazio\nQuando eu alterar qualquer outro dado e tentar salvar sem informar o vínculo de prestação de serviço\nEntão a edição não é salva\nE o sistema indica que o campo precisa ser informado",
+      "steps_html": "Abrir <b>Editar</b> na entidade legada <b>Instituto Esperanca Alagoana</b>, alterar o e-mail de contato e <b>Salvar</b> sem tocar no vínculo.",
+      "results": [
+        "A edição não é salva: a tela permanece no formulário de edição.",
+        "O RadioGroup de vínculo continua sem seleção e recebe a mesma mensagem do CA02, abaixo do campo: “Informe se a entidade possui vínculo de prestação de serviço ativo”.",
+        "Confirmação no banco de que NADA foi persistido: o e-mail continua o anterior (contato@institutoesperanca.org.br, e não o novo valor digitado) e has_active_service_agreement segue NULL.",
+        "O comportamento decorre de o UpdateSocialEntityRequest usar ['required','boolean'] sem 'sometimes' — editar qualquer outro campo obriga a revisar o vínculo.",
+        "Backend: “CA06: update without has_active_service_agreement returns 422 and does not save” e “CA06b: update with has_active_service_agreement saves the value”."
+      ],
+      "images": [
+        "screenshots/ca06-edicao-legada-bloqueada.png"
+      ]
+    },
+    {
+      "id": "CA07",
+      "title": "Aviso de combinação incomum com a modalidade de contrato",
+      "status": "parc",
+      "gherkin": "Dado que estou editando uma entidade cuja modalidade de contrato é \"Sem Vínculo\"\nQuando eu marcar que ela possui vínculo de prestação de serviço ativo\nEntão o sistema apresenta aviso pedindo confirmação da combinação\nE, ao confirmar, o valor é salvo como informei — o sistema não altera nem impede a combinação",
+      "steps_html": "Editar a entidade <b>Casa de Apoio Bom Samaritano</b> (modalidade <code>Sem Vínculo</code>, código 001) e marcar <b>Sim</b> no vínculo de prestação de serviço; confirmar o diálogo e salvar.",
+      "results": [
+        "Ao marcar “Sim”, o sistema abre o diálogo “Confirmar vínculo com modalidade Sem Vínculo?”, com o texto: “Marcar que a entidade possui vínculo de prestação de serviço ativo com a modalidade ‘Sem Vínculo’ é uma combinação incomum. O sistema não altera a modalidade nem impede o salvamento — o valor declarado é seu.”",
+        "O diálogo oferece Cancelar e Confirmar: é aviso, não bloqueio (RN05).",
+        "Ao confirmar e salvar, o detalhe mostra MODALIDADE “Sem Vínculo” e VÍNCULO DE PRESTAÇÃO DE SERVIÇO ATIVO “Sim” convivendo — o sistema não derivou o valor da modalidade nem corrigiu nenhum dos dois.",
+        "Confirmação no banco: has_active_service_agreement = true com a modalidade “Sem Vínculo” na mesma linha.",
+        "Decisão de negócio provisória: o aviso foi marcado pelo PO como dúvida pendente e pode ser removido sem prejuízo para a remessa — nada na modelagem depende dele."
+      ],
+      "images": [
+        "screenshots/ca07-aviso-combinacao-sem-vinculo.png",
+        "screenshots/ca07b-valor-salvo-apos-confirmacao.png"
+      ]
+    },
+    {
+      "id": "CA08",
+      "title": "Campo distinto da situação de funcionamento",
+      "status": "auto",
+      "gherkin": "Dado uma entidade com situação de funcionamento \"Ativa\" e sem vínculo de prestação de serviço ativo\nQuando eu salvar o cadastro\nEntão os dois valores são registrados de forma independente\nE a remessa leva SituacaoEntidadeSocial=1 e SituacaoUnidade=2",
+      "steps_html": "<b>Natureza da evidência: verificado por teste automatizado, com conferência do XML gerado dentro do próprio teste (ver Anexo — <code>pest-10369.txt</code>); sem print de tela.</b> Cobertura em <code>tests/Feature/Api/SiapRemittanceGenerationTest.php</code> e <code>SocialEntityControllerTest.php</code>.",
+      "results": [
+        "“it emits the service agreement and the operating status as independent values (CA08)” — o EntidadeSocial.xml da remessa gerada sai com SituacaoEntidadeSocial=1 (Ativa) e SituacaoUnidade=2 (não), na mesma linha e sem interferência de um valor no outro.",
+        "“it emits the informed service agreement as SIM (CA08b)” — com o vínculo informado como “sim”, SituacaoUnidade=1, mantendo SituacaoEntidadeSocial=1.",
+        "“CA08: social_entity_status_id and has_active_service_agreement are independent” — no cadastro, trocar o status não mexe no vínculo e vice-versa (RN04).",
+        "A independência é estrutural: SituacaoEntidadeSocial vem de SiapDomainMap::socialEntityStatus(status.code) e SituacaoUnidade de SiapDomainMap::yesNo(has_active_service_agreement) — duas fontes distintas.",
+        "Sem print de tela por natureza do critério: a evidência é o conteúdo do arquivo XML, não uma tela do sistema."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA09",
+      "title": "Alteração auditada",
+      "status": "parc",
+      "gherkin": "Dado que alterei o valor do campo de \"não\" para \"sim\" em uma entidade\nQuando eu consultar a trilha de auditoria da entidade\nEntão a alteração consta registrada, com o autor e a data",
+      "steps_html": "Abrir o detalhe da entidade <b>Casa de Apoio Bom Samaritano</b> — cujo vínculo foi alterado de “Não” para “Sim” no CA07 — e observar o card <b>Histórico de alterações</b>.",
+      "results": [
+        "O card “Histórico de alterações” exibe “1 registro” com a entrada: rótulo <b>Alteração</b>, autor <b>E2E Operador CadÚnico</b> e data <b>18/08/2026</b>.",
+        "A linha mostra o de→para do campo: “Vínculo de prestação de serviço ativo: Não → Sim”.",
+        "Confirmação no banco: activity_log com log_name 'social_entity', event 'updated', causer_id 10 (o próprio Operacional que fez a alteração) e created_at da alteração; properties carrega o tenant_id, injetado pelo Model Activity customizado do projeto.",
+        "Backend: “CA09: changing the agreement records an activity with causer and old/new values”; “CA09b: activity endpoint is forbidden without social-entities.view-activity”; “RN10: activity endpoint forbids entities from another tenant” — a trilha nunca cruza o tenant ativo."
+      ],
+      "images": [
+        "screenshots/ca09-historico-alteracao-autor-data.png"
+      ]
+    },
+    {
+      "id": "CA10",
+      "title": "Filtro na listagem",
+      "status": "parc",
+      "gherkin": "Dado que existem entidades com o campo vazio na minha base\nQuando eu filtrar a listagem de entidades por vínculo de prestação de serviço não informado\nEntão vejo apenas as entidades que ainda precisam ser revisadas",
+      "steps_html": "Listagem de <code>Entidades Socioassistenciais</code> → <b>Filtros</b> → <b>Vínculo de prestação de serviço</b> = <code>Não informado</code>. Captura feita ANTES do CA05, quando a legada ainda estava sem valor.",
+      "results": [
+        "A listagem passa a exibir apenas “Instituto Esperanca Alagoana”, a única entidade da base com o campo vazio — as demais, que têm valor informado (sim ou não), saem do resultado.",
+        "O filtro aparece como chip removível em “Filtros ativos: Vínculo: Não informado”, ao lado do botão Limpar filtros.",
+        "O filtro oferece os três estados: “Possui vínculo ativo”, “Não possui vínculo ativo” e “Não informado” — o terceiro estado é o que permite fechar a base antes da primeira remessa.",
+        "O terceiro estado funciona porque o backend usa AllowedFilter::callback com whereNull: AllowedFilter::exact não alcança NULL, já que where(col, null) nunca casa em SQL.",
+        "Backend: “CA10: filters the listing by the three agreement states”, “CA10: an unknown filter value is ignored instead of erroring” e “RN10: the agreement filter never crosses the active tenant”.",
+        "Decisão de negócio provisória: o filtro também estava marcado pelo PO como dúvida pendente e pode ser removido sem prejuízo para a remessa."
+      ],
+      "images": [
+        "screenshots/ca10-filtro-nao-informado.png"
+      ]
+    }
+  ],
+  "notes": [
+    {
+      "title": "Por que esta recaptura existe — o CA04 mudou de comportamento depois da entrega original",
+      "html": "<p>O dossiê anterior desta HU foi produzido em <b>12/08/2026</b>, sobre a branch da própria feature. Naquele momento, a pendência da entidade sem vínculo informado era de <b>leiaute</b>: ela retirava a entidade do arquivo, mas <b>não</b> impedia a geração da remessa — o dossiê registrava isso explicitamente, com <code>blocks_entire_remittance: false</code> e o botão “Gerar remessa” habilitado.</p><p>Depois daquela captura, a HU irmã <b>#10371</b> (decisão D04) promoveu a pendência de entidade incompleta a <b>bloqueante</b>. Hoje, na branch <code>staging</code>, a ausência do vínculo <b>impede toda a remessa</b> — que é exatamente o que o CA04 deste ticket sempre pediu (“pendência impeditiva”). O dossiê antigo, portanto, havia se tornado incompatível com o próprio critério que documentava.</p><p>Esta recaptura foi feita integralmente contra a <code>staging</code> (api <code>22fa09a</code> · client <code>c45b2ad</code>), e não sobre a branch da feature, para que a evidência corresponda ao código que segue para produção.</p>"
+    },
+    {
+      "title": "Defeito encontrado e corrigido durante a captura (correção em branch própria)",
+      "html": "<p>Ao tentar exercitar os critérios que passam pelo formulário de edição da entidade (CA05, CA06, CA07 e CA09), constatou-se que <b>a tela de edição estava inacessível para todos os perfis</b>:</p><ul><li>O <b>Operacional</b> tem <code>social-entities.update</code> e passava no guard de rota, mas a página montava o bloco de <b>responsável legal</b>, que dispara uma requisição exigindo <code>social-entities.manage-representatives</code> — permissão <b>Master-only por decisão da HU #9132</b>. O 403 resultante era convertido pelo interceptor global do HTTP em desvio para a página <code>/403</code>, derrubando a tela inteira.</li><li>O <b>Master</b> tem a permissão de responsável legal, mas <b>não</b> tem <code>social-entities.update</code>, então era barrado antes, no próprio guard de rota.</li></ul><p>Resultado prático: <b>ninguém conseguia editar uma entidade socioassistencial</b>. Como a HU #10369 torna o vínculo obrigatório também na edição (RN02), o defeito inviabilizava a própria regra que ela institui.</p><p>A correção aplicada foi mínima e no escopo do problema: o bloco de responsável legal passou a ser condicionado à permissão que o backend já exige. Ela está commitada em <b>branch própria</b> do frontend do tenant (<code>fix/edicao-entidade-bloco-responsavel-legal</code>), acompanhada de três testes de regressão, e passou por lint, verificação de tipos e a suíte completa (188 arquivos, 1484 testes, todos verdes). <b>Ela conserta um defeito preexistente, não faz parte do escopo original desta HU e depende de revisão e incorporação à branch de integração</b> — enquanto não for incorporada, os critérios que passam pela tela de edição (CA05, CA06, CA07 e CA09) não são reproduzíveis por quem não estiver com essa branch.</p>"
+    },
+    {
+      "title": "Cobertura visual — o que este dossiê demonstra na tela",
+      "html": "<p>Para não deixar dúvida sobre o que é evidência de tela e o que é evidência de teste:</p><ul><li><b>Com print de tela (10 arquivos em <code>screenshots/</code>):</b> CA01, CA02, CA03, CA04, CA05, CA06, CA07 (dois prints), CA09 e CA10.</li><li><b>Sem print de tela:</b> apenas o <b>CA08</b>, por natureza do critério — o que ele afirma é o conteúdo de duas tags do <code>EntidadeSocial.xml</code>, conferido dentro do teste automatizado. Não existe tela do sistema que mostre isso.</li></ul><p>Os prints do CA04 e do CA05 foram capturados em sequência sobre a <b>mesma referência (08/2026)</b> e a mesma entidade: primeiro com o campo vazio (remessa bloqueada), depois com o valor informado (remessa liberada). O CA09 usa a entidade cujo vínculo foi alterado no CA07, de modo que a trilha exibida é a daquela mesma alteração. O CA10 foi capturado antes do CA05, quando a entidade legada ainda era a única sem valor na base.</p>"
+    },
+    {
+      "title": "Achado de ambiente — a distribuição de permissões do perfil Master no cadastro de entidades",
+      "html": "<p>Na configuração de papéis vigente, o perfil <code>master</code> possui <code>social-entities.index</code>, <code>.show</code> e <code>.manage-representatives</code>, mas <b>não</b> possui <code>social-entities.store</code> nem <code>.update</code>, que estão no <code>operador</code>. Por isso todas as evidências de cadastro e edição foram dirigidas como <b>Operacional do Tenant</b>, e as do painel de remessa como <b>Master</b>, que é quem tem <code>siap-remittances.store</code>.</p><p>Isso <b>não contraria a RN06</b> — que diz que informar o vínculo não é ação Master-only e segue a permissão de edição de entidades —, mas mostra que a leitura de negócio de que “Master e Operacional já possuem” a permissão de edição não corresponde ao que o PermissionRegistry distribui hoje. É configuração anterior a esta HU e nenhum código foi alterado por causa disso; fica registrado para decisão do PO.</p>"
+    },
+    {
+      "title": "Massa de evidência e dimensionamento em produção",
+      "html": "<p>A base usada nesta recaptura foi montada para o exercício dos critérios e contém <b>4 entidades</b> no tenant E2E CadÚnico. Ela <b>não é representativa</b> de nenhum município: não há relação entre esse volume e o que um município real terá.</p><p>O dimensionamento da revisão — quantas entidades cada município precisará revisar antes da primeira remessa — depende de rodar, em <b>staging ou produção</b>, a consulta que conta as entidades com <code>has_active_service_agreement IS NULL</code> por tenant. <b>Essa medição continua pendente</b> e é o que responde à pergunta do PO sobre o esforço de mutirão. Na tela, o mesmo recorte é obtido pelo filtro “Não informado” do CA10.</p>"
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Pest 4 — php artisan test --filter=SocialEntity e --filter=Siap)",
+    "file": "pest-10369.txt"
+  }
+}

@@ -1,0 +1,108 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — Gerenciamento de Permissões de Privacidade (LGPD)",
+    "subtitle": "Sprint 8 · HU #9761 · Evidências end-to-end no frontend do tenant",
+    "rows": [
+      ["Gerado em", "02/07/2026 00:25"],
+      ["Branch", "sprint9-familias (api d953773+38fd466 · client aee4a81)"],
+      ["Spec", ".planning/specs/sprint8/9761-gerenciamento-permissoes-privacidade-lgpd.md"],
+      ["Ambiente", "API Sail/PostgreSQL (localhost:80) · client Vite :5174 (não-mock)"],
+      ["Organização (tenant)", "E2E CadÚnico · uuid 00000000-0000-4000-8000-0000000000c1 · IBGE 2304400 (Fortaleza)"],
+      ["Usuários", "Master E2E (governa os papéis) · Operador E2E (Profissional ativo que recebe/perde o papel family_viewer)"],
+      ["Ferramenta", "playwright-cli (Chromium 1440×900, 2 sessões simultâneas) + Pest 4"],
+      ["Modelo LGPD", "Papel dedicado family_viewer (level 25) com exclusivamente families.view-details (permissão restrita) — nunca grant por usuário; zero tabela nova"]
+    ]
+  },
+  "summary": "HU #9761: 6 Critérios de Aceite evidenciados — CA07 (revogação em tempo real), CA-extra-A (concessão habilita), CA-extra-B (permissão não vaza aos papéis base) e CA-extra-C (Master acessa sempre por bypass) demonstrados ao vivo no navegador com duas sessões simultâneas; CA-extra-D (isolamento territorial da concessão) e CA-extra-E (inativação bloqueia de imediato) cobertos pela suíte automatizada. O drawer de perfis exibe o papel com selo vermelho LGPD e descrição de privacidade. A revisão de código desta etapa também blindou a hierarquia de postos contra papéis add-on empilhados (fix 38fd466, com testes dedicados). Suíte: 21 testes, 74 assertions, 100% verdes. Resultado geral: todos os critérios atendidos.",
+  "cas": [
+    {
+      "id": "GOV",
+      "title": "Governança pelo Master — papel LGPD no drawer de perfis (RN01/RN08)",
+      "status": "nav",
+      "gherkin": "Contexto dos CAs: o Master gerencia o papel \"family_viewer\" pelo drawer \"Gerenciar perfis de acesso\" do Profissional, onde o papel aparece com selo LGPD e descrição de privacidade.",
+      "steps_html": "Login como <b>Master E2E</b> → Cadastros → Profissionais → Visualizar \"E2E Operador CadÚnico\" → card <b>Perfis de acesso</b> → <b>Gerenciar</b>.",
+      "results": [
+        "O drawer lista \"Visualização de Detalhes da Família — LGPD\" com selo vermelho LGPD e a descrição: papel dedicado de privacidade, concede exclusivamente a abertura do prontuário familiar detalhado, atribuível pelo Master, toda abertura auditada.",
+        "Aviso do drawer: \"As permissões são aplicadas imediatamente após salvar\" (base do efeito em tempo real do CA07)."
+      ],
+      "images": ["screenshots/governanca-drawer-selo-lgpd.png"]
+    },
+    {
+      "id": "CA-extra-A",
+      "title": "Concessão habilita o acesso (RN06)",
+      "status": "nav",
+      "gherkin": "Dado que sou Master e atribuo ao Profissional o papel de privacidade\nQuando salvo a alteração\nEntão o Profissional, no próximo request, abre o prontuário com sucesso (200)\nE o acesso é auditado em segundo plano (auditoria do #9760)",
+      "steps_html": "Master marca o papel LGPD no drawer e clica em <b>Salvar perfis</b> (toast de sucesso; card passa a listar o papel). Na outra sessão, o Operador repete a busca por CPF <code>10000000108</code> — <b>sem novo login</b> — e clica em \"Visualizar Família\".",
+      "results": [
+        "Após salvar, o card \"Perfis de acesso\" lista \"Visualização de Detalhes da Família — LGPD\" junto ao papel Operador (papéis empilhados).",
+        "No request seguinte, o botão \"Visualizar Família\" aparece HABILITADO para o Operador e o prontuário abre com sucesso (200) — tela cheia com composição familiar.",
+        "A abertura do Operador gerou o registro de auditoria #3125 (event=record_opened, professional_name \"E2E Operador CadÚnico\", CPF mascarado ***.444.777-**) — verificado no banco (dossiê #9760)."
+      ],
+      "images": ["screenshots/governanca-papel-concedido.png", "screenshots/ca-extra-a-operador-botao-habilitado.png", "screenshots/ca-extra-a-operador-prontuario-aberto.png"]
+    },
+    {
+      "id": "CA07",
+      "title": "Revogação de acesso com efeito em tempo real (RN06)",
+      "status": "nav",
+      "gherkin": "Dado que sou Master e um Profissional possui a permissão de privacidade (papel \"family_viewer\")\nQuando eu desmarco essa permissão do Profissional e salvo a alteração\nE o Profissional afetado realiza uma nova busca por CPF\nE tenta clicar na coluna de Ações da pessoa encontrada\nEntão o sistema nega a abertura da tela cheia \"Visualizar Família\" (403)\nE exibe um alerta de acesso restrito",
+      "steps_html": "Com o Operador AINDA com o prontuário aberto na outra sessão, o Master desmarca o papel LGPD e salva. O Operador recarrega a página do prontuário (novo request, sem logout).",
+      "results": [
+        "O request seguinte à revogação responde 403 e a tela exibe o alerta \"Acesso restrito\" com orientação de solicitar acesso ao Master.",
+        "O gate é decidido pelo backend a cada request (nunca pelo cache do frontend) — exatamente o comportamento \"tempo real\" exigido pela RN06."
+      ],
+      "images": ["screenshots/ca07-revogacao-403-tempo-real.png"]
+    },
+    {
+      "id": "CA-extra-B",
+      "title": "Permissão não vaza para os papéis base (RN08)",
+      "status": "parc",
+      "gherkin": "Dado um Operador SEM o papel de privacidade\nQuando tenta abrir um prontuário\nEntão o sistema nega (403), pois \"families.view-details\" não está nos papéis base",
+      "steps_html": "Operador (apenas papel base) tenta o deep-link do prontuário. Complementado pela suíte: <code>families.view-details</code> está em <code>RESTRICTED_PERMISSIONS</code> e o <code>permissions:sync</code> nunca a atribui a papel algum automaticamente.",
+      "results": [
+        "403 + alerta \"Acesso restrito\" para o Operador base (print).",
+        "Suíte garante: a permissão restrita não entra em master/admin/operador via sync; somente o papel dedicado family_viewer (semeado pelo RoleSeeder) a carrega."
+      ],
+      "images": ["screenshots/ca-extra-b-operador-sem-papel-403.png"]
+    },
+    {
+      "id": "CA-extra-C",
+      "title": "Master acessa sempre (RN04/bypass de papel)",
+      "status": "nav",
+      "gherkin": "Dado que sou Master e NÃO possuo o papel \"family_viewer\"\nQuando abro um prontuário familiar\nEntão o sistema permite o acesso (bypass de papel Master)",
+      "steps_html": "Master E2E (verificado no banco: NÃO possui a permissão <code>families.view-details</code> nem o papel family_viewer) realiza a busca e abre o prontuário.",
+      "results": [
+        "Botão \"Visualizar Família\" habilitado e prontuário aberto com sucesso pelo Master — bypass de papel no Gate, tenant-scoped.",
+        "A auditoria do Master registra o sufixo \"[Master]\" no professional_name (registro #3123, dossiê #9760)."
+      ],
+      "images": ["screenshots/ca-extra-c-master-botao-habilitado.png"]
+    },
+    {
+      "id": "CA-extra-D",
+      "title": "Isolamento territorial da concessão (RN07)",
+      "status": "auto",
+      "gherkin": "Dado que concedo o papel de privacidade a um Profissional no Tenant A\nQuando o mesmo Usuário atua no Tenant B sem o papel lá\nEntão ele não tem acesso a prontuários no Tenant B",
+      "steps_html": "Coberto pela suíte automatizada (apêndice): as checagens do gate são tenant-scoped via <code>user_tenant_role</code> (nunca pela união Spatie de todos os tenants).",
+      "results": [
+        "Papel concedido no Tenant A não habilita prontuários no Tenant B; o vínculo e o enforcement são por (user, tenant).",
+        "O usuário global permanece válido e operante nos demais tenants."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA-extra-E",
+      "title": "Inativação bloqueia de imediato (RN06)",
+      "status": "auto",
+      "gherkin": "Dado um Operador com o papel de privacidade\nQuando o Master o inativa como Profissional do município\nEntão o acesso ao prontuário é negado no próximo request (403)\nE seu Usuário global continua válido em outros tenants",
+      "steps_html": "Coberto pela suíte automatizada (apêndice): o endpoint de detalhe exige vínculo de Profissional ATIVO no tenant além do papel (inativar não remove papéis Spatie — o enforcement é pelo status do vínculo).",
+      "results": [
+        "Profissional inativado recebe 403 no request seguinte, mesmo mantendo o papel family_viewer.",
+        "Usuário global preservado em outros tenants."
+      ],
+      "images": []
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Pest, --filter=FamilyDetails|FamilyAccess|ClientUserPolicyStackedRoles) — 21 passed, 74 assertions (inclui os 4 testes anti-escalada de papéis empilhados do fix 38fd466)",
+    "file": "pest-family-details.txt"
+  }
+}

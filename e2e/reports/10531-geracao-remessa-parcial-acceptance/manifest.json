@@ -1,0 +1,251 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — HU #10531 · Geração da Remessa Parcial de Assistência Social",
+    "subtitle": "US-SIAP-01 · Épico HU-SIAP-AS · O Master gera a Remessa Parcial (1–12); Master e Operacional consultam, acompanham e baixam os pacotes — com o nome que a Unidade Gestora preferir",
+    "rows": [
+      [
+        "Gerado em",
+        "17/08/2026"
+      ],
+      [
+        "Capturas anexadas em",
+        "17/08/2026 — client :5175 dirigido via playwright-cli (o :5174 servia o admin — conferido pelo <title>), tenant E2E, cada imagem conferida individualmente quanto a PII; Operacional com CPF de teste livre (390.***.***-05)"
+      ],
+      [
+        "Branch (meta-repo)",
+        "feature/10531-geracao-remessa-parcial"
+      ],
+      [
+        "Spec (contrato)",
+        ".planning/specs/10531-geracao-remessa-parcial-assistencia-social.md"
+      ],
+      [
+        "Commit api/",
+        "c127c2a (etapa 01 — mês 1–12, acesso do Operacional, nome do pacote)"
+      ],
+      [
+        "Commit client/",
+        "5eff9ae (etapa 02 — histórico do Operacional, campo de nome no download, seletor 1–12)"
+      ],
+      [
+        "Ambiente",
+        "API Sail :8000 · PostgreSQL :4000 (api-pgsql-1) · harness Pest (sqlite :memory:) para os payloads"
+      ],
+      [
+        "Suíte api",
+        "pest --filter=Siap — 276 testes, 1445 asserções, verdes (pest-10531.txt); suíte cheia da etapa 01: 3429 passed / 26 skipped"
+      ],
+      [
+        "Suíte client",
+        "npm run test:run — 185 arquivos, 1443 testes, verdes (vitest-10531.txt)"
+      ],
+      [
+        "Ferramenta",
+        "Pest + harness de payloads (mascaramento na gravação) + playwright-cli (capturas)"
+      ],
+      [
+        "LGPD",
+        "dados FABRICADOS; nome → 'Maria S. L.' e CPF → 390.***.***-05 em todo artefato versionado; conteúdo do .zip incluído SÓ onde não há registro (6 leiautes em branco) ou com a linha mascarada"
+      ]
+    ]
+  },
+  "summary": "Treze critérios de aceite (CA01–CA13) demonstrados em três camadas: o CONTEÚDO real do .zip gerado (pacote/ — a lista dos 11 arquivos com contagem de registros e os 6 leiautes em branco na íntegra, evidência de primeira classe do CA01/CA02/CA03), payloads mascarados de cada cenário (payloads/*.json, gerados por harness Pest com gate LGPD na gravação) e a suíte automatizada (276 testes Siap na api + 1443 no client). A HU fechou as três lacunas da spec: RN01 (mês 1–12 — D03), RN09 (nome do pacote editável no download — D04/D06) e RN10 (o Operacional consulta o histórico e baixa — D02, corrigindo a suposição errada da etapa 02b da #10530). De brinde, a D03 removeu o min($month, 12) do ProfissionalSocialLayout — a ressalva registrada pela #10529 sobre a janela ambígua das referências 13/14 está FECHADA. O CA09 é a evidência central: o Operacional aparece VENDO a lista de remessas que a #10530 lhe negava — e sem a ação de gerar (D05).",
+  "lgpd": {
+    "natureza": "O .zip da remessa contém CPF e NOME DE SERVIDORES no leiaute ProfissionalSocial. O dossiê fica versionado no Git, então todo artefato é mascarado — e o conteúdo do pacote só entra onde não há registro (os 6 leiautes em branco trazem apenas Codigo/Exercicio/Mes) ou com a linha mascarada na gravação.",
+    "mascaramento_aplicado": true,
+    "criterio_de_mascaramento": "Nome de pessoa mascarado como 'Maria S. L.' (primeiro nome + iniciais) e CPF como 390.***.***-05 (3 primeiros + 2 últimos dígitos). Aplicado no ARTEFATO, na gravação: o harness (teste Pest dedicado, não commitado) mascara todo CPF (cru ou formatado) e RECUSA a gravação de qualquer conteúdo com sequência de 11 dígitos íntegra (gate com exceção dentro da rotina de escrita). Nomes de unidades/entidades (CRAS Centro, Instituto Esperanca) não são dado pessoal e permanecem legíveis.",
+    "dados": "FABRICADOS — CPFs válidos porém fictícios (390.***.***-05 e 529.***.***-25, CPFs de teste públicos) e nomes inventados JÁ EM FORMA MASCARADA ('Maria S. L.', 'Joana B. F.', 'Ana P. R.') — nem o banco de teste guardou nome por extenso; nenhuma cópia de base real.",
+    "verificacao": "Gate na gravação de cada artefato + varredura final do dossiê (rg -P: zero sequências de 11 dígitos íntegras, zero CPFs formatados sem máscara). Cada screenshot é conferido VISUALMENTE, individualmente (não por amostragem), antes do commit — critério de bloqueio.",
+    "d06": "O que o dossiê também prova: o nome escolhido no download NUNCA é persistido (CA12 — file_path idêntico antes/depois) e o error_message da falha é GENÉRICO (CA11 — o detalhe da exceção vai só ao log privado, porque pode carregar PII dos leiautes de pessoa).",
+    "screenshots": "As 3 capturas (1 do CA04, 2 do CA09) foram conferidas VISUALMENTE, uma a uma, antes do commit. Nenhum nome de pessoa nem CPF em tela: as remessas exibem período, situação, CARDUG (dado de organização), data e tamanho; os avisos citam unidades (CRAS Centro) e contagens, nunca identidade — herança da D04 da #10530. As três remessas injetadas para compor as 4 situações (pending/processing/failed) foram removidas no teardown; a completed real permaneceu."
+  },
+  "correcao_10530": {
+    "o_que_foi": "A etapa 02b da HU #10530 registrou na §6 do plano: 'O Operacional não recebe siap-remittances.index: ver o histórico de remessas geradas é ato de gestão.' Era uma SUPOSIÇÃO DE PLANEJAMENTO, não regra do PO — e a RN10 desta HU diz o oposto: 'O Operacional do Tenant consulta o histórico e baixa pacotes já gerados, mas não dispara nova geração.'",
+    "a_correcao": "A D02 reverte a atribuição: index/show/download entram em OPERATOR_GRANTED_PERMISSIONS (api c127c2a); store fica de fora (D05). No client, o gate canListRemittances NÃO mudou — com a permissão concedida no backend, a tabela monta sozinha (client 5eff9ae). O CA09 fotografa o Operacional vendo exatamente a lista que ele não via.",
+    "registro": "Rastreabilidade, não constrangimento: a suposição foi documentada na origem (#10530/02b, §6), contrariada pelo artefato do PO e corrigida no ciclo seguinte com teste guardando o contrato novo."
+  },
+  "residual_fechado": {
+    "ressalva_10529": "A #10529 registrou como ressalva a gambiarra min($reference->month, 12) no ProfissionalSocialLayout::referenceWindow() — 'a janela das referências 13/14 foi assumida como dezembro do exercício'. Com a D03 (mês limitado a 1–12 na validação compartilhada com o pre-check), a ambiguidade deixou de existir e o min() virou código morto: foi REMOVIDO na etapa 01 (api c127c2a), depois de verificado que todos os caminhos até o leiaute passam pelo SiapReferenceRequest. A ressalva sai do inventário de dúvidas em aberto.",
+    "historico_preservado": "A D03 vale para geração NOVA. SiapReference::label() e SiapRemittance::referenceLabel() mantêm os ramos 13/14 de propósito: remessa histórica não é reescrita (spec §8.3) e continua legível. §8.3 confirmou: 0 remessas com mês fora de 1–12 na base local."
+  },
+  "consultas_dimensionamento": {
+    "arquivo": "consultas-8.1-8.4.txt",
+    "ressalva": "Rodadas na base LOCAL (1 remessa no total; §8.3 = 0 fora de 1–12, reconfirmada em 2026-08-17) — a base NÃO é representativa e os números NÃO são dimensionamento. Mesmo quadro das HUs #10367→#10530 (R5 da spec): repetir em staging antes de dimensionar."
+  },
+  "questoes_abertas_tce": [
+    "Periodicidade oficial — a D03 assume mensal (1–12) por decisão do usuário; confirmar contra o calendário da Resolução Normativa nº 01/2022 do TCE-AL.",
+    "Agrupamento oficial da Remessa Parcial — o Manual não nomeia o pacote que reúne os 11 leiautes; se o TCE-AL exigir dois agrupamentos ('Cadastros' e 'Execução'), a RN03 muda.",
+    "Retenção dos pacotes — sem expurgo automático hoje; sugestão do artefato: manter pelo prazo de guarda da prestação de contas."
+  ],
+  "cas": [
+    {
+      "id": "CA01",
+      "title": "Gerar sem pendências (happy path) — 11 leiautes, todos com CARDUG/exercício/mês",
+      "status": "auto",
+      "gherkin": "Dado que sou Master, os parâmetros TCE/AL estão preenchidos E a conferência de 08/2026 não aponta pendência impeditiva, quando eu solicitar a geração para 08/2026, então a remessa nasce com status pending e ao concluir tem os 11 leiautes, todos com o CARDUG, exercício 2026 e mês 8.",
+      "steps_html": "Harness Pest semeia CARDUG <code>004821</code>, unidade, entidade, equipamento, estrutura e profissional completos, e chama <code>POST /siap-remittances</code> (2026/08). O pacote REAL é aberto: <code>pacote/00-lista-dos-11-arquivos.txt</code> lista os 11 arquivos com bytes, contagem de registros e a tríade <code>Codigo/Exercicio/Mes</code> conferida em CADA um. Payload íntegro (201 pending → show completed + outcomes persistidos) em <code>payloads/CA01-happy-path.json</code>. Teste dedicado (suíte): <i>generates a zip with all 11 layouts, including the ones without movement</i>.",
+      "results": [
+        "201 com status pending e snapshot do CARDUG; ao concluir: completed, layout_count = 11, file_checksum preenchido.",
+        "Os 11 arquivos do .zip carregam <Codigo>004821</Codigo>, <Exercicio>2026</Exercicio> e <Mes>08</Mes> — conferido arquivo a arquivo na lista."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA02",
+      "title": "Leiautes fora do escopo entram em branco — evidência do CONTEÚDO do zip",
+      "status": "auto",
+      "gherkin": "Dado um pacote gerado para 08/2026, quando eu abrir o .zip, então UnidadeSocial, EntidadeSocial, EquipamentoUnidade, EstruturaUnidadeSocial e ProfissionalSocial trazem registros E RegistrosUnidade, SCFV, CapacitacaoDivulgacao, NovasFamilias, UsuarioRede e Familia trazem só o cabeçalho, sem nenhum registro.",
+      "steps_html": "Evidência de primeira classe: o CONTEÚDO do pacote, não o banco. <code>payloads/CA02-conteudo-do-zip.json</code> traz a contagem de registros dos 5 preenchidos (≥1 cada) e dos 6 em branco (0 cada); os 6 XMLs em branco estão NA ÍNTEGRA em <code>pacote/*.xml</code> — só <code>Codigo/Exercicio/Mes</code>, nenhuma tag de registro (RN04: em branco ≠ preenchido com zeros). A linha do ProfissionalSocial incluída no payload está MASCARADA (<code>390.***.***-05</code> / 'Maria S. L.').",
+      "results": [
+        "5 preenchidos: UnidadeSocial, EntidadeSocial, EquipamentoUnidade, EstruturaUnidadeSocial e ProfissionalSocial com registros.",
+        "6 em branco: 115 bytes cada — cabeçalho e mais nada. Presentes no pacote, como a RN03/RN04 exigem."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA03",
+      "title": "Leiaute preenchível sem registro no período entra EM BRANCO, não ausente",
+      "status": "auto",
+      "gherkin": "Dado que o município não tem nenhuma entidade cadastrada, quando o pacote for gerado, então EntidadeSocial é entregue em branco — presente no zip, não ausente.",
+      "steps_html": "Segundo tenant semeado SEM entidade (só unidade completa). O pacote gerado traz <code>EntidadeSocial.xml</code> — íntegra em <code>pacote/CA03-EntidadeSocial-em-branco.xml</code>: cabeçalho com o CARDUG e NENHUMA tag <code>&lt;EntidadeSocial&gt;</code>. Payload em <code>payloads/CA03-leiaute-em-branco.json</code>: os 11 nomes no zip + <code>outcome = header_only</code> persistido.",
+      "results": [
+        "EntidadeSocial presente no zip e em branco; outcome registrado como header_only.",
+        "A diferença entre 'em branco' e 'ausente' é estrutural: o arquivo existe e valida perante o Manual."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA04",
+      "title": "Acompanhar e baixar — as quatro situações; download só em completed",
+      "status": "parc",
+      "gherkin": "Dado que solicitei a geração e saí da tela, quando eu retornar à relação de remessas, então vejo a situação atual E o download só é oferecido quando for completed.",
+      "steps_html": "Payload em <code>payloads/CA04-quatro-situacoes.json</code>: a lista devolve as quatro situações (<code>pending</code>, <code>processing</code>, <code>failed</code>, <code>completed</code>, com <code>status_label</code> pt-BR); o download do pending responde <b>409</b> e o do completed responde <b>200</b> com o Content-Disposition. Na UI, a tabela exibe um badge por situação e a ação 'Baixar .zip' só aparece na linha completed (teste do client: <i>CA04: exibe as quatro situações e só oferece o download no completed</i>).",
+      "results": [
+        "Index com as 4 situações e rótulos; download: 409 fora de completed, 200 em completed.",
+        "Na tela do Master: quatro linhas, um único botão de download — na linha Gerada."
+      ],
+      "images": [
+        "screenshots/CA04-quatro-situacoes-download-so-completed.png"
+      ]
+    },
+    {
+      "id": "CA05",
+      "title": "Regerar preserva o histórico (RN07 — cada geração é um retrato)",
+      "status": "auto",
+      "gherkin": "Dado um pacote já gerado para 08/2026, quando eu gerar novamente a mesma referência, então nasce um novo pacote E o anterior continua listado, com sua data e seu solicitante, sem ser substituído.",
+      "steps_html": "Payload em <code>payloads/CA05-regerar-preserva-historico.json</code>: duas gerações de 08/2026 (5 minutos de intervalo) → duas linhas na lista, cada uma com <code>created_at</code> e <code>requested_by_label</code> próprios; o <code>file_path</code> e o <code>file_checksum</code> da primeira estão IDÊNTICOS antes/depois. Não há unique em (tenant, exercise, reference_month) DE PROPÓSITO — unicidade apagaria histórico (RN07).",
+      "results": [
+        "2 remessas da mesma referência listadas, com data e solicitante.",
+        "file_path_inalterado = true e file_checksum_inalterado = true na anterior — o retrato não foi substituído."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA06",
+      "title": "Bloqueio por pendência impeditiva — 422 e NADA gravado",
+      "status": "auto",
+      "gherkin": "Dado que a conferência de 08/2026 aponta pendência impeditiva, quando eu tentar gerar, então recebo 422, nenhum arquivo é produzido E assertDatabaseCount('siap_remittances', 0).",
+      "steps_html": "Unidade sem <code>NumeroMDS</code> (pendência impeditiva da #10370). Payload em <code>payloads/CA06-pendencia-impeditiva.json</code>: 422 com a contagem de cadastros a corrigir, <code>siap_remittances</code> com ZERO linhas, nenhum job despachado, nenhum arquivo no storage. Teste dedicado: <i>refuses the generation when a unit has no MDS number (CA07 da #10370)</i> + <code>SiapGenerationGuard</code> reavaliado DENTRO do job (TOCTOU).",
+      "results": [
+        "422; a mensagem conta cadastros, nunca identidade (herança da D04 da #10530).",
+        "Nem linha, nem job, nem arquivo — 'a remessa não é gerada', literalmente."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA07",
+      "title": "Bloqueio por falta do CARDUG — a mensagem aponta a Organização",
+      "status": "auto",
+      "gherkin": "Dado que o código da Unidade Gestora não está informado, quando eu tentar gerar qualquer referência, então recebo 422 com a mensagem de informá-lo nos dados da Organização.",
+      "steps_html": "Payload em <code>payloads/CA07-cardug-ausente.json</code>: <code>cardug_identifier</code> nulo → 422 com erro de validação em <code>cardug_identifier</code> e a redação pt-BR 'A remessa SIAP não pode ser gerada: informe o identificador da Unidade Gestora (CARDUG) nos parâmetros TCE/AL.' Zero linhas gravadas. Teste dedicado: <i>refuses the generation when the identifier is missing (CA06 da #10367)</i> — inclusive para o identificador legado fora do formato.",
+      "results": [
+        "422 apontando os parâmetros TCE/AL da Organização; nada gravado.",
+        "O mesmo guard vale para o formato: CARDUG legado não-numérico também recusa."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA08",
+      "title": "Mês inválido (D03) — 13, 14 e 0 recusados; o pre-check recusa JUNTO",
+      "status": "auto",
+      "gherkin": "Dado que sou Master, quando eu informar mês 13 (ou 14, ou 0), então recebo 422 informando que a remessa aceita apenas meses de 1 a 12.",
+      "steps_html": "Payload em <code>payloads/CA08-mes-invalido.json</code>: <code>store</code> com mês 13 (Encerramento Contábil), 14 (Restos a Pagar) e 0 → 422 com a mensagem própria; o <b>pre-check</b> com mês 13 recusa JUNTO (R4 — <code>SiapReferenceRequest</code> compartilhado); mês 12, o último válido, segue aceito (201). No client, o seletor de período NÃO oferece mais 13/14 (grupo 'Períodos especiais' removido — teste <i>oferece os 12 meses do calendário e não oferece 13 nem 14</i>). Testes api: <i>refuses reference months outside 1 to 12 (CA08/D03)</i> ×3 + <i>also refuses month 13 in the pre-check (R4)</i>.",
+      "results": [
+        "Mensagem pt-BR: 'A Remessa Parcial de Assistência Social aceita apenas meses de 1 a 12.' — coerente nas duas telas.",
+        "13/14/0 → 422 sem efeito colateral; 12 → 201. O seletor do client só oferece 1–12.",
+        "De brinde: o min($month, 12) do ProfissionalSocialLayout foi removido — a ressalva da #10529 está FECHADA (ver seção Residual)."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA09",
+      "title": "Operacional consulta e baixa (D02) — a correção da decisão errada da #10530",
+      "status": "parc",
+      "gherkin": "Dado que sou Operacional do Tenant, quando eu abrir a tela de remessas SIAP, então vejo o histórico de pacotes gerados E consigo baixar um pacote completed E a ação de gerar NÃO está disponível para mim.",
+      "steps_html": "<b>A evidência mais importante desta HU.</b> Na etapa 02b da #10530 supusemos que o histórico era 'ato de gestão' e negamos <code>siap-remittances.index</code> ao Operacional — a RN10 do PO diz o contrário, e esta HU corrige (ver seção 'Correção da #10530'). Payload em <code>payloads/CA09-operacional.json</code>: a matriz de permissões REAL do papel operador (index/show/download/pre-check = true, store = false — via <code>OPERATOR_GRANTED_PERMISSIONS</code>, mecanismo automático, não favor do Master), o <code>index</code> respondendo 200 COM a lista, o show, o download 200 com Content-Disposition e o <code>store</code> respondendo <b>403</b> sem gravar nada (D05). A captura mostra o Operacional NO NAVEGADOR vendo a lista de remessas — exatamente o que ele não via — sem a ação de gerar. Testes: <i>lets the tenant Operacional list, open and download — never generate</i> (api) + <i>CA09/CA09b</i> em RemessasSiapPage.test.ts (client).",
+      "results": [
+        "Papel operador: index = true, show = true, download = true, store = false — e o Master não regride.",
+        "HTTP: index 200 com o histórico, download 200, store 403 com assertDatabaseCount inalterado.",
+        "Na tela: a tabela de remessas MONTADA para o Operacional (o gate do client não mudou — a permissão veio do backend) e nenhum botão de gerar."
+      ],
+      "images": [
+        "screenshots/CA09-operacional-ve-o-historico.png",
+        "screenshots/CA09-operacional-sem-acao-de-gerar.png"
+      ]
+    },
+    {
+      "id": "CA10",
+      "title": "Isolamento entre municípios — 404, não 403",
+      "status": "auto",
+      "gherkin": "Dado que sou usuário do município A, quando eu consultar a relação de remessas, então vejo apenas pacotes de A E acessar um pacote de B devolve 404, não 403.",
+      "steps_html": "Payload em <code>payloads/CA10-isolamento.json</code>: municípios A e B com remessa cada; o index de A traz SÓ a de A; <code>show</code> e <code>download</code> do pacote de B devolvem <b>404</b> — o recurso não existe para quem não é dono (403 confirmaria a existência). Defesa em profundidade: <code>BelongsToTenant</code> (Global Scope) + <code>EnsureTenantScope</code>. Teste dedicado: <i>never lists or downloads a remittance from another tenant</i> + suíte tests/Feature/TenantIsolation.",
+      "results": [
+        "Index só com o próprio município; show/download do vizinho → 404.",
+        "O padrão 404 (nunca 403) evita vazar a existência de pacotes alheios."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA11",
+      "title": "Falha na montagem — failed com motivo compreensível; pode repetir",
+      "status": "auto",
+      "gherkin": "Dado que a montagem foi interrompida por um problema, quando eu consultar a solicitação, então a situação é failed com motivo em linguagem compreensível E posso solicitar novamente a mesma referência.",
+      "steps_html": "Payload em <code>payloads/CA11-falha-e-nova-tentativa.json</code>: geração criada, identificador removido entre o pedido e o worker (TOCTOU — o guard roda DE NOVO dentro do job), a montagem falha → <code>status = failed</code> com <code>error_message</code> GENÉRICO ('Não foi possível gerar a remessa. A equipe técnica foi notificada.' — o detalhe da exceção vai só ao log privado, porque pode carregar PII dos leiautes de pessoa). Corrigido o cadastro, a MESMA referência aceita nova solicitação (201) — failed não conta como remessa ativa.",
+      "results": [
+        "failed com motivo em linguagem compreensível e genérica (LGPD by design).",
+        "Nova solicitação da mesma referência: 201 — total de 2 remessas, o histórico da falha preservado."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA12",
+      "title": "Nome do pacote no download (D04/RN09) — sugerido, editável, NUNCA persistido",
+      "status": "auto",
+      "gherkin": "Dado um pacote completed de 08/2026, quando eu baixar sem informar nome, então o arquivo vem com o nome sugerido pelo sistema; quando eu baixar informando 'remessa-agosto', então o arquivo vem como 'remessa-agosto.zip' E o file_path armazenado NÃO muda (D06).",
+      "steps_html": "Payload em <code>payloads/CA12-nome-do-download.json</code>: o Resource expõe <code>suggested_file_name = remessa-assistencia-social-maceio-2026-08.zip</code> (município + exercício + mês — igual ao exemplo da spec §9); download sem nome → Content-Disposition com o sugerido; com <code>?file_name=remessa-agosto</code> → <code>remessa-agosto.zip</code> (extensão forçada); e o <code>file_path</code> no banco está IDÊNTICO antes/depois — o nome é do download, nunca do retrato (D06/RN07). No client, o Popover pré-preenche com o sugerido e só envia <code>file_name</code> se a pessoa alterar (testes CA12/CA12b da tabela e do composable — o template de nome que o front montava foi REMOVIDO).",
+      "results": [
+        "suggested_file_name no payload do show; download default honra a sugestão.",
+        "remessa-agosto → remessa-agosto.zip; file_path inalterado (igual = true).",
+        "Nada persistido: o nome escolhido é parâmetro de query, não coluna."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA13",
+      "title": "Nome malicioso neutralizado — traversal e header injection (R2)",
+      "status": "auto",
+      "gherkin": "Dado um pacote completed, quando eu pedir o download com nome '../../etc/passwd', então o nome é sanitizado, o arquivo entregue é o pacote correto E nenhum caminho fora do storage é alcançado.",
+      "steps_html": "Comportamento de servidor — evidenciado por teste, não por captura. Payload em <code>payloads/CA13-nome-malicioso.json</code>: <code>../../etc/passwd</code> vira <code>passwd.zip</code> e o CONTEÚDO entregue é o pacote (não um arquivo alcançado pela travessia; storage idêntico antes/depois); <code>remessa\\r\\nX-Evil: 1</code> não leva CRLF ao Content-Disposition e nenhum header X-Evil nasce; 300 caracteres são capados em ≤120 com .zip; <code>file_name[]=</code> (array) não derruba — cai no sugerido, nunca em 500. Sanitizador <code>SiapDownloadFileName</code>: basename + Str::ascii + allowlist [A-Za-z0-9._-], coberto por 16 testes de unidade.",
+      "results": [
+        "Traversal: passwd.zip entregando o pacote correto; nenhum caminho fora do storage.",
+        "CRLF: Content-Disposition sem \\r\\n; header injection morta no sanitizador.",
+        "Oversized capado (≤120, .zip); array ignorado; valor cru nunca usado nem logado."
+      ],
+      "images": []
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (api — pest --filter=Siap: 276 testes, 1445 asserções; suíte cheia da etapa 01: 3429 passed / 26 skipped). Anexos adicionais: vitest-10531.txt (client, 1443 testes em 185 arquivos), consultas-8.1-8.4.txt (dimensionamento — base local NÃO representativa: 1 remessa, §8.3 = 0 fora de 1–12) e pacote/ (conteúdo real do .zip, mascarado).",
+    "file": "pest-10531.txt"
+  }
+}

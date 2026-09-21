@@ -1,0 +1,17 @@
+HU #10370 — CA11: isolamento entre municípios
+================================================================================
+
+Base do cenário — DUAS unidades existem na plataforma, em tenants diferentes:
+
+  tenant da remessa   : c982ad51-5cbb-488c-8506-1d9d3a310bdf
+    unidade           : CRAS Alto do Cruzeiro (meu município)
+    NumeroMDS         : 2704302000123
+
+  OUTRO tenant        : 34d4127f-dd86-4cea-92ab-046d13499bd7
+    unidade           : CRAS Arapiraca (OUTRO município)
+    NumeroMDS         : 2700108000999
+
+Resultado no ca11-isolamento-entre-municipios.xml:
+  blocos <UnidadeSocial>            : 1
+  contém o MDS do meu município     : sim
+  contém o MDS do outro município   : não

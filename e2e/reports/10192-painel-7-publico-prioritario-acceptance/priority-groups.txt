@@ -1,0 +1,17 @@
+
+   PASS  Tests\Feature\Dashboard\PriorityGroupsTest
+  ✓ it counts family markers and active-person markers separately (RN02… 0.54s  
+  ✓ it counts a citizen once even when linked to two families of the sc… 0.05s  
+  ✓ it breaks GPTE down by group (desc), excludes "Nenhuma", and sums t… 0.09s  
+  ✓ it recalculates for a neighborhood, covering only geocoded families… 0.06s  
+  ✓ it returns zeroed indicators and an empty gpte when the scope has n… 0.04s  
+  ✓ it returns 422 for a neighborhood_uuid outside the tenant municipal… 0.04s  
+  ✓ it denies the panel to the base operator without the dedicated role  0.04s  
+  ✓ it grants the panel to the Master without any add-on role            0.04s  
+
+   PASS  Tests\Feature\TenantIsolation\DashboardPriorityGroupsIsolationTest
+  ✓ it never counts families, members or GPTE from another tenant (RN10… 0.09s  
+
+  Tests:    9 passed (40 assertions)
+  Duration: 1.09s
+

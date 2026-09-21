@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — Painel 3: Bolsa Família</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — Painel 3: Bolsa Família</h1>
+    <div class="sub">HU #10188 · Dashboard do tenant · Evidências end-to-end no client</div>
+    <div class="meta"><div><span>Gerado em:</span> 30/07/2026</div><div><span>HU:</span> #10188 — Painel 3: Bolsa Família</div><div><span>Branch:</span> feature/10188-painel-3-bolsa-familia (api + client)</div><div><span>Spec:</span> .planning/specs/10188-painel-3-bolsa-familia.md</div><div><span>Ambiente:</span> API Sail/PostgreSQL+PostGIS · client :5174 (não-mock)</div><div><span>Organização (tenant):</span> E2E CadÚnico · 96 famílias · 22 beneficiárias do PBF</div><div><span>Limiares de renda:</span> Extrema pobreza R$ 218,00 · meio SM R$ 759,00 (tabela minimum_wages)</div><div><span>Ferramenta:</span> playwright-cli (Chromium) + Pest</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">7 critérios evidenciados: 4 por navegador dirigindo o client real (CA05 perfil de renda dos beneficiários, RN05 cobertura + perfil, e o RG01 nas modalidades padrão/dinâmico/limpar) e 3 por suíte automatizada (partição + consistência com o KPI 3 da barra fixa, isolamento multi-tenant e gate de permissão). Todos atendidos. Suíte Pest do backend: 9 testes verdes (41 asserções).</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA05</td><td>Cruzamento de renda dos beneficiários (perfil socioeconômico)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">RN05-cob</td><td>Indicador de cobertura (Famílias Beneficiárias)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">RG01-a</td><td>Filtro global por Bairro — comportamento padrão ("Todos os Bairros")</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">RG01-bc</td><td>Filtro global por Bairro — recálculo dinâmico e "Limpar Filtro"</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">PART</td><td>Partição do perfil e consistência com a barra fixa</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">ISO</td><td>Isolamento multi-tenant</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">PERM</td><td>Gate de permissão (sem dashboard.view-indicators → 403 / painel oculto)</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA05">
+      <h2>CA05 — Cruzamento de renda dos beneficiários (perfil socioeconômico) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que consulto o perfil do Bolsa Família (aba "Bolsa Família")
+Quando a tela renderiza o gráfico de perfil socioeconômico
+Então identifico quantas famílias beneficiárias do programa estão enquadradas em cada faixa de renda per capita (Extrema Pobreza, Pobreza/Baixa Renda e Acima de Meio Salário Mínimo).</p>
+      <p class="steps"><strong>Como foi testado:</strong> Login como Master, aba <b>Bolsa Família</b>. Leitura do gráfico de rosca <b>Perfil Socioeconômico dos Beneficiários</b> (Apache ECharts).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O gráfico cruza os 22 beneficiários com as 3 faixas de renda: &lt;b&gt;Extrema Pobreza 9 (40,9%)&lt;/b&gt;, &lt;b&gt;Pobreza/Baixa Renda 8 (36,4%)&lt;/b&gt; e &lt;b&gt;Acima de Meio Salário Mínimo 5 (22,7%)&lt;/b&gt;.</li><li>A legenda detalha a contagem, o percentual e a faixa em R$ de cada grupo.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca05-perfil-renda.png" alt="CA05 evidência"/><figcaption>ca05-perfil-renda.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="RN05-cob">
+      <h2>RN05-cob — Indicador de cobertura (Famílias Beneficiárias) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um recorte com famílias
+Quando o painel é calculado
+Então "Famílias Beneficiárias" = famílias com a marcação de recebimento ativo do PBF (contagem + percentual sobre o total).</p>
+      <p class="steps"><strong>Como foi testado:</strong> Cartão de cobertura no topo do Painel 3, no recorte municipal.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Famílias Beneficiárias do Bolsa Família: &lt;b&gt;22 (22,9% do total)&lt;/b&gt;, de 96 famílias cadastradas no recorte.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/rn05-cobertura-topo.png" alt="RN05-cob evidência"/><figcaption>rn05-cobertura-topo.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="RG01-a">
+      <h2>RG01-a — Filtro global por Bairro — comportamento padrão ("Todos os Bairros") <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que acabei de carregar a aba "Bolsa Família"
+Quando nenhum bairro está selecionado
+Então o filtro inicia em "Todos os Bairros"
+E a cobertura e o perfil refletem a consolidação municipal.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Ao abrir o dashboard, o filtro global (topo, à direita) inicia em <code>Todos os Bairros</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Filtro em "Todos os Bairros"; cobertura e perfil exibem a consolidação municipal (22 beneficiárias de 96).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/rn05-cobertura-topo.png" alt="RG01-a evidência"/><figcaption>rn05-cobertura-topo.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="RG01-bc">
+      <h2>RG01-bc — Filtro global por Bairro — recálculo dinâmico e "Limpar Filtro" <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o filtro global está em "Todos os Bairros"
+Quando eu seleciono o bairro "Itapoã"
+Então a cobertura e o perfil recalculam para as famílias do bairro (RN07)
+E ao acionar "Limpar Filtro" o painel volta à consolidação municipal.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Seleção do bairro <b>Itapoã</b> no filtro global; um único evento recalcula a barra fixa E o painel (RG01/RN08).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Recálculo instantâneo: cobertura 22 → 2 (66,7% de 3 famílias); barra fixa e painel exibem "Recalculado por bairro: Itapoã".</li><li>O perfil recalcula (2 beneficiárias em Extrema Pobreza). O KPI "Famílias no Bolsa Família" da barra fixa também mostra 2 (consistência RN08).</li><li>O botão "Limpar Filtro" retorna imediatamente à visão municipal (cobertura volta a 22, filtro a "Todos os Bairros").</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/rg01-bairro-itapoa.png" alt="RG01-bc evidência"/><figcaption>rg01-bairro-itapoa.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="PART">
+      <h2>PART — Partição do perfil e consistência com a barra fixa <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Então extreme_poverty + low_income + above_half_minimum_wage = Famílias Beneficiárias
+E "Famílias Beneficiárias" é igual ao KPI 3 (Total de Famílias Bolsa Família) da barra fixa (#10184).</p>
+      <p class="steps"><strong>Como foi testado:</strong> Verificado na UI (9+8+5 = 22) e por testes automatizados (Pest) — ver apêndice.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Na tela: 9 (Extrema Pobreza) + 8 (Baixa Renda) + 5 (Acima de Meio SM) = 22 (Beneficiárias).</li><li>BolsaFamiliaTest: partição das 3 faixas e teste cruzado "beneficiaries == KPI 3" (RN08); não-beneficiárias excluídas do perfil.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca05-perfil-renda.png" alt="PART evidência"/><figcaption>ca05-perfil-renda.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="ISO">
+      <h2>ISO — Isolamento multi-tenant <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um usuário vinculado ao Tenant A
+Quando ele solicita o Painel 3
+Então apenas famílias do Tenant A entram nos cálculos
+E um neighborhood_uuid fora do município do Tenant A retorna 422.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Coberto por teste automatizado (Pest) — ver apêndice.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>DashboardBolsaFamiliaIsolationTest: famílias/beneficiárias do Tenant B nunca são contadas para o Tenant A.</li><li>BolsaFamiliaTest: 422 para bairro fora do município do tenant.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="PERM">
+      <h2>PERM — Gate de permissão (sem dashboard.view-indicators → 403 / painel oculto) <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um usuário sem dashboard.view-indicators
+Quando ele chama o endpoint do Painel 3
+Então recebe 403 (e o painel não é exibido).</p>
+      <p class="steps"><strong>Como foi testado:</strong> Coberto por teste automatizado (Pest) — o endpoint reusa o gate da barra fixa (#10184).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>BolsaFamiliaTest: operador sem o papel dedicado recebe 403; Master acessa sem add-on.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+  
+  <h2>Anexo — Cobertura automatizada (Pest — BolsaFamilia + Isolamento)</h2>
+  <pre class="pest">
+   PASS  Tests\Feature\Dashboard\BolsaFamiliaTest
+  ✓ it reports coverage and profiles only beneficiaries across the 3 in… 0.42s  
+  ✓ it reports zeroed coverage and profile without error when there are… 0.05s  
+  ✓ it excludes non-beneficiaries from the profile even when they share… 0.06s  
+  ✓ it reports beneficiaries equal to the strategic indicators KPI 3 (R… 0.06s  
+  ✓ it recalculates for a neighborhood, covering only geocoded benefici… 0.06s  
+  ✓ it returns 422 for a neighborhood_uuid outside the tenant municipal… 0.05s  
+  ✓ it denies the panel to the base operator without the dedicated role  0.04s  
+  ✓ it grants the panel to the Master without any add-on role            0.04s  
+
+   PASS  Tests\Feature\TenantIsolation\DashboardBolsaFamiliaIsolationTest
+  ✓ it never counts families from another tenant in the bolsa família p… 0.06s  
+
+  Tests:    9 passed (41 assertions)
+  Duration: 0.91s
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

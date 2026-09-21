@@ -1,0 +1,7 @@
+{
+    "nota": "Mensagens em pt-BR (o dump de payload roda com locale en). D04 da HU #10372: a mensagem tem de dizer que a correcao e no Painel de Administracao Global.",
+    "pendencia.equipment_code_unmapped": "O código de equipamento \"099\" registrado nesta unidade não consta da tabela de equipamentos do SIAP. O ajuste é feito no cadastro de apoio de equipamentos de unidade, no Painel de Administração Global — não está ao alcance do município: acione o administrador da plataforma. Enquanto isso, nenhuma remessa pode ser gerada.",
+    "pendencia.equipment_quantity_inconsistent": "Esta unidade tem mais equipamentos em uso (QuantidadeUso) do que o total informado para o equipamento 2 da tabela do SIAP. O registro continua saindo na remessa com os valores cadastrados; revise o inventário da unidade.",
+    "recusa.blocked_equipment_code_unmapped (1)": "A remessa SIAP não pode ser gerada: 1 tipo de equipamento vinculado às unidades está com código fora da tabela de equipamentos do SIAP. O ajuste é feito no cadastro de apoio de equipamentos de unidade, no Painel de Administração Global — acione o administrador da plataforma. Veja quais na conferência prévia.",
+    "recusa.blocked_equipment_code_unmapped (3)": "A remessa SIAP não pode ser gerada: 3 tipos de equipamento vinculados às unidades estão com código fora da tabela de equipamentos do SIAP. O ajuste é feito no cadastro de apoio de equipamentos de unidade, no Painel de Administração Global — acione o administrador da plataforma. Veja quais na conferência prévia."
+}

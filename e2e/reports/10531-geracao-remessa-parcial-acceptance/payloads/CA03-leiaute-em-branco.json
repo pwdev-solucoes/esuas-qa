@@ -1,0 +1,19 @@
+{
+    "_cenario": "CA03 — município sem entidade cadastrada: EntidadeSocial presente no zip, em branco",
+    "arquivos_do_zip": [
+        "UnidadeSocial.xml",
+        "EntidadeSocial.xml",
+        "EquipamentoUnidade.xml",
+        "EstruturaUnidadeSocial.xml",
+        "ProfissionalSocial.xml",
+        "RegistrosUnidade.xml",
+        "NovasFamilias.xml",
+        "SCFV.xml",
+        "CapacitacaoDivulgacao.xml",
+        "UsuarioRede.xml",
+        "Familia.xml"
+    ],
+    "entidade_social_presente": true,
+    "entidade_social_sem_registro": true,
+    "outcome_persistido": "header_only"
+}

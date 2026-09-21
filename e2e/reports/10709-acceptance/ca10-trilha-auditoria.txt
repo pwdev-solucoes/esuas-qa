@@ -1,0 +1,11 @@
+=== Trilha de auditoria — CA09/CA10 ===
+registros=4
+Familia orientada                na trilha? NAO (correto)
+triagem                          na trilha? NAO (correto)
+Visita domiciliar realizada      na trilha? NAO (correto)
+description                      na trilha? NAO (correto)
+cancel_reason                    na trilha? NAO (correto)
+attendance_type_id               presente? SIM (trilha viva)
+attended_on                      presente? SIM (trilha viva)
+social_unit_id                   presente? SIM (trilha viva)
+status                           presente? SIM (trilha viva)

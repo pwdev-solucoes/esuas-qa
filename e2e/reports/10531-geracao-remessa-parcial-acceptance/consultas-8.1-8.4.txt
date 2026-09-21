@@ -1,0 +1,54 @@
+# Consultas SQL de apoio — spec §8.1–§8.4 · HU #10531 (US-SIAP-01)
+# Executadas em 2026-08-17 na base LOCAL de desenvolvimento (container api-pgsql-1, db esuas).
+#
+# ⚠️ RESSALVA VINCULANTE (R5 da spec, herdada das HUs #10367→#10530): a base local é
+# praticamente VAZIA e NÃO é representativa — 1 remessa no total. Os números abaixo NÃO
+# são dimensionamento. As consultas precisam ser repetidas em STAGING.
+#
+# §8.3 — gate da D03 (rodada ANTES da etapa 01 e RECONFIRMADA agora): 0 remessas com mês
+# fora de 1–12. Não há remessa histórica 13/14 que a D03 tornaria irreproduzível na base local.
+
+=== Consultas de apoio §8.1–§8.4 da spec 10531 — base LOCAL (api-pgsql-1, db esuas) ===
+
+--- Tenants presentes na base local ---
+ tenant_id | uuid_prefixo | status_id | excluido 
+-----------+--------------+-----------+----------
+         1 | 6c4749d7     |         1 | f
+         2 | f3ce4c62     |         1 | f
+         3 | 00000000     |         1 | f
+         4 | 5a49f253     |         1 | f
+(4 rows)
+
+
+--- §8.1 — Remessas por situação (dimensiona CA04/CA11), por tenant ---
+ tenant_id |  status   | total 
+-----------+-----------+-------
+         3 | completed |     1
+(1 row)
+
+
+--- §8.2 — Referências regeradas (dimensiona CA05), por tenant ---
+ tenant_id | exercise | reference_month | geracoes 
+-----------+----------+-----------------+----------
+(0 rows)
+
+
+--- §8.3 — Remessas com mês fora de 1–12 (impacto da D03; se houver linha, PARAR e reportar) ---
+ id | tenant_id | exercise | reference_month | status | created_at 
+----+-----------+----------+-----------------+--------+------------
+(0 rows)
+
+
+--- §8.3b — Todas as remessas existentes (contexto do zero acima) ---
+ id | tenant_id | exercise | reference_month |  status   |     created_at      
+----+-----------+----------+-----------------+-----------+---------------------
+  1 |         3 |     2026 |               8 | completed | 2026-08-17 13:20:02
+(1 row)
+
+
+--- §8.4 — Pacotes completos (candidatos a órfão; conferência do arquivo é no storage) ---
+ uuid_prefixo | tenant_id |                                           file_path                                            |     finished_at     
+--------------+-----------+------------------------------------------------------------------------------------------------+---------------------
+ 7649312e     |         3 | siap/remittances/3/7649312e-fb8b-4ff3-ba4a-15db997e98cd/remessa-assistencia-social-2026-08.zip | 2026-08-17 13:20:32
+(1 row)
+

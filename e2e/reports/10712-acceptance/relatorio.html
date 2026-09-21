@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — Códigos de Encaminhamento</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  section.note { border:1px solid var(--line); border-left:4px solid #b06a00; border-radius:6px; padding:10px 14px; margin:10px 0; background:#fffdf7; font-size:13px; }
+  section.note h3 { margin:0 0 6px; font-size:13.5px; color:#8a5200; }
+  section.note p { margin:6px 0; }
+  section.note ul { margin:6px 0 6px 18px; padding:0; }
+  section.note pre { background:var(--bg); border:1px solid var(--line); border-radius:4px; padding:8px; overflow-x:auto; font-size:11px; white-space:pre-wrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — Códigos de Encaminhamento</h1>
+    <div class="sub">Épico Prontuário SUAS · fase F2 · HU #10712 — catálogo global mantido no Painel de Administração Global</div>
+    <div class="meta"><div><span>Gerado em:</span> 03/09/2026 18:05 · complementado em 04/09/2026 15:10</div><div><span>HU:</span> GLPI #10712 — Manter os códigos de encaminhamento no Painel Global</div><div><span>Spec (contrato):</span> .planning/specs/10712-codigos-encaminhamento.md</div><div><span>Branch:</span> feature/10712-encaminhamentos</div><div><span>Commits api/:</span> 6fb22cf (catálogo) · 5111221 (fix 1) · 8a67b27 (fix 2) · 684011c (testes de contrato)</div><div><span>Commits admin/:</span> 561e802 (módulo) · f2b657c (correções da revisão)</div><div><span>Ambiente:</span> API Sail/PostgreSQL em localhost · Painel Global (Vite) :5175 · Painel do Tenant (Vite) :5174 · dados reais (não-mock)</div><div><span>Ferramenta:</span> playwright-cli (Chromium) + Pest 4</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">14 critérios de aceite (CA01–CA12 mais os técnicos CA08b e CA10b). 9 evidenciados por navegador na tela real com dados da API, 3 de forma combinada e 2 por suíte automatizada. Nenhum critério reprovado. A suíte específica da HU fecha com 53 testes e 280 asserções, todos verdes. Complemento de 04/09/2026: os três critérios que a geração original deferiu por dependerem de etapas seguintes da mesma fase — CA07 (tela de registro, #10713), CA08 (tabela de encaminhamentos, #10713) e CA09 (apuração de encaminhamentos, #10715) — foram fechados de ponta a ponta na interface, porque essas etapas já foram entregues.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA01</td><td>Lista disponível com os códigos do instrumento</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA02</td><td>Regra de apuração visível nos três itens que contam</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA03</td><td>Item que conta indivíduos exige pessoa</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA04</td><td>Item restrito ao tipo de unidade</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA05</td><td>Código não é gerado automaticamente e duplicado é recusado</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA06</td><td>Nenhum código é criado para a lacuna de 01 a 04</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA07</td><td>Códigos livres exigem descrição no registro</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA08</td><td>Item em uso não é excluído</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA08b</td><td>Exclusão em massa respeita o uso</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA09</td><td>Item inativado continua no histórico e na apuração</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA10</td><td>Município não edita a lista</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA10b</td><td>Escrita negada ao guard client no backend</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA11</td><td>Alteração auditada</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA12</td><td>A área de destino agrupa a lista</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA01">
+      <h2>CA01 — Lista disponível com os códigos do instrumento <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Administrador no Painel de Administração Global
+Quando eu consultar o cadastro de códigos de encaminhamento
+Então vejo os itens da tabela do instrumento, agrupados por área de destino
+  E os códigos preservam as lacunas entre as faixas, sem renumeração</p>
+      <p class="steps"><strong>Como foi testado:</strong> Login como Administrador, aceite dos documentos legais e navegação até <code>/app/referral-codes</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A lista abre agrupada por área de destino, com o cabeçalho de grupo 'ASSISTÊNCIA SOCIAL — 11 códigos'.</li><li>36 códigos semeados, cobrindo as sete áreas do instrumento.</li><li>O agrupamento é apresentação: nenhum código é renumerado e a ordenação segue o campo `code`.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca01-ca06-lista-agrupada.png" alt="CA01 evidência"/><figcaption>ca01-ca06-lista-agrupada.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA02">
+      <h2>CA02 — Regra de apuração visível nos três itens que contam <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que estou consultando o cadastro
+Quando eu abrir os itens de inclusão no CadÚnico, atualização cadastral e INSS para BPC
+Então cada um indica para qual contador do leiaute 15.6 ele conta
+  E os demais itens não contam para nenhum</p>
+      <p class="steps"><strong>Como foi testado:</strong> Leitura da coluna <b>Regra de apuração</b> na listagem.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>07 — 'Famílias encaminhadas para atualização cadastral no CadÚnico (leiaute 15.6)'.</li><li>08 — 'Famílias encaminhadas para inclusão no CadÚnico (leiaute 15.6)'.</li><li>09 — 'Indivíduos encaminhados ao BPC (leiaute 15.6)'.</li><li>Todos os demais exibem 'Não conta para contador específico', em estilo neutro — a distinção é visual, não só textual.</li><li>Confirmado no banco: exatamente três códigos têm `remittance_counter` preenchido.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca01-ca06-lista-agrupada.png" alt="CA02 evidência"/><figcaption>ca01-ca06-lista-agrupada.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA03">
+      <h2>CA03 — Item que conta indivíduos exige pessoa <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que estou consultando o item "INSS, visando acesso ao BPC"
+Quando eu abrir o detalhe
+Então ele indica que o registro exige identificar a pessoa encaminhada
+  E os itens de CadÚnico não exigem, porque contam famílias</p>
+      <p class="steps"><strong>Como foi testado:</strong> Leitura da coluna <b>Exige pessoa</b>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O código 09 (BPC) é o único com 'Sim'.</li><li>Os códigos 07 e 08 (CadÚnico) exibem '—', coerentes com contarem famílias e não indivíduos.</li><li>O texto de ajuda do formulário explicita a razão: 'o leiaute conta indivíduos, como no BPC; os itens de CadÚnico contam famílias e não exigem'.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca01-ca06-lista-agrupada.png" alt="CA03 evidência"/><figcaption>ca01-ca06-lista-agrupada.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA04">
+      <h2>CA04 — Item restrito ao tipo de unidade <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que estou consultando o item "Encaminhamento do CRAS para o CREAS"
+Quando eu abrir o detalhe
+Então ele indica que só é oferecido a partir de unidade do tipo CRAS</p>
+      <p class="steps"><strong>Como foi testado:</strong> Leitura da coluna <b>Restrição de unidade</b> nas linhas 13 e 14.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>13 — 'Centro de Referência de Assistência Social' (CRAS).</li><li>14 — 'Centro de Referência Especializado de Assistência Social' (CREAS).</li><li>Nenhum outro código tem restrição; a coluna exibe '—'.</li><li>A restrição sobrevive à exclusão do tipo de unidade: a relação usa `withTrashed()` e o contrato marca `is_deleted`, para a tela mostrar 'CRAS (excluído)' em vez de afirmar falsamente que não há restrição.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca01-ca06-lista-agrupada.png" alt="CA04 evidência"/><figcaption>ca01-ca06-lista-agrupada.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA05">
+      <h2>CA05 — Código não é gerado automaticamente e duplicado é recusado <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que estou cadastrando um item
+Quando eu informar os dados
+Então o código é informado por mim
+  E o sistema recusa código já utilizado</p>
+      <p class="steps"><strong>Como foi testado:</strong> 'Novo Código de Encaminhamento' → informar código <code>08</code> (já existente), nome e área → Salvar.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O campo Código é de preenchimento manual, com placeholder 'Ex: 08' — não há geração automática nem sugestão de próximo número.</li><li>O backend responde 422 e a mensagem 'O campo código já está sendo utilizado.' aparece no próprio campo, com borda destrutiva.</li><li>O formulário permanece aberto com os dados preenchidos; nada é criado.</li><li>O formato é validado em duas camadas: máscara de 2 dígitos no front e `regex:/^\d{2}$/` no backend — '5' e 'abc' são recusados antes de virar dado sujo.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca05-codigo-duplicado-422.png" alt="CA05 evidência"/><figcaption>ca05-codigo-duplicado-422.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA06">
+      <h2>CA06 — Nenhum código é criado para a lacuna de 01 a 04 <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que a tabela recebida começa no código 05
+Quando eu consultar o cadastro
+Então não existem itens de código 01 a 04
+  E a ausência é visível, não preenchida por suposição</p>
+      <p class="steps"><strong>Como foi testado:</strong> Inspeção da listagem ordenada por código e conferência direta no banco.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A lista começa em 05. Não há placeholder, marcador de 'faltando' nem numeração contínua.</li><li>Consulta ao banco: os 36 códigos são 05–15, 30–34, 40–42, 50–54, 60–61, 70–74 e 85–89 — nenhum 01–04.</li><li>As lacunas entre faixas também são preservadas, e o próprio filtro por área as torna explícitas ao rotular 'Saúde (30–34)'.</li><li>Teste automatizado assere a ausência de 01–04 por expressão regular, impedindo que uma futura 'correção' preencha a sequência.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca01-ca06-lista-agrupada.png" alt="CA06 evidência"/><figcaption>ca01-ca06-lista-agrupada.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA07">
+      <h2>CA07 — Códigos livres exigem descrição no registro <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que um profissional escolhe um dos códigos livres ao registrar um encaminhamento
+Quando ele tentar salvar sem informar o órgão de destino e o objetivo
+Então o registro não é salvo, conforme a regra do item</p>
+      <p class="steps"><strong>Como foi testado:</strong> Complemento de 04/09/2026, agora que a tela de registro da #10713 existe: no Painel do Tenant, aba <b>Encaminhamentos</b> do prontuário → <b>Registrar encaminhamento</b> → unidade de origem E2E CRAS Centro → código <b>85 — Outros — código livre 85</b> → tentar salvar sem preencher órgão de destino nem objetivo.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Os cinco códigos livres são oferecidos no select do registro: &lt;code&gt;85&lt;/code&gt; a &lt;code&gt;89&lt;/code&gt;, rotulados “Outros — código livre”.</li><li>Com o código livre escolhido e os campos vazios, o registro &lt;b&gt;não é salvo&lt;/b&gt;: a tela exibe “Informe o órgão ou a unidade de destino.” e “Descreva o objetivo do encaminhamento.”, cada uma no seu campo.</li><li>Nada é criado: a contagem de encaminhamentos permanece em 4 antes e depois da tentativa.</li><li>Os cinco códigos livres nascem com &lt;code&gt;requires_free_description = true&lt;/code&gt; e área &lt;code&gt;free&lt;/code&gt;, verificado por teste do seeder.</li><li>Observação levada ao PO (RN07a): a exigência é hoje redundante, porque órgão de destino e objetivo já são obrigatórios em todo encaminhamento. A coluna existe para o dia em que a obrigatoriedade geral for relaxada.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca07-codigo-livre-exige-descricao.png" alt="CA07 evidência"/><figcaption>ca07-codigo-livre-exige-descricao.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA08">
+      <h2>CA08 — Item em uso não é excluído <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o item "Para Conselho Tutelar" já foi usado em encaminhamentos
+Quando eu tentar excluí-lo
+Então a exclusão é recusada
+  E o sistema indica que ele pode ser inativado</p>
+      <p class="steps"><strong>Como foi testado:</strong> Complemento de 04/09/2026, com a tabela <code>referrals</code> já criada pela #10713: no Painel Global, menu de ações do código <b>08 — Inclusão no CadÚnico</b> (usado por 2 encaminhamentos) → Excluir → confirmar. Complementado pela suíte <code>ReferralCodeUsageTest</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A exclusão é &lt;b&gt;recusada&lt;/b&gt; e o diálogo passa a exibir a mensagem do backend: “Não é possível excluir um código já utilizado em encaminhamentos registrados. Inative-o para que deixe de ser oferecido em novos registros.”</li><li>O botão de confirmação &lt;b&gt;troca de “Excluir” para “Inativar”&lt;/b&gt; — o sistema indica o caminho permitido, como o critério pede.</li><li>Nada é excluído: o cadastro segue com &lt;b&gt;36 códigos&lt;/b&gt; e o 08 permanece com &lt;code&gt;deleted_at = null&lt;/code&gt;.</li><li>A trava não depende da FK &lt;code&gt;RESTRICT&lt;/code&gt;: como a exclusão é soft delete, a constraint não dispararia. É o serviço que fecha a porta.</li><li>A resposta 422 orienta a inativar em vez de excluir, preservando o histórico.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca08-exclusao-recusada-codigo-em-uso.png" alt="CA08 evidência"/><figcaption>ca08-exclusao-recusada-codigo-em-uso.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA08b">
+      <h2>CA08b — Exclusão em massa respeita o uso <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que selecionei três itens, um deles já usado em encaminhamentos
+Quando eu confirmar a exclusão em massa
+Então nenhum dos três é excluído
+  E o sistema identifica qual está em uso</p>
+      <p class="steps"><strong>Como foi testado:</strong> Coberto por teste de atomicidade em <code>ReferralCodeUsageTest</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A operação é atômica de verdade: com um item em uso, nenhum dos três é excluído.</li><li>A resposta devolve `in_use_uuids`, identificando quais bloquearam a operação.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA09">
+      <h2>CA09 — Item inativado continua no histórico e na apuração <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que inativei um item já usado
+Quando eu consultar o histórico e a apuração do período em que ele foi usado
+Então os encaminhamentos continuam listados e continuam contando</p>
+      <p class="steps"><strong>Como foi testado:</strong> Complemento de 04/09/2026, agora que a apuração conta encaminhamentos (#10715): inativar o código <b>08</b> pelo Painel Global — usando o próprio botão “Inativar” oferecido pela recusa do CA08 — e em seguida consultar, no Painel do Tenant, a aba <b>Encaminhamentos</b> do prontuário e a tela de <b>Apuração de Atendimentos</b> do período.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Inativado, o código 08 continua no cadastro com &lt;code&gt;deleted_at = null&lt;/code&gt; — inativação não é exclusão.</li><li>&lt;b&gt;Histórico&lt;/b&gt; — os dois encaminhamentos de 02/09/2026 registrados com “08 — Inclusão no CadÚnico” continuam listados na aba de Encaminhamentos da família, com situação Registrado.</li><li>&lt;b&gt;Apuração&lt;/b&gt; — no recorte 09/2026, o E2E CRAS Centro mantém &lt;b&gt;Famílias encaminhadas para inclusão no CadÚnico = 1&lt;/b&gt;: o código inativado &lt;b&gt;continua contando&lt;/b&gt; no período em que foi usado.</li><li>O Model não tem Global Scope de &lt;code&gt;is_active&lt;/code&gt; — teste assere que os únicos escopos globais são os de soft delete. É isso que garante que inativar um código não apague retroativamente o passado.</li><li>Ao final da evidência o código 08 foi reativado, restaurando os 36 códigos ativos.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca09-codigo-08-inativado.png" alt="CA09 evidência"/><figcaption>ca09-codigo-08-inativado.png</figcaption></figure><figure><img src="screenshots/ca09-historico-mantem-codigo-inativado.png" alt="CA09 evidência"/><figcaption>ca09-historico-mantem-codigo-inativado.png</figcaption></figure><figure><img src="screenshots/ca09-apuracao-conta-codigo-inativado.png" alt="CA09 evidência"/><figcaption>ca09-apuracao-conta-codigo-inativado.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA10">
+      <h2>CA10 — Município não edita a lista <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Master no Painel do Tenant
+Quando eu procurar onde alterar os códigos de encaminhamento
+Então a ação não existe para mim</p>
+      <p class="steps"><strong>Como foi testado:</strong> Evidenciado pela suíte, em duas camadas. <b>A captura da tela do Operacional Global não foi feita</b>: o usuário citado no guia de execução não está semeado neste banco de desenvolvimento. Registrado com transparência em vez de substituído por evidência aproximada.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Backend: `referral-codes` está em `CLIENT_READ_ONLY_RESOURCES`, então o guard `client` recebe apenas leitura. Teste nominal por papel confirma que `CLIENT_OPERADOR` e `CLIENT_ADMIN` não possuem `store`, `update`, `destroy`, `bulk-*` — inclusive `bulk-destroy`, que escapa da regra genérica por terminar em '-destroy' e só é fechado por esse array.</li><li>Frontend: todas as ações de escrita são gated por `v-can` com os nomes exatos das abilities do controller, e a rota exige `referral-codes.index`.</li><li>Prova negativa executada durante a revisão: removendo `referral-codes` de `CLIENT_READ_ONLY_RESOURCES`, o teste fica vermelho — o gate é real, não decorativo.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA10b">
+      <h2>CA10b — Escrita negada ao guard client no backend <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que estou autenticado com um token do guard `client`
+Quando eu chamar POST /api/referral-codes
+Então a requisição é recusada pela autenticação (401)
+  E nenhum registro é criado</p>
+      <p class="steps"><strong>Como foi testado:</strong> Coberto por teste de feature em <code>ReferralCodeControllerTest</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>As rotas de escrita vivem em `manager.php`, sob o guard `manager`. Um token `client` recebe 401 antes de qualquer autorização.</li><li>A leitura (`index`/`show`) é compartilhada em `shared.php`, porque o tenant precisa do catálogo para popular o select do registro na #10713.</li><li>O Operacional Global recebe 403 na escrita — autenticado, mas sem a ability.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA11">
+      <h2>CA11 — Alteração auditada <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que alterei a regra de apuração de um item
+Quando eu consultar a trilha de auditoria
+Então a alteração consta, com autor e data</p>
+      <p class="steps"><strong>Como foi testado:</strong> Edição <b>unitária</b> do código 09 (alteração do nome) → menu de ações → 'Ver histórico'. A edição precisa ser unitária: ações em massa são auditadas em evento próprio, sem subject, e por isso não aparecem na trilha do item.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A entrada 'Alterado' registra autor ('E2E Super Admin'), data e hora, e o de/para do campo: 'INSS, visando acesso ao BPC → INSS, visando acesso ao BPC (revisado)'.</li><li>A entrada 'Criado' preserva o estado inicial completo do item.</li><li>O de/para vem de `attribute_changes`, que é onde o spatie/laravel-activitylog 5.0.0 grava as mudanças da trait — e não de `properties`, que guarda apenas os logs manuais.</li><li>O rodapé do painel avisa, de forma permanente, que ações em massa não aparecem na trilha individual — inclusive quando a trilha tem eventos, que é justamente quando a ausência confunde.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca11-trilha-edicao-unitaria.png" alt="CA11 evidência"/><figcaption>ca11-trilha-edicao-unitaria.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA12">
+      <h2>CA12 — A área de destino agrupa a lista <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o cadastro tem itens de sete áreas de destino
+Quando eu filtrar pela área "Saúde"
+Então vejo apenas os itens da faixa 30 a 34</p>
+      <p class="steps"><strong>Como foi testado:</strong> Filtros → Área de destino → 'Saúde (30–34)'.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A lista passa a exibir somente o grupo 'SAÚDE — 5 códigos', com os itens 30, 31, 32, 33 e 34.</li><li>O filtro é do backend, não filtragem local: a requisição observada é `GET /api/referral-codes?page=1&amp;per_page=15&amp;filter[destination_area]=health&amp;sort=code`.</li><li>As opções do filtro rotulam as faixas ('Saúde (30–34)'), o que torna as lacunas do instrumento explícitas já na escolha.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca12-filtro-area-saude.png" alt="CA12 evidência"/><figcaption>ca12-filtro-area-saude.png</figcaption></figure></div>
+    </section>
+  
+  <h2>Observações e ressalvas</h2>
+  <section class="note"><h3>Complemento de 04/09/2026 — os três critérios deferidos foram fechados</h3>A geração original, de 03/09/2026, deferiu três critérios por dependerem de artefatos que ainda não existiam: CA07 exigia a tela de registro do encaminhamento, CA08 exigia a tabela de encaminhamentos para haver consumidor real, e a metade da apuração do CA09 exigia que os contadores de encaminhamento existissem. Os três eram anexo tardio previsto na própria spec, não lacuna de implementação.<br><br><b>As três dependências já foram entregues</b> — a tela e a tabela pela HU #10713, e os contadores pela #10715, ambas da mesma fase F2. O registro de consumidores do serviço de uso já traz a entrada <code>referrals</code>, e o próprio código anota que “o CA08 da #10712 está fechado EM PRODUÇÃO por esta linha”. Os três critérios foram então exercidos na interface, em comportamento de produção, com o ambiente restaurado ao final: o código 08 voltou a ativo e nenhum encaminhamento foi criado ou removido.</section>
+  
+  <h2>Anexo — Cobertura automatizada (Pest 4, --filter=ReferralCode) — 53 testes, 280 asserções, todos verdes</h2>
+  <pre class="pest">  ✓ it filters by remittance counter and by restricted unit type uuid (… 0.04s  
+  ✓ it rejects filter values outside the enums with 422                  0.03s  
+  ✓ it blocks write without permission                                   0.03s  
+  ✓ it gives the admin_operador read-only access — every write is 403 (… 1.84s  
+  ✓ it lets the ADMIN role exercise all eight abilities end to end       1.49s  
+  ✓ it rejects client-guard tokens on every write route with 401, creat… 0.04s  
+  ✓ it keeps the shared read alive for the client guard — the tenant se… 0.03s  
+
+   PASS  Tests\Feature\Api\ReferralCodeUsageTest
+  ✓ it refuses to delete a code in use with 422, guiding deactivation (… 0.06s  
+  ✓ it still soft deletes a code NOT referenced by any consumer (CA08)   0.03s  
+  ✓ it deletes normally while CONSUMERS is empty — referrals does not e… 0.03s  
+  ✓ it ignores a registered consumer whose table does not exist yet (Sc… 0.04s  
+  ✓ it bulk destroy is ATOMIC: one item in use blocks all three and is…  0.05s  
+  ✓ it bulk destroys unused codes, logging the bulk event with author (… 0.03s  
+
+   PASS  Tests\Feature\Seeders\ReferralCodeSeederTest
+  ✓ it seeds the seven ranges of the instrument, zero-padded, never fil… 0.06s  
+  ✓ it groups each range under its destination area (RN03/CA12)          0.06s  
+  ✓ it marks EXACTLY three items with a remittance counter — 07, 08 and… 0.07s  
+  ✓ it marks EXACTLY one item requiring an identified person — the BPC…  0.08s  
+  ✓ it marks EXACTLY two items restricted by unit type — 13 to CRAS, 14… 0.10s  
+  ✓ it marks the five free codes 85–89 with the free area and the descr… 0.08s  
+  ✓ it is idempotent — running the seeder twice does not duplicate nor…  0.10s  
+  ✓ it guarantees the social unit types when run standalone (RN06 depen… 0.08s  
+  ✓ it resolves CRAS/CREAS ids even when the unit types are soft-delete… 0.08s  
+
+  Tests:    53 passed (280 assertions)
+  Duration: 7.64s
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

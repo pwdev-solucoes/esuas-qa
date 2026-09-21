@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — Registrar Encaminhamento</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  section.note { border:1px solid var(--line); border-left:4px solid #b06a00; border-radius:6px; padding:10px 14px; margin:10px 0; background:#fffdf7; font-size:13px; }
+  section.note h3 { margin:0 0 6px; font-size:13.5px; color:#8a5200; }
+  section.note p { margin:6px 0; }
+  section.note ul { margin:6px 0 6px 18px; padding:0; }
+  section.note pre { background:var(--bg); border:1px solid var(--line); border-radius:4px; padding:8px; overflow-x:auto; font-size:11px; white-space:pre-wrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — Registrar Encaminhamento</h1>
+    <div class="sub">Épico Prontuário SUAS · fase F2 · HU #10713 — registro, correção, cancelamento e emissão do formulário</div>
+    <div class="meta"><div><span>Gerado em:</span> 03/09/2026 20:35 · complementado em 04/09/2026 15:24</div><div><span>HU:</span> GLPI #10713 — Registrar encaminhamento e emitir o formulário</div><div><span>Spec (contrato):</span> .planning/specs/10713-registrar-encaminhamento.md</div><div><span>Branch:</span> feature/10712-encaminhamentos</div><div><span>Commits api/:</span> f37d63b (registro+PDF) · df02a6e (fix soft delete) · 3d9bf0b (contra-referência) · 1abcac7 (fix updated_by)</div><div><span>Commits client/:</span> 8c76ca4 (aba) · 5b70357 (fix da revisão)</div><div><span>Ambiente:</span> API Sail/PostgreSQL em localhost · client :5174 · dados reais (não-mock) · tenant E2E CadÚnico</div><div><span>Ferramenta:</span> playwright-cli (Chromium) + Pest 4 + pdftotext</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">Os 14 critérios de aceite do chamado, mais 7 derivados na spec. A evidência central da HU foi produzida no navegador com dados reais: o formulário do cidadão foi efetivamente emitido, baixado e inspecionado — e o objetivo sensível NÃO aparece nele, nem no texto extraído nem no binário. A reemissão também foi exercida na tela, com o contador de vias e as linhas gravadas. Os demais critérios são cobertos pela suíte automatizada, que fecha em 152 testes e 880 asserções, todos verdes, com a saída completa no apêndice.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA01</td><td>Registrar encaminhamento no prontuário</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA01b</td><td>O autor do registro é imutável (compõe o CA01 do ticket)</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA02</td><td>Código que conta indivíduos exige pessoa identificada</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA03</td><td>Código de CadÚnico não exige pessoa (conta famílias)</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA04</td><td>Cadastramento feito na própria unidade também é encaminhamento</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA05</td><td>Os códigos oferecidos dependem do tipo da unidade de origem</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA06</td><td>Destino e objetivo são obrigatórios</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA07</td><td>Emitir o formulário do encaminhamento</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA07b</td><td>O objetivo NÃO sai no formulário do cidadão (compõe o CA07 do ticket)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA08</td><td>Reemissão do formulário fica registrada</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA09</td><td>Data futura é recusada</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA10</td><td>Aviso quando a remessa do mês já foi gerada</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA11</td><td>Correção do encaminhamento fica registrada</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA11b</td><td>O objetivo fica fora da trilha de auditoria (compõe o CA11 do ticket)</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA12</td><td>Cancelar com motivo, sem excluir</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA12b</td><td>O cancelamento também avisa sobre a remessa</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA13</td><td>Profissional não registra em família de outra unidade</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA14</td><td>Isolamento entre municípios</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA15</td><td>Cancelado continua no histórico</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA16</td><td>Correção que remove a pessoa de código que a exige é recusada</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA17</td><td>Família sem unidade de referência não registra</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA01">
+      <h2>CA01 — Registrar encaminhamento no prontuário <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou profissional lotado na unidade de referência da família
+Quando eu registrar um encaminhamento
+Então ele passa a constar do prontuário, com autor e data</p>
+      <p class="steps"><strong>Como foi testado:</strong> Login como Operacional com add-on LGPD → prontuário da família → aba <b>Encaminhamentos</b> → 'Registrar o primeiro encaminhamento' → preenchimento → Registrar.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A aba nasce entre 'Atendimentos' e 'Vulnerabilidades e Alertas', com contador de itens.</li><li>O estado vazio explica o que é um encaminhamento em vez de apenas informar a ausência de registros.</li><li>Após salvar: toast 'Encaminhamento registrado no prontuário.' e a linha aparece na tabela com data, código, destino e responsável.</li><li>A linha exibe os DOIS eixos em colunas separadas: 'Situação do registro: Registrado' e 'Desfecho: Aguardando retorno'.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca01-encaminhamento-registrado.png" alt="CA01 evidência"/><figcaption>ca01-encaminhamento-registrado.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA01b">
+      <h2>CA01b — O autor do registro é imutável (compõe o CA01 do ticket) <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um encaminhamento registrado
+Quando outro profissional o corrigir
+Então o autor original é preservado</p>
+      <p class="steps"><strong>Como foi testado:</strong> <code>created_by</code> fora do fillable de atualização.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Autor e editor são campos distintos; o responsável técnico é um terceiro campo, que aponta para o profissional, não para o usuário.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA02">
+      <h2>CA02 — Código que conta indivíduos exige pessoa identificada <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que escolhi um código que conta indivíduos
+Quando eu tentar salvar sem identificar a pessoa
+Então o registro é recusado</p>
+      <p class="steps"><strong>Como foi testado:</strong> No formulário, selecionar o código <code>09 — INSS, visando acesso ao BPC</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O campo 'Pessoa encaminhada' ganha o marcador de obrigatório no momento da escolha do código.</li><li>O texto de apoio muda para 'O código escolhido conta indivíduos encaminhados — identifique quem foi encaminhado (integrante vigente da composição familiar)'.</li><li>A regra é dinâmica (RN05): vem de `requires_person` do código, não de uma lista fixa no front.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca07-detalhe-emitir-formulario.png" alt="CA02 evidência"/><figcaption>ca07-detalhe-emitir-formulario.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA03">
+      <h2>CA03 — Código de CadÚnico não exige pessoa (conta famílias) <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um código que conta famílias
+Quando eu registrar sem identificar pessoa
+Então o registro é aceito</p>
+      <p class="steps"><strong>Como foi testado:</strong> Coberto pela suíte: o catálogo marca <code>requires_person</code> em exatamente um item (o BPC).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Teste do seeder assere 'EXACTLY one item requiring an identified person — the BPC'.</li><li>A metade de contagem deste CA é da HU #10715 (etapa 06).</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA04">
+      <h2>CA04 — Cadastramento feito na própria unidade também é encaminhamento <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que a própria unidade realizou a atualização cadastral da família no CadÚnico
+Quando eu registrar o encaminhamento de atualização cadastral
+Então o registro é aceito normalmente
+E conta no período, ainda que a família não tenha sido enviada a outro órgão.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Coberto pela suíte automatizada. O instrumento é explícito em que o encaminhamento ao CadÚnico vale “inclusive quando realizada nesta própria Unidade” (RN07), então o sistema não pode impor uma regra de origem diferente de destino.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>&lt;code&gt;✓ it accepts a referral whose destination is the OWN unit — no origin≠destination rule exists (CA04/RN07)&lt;/code&gt; — o registro é aceito com a própria unidade como destino.</li><li>Não existe, em lugar nenhum, validação que exija destino diferente da origem: a ausência da regra é que faz o critério passar, e o teste trava essa ausência.</li><li>O destino é texto livre obrigatório (RN03), então nomear a própria unidade é um preenchimento válido como qualquer outro.</li><li>A contagem no período é exercida na apuração, evidenciada no dossiê da #10715.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA05">
+      <h2>CA05 — Os códigos oferecidos dependem do tipo da unidade de origem <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que a unidade de origem é um CRAS
+Quando eu abrir a lista de códigos
+Então o código restrito ao CREAS não é oferecido</p>
+      <p class="steps"><strong>Como foi testado:</strong> Selecionar a unidade <code>E2E CRAS Centro</code> e abrir a lista de códigos.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>São oferecidos 35 dos 36 códigos do catálogo.</li><li>O código 13 (CRAS → CREAS) é oferecido; o 14 (CREAS → CRAS) é o único ausente.</li><li>Trocar a unidade re-consulta o endpoint de opções — a lista não é filtrada localmente.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca01-encaminhamento-registrado.png" alt="CA05 evidência"/><figcaption>ca01-encaminhamento-registrado.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA06">
+      <h2>CA06 — Destino e objetivo são obrigatórios <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que estou registrando
+Quando eu salvar sem órgão de destino ou sem objetivo
+Então o registro é recusado com erro no campo</p>
+      <p class="steps"><strong>Como foi testado:</strong> Coberto pelos Form Requests e pelos testes de validação; no front, os 422 vão para o campo com fallback para erro geral em chave não mapeada.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Ambos NOT NULL no schema e obrigatórios na validação.</li><li>O front trata 422 explicitamente — `handleApiError` não toasta 422, então sem tratamento a falha seria silenciosa.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA07">
+      <h2>CA07 — Emitir o formulário do encaminhamento <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um encaminhamento registrado
+Quando eu emitir o formulário
+Então recebo o documento para entregar ao cidadão
+  E a emissão fica registrada</p>
+      <p class="steps"><strong>Como foi testado:</strong> Expandir a linha → <b>Emitir formulário</b>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O PDF é baixado com nome neutro: &lt;code&gt;formulario-encaminhamento-2026-09-03.pdf&lt;/code&gt; — sem PII e sem uuid no nome.</li><li>878 KB, cabeçalho &lt;code&gt;%PDF-1.7&lt;/code&gt; — arquivo real, anexado a este dossiê.</li><li>A tela passa de 'Nenhuma via emitida ainda' para '1 via(s) emitida(s) · última em 03/09/2026'.</li><li>O aviso da RN14 fica fixo junto ao botão: 'A via é gerada a partir dos dados atuais — uma 2ª via emitida após correção sai com os dados corrigidos.'</li><li>Nada é guardado no servidor (P1): a tabela de emissões registra apenas quem emitiu e quando, sem coluna de caminho de arquivo.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca07-detalhe-emitir-formulario.png" alt="CA07 evidência"/><figcaption>ca07-detalhe-emitir-formulario.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA07b">
+      <h2>CA07b — O objetivo NÃO sai no formulário do cidadão (compõe o CA07 do ticket) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o encaminhamento tem objetivo registrado
+Quando eu emitir o formulário
+Então o objetivo não aparece no documento</p>
+      <p class="steps"><strong>Como foi testado:</strong> O objetivo foi propositalmente cadastrado como <code>SEGREDO-DO-PRONTUARIO: relato sensível do trabalho social com a família.</code> e o PDF emitido foi inspecionado com <code>pdftotext</code> e <code>strings</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>&lt;b&gt;Zero ocorrências&lt;/b&gt; do texto sensível no PDF — nem no texto extraído, nem no binário cru.</li><li>O documento traz os itens da RN08: nome, órgão de destino, data, unidade de origem, telefone de contato, profissional responsável e espaço de assinatura.</li><li>O formulário explica ao órgão de destino por que não há detalhe: 'As informações detalhadas permanecem no prontuário da família, sob sigilo.' — sem essa frase, o receptor ligaria pedindo a informação, que é o mesmo vazamento por outra via.</li><li>Proteção estrutural: o serviço monta um array de 6 escalares e o model nunca chega ao template — um campo sensível acrescentado no futuro daria variável indefinida, não vazamento.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca07-detalhe-emitir-formulario.png" alt="CA07b evidência"/><figcaption>ca07-detalhe-emitir-formulario.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA08">
+      <h2>CA08 — Reemissão do formulário fica registrada <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o cidadão perdeu o formulário
+Quando eu emitir novamente
+Então uma nova via é gerada
+E a reemissão fica registrada, com autor e data.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Complemento de 04/09/2026, dirigido no Painel do Tenant: no detalhe de um encaminhamento sem nenhuma via emitida, acionar <b>Emitir formulário</b> duas vezes e observar o contador de vias e as linhas gravadas. Complementado pela suíte.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O detalhe parte de “Nenhuma via emitida ainda”. Após a primeira emissão passa a “&lt;b&gt;1 via(s) emitida(s) · última em 04/09/2026&lt;/b&gt;”, e após a segunda a “&lt;b&gt;2 via(s) emitida(s) · última em 04/09/2026&lt;/b&gt;”.</li><li>No banco, a reemissão &lt;b&gt;acrescenta uma linha nova&lt;/b&gt; em vez de sobrescrever a anterior: duas emissões do mesmo encaminhamento, cada uma com o seu autor e o seu instante (18:23:50 e 18:24:05).</li><li>&lt;code&gt;✓ it returns a PDF stream and records WHO emitted and WHEN — re-emission adds a NEW row (CA08/RN09)&lt;/code&gt;.</li><li>O aviso ao lado do botão é permanente: “A via é gerada a partir dos dados atuais — uma 2ª via emitida após correção sai com os dados corrigidos.” Reemitir não é reimprimir um arquivo guardado.</li><li>As duas emissões criadas para esta evidência foram removidas ao final, restaurando a massa do ambiente.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca08-reemissao-registrada.png" alt="CA08 evidência"/><figcaption>ca08-reemissao-registrada.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA09">
+      <h2>CA09 — Data futura é recusada <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que informo data posterior a hoje
+Quando eu salvar
+Então o registro é recusado</p>
+      <p class="steps"><strong>Como foi testado:</strong> Validação de data no Form Request + atributo <code>max</code> no input.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Coberto por teste de feature.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA10">
+      <h2>CA10 — Aviso quando a remessa do mês já foi gerada <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que a remessa do mês do encaminhamento já foi gerada
+Quando eu registrar um encaminhamento retroativo
+Então sou avisado de que os números declarados mudam</p>
+      <p class="steps"><strong>Como foi testado:</strong> O aviso é <b>computado</b>, nunca persistido, e volta num bloco <code>warnings[]</code> irmão de <code>data</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Teste dedicado assere o código do aviso e o rótulo do período (07/2026).</li><li>O front exibe os avisos no registro e também no cancelamento.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA11">
+      <h2>CA11 — Correção do encaminhamento fica registrada <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que corrijo um encaminhamento
+Quando eu consultar a trilha
+Então a correção consta, com autor e data</p>
+      <p class="steps"><strong>Como foi testado:</strong> Campos estruturados entram na trilha; os sensíveis, não.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A trilha registra QUE o campo mudou, com autor e data, sem o conteúdo.</li><li>O de/para fica em `attribute_changes`, que é onde esta versão do activitylog grava as mudanças da trait.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA11b">
+      <h2>CA11b — O objetivo fica fora da trilha de auditoria (compõe o CA11 do ticket) <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que registrei ou alterei o objetivo
+Quando eu consultar a trilha
+Então o conteúdo do objetivo não aparece</p>
+      <p class="steps"><strong>Como foi testado:</strong> Molde do projeto: <b>omissão</b> no <code>logOnly()</code> (não existe `tapActivity` neste projeto), com escrita sempre por <code>$model->save()</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Teste anti-vazamento cobre quatro portas: a trilha, a mensagem de validação, as respostas negativas (422 e 409) e o dump cru de propriedades.</li><li>Nem o conteúdo nem os NOMES das colunas sensíveis aparecem no dump.</li><li>Contraprova executada: trocar a escrita por query builder derruba o teste de auditoria — a premissa é travada por teste, não por inspeção.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA12">
+      <h2>CA12 — Cancelar com motivo, sem excluir <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um encaminhamento registrado
+Quando eu cancelá-lo com motivo
+Então ele permanece no prontuário, marcado como cancelado</p>
+      <p class="steps"><strong>Como foi testado:</strong> Cancelamento por <code>status</code>, nunca soft delete. A rota DELETE mapeia para cancelar.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O registro permanece visível com badge 'Cancelado', motivo e autor.</li><li>Cancelado é terminal: a edição responde 409.</li><li>A tela não oferece as ações num cancelado — as cinco (Corrigir, Cancelar, Emitir, Retorno, Desfecho) ficam ausentes, com o motivo da inércia visível. O 409 é rede de segurança para corrida, não o mecanismo principal.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA12b">
+      <h2>CA12b — O cancelamento também avisa sobre a remessa <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que cancelo encaminhamento de mês já remetido
+Quando o cancelamento é concluído
+Então recebo o mesmo aviso do registro</p>
+      <p class="steps"><strong>Como foi testado:</strong> Se apenas o registro avisasse, cancelar em mês já remetido seria silencioso — que é o caso mais grave, porque altera número já declarado ao Tribunal.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Teste dedicado assere o aviso na resposta do DELETE.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA13">
+      <h2>CA13 — Profissional não registra em família de outra unidade <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que a família não é da minha unidade de lotação
+Quando eu tentar registrar
+Então a ação é recusada</p>
+      <p class="steps"><strong>Como foi testado:</strong> Reusa a infraestrutura de elegibilidade da fase F1 (lotação vigente na data).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A negativa não nomeia a unidade de destino, evitando vazamento indireto.</li><li>Cross-tenant responde 404 com corpo idêntico ao de uuid inexistente.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA14">
+      <h2>CA14 — Isolamento entre municípios <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou usuário do município A
+Quando eu registrar ou consultar encaminhamentos
+Então alcanço somente famílias e unidades do município A.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Coberto por duas classes de teste dedicadas ao isolamento, presentes no apêndice: <code>ReferralIsolationTest</code> e <code>ReferralCounterReferenceIsolationTest</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>&lt;code&gt;✓ it answers 404 for a family of ANOTHER tenant with the SAME body as a nonexistent uuid&lt;/code&gt; — a resposta não funciona como oráculo de existência: não dá para descobrir que a família existe em outro município.</li><li>&lt;code&gt;✓ it answers 404 when the referral belongs to ANOTHER family — scoped by family, not only by tenant&lt;/code&gt;.</li><li>&lt;code&gt;✓ it scopes referrals by tenant through the BelongsToTenant global scope&lt;/code&gt; — o corte é do Global Scope no Model, não de um filtro que alguém possa esquecer na query.</li><li>&lt;code&gt;✓ it lists pending referrals of the OWN tenant only — the other municipality never appears&lt;/code&gt;.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA15">
+      <h2>CA15 — Cancelado continua no histórico <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um encaminhamento cancelado
+Quando eu consultar o histórico
+Então ele continua listado, marcado como cancelado</p>
+      <p class="steps"><strong>Como foi testado:</strong> Consequência do cancelamento por <code>status</code> em vez de soft delete.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A listagem não filtra cancelados; a linha permanece com o badge e, expandida, mostra motivo e autor do cancelamento.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca01-encaminhamento-registrado.png" alt="CA15 evidência"/><figcaption>ca01-encaminhamento-registrado.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA16">
+      <h2>CA16 — Correção que remove a pessoa de código que a exige é recusada <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que corrijo o código para um que exige pessoa
+Quando não houver pessoa identificada
+Então a correção é recusada</p>
+      <p class="steps"><strong>Como foi testado:</strong> A RN05 é avaliada no <code>withValidator</code>, com fallback para o código persistido.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Coberto por teste de feature.</li><li>No front, a pessoa persistida que saiu da composição vigente é injetada no seletor — sem isso o campo apareceria vazio com valor preenchido e o salvamento levaria 422 sobre um campo em branco.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA17">
+      <h2>CA17 — Família sem unidade de referência não registra <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que a família não tem unidade de referência
+Quando eu abrir a aba
+Então a ação não é oferecida, com orientação</p>
+      <p class="steps"><strong>Como foi testado:</strong> Regra herdada da fase F1 (D05).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O botão fica ausente e a tela orienta abrir o prontuário primeiro.</li><li>No backend, 422 com código próprio.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+  
+  <h2>Observações e ressalvas</h2>
+  <section class="note"><h3>Complemento de 04/09/2026 — apêndice completo e numeração alinhada ao chamado</h3>A versão original deste dossiê trazia dois problemas de empacotamento, nenhum deles de implementação. Primeiro, o apêndice guardava apenas o trecho final da execução — as duas classes de isolamento — embora dez critérios se apoiassem em testes que não apareciam ali; a suíte foi reexecutada por inteiro e o apêndice agora traz os 152 testes. Segundo, a numeração seguia a especificação técnica e não a do chamado, de modo que CA04, CA08 e CA14 do chamado caíam sobre outros assuntos. As entradas realocadas passaram a CA01b, CA07b e CA11b, indicando a qual critério do chamado cada uma pertence, e os três critérios foram escritos com a sua própria evidência. Nenhum resultado anterior foi alterado — apenas reorganizado para que a leitura acompanhe o chamado item a item.</section>
+  
+  <h2>Anexo — Cobertura automatizada (Pest 4, --filter=Referral) — 152 testes, 880 asserções, todos verdes</h2>
+  <pre class="pest">
+   PASS  Tests\Unit\Models\ReferralCodeTest
+  ✓ it has correct fillable, casts and defaults                          0.73s  
+  ✓ it uses soft deletes, HasUuid, LogsActivity and resolves by uuid     0.08s  
+  ✓ it is a GLOBAL lookup — never tenant-scoped (RN08)                   0.03s  
+  ✓ it has no global scope of is_active — history and remittance never…  0.02s  
+  ✓ it keeps the four rules as data, cast to the enums (RN03–RN06)       0.03s  
+  ✓ it accepts NULL as a legitimate remittance counter value (CA02)      0.02s  
+  ✓ it enforces unique code — even against soft-deleted rows (RN09)      0.02s  
+  ✓ it configures the activity log with ALL the audited fields (RN10/§1… 0.03s  
+
+   PASS  Tests\Unit\Models\ReferralCounterReferenceTest
+  ✓ it is tenant-scoped and uuid-routed (§6.1/RN11)                      0.04s  
+  ✓ it is APPEND-ONLY by design: no SoftDeletes and no LogsActivity — t… 0.02s  
+  ✓ it never exposes an activity log configuration — not even an empty…  0.02s  
+
+   PASS  Tests\Unit\Models\ReferralFormEmissionTest
+  ✓ it is tenant-scoped and uuid-routed, with emitted_at as datetime (§… 0.02s  
+  ✓ it is APPEND-ONLY by design: no SoftDeletes and no LogsActivity — t… 0.02s  
+  ✓ it has NO file_path column — the PDF never rests in storage (P1)     0.02s  
+
+   PASS  Tests\Unit\Models\ReferralTest
+  ✓ it has the expected casts and defaults — status registered, outcome… 0.02s  
+  ✓ it is tenant-scoped, soft-deletable, uuid-routed and audited (RN14/… 0.02s  
+  ✓ it NEVER logs objective nor cancel_reason — and DOES log the struct… 0.02s  
+  ✓ it marks cancellation by STATUS, keeping the row alive — never soft… 0.14s  
+  ✓ it resolves the referral code and the family member even when soft-… 0.05s  
+
+   PASS  Tests\Feature\Api\Client\AttendanceReportReferralCrossTest
+  ✓ it never feeds the CadUnico counters from attendance type 4 — 9 att… 0.21s  
+
+   PASS  Tests\Feature\Api\Client\AttendanceReportTest
+  ✓ it declares exactly the two remaining unavailable counters — the F2… 0.12s  
+  ✓ it lights the three referral counters with distinct families and pe… 0.12s  
+  ✓ it counts the same family ONCE with two inclusion referrals in the…  0.09s  
+  ✓ it drops a cancelled referral from the counters while it stays visi… 0.12s  
+  ✓ it keeps counting a referral whose outcome became not_attended — th… 0.08s  
+  ✓ it counts a retroactive referral in the month it was made, not the…  0.08s  
+  ✓ it keeps counting past referrals of a code inactivated in the Globa… 0.08s  
+  ✓ it keeps counting past referrals of a code SOFT-DELETED in the Glob… 0.07s  
+  ✓ it declares zero on the three referral counters for a unit without…  0.08s  
+  ✓ it never feeds the BPC counter from a referral row without a person… 0.07s  
+
+   PASS  Tests\Feature\Api\Client\PendingReferralsTest
+  ✓ it lists the 14 awaiting referrals of the unit with family, destina… 0.16s  
+  ✓ it scopes the list: Master sees every unit of the tenant; the opera… 0.09s  
+  ✓ it refuses the pending list to an operator WITHOUT the LGPD add-on…  0.08s  
+  ✓ it keeps the pending line renderable after the family record is sof… 0.08s  
+  ✓ it refuses a sort parameter — the oldest-first order is the rule (§… 0.07s  
+
+   PASS  Tests\Feature\Api\Client\ReferralControllerTest
+  ✓ it registers a referral signed and dated, born awaiting_return (CA0… 0.09s  
+  ✓ it refuses a BPC referral WITHOUT the person, naming family_member_… 0.07s  
+  ✓ it saves a BPC referral WITH the person, deriving person_id from th… 0.08s  
+  ✓ it saves a CadUnico referral WITHOUT person — it counts FAMILIES (C… 0.09s  
+  ✓ it refuses a person outside the CURRENT family composition (RN05)    0.09s  
+  ✓ it refuses the CREAS-only code from a CRAS unit — and offers the CR… 0.11s  
+  ✓ it refuses an INACTIVE code — only the select filters is_active (RN… 0.08s  
+  ✓ it accepts a referral whose destination is the OWN unit — no origin… 0.10s  
+  ✓ it refuses saving without destination or objective, naming the miss… 0.09s  
+  ✓ it refuses a future date (CA09/RN06)                                 0.08s  
+  ✓ it accepts TODAY at 23h in the app timezone — the boundary never re… 0.09s  
+  ✓ it saves a retroactive referral in a remitted month AND returns the… 0.08s  
+  ✓ it does NOT warn when the month remittance is pending or failed (CA… 0.09s  
+  ✓ it keeps social_unit_id as a SNAPSHOT after the family moves to ano… 0.08s  
+  ✓ it refuses a referral for a family WITHOUT a reference unit (CA17)   0.09s  
+  ✓ it demands the person when the update swaps the code to BPC (CA16)   0.09s  
+  ✓ it re-validates the responsible against the EFFECTIVE date — changi… 0.10s  
+  ✓ it re-validates code×unit compatibility on the EFFECTIVE pair — mov… 0.09s  
+  ✓ it clears the person when the update sends family_member_uuid null…  0.10s  
+  ✓ it warns for the OLD and the NEW month when an update moves the dat… 0.09s  
+  ✓ it cancels keeping the row, and refuses a second cancel with 409 (C… 0.11s  
+  ✓ it emits the SAME remittance warning when cancelling a referral of…  0.09s  
+  ✓ it refuses editing a CANCELLED referral with 409 — cancelled is ter… 0.10s  
+  ✓ it prohibits client-sent authorship, status, outcome and person_id…  0.08s  
+  ✓ it returns units, responsibles, compatible codes and the remittance… 0.08s  
+  ✓ it offers only UNRESTRICTED codes when no origin unit is given in o… 0.07s  
+
+   PASS  Tests\Feature\Api\Client\ReferralCounterReferenceTest
+  ✓ it registers the counter-reference and the outcome in the SAME requ… 0.09s  
+  ✓ it keeps the outcome untouched when the note comes alone — annotati… 0.07s  
+  ✓ it keeps both annotations in chronological ASC order, each with its… 0.10s  
+  ✓ it has NO route to edit or delete an annotation — 405 on the collec… 0.08s  
+  ✓ it lets the outcome be corrected from not_attended to attended (CA0… 0.08s  
+  ✓ it refuses an outcome outside the four states and an empty one (§10… 0.07s  
+  ✓ it requires the note and caps it at 5000 chars — without echoing th… 0.08s  
+  ✓ it refuses a counter-reference on a cancelled referral with 409 — a… 0.07s  
+  ✓ it refuses an outcome change on a cancelled referral with 409 — can… 0.07s  
+  ✓ it denies the counter-reference for a family of another unit, namin… 0.09s  
+
+   PASS  Tests\Feature\Api\Client\ReferralIndexTest
+  ✓ it lists referrals chronologically by referred_on, newest first, wi… 0.09s  
+  ✓ it breaks same-day ties by created_at DESC then id DESC — the order… 0.08s  
+  ✓ it paginates stably when five referrals share the same day — no rep… 0.09s  
+  ✓ it keeps the cancelled referral visible, marked, with reason — it l… 0.08s  
+  ✓ it filters by period on the referral date                            0.08s  
+  ✓ it filters by referral code — and keeps filtering after the code is… 0.08s  
+  ✓ it filters by responsible professional, status and outcome           0.09s  
+  ✓ it refuses a sort parameter — the chronological order with tiebreak… 0.08s  
+  ✓ it writes ZERO activity_log rows for listing, filtering and paginat… 0.13s  
+  ✓ it runs a constant number of queries regardless of how many referra… 0.11s  
+
+   PASS  Tests\Feature\Api\ReferralCodeControllerTest
+  ✓ it lists referral codes exposing uuid and the four rules — never id  0.04s  
+  ✓ it shows the remittance counter and the person requirement of the B… 0.03s  
+  ✓ it shows NULL counter as an explicit "no specific counter" label (C… 0.03s  
+  ✓ it shows the unit-type restriction as an object with uuid, code and… 0.04s  
+  ✓ it creates a referral code with the code informed by the admin, map… 0.04s  
+  ✓ it rejects the uuid of a SOFT-DELETED unit type — the RN06 restrict… 0.05s  
+  ✓ it keeps showing the restriction when the unit type is soft-deleted… 0.04s  
+  ✓ it preserves the restriction when the PUT OMITS the key — absent ke… 0.04s  
+  ✓ it clears the restriction when the PUT sends the key explicitly nul… 0.04s  
+  ✓ it keeps a code restricted to a soft-deleted type EDITABLE via key…  0.03s  
+  ✓ it flags a live unit type with is_deleted false in the restriction…  0.03s  
+  ✓ it rejects a code outside the 2-digit zero-padded pattern of the in… 0.04s  
+  ✓ it rejects a duplicate code — the code is never generated (CA05)     0.03s  
+  ✓ it requires code, name and destination_area (CA05/RN03)              0.03s  
+  ✓ it rejects a destination area outside the enum, and accepts NULL re… 0.03s  
+  ✓ it rejects a remittance counter outside the enum — including the AT… 0.03s  
+  ✓ it audits the change of an apuration rule with old and new values i… 0.03s  
+  ✓ it exposes the audit trail with causer and pagination (CA11)         0.04s  
+  ✓ it soft deletes an unused referral code                              0.03s  
+  ✓ it bulk deactivates and bulk activates referral codes, logging the…  0.03s  
+  ✓ it rejects soft-deleted uuids in every bulk action at validation ti… 0.04s  
+  ✓ it filters actives for the new-record select, and returns inactives… 0.03s  
+  ✓ it filters by destination area — the health area returns only its r… 0.03s  
+  ✓ it filters by remittance counter and by restricted unit type uuid (… 0.04s  
+  ✓ it rejects filter values outside the enums with 422                  0.03s  
+  ✓ it blocks write without permission                                   0.03s  
+  ✓ it gives the admin_operador read-only access — every write is 403 (… 1.53s  
+  ✓ it lets the ADMIN role exercise all eight abilities end to end       1.43s  
+  ✓ it rejects client-guard tokens on every write route with 401, creat… 0.03s  
+  ✓ it keeps the shared read alive for the client guard — the tenant se… 0.03s  
+
+   PASS  Tests\Feature\Api\ReferralCodeUsageTest
+  ✓ it refuses to delete a code in use with 422, guiding deactivation (… 0.04s  
+  ✓ it still soft deletes a code NOT referenced by any consumer (CA08)   0.03s  
+  ✓ it still deletes a code NOT referenced by any referral under the pr… 0.03s  
+  ✓ it refuses to delete a code referenced by a REAL referral — CA08 da… 0.05s  
+  ✓ it ignores a registered consumer whose table does not exist yet (Sc… 0.02s  
+  ✓ it bulk destroy is ATOMIC: one item in use blocks all three and is…  0.03s  
+  ✓ it bulk destroys unused codes, logging the bulk event with author (… 0.03s  
+
+   PASS  Tests\Feature\Console\SyncPermissionsTest
+  ✓ it keeps referral-codes write abilities out of the client guard rol… 1.45s  
+  ✓ it grants the Operacional Global read-only access to referral codes… 1.58s  
+
+   PASS  Tests\Feature\Family\ReferralAuditTest
+  ✓ it NEVER leaks the objective nor the cancel reason into the activit… 0.18s  
+  ✓ it never echoes the objective in validation messages nor in denial…  0.11s  
+
+   PASS  Tests\Feature\Family\ReferralCounterReferenceAuditTest
+  ✓ it NEVER writes the annotation into activity_log — the table row it… 0.09s  
+  ✓ it audits the outcome change with author and de/para in attribute_c… 0.13s  
+  ✓ it never echoes the note in the cancelled 409 body (RN03)            0.08s  
+
+   PASS  Tests\Feature\Referral\ReferralFormPdfTest
+  ✓ it renders the RN08 items and NEVER the objective, the uuid nor the… 0.08s  
+  ✓ it prints the referred PERSON name when the referral identifies one… 0.08s  
+  ✓ it STILL prints unit, phone and professional after they are soft-de… 0.07s  
+  ✓ it returns a PDF stream and records WHO emitted and WHEN — re-emiss… 0.40s  
+  ✓ it never writes ANY file to storage — the PDF only exists in the re… 0.21s  
+  ✓ it refuses to emit the form for a CANCELLED referral with 409 — and… 0.08s  
+
+   PASS  Tests\Feature\Seeders\IntakeLookupSeedersTest
+  ✓ it marks exactly the nine referral forms as requiring the referring… 0.03s  
+
+   PASS  Tests\Feature\Seeders\ReferralCodeSeederTest
+  ✓ it seeds the seven ranges of the instrument, zero-padded, never fil… 0.05s  
+  ✓ it groups each range under its destination area (RN03/CA12)          0.05s  
+  ✓ it marks EXACTLY three items with a remittance counter — 07, 08 and… 0.05s  
+  ✓ it marks EXACTLY one item requiring an identified person — the BPC…  0.05s  
+  ✓ it marks EXACTLY two items restricted by unit type — 13 to CRAS, 14… 0.05s  
+  ✓ it marks the five free codes 85–89 with the free area and the descr… 0.05s  
+  ✓ it is idempotent — running the seeder twice does not duplicate nor…  0.05s  
+  ✓ it guarantees the social unit types when run standalone (RN06 depen… 0.05s  
+  ✓ it resolves CRAS/CREAS ids even when the unit types are soft-delete… 0.05s  
+
+   PASS  Tests\Feature\TenantIsolation\AttendanceReportIsolationTest
+  ✓ it never counts tenant B referrals in the tenant A referral counter… 0.08s  
+
+   PASS  Tests\Feature\TenantIsolation\ReferralCounterReferenceIsolationTest
+  ✓ it lists pending referrals of the OWN tenant only — the other munic… 0.10s  
+  ✓ it answers 404 for the whole new surface on a family of ANOTHER ten… 0.10s  
+  ✓ it answers 404 when the referral belongs to ANOTHER family of the s… 0.08s  
+  ✓ it scopes counter-references by tenant through the BelongsToTenant…  0.12s  
+
+   PASS  Tests\Feature\TenantIsolation\ReferralIsolationTest
+  ✓ it answers 404 for a family of ANOTHER tenant with the SAME body as… 0.09s  
+  ✓ it answers 404 when the referral belongs to ANOTHER family — scoped… 0.09s  
+  ✓ it answers 403 unit_not_assigned for a family of another unit — WIT… 0.09s  
+  ✓ it answers 403 no_active_assignment when the professional has no as… 0.08s  
+  ✓ it answers 403 for the operator WITHOUT the LGPD add-on — the class… 0.08s  
+  ✓ it scopes referrals by tenant through the BelongsToTenant global sc… 0.08s  
+
+  Tests:    152 passed (880 assertions)
+  Duration: 18.25s
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

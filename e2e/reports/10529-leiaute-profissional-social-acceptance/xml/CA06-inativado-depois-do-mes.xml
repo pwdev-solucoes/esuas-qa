@@ -1,0 +1,20 @@
+<!-- HU #10529 — CA06 (RN06/D09) — remessa de 08/2026 gerada DEPOIS das inativacoes: matricula 333001 inativada no cadastro em 15/09/2026 e 333002 bloqueada por inatividade em 20/09/2026. As duas CONSTAM: declara-se a equipe DO PERIODO, nao a de hoje. -->
+<!-- Remessa gerada de verdade; XML extraido do zip. CPF e nome mascarados (RN12). Dados fabricados. -->
+<?xml version="1.0"?>
+<SIAP>
+    <Codigo>004821</Codigo>
+    <Exercicio>2026</Exercicio>
+    <Mes>08</Mes>
+    <ProfissionalSocial>
+        <CPF>014.***.***-04</CPF>
+        <Nome>Genival C. L.</Nome>
+        <NumeroMDS>1234567890123</NumeroMDS>
+        <Matricula>333001</Matricula>
+    </ProfissionalSocial>
+    <ProfissionalSocial>
+        <CPF>052.***.***-15</CPF>
+        <Nome>Rosangela D. P.</Nome>
+        <NumeroMDS>1234567890123</NumeroMDS>
+        <Matricula>333002</Matricula>
+    </ProfissionalSocial>
+</SIAP>

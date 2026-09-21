@@ -1,0 +1,8 @@
+== CA06 — POST /api/client/professionals com role_ids=[family_viewer] (só add-on, sem posto base) ==
+HTTP 422
+{
+  "message": "Não é possível manter apenas perfis de ação única. O profissional precisa ter também um perfil base nesta organização."
+}
+
+Nenhum usuario/profissional criado? user=NAO CRIADO — ok
+tenant_professionals com esse CPF: 0

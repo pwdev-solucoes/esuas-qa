@@ -1,0 +1,54 @@
+
+   PASS  Tests\Feature\Api\PersonControllerTest
+  ✓ it searches a person by exact cpf (CA01/#9595)                       0.49s  
+  ✓ it searches persons by partial name with disambiguation fields (CA0… 0.03s  
+  ✓ it returns empty:true when the search finds nothing (CA03/#9595)     0.02s  
+  ✓ it requires at least a cpf or a name to search                       0.02s  
+  ✓ it creates a person with phones and address (CA01/#9585)             0.06s  
+  ✓ it persists address geolocation (POINT) and exposes active_point     0.03s  
+  ✓ it persists a person without an address or phones                    0.02s  
+  ✓ it blocks creation when a required field is missing (CA02/#9585)     0.02s  
+  ✓ it rejects an invalid cpf (RN03)                                     0.02s  
+  ✓ it blocks a duplicate cpf on create (CA01/#9594)                     0.02s  
+  ✓ it requires the country of origin for a foreigner (RN12)             0.02s  
+  ✓ it keeps the country of origin null for a brazilian (RN12)           0.02s  
+  ✓ it accepts a foreigner with a country of origin (RN12)               0.02s  
+  ✓ it shows a person with nested relations (#9595)                      0.03s  
+  ✓ it updates a person and its address keeping the 1:1 link (RN11)      0.04s  
+  ✓ it updates a cpf to the same value without a unique conflict (ignor… 0.02s  
+  ✓ it does not expose a delete route (RN04)                             0.02s  
+  ✓ it forbids creation without the store permission                     0.02s  
+  ✓ it requires authentication                                           0.02s  
+  ✓ it reports a valid available cpf                                     0.02s  
+  ✓ it flags a duplicate cpf (RN07/#9594)                                0.02s  
+  ✓ it ignores the same record via uuid on check-cpf (edit)              0.02s  
+  ✓ it dispatches PersonCreated on create                                0.02s  
+  ✓ it dispatches PersonUpdated on update                                0.03s  
+  ✓ it creates a legal entity (PJ) — CA03                                0.02s  
+  ✓ it sanitizes a masked cnpj on create (RN06)                          0.02s  
+  ✓ it blocks a duplicate cnpj on create (CA03)                          0.02s  
+  ✓ it requires cnpj and trade_name for PJ (RN02)                        0.02s  
+  ✓ it rejects an invalid cnpj (RN03)                                    0.02s  
+  ✓ it prohibits PF-only fields on a PJ payload (RN03)                   0.02s  
+  ✓ it prohibits PJ-only fields on a PF payload (RN03)                   0.02s  
+  ✓ it rejects an invalid person_type (RN01)                             0.02s  
+  ✓ it finds a person by exact cnpj on index                             0.02s  
+  ✓ it checks cnpj validity and duplicity (#9698)                        0.02s  
+  ✓ it denies check-cnpj without permission                              0.02s  
+
+   PASS  Tests\Unit\Models\PersonTest
+  ✓ it has correct fillable attributes                                   0.02s  
+  ✓ it casts birth_date to a date                                        0.01s  
+  ✓ it does NOT use soft deletes (RN04 — exclusão proibida)              0.02s  
+  ✓ it has no tenant_id column (RN01 — base global)                      0.03s  
+  ✓ it uses HasUuid and LogsActivity traits                              0.02s  
+  ✓ it generates a uuid on create                                        0.03s  
+  ✓ it generates a CPF that passes ValidCpf                              0.02s  
+  ✓ it relates to sex, nationality and foreigner country                 0.03s  
+  ✓ it has many phones                                                   0.02s  
+  ✓ it resolves its 1:1 address through person_addresses                 0.02s  
+  ✓ it configures activity log with name person and dirty-only logging   0.01s  
+
+  Tests:    46 passed (140 assertions)
+  Duration: 1.67s
+

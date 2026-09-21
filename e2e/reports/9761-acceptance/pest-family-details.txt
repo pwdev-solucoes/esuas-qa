@@ -1,0 +1,33 @@
+
+   PASS  Tests\Unit\Services\FamilyAccessAuditServiceTest
+  ✓ it writes one family_access/record_opened entry with the RN05 prope… 0.45s  
+  ✓ it labels the professional name as "<Nome> [Master]" when the Master has…  0.01s  
+  ✓ it prefers the local professional name over the master label when t… 0.02s  
+
+   PASS  Tests\Unit\Services\FamilyAccessServiceTest
+  ✓ it detects the master role only in the tenant where it was granted   0.03s  
+  ✓ it detects the view-details permission per tenant, via the dedicate… 0.02s  
+  ✓ it stops counting a revoked (force-deleted) role as a grant          0.02s  
+  ✓ it resolves the active professional and denies inactive/soft-delete… 0.03s  
+
+   PASS  Tests\Feature\Api\Client\FamilyDetailsTest
+  ✓ it denies the base operator without the restricted permission (CA05… 0.07s  
+  ✓ it grants the operator with the family_viewer role and audits silen… 0.05s  
+  ✓ it lets the Master open the record via role bypass, without the res… 0.04s  
+  ✓ it blocks immediately when the professional is inactivated, even ke… 0.04s  
+  ✓ it blocks on the request right after the role is revoked, keeping t… 0.05s  
+  ✓ it returns 404 (not 403) for a family of another tenant (CA08 9760…  0.05s  
+  ✓ it does not let a grant in Tenant A open records in Tenant B (CA-ex… 0.05s  
+  ✓ it wires the dedicated family_viewer role in the seeder: level 25,…  0.03s  
+  ✓ it keeps the restricted permission out of the base roles after perm… 0.89s  
+  ✓ it lists family_viewer as assignable by the Master (listAssignable…  0.04s  
+
+   PASS  Tests\Feature\Policies\ClientUserPolicyStackedRolesTest
+  ✓ it resolves the SENIOR role (operador, level 30) even when the fami… 0.03s  
+  ✓ it resolves the SENIOR role even when the family_viewer add-on is i… 0.02s  
+  ✓ it an operador stacked with family_viewer still CANNOT create anoth… 0.03s  
+  ✓ it an operador stacked with family_viewer still CANNOT update anoth… 0.03s  
+
+  Tests:    21 passed (74 assertions)
+  Duration: 2.42s
+

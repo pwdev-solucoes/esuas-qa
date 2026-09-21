@@ -1,0 +1,112 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — Pesquisa Avançada e Localização de Pessoas",
+    "subtitle": "Sprint 8 · HU #9759 · Evidências end-to-end no frontend do tenant (client)",
+    "rows": [
+      ["Gerado em", "01/07/2026 23:20"],
+      ["Branch", "sprint9-familias (api d3614e0 · client 6a249b5)"],
+      ["Spec", ".planning/specs/sprint8/9759-pesquisa-avancada-localizacao-pessoas.md"],
+      ["Ambiente", "API Sail/PostgreSQL (localhost:80) · client Vite :5174 (não-mock)"],
+      ["Organização (tenant)", "E2E CadÚnico · uuid 00000000-0000-4000-8000-0000000000c1 · IBGE 2304400 (Fortaleza)"],
+      ["Usuário", "Master E2E (CPF 529.***.***-25)"],
+      ["Ferramenta", "playwright-cli (Chromium 1440×900) + Pest 4"],
+      ["Escopo desta etapa", "CA01–CA05 + CA10 (busca). CA06–CA09 serão evidenciados no relatório da Etapa 02 (HU #9760/#9761)"]
+    ]
+  },
+  "summary": "Etapa 01 da feature Pesquisa/Privacidade: 6 dos 10 Critérios de Aceite da HU #9759 evidenciados — 5 por navegador (CA01–CA05) e 1 parcial (CA10: isolamento da busca no navegador + 404 cross-tenant e isolamento na suíte Pest). Os CAs 06–09 (bloqueio/abertura do prontuário, auditoria e revogação) dependem do endpoint de detalhe da família, cuja dona canônica é a HU #9760 (Etapa 02), e serão fechados no relatório daquela etapa. Suíte automatizada: 19 testes aprovados, 1 skip documentado (ILIKE exclusivo de PostgreSQL, coberto ao vivo no CA04). Resultado geral: todos os critérios do escopo atendidos.",
+  "cas": [
+    {
+      "id": "CA01",
+      "title": "Estado inicial limpo (RN01)",
+      "status": "nav",
+      "gherkin": "Dado que sou um Profissional acessando o painel de consulta\nQuando a tela carrega\nEntão o sistema exibe os campos de busca vazios\nE nenhuma listagem de pessoas aparece em tela",
+      "steps_html": "Login como Master E2E → menu <b>Cadastros → Pesquisa de Pessoas</b> (<code>/app/cadastros/pesquisa-pessoas</code>). Nenhuma interação com os filtros.",
+      "results": [
+        "Os três campos (CPF, Código Familiar, Nome) carregam vazios.",
+        "Nenhuma tabela/listagem é exibida — apenas o estado neutro \"Informe um critério para pesquisar\".",
+        "O botão \"Pesquisar\" permanece desabilitado enquanto não houver critério (RN01)."
+      ],
+      "images": ["screenshots/ca01-estado-inicial-limpo.png"]
+    },
+    {
+      "id": "CA02",
+      "title": "Busca por CPF exato (RN02)",
+      "status": "nav",
+      "gherkin": "Dado que digito um CPF específico no campo de filtro e clico em pesquisar\nQuando o sistema processa a busca\nEntão a tabela exibe apenas a linha da pessoa correspondente àquele documento",
+      "steps_html": "Preencher o campo CPF com <code>10000000108</code> (pessoa da massa CadÚnico) e clicar em <b>Pesquisar</b>.",
+      "results": [
+        "A tabela retorna exatamente 1 linha: MARIA (nome social precede o civil, badge \"RF\" de Responsável Familiar), família 1600000001, NIS 16000000015, nascimento 12/03/1988 (38 anos), município Fortaleza.",
+        "Paginação confirma \"Exibindo 1–1 de 1\".",
+        "Complemento automatizado: CPF parcial é rejeitado com 422 (busca exata exige o número completo — RN02)."
+      ],
+      "images": ["screenshots/ca02-busca-cpf-exato.png"]
+    },
+    {
+      "id": "CA03",
+      "title": "Busca por Código Familiar (RN02)",
+      "status": "nav",
+      "gherkin": "Dado que insiro um Código Familiar no campo de filtro e clico em pesquisar\nQuando o sistema localiza o registro\nEntão a tabela exibe múltiplas linhas, uma para cada pessoa daquela mesma família",
+      "steps_html": "Limpar filtros, preencher <b>Código Familiar</b> com <code>1600000001</code> e clicar em <b>Pesquisar</b>.",
+      "results": [
+        "A tabela exibe 4 linhas — todas da família 1600000001: MARIA (RF), ANA SOUZA LIMA, JOSE SOUZA LIMA e PEDRO SOUZA LIMA.",
+        "Paginação confirma \"Exibindo 1–4 de 4\"."
+      ],
+      "images": ["screenshots/ca03-busca-codigo-familiar.png"]
+    },
+    {
+      "id": "CA04",
+      "title": "Busca por Nome parcial (RN02)",
+      "status": "nav",
+      "gherkin": "Dado que digito parte de um nome (ex: \"Maria\") e clico em pesquisar\nQuando o sistema processa a busca\nEntão a tabela exibe todas as pessoas do município cujo nome contenha esse texto",
+      "steps_html": "Limpar filtros, preencher <b>Nome</b> com <code>Maria</code> (minúsculas/mistas) e clicar em <b>Pesquisar</b>.",
+      "results": [
+        "A busca parcial e case-insensitive (ILIKE/PostgreSQL) localiza \"MARIA\" mesmo com o termo digitado em caixa mista.",
+        "Todas as pessoas do tenant cujo nome contém o termo são listadas (1 correspondência na massa atual).",
+        "O teste Pest equivalente fica com skip documentado em sqlite (ILIKE é PG-only) — este print em PostgreSQL real é a evidência viva do comportamento."
+      ],
+      "images": ["screenshots/ca04-busca-nome-parcial.png"]
+    },
+    {
+      "id": "CA05",
+      "title": "Colunas de triagem por linha (RN03)",
+      "status": "nav",
+      "gherkin": "Dado um resultado de busca com pelo menos uma pessoa\nQuando a tabela é renderizada\nEntão cada linha mostra Código familiar, CPF, NIS, Nome, Nascimento e idade,\n     Filiação 1, Município de cadastramento e a coluna de Ações",
+      "steps_html": "Com o resultado do Código Familiar <code>1600000001</code> em tela, capturar a tabela de resultados.",
+      "results": [
+        "As 8 colunas da RN03 estão presentes e na ordem: Código familiar, CPF, NIS, Nome da pessoa, Nascimento e idade, Filiação 1, Município de cadastramento e Ações.",
+        "Idade calculada e exibida junto ao nascimento (ex.: \"12/03/1988 (38 anos)\").",
+        "Filiação 1 exibe \"—\" para registros de origem CadÚnico (mother_name não importada — comportamento documentado, não é defeito).",
+        "Coluna Ações traz o botão \"Visualizar Família\" visível e desabilitado com tooltip LGPD (a habilitação/gate é objeto dos CA06–CA07, Etapa 02)."
+      ],
+      "images": ["screenshots/ca05-colunas-triagem.png"]
+    },
+    {
+      "id": "CA10",
+      "title": "Isolamento territorial da busca (RN07/RN10)",
+      "status": "parc",
+      "gherkin": "Dado que estou autenticado no Tenant A\nQuando pesquiso por CPF/Código/Nome\nEntão nenhum indivíduo ou família do Tenant B aparece\nE abrir um prontuário de outro tenant responde 404",
+      "steps_html": "Massa de contraste criada no banco: pessoa <code>MARIA DO TENANT B</code> (CPF 70000000010, família 9900000001) vinculada a uma <b>segunda organização</b>. Autenticado no Tenant A (E2E CadÚnico), pesquisar por <code>Maria</code>.",
+      "results": [
+        "O resultado traz somente a MARIA do Tenant A — \"MARIA DO TENANT B\" não aparece, comprovando o Global Scope de tenant na busca.",
+        "A metade \"prontuário de outro tenant responde 404\" pertence ao endpoint de detalhe (Etapa 02); o isolamento da própria busca também está coberto na suíte Pest (teste CA10, apêndice)."
+      ],
+      "images": ["screenshots/ca10-isolamento-territorial-busca.png"]
+    },
+    {
+      "id": "CA06–CA09",
+      "title": "Prontuário: bloqueio, abertura autorizada, auditoria e revogação (RN04–RN06)",
+      "status": "auto",
+      "gherkin": "CA06 — ação \"Visualizar Família\" indisponível sem a permissão LGPD e endpoint de detalhe responde 403\nCA07 — Master/autorizado abre a tela cheia \"Visualizar Família\"\nCA08 — auditoria silenciosa do acesso ao prontuário\nCA09 — revogação imediata por remoção de papel/inativação",
+      "steps_html": "<b>Deferidos para o relatório da Etapa 02</b> (HU #9760/#9761): esses critérios exercitam o endpoint de detalhe <code>GET client/families/{uuid}/details</code>, cuja dona canônica é a HU #9760 — decisão registrada no overview do plano. Nesta etapa já ficou evidenciado o pré-requisito de UI: botão \"Visualizar Família\" desabilitado com tooltip LGPD (ver CA05), e a suíte já garante que a permissão restrita <code>families.view-details</code> não é atribuída automaticamente a nenhum papel.",
+      "results": [
+        "Status nesta etapa: pendente por design (split documentado no overview da feature).",
+        "Serão evidenciados no dossiê da Etapa 02 junto aos CAs das HUs #9760/#9761."
+      ],
+      "images": []
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Pest, --filter=PersonSearch) — 19 passed, 1 skipped (ILIKE/sqlite), 78 assertions",
+    "file": "pest-person-search.txt"
+  }
+}

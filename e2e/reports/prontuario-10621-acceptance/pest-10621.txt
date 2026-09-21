@@ -1,0 +1,91 @@
+
+   PASS  Tests\Unit\Family\DeriveFamilySpecificitiesActionTest
+  ✓ it NEVER assigns 005 or 006 to an imported indigenous family — no r… 0.45s  
+  ✓ it translates the traditional group into the Tabela 38 code (CA01/R… 0.03s  
+  ✓ it derives quilombola straight from the import indicator (CA02/RN04… 0.02s  
+  ✓ it turns the group "0 Nenhuma" into the DECLARED value 019 — not a…  0.02s  
+  ✓ it prefers the informative specificity over 019 when the file says…  0.02s  
+  ✓ it SUGGESTS homeless situation from one member — it does not declar… 0.02s  
+  ✓ it does not suggest homeless situation from an UNLINKED member (§8)  0.02s  
+  ✓ it never overwrites a manual row and records the divergence instead… 0.03s  
+  ✓ it does not open a divergence when the manual record already contai… 0.02s  
+  ✓ it is idempotent across re-imports and never re-opens a confirmed s… 0.02s  
+  ✓ it follows the lookup when the MAP changes — without touching PHP (… 0.03s  
+  ✓ it writes nothing for a family with no group, no indicator and no h… 0.02s  
+
+   PASS  Tests\Unit\Models\SocialSpecificityTest
+  ✓ it has fillable name, code and is_active                             0.01s  
+  ✓ it casts is_active to boolean and defaults to true                   0.01s  
+  ✓ it uses HasUuid trait                                                0.01s  
+  ✓ it uses SoftDeletes trait                                            0.01s  
+  ✓ it uses HasFactory trait                                             0.01s  
+  ✓ it persists with uuid auto-generated                                 0.01s  
+
+   PASS  Tests\Feature\Api\Relationals\SocialSpecificityControllerTest
+  ✓ it lists only active social specificities                            0.03s  
+  ✓ it returns up to 30 specificities and flags searchable above the th… 0.01s  
+  ✓ it exposes only id, name and code                                    0.01s  
+  ✓ it filters by search on name (case-insensitive)                      0.01s  
+  ✓ it filters by search on code                                         0.01s  
+  ✓ it rejects unauthenticated request with 401                          0.02s  
+  ✓ it rejects search shorter than 2 characters                          0.01s  
+  ✓ it accepts requests from the client guard                            0.01s  
+  ✓ it caches the active specificity set                                 0.01s  
+  ✓ it invalidates the cache when a specificity is created               0.01s  
+  ✓ it invalidates the cache on bulk deactivate                          0.02s  
+  ✓ it drops a specificity from the cached set when it becomes inactive  0.01s  
+
+   PASS  Tests\Feature\Api\SocialSpecificityControllerTest
+  ✓ it lists social specificities                                        0.02s  
+  ✓ it creates a social specificity                                      0.01s  
+  ✓ it shows a social specificity                                        0.02s  
+  ✓ it updates a social specificity                                      0.01s  
+  ✓ it deletes a social specificity                                      0.01s  
+  ✓ it validates required fields on create                               0.01s  
+  ✓ it requires authentication                                           0.01s  
+  ✓ it filters social specificities by name                              0.01s  
+  ✓ it sorts social specificities by code                                0.01s  
+  ✓ it exposes is_active and defaults to true on create                  0.01s  
+  ✓ it filters social specificities by is_active                         0.02s  
+  ✓ it bulk activates social specificities                               0.01s  
+  ✓ it bulk deactivates social specificities                             0.01s  
+  ✓ it forbids bulk activate without the bulk-update permission          0.01s  
+  ✓ it validates uuids on bulk activate                                  0.01s  
+  ✓ it rejects integer ids on bulk activate                              0.01s  
+
+   PASS  Tests\Feature\Api\TraditionalPopulationGroupMappingTest
+  ✓ it refuses a mapping to a specificity that does not exist            0.02s  
+
+   PASS  Tests\Feature\Family\FamilySocialSpecificityTest
+  ✓ it shows the specificity derived from the traditional group, marked… 0.05s  
+  ✓ it shows the quilombola specificity derived from the import indicat… 0.04s  
+  ✓ it treats "Sem Especificidades" as a DECLARED value — no pendency (… 0.05s  
+  ✓ it lists the family nobody informed anything about as PENDING (CA04… 0.04s  
+  ✓ it leaves the imported indigenous family PENDING and lets the profe… 0.05s  
+  ✓ it does NOT count an unconfirmed suggestion as a current specificit… 0.05s  
+  ✓ it saves a manual-only specificity that the system could never deri… 0.04s  
+  ✓ it records in the audit trail that the correction REPLACED a derive… 0.04s  
+  ✓ it accepts more than one specificity and sends the PRIMARY one to t… 0.04s  
+  ✓ it REJECTS two primaries in the Form Request (CA09 — 1st layer)      0.04s  
+  ✓ it REJECTS two primaries in the PARTIAL UNIQUE INDEX as well (CA09…  0.04s  
+  ✓ it REJECTS the same specificity twice for the family (unique index)  0.03s  
+  ✓ it keeps the record value on re-import and shows the divergence (CA… 0.05s  
+  ✓ it answers 404 for a family referenced in a unit the operator is no… 0.04s  
+  ✓ it NEVER writes ethnicity_note into the activity log (§10/§14)       0.05s  
+  ✓ it does not let the {family:uuid} binding swallow the literal pendi… 0.04s  
+  ✓ it only accepts ACTIVE items from the global Tabela 38 registry (RN… 0.04s  
+  ✓ it accepts an EMPTY list — which is different from declaring 019 (C… 0.04s  
+
+   PASS  Tests\Feature\Seeders\TraditionalGroupSpecificityMapSeederTest
+  ✓ it maps the 13 CadUnico groups to the Tabela 38 by CODE on both sid… 0.02s  
+  ✓ it is IDEMPOTENT — running it twice changes nothing (§15.3)          0.02s  
+  ✓ it leaves NO active group without a correspondence — sanity query o… 0.02s  
+
+   PASS  Tests\Feature\TenantIsolation\FamilySocialSpecificityIsolationTest
+  ✓ it applies BelongsToTenant to FamilySocialSpecificity                0.03s  
+  ✓ it does NOT leak the primary specificity of another municipality to… 0.03s  
+  ✓ it keeps the Tabela 38 registry and the CadUnico map GLOBAL — no te… 0.02s  
+
+  Tests:    71 passed (281 assertions)
+  Duration: 2.41s
+

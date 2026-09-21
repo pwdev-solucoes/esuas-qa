@@ -1,0 +1,21 @@
+== CA06 — GET .../access-review apos mudar para o CBO 5153-20 (sem entrada no mapa) ==
+HTTP 200
+{
+  "data": {
+    "professional": {
+      "id": 8,
+      "uuid": "9e96fb20-aadc-4bb4-8031-0c2b056d5a16"
+    },
+    "cbo": {
+      "uuid": "90f15e2a-d17f-471f-881e-da52a37896e5",
+      "code": "5153-20",
+      "name": "Conselheiro tutelar"
+    },
+    "has_mapping": false,
+    "dismissed": false,
+    "suggestion": {
+      "roles": []
+    },
+    "divergences": []
+  }
+}

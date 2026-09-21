@@ -1,0 +1,22 @@
+=== frontend: combobox test (se houver) ===
+
+ RUN  v2.1.9 /Users/paulosoares/Projetos/esuas-all/client
+
+ ✓ src/modules/geo-panel/components/GeoPanelSectorCombobox.test.ts (16 tests) 55ms
+
+ Test Files  1 passed (1)
+      Tests  16 passed (16)
+   Start at  05:32:01
+   Duration  694ms (transform 80ms, setup 11ms, collect 149ms, tests 55ms, environment 268ms, prepare 43ms)
+
+
+=== backend: agregação por setor, restrição de setor (RN08) e indicador fixo (RN07) ===
+  ✓ it restricts by sector_uuid (SQLite fallback: sector city = family…  0.02s  
+  ✓ it aggregates by sector, groups anonymous points and computes the b… 0.02s  
+  ✓ it scopes every aggregate to the given tenant (RN01)                 0.02s  
+  ✓ it validates that a sector belongs to the tenant municipality (RN08… 0.01s  
+  ✓ it serves the census sectors of the tenant municipality as a GeoJSO… 0.02s  
+  ✓ it rejects a sector_uuid that belongs to another municipality (RN08… 0.02s  
+  ✓ it always includes the fixed RN07 indicator in the summary, even wi… 0.03s  
+  ✓ it aggregates the summary by census sector under the active filters… 0.03s  
+  Tests:    34 passed (101 assertions)

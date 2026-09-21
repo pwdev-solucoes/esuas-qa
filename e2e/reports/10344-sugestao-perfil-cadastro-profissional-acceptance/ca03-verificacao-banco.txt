@@ -1,0 +1,25 @@
+== CA03 — add-on LGPD confirmado pelo Master ==
+user_tenant_role concedidos: operador, family_viewer, pf_tecnico_referencia
+family_viewer presente? SIM — acesso concedido
+
+event: roles_granted_from_suggestion
+causer: User#7   subject: TenantProfessional#8
+properties: {
+    "tenant_id": 3,
+    "cbo_code": "2516-05",
+    "has_mapping": true,
+    "suggested": [
+        "family_viewer",
+        "operador",
+        "pf_tecnico_referencia"
+    ],
+    "suggested_kept": [
+        "family_viewer",
+        "operador",
+        "pf_tecnico_referencia"
+    ],
+    "suggested_removed": [],
+    "manually_added": []
+}
+
+CPF em claro? NAO

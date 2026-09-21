@@ -1,0 +1,185 @@
+- generic [ref=e2]:
+  - generic [ref=e3]:
+    - complementary [ref=e4]:
+      - generic [ref=e5]:
+        - img "eSUAS" [ref=e7]
+        - button "Recolher menu" [ref=e8]:
+          - img [ref=e9]
+      - navigation [ref=e11]:
+        - generic [ref=e12]:
+          - heading "PRINCIPAL" [level=3] [ref=e14]
+          - generic [ref=e15]:
+            - button "Início" [ref=e16]:
+              - generic [ref=e17]:
+                - img [ref=e18]
+                - generic [ref=e21]: Início
+            - button "Georreferenciamento" [ref=e22]:
+              - generic [ref=e23]:
+                - img [ref=e24]
+                - generic [ref=e28]: Georreferenciamento
+        - generic [ref=e29]:
+          - heading "Busca" [level=3] [ref=e31]
+          - generic [ref=e32]:
+            - button "Pessoas" [ref=e33]:
+              - generic [ref=e34]:
+                - img [ref=e35]
+                - generic [ref=e40]: Pessoas
+            - button "Qualificação Territorial" [ref=e41]:
+              - generic [ref=e42]:
+                - img [ref=e43]
+                - generic [ref=e49]: Qualificação Territorial
+        - generic [ref=e50]:
+          - heading "Cadastros" [level=3] [ref=e52]
+          - generic [ref=e53]:
+            - button "Profissionais" [ref=e54]:
+              - generic [ref=e55]:
+                - img [ref=e56]
+                - generic [ref=e61]: Profissionais
+            - button "Unidades Socioassistenciais" [ref=e62]:
+              - generic [ref=e63]:
+                - img [ref=e64]
+                - generic [ref=e68]: Unidades Socioassistenciais
+            - button "Entidades Socioassistenciais" [ref=e69]:
+              - generic [ref=e70]:
+                - img [ref=e71]
+                - generic [ref=e76]: Entidades Socioassistenciais
+        - generic [ref=e77]:
+          - heading "Importações" [level=3] [ref=e79]
+          - button "Cadastro Único (MDS)" [ref=e81]:
+            - generic [ref=e82]:
+              - img [ref=e83]
+              - generic [ref=e87]: Cadastro Único (MDS)
+        - generic [ref=e88]:
+          - heading "Configurações" [level=3] [ref=e90]
+          - generic [ref=e91]:
+            - button "Organização" [ref=e92]:
+              - generic [ref=e93]:
+                - img [ref=e94]
+                - generic [ref=e97]: Organização
+            - button "Documentos Legais" [ref=e98]:
+              - generic [ref=e99]:
+                - img [ref=e100]
+                - generic [ref=e103]: Documentos Legais
+        - generic [ref=e104]:
+          - heading "Sobre" [level=3] [ref=e106]
+          - button "Histórico de versões" [ref=e108]:
+            - generic [ref=e109]:
+              - img [ref=e110]
+              - generic [ref=e114]: Histórico de versões
+    - generic [ref=e115]:
+      - banner [ref=e116]:
+        - generic [ref=e117]:
+          - navigation "Breadcrumbs" [ref=e119]:
+            - button "Início" [ref=e120]:
+              - img [ref=e121]
+              - generic [ref=e124]: Início
+            - img [ref=e125]
+            - button "Profissionais" [ref=e127]:
+              - img [ref=e128]
+              - generic [ref=e133]: Profissionais
+            - img [ref=e134]
+            - button "Editar" [ref=e136]:
+              - img [ref=e137]
+              - generic [ref=e142]: Editar
+          - button "Abrir menu do usuário" [ref=e145]:
+            - generic [ref=e146]: JC
+            - img [ref=e147]
+      - main [ref=e149]:
+        - generic [ref=e150]:
+          - generic [ref=e151]:
+            - img [ref=e153]
+            - generic [ref=e158]:
+              - heading "Editar profissional" [level=1] [ref=e159]
+              - paragraph [ref=e160]: Cadastro de profissional municipal e vínculo ao município.
+            - button "Voltar" [ref=e162]:
+              - img
+              - text: Voltar
+          - generic [ref=e164]:
+            - generic [ref=e165]:
+              - img [ref=e167]
+              - generic [ref=e172]:
+                - paragraph [ref=e173]: Identificação e vínculo
+                - paragraph [ref=e174]: Dados pessoais, contato e vínculo funcional do profissional.
+            - generic [ref=e175]:
+              - generic [ref=e176]:
+                - generic [ref=e177]:
+                  - paragraph [ref=e178]: Identificação
+                  - paragraph [ref=e179]: Identifique o CPF e os dados pessoais do profissional.
+                - generic [ref=e180]:
+                  - generic [ref=e181]:
+                    - generic [ref=e182]:
+                      - text: CPF
+                      - generic [ref=e183]: "*"
+                    - textbox "000.000.000-00" [ref=e184]: 814.590.269-80
+                    - paragraph [ref=e185]: Informe o CPF para resolver a identidade na base.
+                  - generic [ref=e186]:
+                    - generic [ref=e187]:
+                      - text: Nome completo
+                      - generic [ref=e188]: "*"
+                    - textbox [ref=e189]: Profissional Ativo E2E
+                  - generic [ref=e190]:
+                    - generic [ref=e191]:
+                      - generic [ref=e192]:
+                        - text: Data de nascimento
+                        - generic [ref=e193]: "*"
+                      - textbox [ref=e194]
+                    - generic [ref=e195]:
+                      - generic [ref=e196]:
+                        - text: Nome da mãe
+                        - generic [ref=e197]: (opcional)
+                      - textbox [ref=e198]
+              - generic [ref=e199]:
+                - generic [ref=e200]:
+                  - paragraph [ref=e201]: Contato e vínculo
+                  - paragraph [ref=e202]: Canais de contato e vínculo funcional do profissional.
+                - generic [ref=e203]:
+                  - generic [ref=e204]:
+                    - generic [ref=e205]:
+                      - text: E-mail
+                      - generic [ref=e206]: "*"
+                    - textbox [ref=e207]: ativo.e2e@arapiraca.al.gov.br
+                  - generic [ref=e208]:
+                    - generic [ref=e209]:
+                      - generic [ref=e210]:
+                        - text: Telefone
+                        - generic [ref=e211]: "*"
+                      - textbox [ref=e212]: (46) 91001-2818
+                    - generic [ref=e213]:
+                      - generic [ref=e214]:
+                        - text: Matrícula / Contrato
+                        - generic [ref=e215]: "*"
+                      - textbox [ref=e216]: MAT-2026-2473
+              - generic [ref=e217]:
+                - generic [ref=e218]:
+                  - paragraph [ref=e219]: Endereço
+                  - paragraph [ref=e220]: Localização do profissional no município. Adicione pelo cadastro com busca por CEP.
+                - generic [ref=e223]:
+                  - img [ref=e225]
+                  - generic [ref=e228]:
+                    - paragraph [ref=e229]: Nenhum endereço cadastrado
+                    - paragraph [ref=e230]: Adicione o endereço do profissional com preenchimento automático por CEP.
+                  - button "Adicionar endereço" [ref=e231]:
+                    - img
+                    - text: Adicionar endereço
+              - generic [ref=e232]:
+                - generic [ref=e233]:
+                  - paragraph [ref=e234]: Foto
+                  - paragraph [ref=e235]: Imagem do profissional. (opcional)
+                - generic [ref=e236]:
+                  - img [ref=e238]
+                  - generic [ref=e241]:
+                    - paragraph [ref=e242]: Foto do profissional
+                    - paragraph [ref=e243]: JPG ou PNG, até 2 MB. Recomendado 400×400 px.
+                    - button "Choose File" [ref=e244]
+                    - button "Enviar foto" [ref=e245]:
+                      - img
+                      - text: Enviar foto
+              - generic [ref=e246]:
+                - paragraph [ref=e247]: "* Campos obrigatórios"
+                - generic [ref=e248]:
+                  - button "Cancelar" [ref=e249]
+                  - button "Salvar profissional" [ref=e250]:
+                    - img
+                    - text: Salvar profissional
+  - region "Notifications alt+T":
+    - list

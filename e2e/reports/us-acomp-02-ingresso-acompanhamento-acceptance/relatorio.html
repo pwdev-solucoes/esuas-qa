@@ -1,0 +1,207 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — US-ACOMP-02</title><style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  section.note { border:1px solid var(--line); border-left:4px solid #b06a00; border-radius:6px; padding:10px 14px; margin:10px 0; background:#fffdf7; font-size:13px; }
+  section.note h3 { margin:0 0 6px; font-size:13.5px; color:#8a5200; }
+  section.note p { margin:6px 0; }
+  section.note ul { margin:6px 0 6px 18px; padding:0; }
+  section.note pre { background:var(--bg); border:1px solid var(--line); border-radius:4px; padding:8px; overflow-x:auto; font-size:11px; white-space:pre-wrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style>
+<body><div class="wrap">
+<header class="cover"><h1>Relatório de Critérios de Aceite — US-ACOMP-02</h1>
+<div class="sub">Épico HU-PRONT-ACOMP (fase F3) · Registrar o ingresso da família no acompanhamento (PAIF/PAEFI)</div>
+<div class="meta"><div><span>Gerado em:</span> 09/09/2026 (revisado após a US-ACOMP-03)</div><div><span>História:</span> US-ACOMP-02 — Registrar o ingresso da família no acompanhamento</div><div><span>Spec:</span> <code>.planning/specs/US-ACOMP-02-registrar-ingresso-no-acompanhamento.md</code></div><div><span>Branch:</span> <code>feature/acomp-prontuario-bloco-24</code> (api/ e client/), a partir de develop</div><div><span>Commits (api/):</span> <code>8d60959</code> · <code>b527b3f</code> · <code>9fe5b06</code> · <code>c4be7b3</code> · <code>73d9c02</code> · <code>1d723c5</code> · <code>f29a9b6</code></div><div><span>Commits (client/):</span> <code>5a0f065</code> · <code>ce953f8</code></div><div><span>Commits (e2e/):</span> <code>a4a8cfc</code> · <code>4d088b8</code></div><div><span>Ambiente:</span> Stack E2E Docker · API em :8090 · client (vite preview) em :4174 · base <code>esuas_e2e</code> semeada por E2ESeeder</div><div><span>Perfil usado:</span> Operacional do tenant (guard <code>client</code>) — “E2E Operador Prontuário”, com lotação vigente no “E2E CRAS Centro” e add-on LGPD</div><div><span>Ferramenta:</span> Playwright (Chromium, project <code>chromium-tenant</code>) + Pest 4</div></div></header>
+<h2 style="border-top:none;padding-top:0">Resumo</h2>
+<p>Onze critérios de aceite. <strong>Sete evidenciados no navegador</strong> (CA01, CA02, CA04, CA05, CA06, CA09 e CA10, com oito prints, incluindo um cenário de borda que a spec não numera) e <strong>quatro cobertos pela suíte automatizada</strong> (CA03, CA07, CA08 e CA11). A suíte Pest fecha com <strong>117 testes e 660 asserções</strong> no filtro <code>FollowUp</code>, e os <strong>12 cenários Playwright</strong> de <code>e2e/tests/client/family-follow-up.spec.ts</code> passam contra a mesma stack, em duas execuções consecutivas. <strong>Nenhum critério em falha.</strong> O E2E encontrou um defeito real de produto durante a verificação, já corrigido e coberto por regressão — ver as ressalvas.</p>
+<table class="summary"><thead><tr><th>CA</th><th>Critério</th><th>Situação</th><th>Evidência</th></tr></thead>
+<tbody><tr><td class="caid">CA01</td><td>Registrar ingresso no PAIF (happy path)</td><td><span class="pill" style="background:#0a7d33">ATENDIDO</span></td><td>Print + Pest</td></tr><tr><td class="caid">CA02</td><td>Serviço restrito pelo tipo de unidade</td><td><span class="pill" style="background:#0a7d33">ATENDIDO</span></td><td>Print + Pest</td></tr><tr><td class="caid">CA03</td><td>Acompanhamentos simultâneos em unidades diferentes</td><td><span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></td><td>Pest (<code>FollowUp</code>)</td></tr><tr><td class="caid">CA04</td><td>Dois vigentes na mesma unidade e serviço são recusados</td><td><span class="pill" style="background:#0a7d33">ATENDIDO</span></td><td>Print + Pest</td></tr><tr><td class="caid">CA05</td><td>Reingresso após desligamento</td><td><span class="pill" style="background:#0a7d33">ATENDIDO</span></td><td>Print + Pest</td></tr><tr><td class="caid">CA06</td><td>Data futura recusada</td><td><span class="pill" style="background:#0a7d33">ATENDIDO</span></td><td>Print + Pest</td></tr><tr><td class="caid">CA07</td><td>Retroativo em período já declarado</td><td><span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></td><td>Pest (<code>FollowUp</code>)</td></tr><tr><td class="caid">CA08</td><td>Unidade que não é CRAS nem CREAS</td><td><span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></td><td>Pest (<code>FollowUp</code>)</td></tr><tr><td class="caid">CA09</td><td>Cancelar ingresso lançado por engano</td><td><span class="pill" style="background:#0a7d33">ATENDIDO</span></td><td>Print + Pest</td></tr><tr><td class="caid">CA10</td><td>Negativa por unidade declara o motivo</td><td><span class="pill" style="background:#0a7d33">ATENDIDO</span></td><td>Print + Playwright</td></tr><tr><td class="caid">CA11</td><td>Isolamento entre municípios</td><td><span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></td><td>Pest (<code>TenantIsolation</code>)</td></tr><tr><td class="caid">Extra</td><td>Cenário de borda além dos CA numerados</td><td><span class="pill" style="background:#0a7d33">ATENDIDO</span></td><td>1 print</td></tr></tbody></table>
+<section class="ca"><h2>CA01 — Registrar ingresso no PAIF (happy path) <span class="pill" style="background:#0a7d33">ATENDIDO</span></h2><div class="gherkin"><p><strong>Dado</strong> um profissional com lotação vigente no CRAS, <strong>quando</strong> registra o ingresso da família no PAIF com data de hoje, <strong>então</strong> o acompanhamento passa a constar como vigente no prontuário, assinado e datado.</p></div><div class="results"><ul><li>A linha entra na seção de vigentes com o serviço (PAIF) e a unidade que acompanha.</li><li>A unidade gravada é a <strong>escolhida no formulário</strong> (snapshot), nunca a unidade de referência da família.</li><li>Autoria e data do lançamento são carimbadas pelo servidor — o cliente não as envia.</li></ul></div><div class="evid"><figure><img src="screenshots/acomp02-a-ingresso.png" alt="Ingresso registrado no PAIF a partir do CRAS Centro"><figcaption>acomp02-a-ingresso.png — Ingresso registrado no PAIF a partir do CRAS Centro</figcaption></figure></div></section><section class="ca"><h2>CA02 — Serviço restrito pelo tipo de unidade <span class="pill" style="background:#0a7d33">ATENDIDO</span></h2><div class="gherkin"><p><strong>Dado</strong> que a unidade escolhida é um CRAS, <strong>quando</strong> o profissional abre a lista de serviços, <strong>então</strong> só o PAIF é ofertado — o PAEFI não aparece.</p></div><div class="results"><ul><li>A restrição é lida de <code>follow_up_services.social_unit_type_id</code>; não há <code>if</code> com a sigla “CRAS”/“CREAS” no código.</li><li>Um serviço de outro tipo enviado à força é recusado pelo backend com 422.</li></ul></div><div class="evid"><figure><img src="screenshots/acomp02-b-servicos-do-cras.png" alt="Select de serviço em um CRAS: apenas PAIF"><figcaption>acomp02-b-servicos-do-cras.png — Select de serviço em um CRAS: apenas PAIF</figcaption></figure></div></section><section class="ca"><h2>CA03 — Acompanhamentos simultâneos em unidades diferentes <span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></h2><div class="gherkin"><p><strong>Dado</strong> que a família já é acompanhada pelo CRAS no PAIF, <strong>quando</strong> o CREAS registra o PAEFI, <strong>então</strong> os dois acompanhamentos coexistem.</p></div><div class="results"><ul><li>Coberto por teste Feature: duas unidades acompanham a mesma família ao mesmo tempo, e a mesma unidade acompanha em dois serviços distintos.</li><li>Não evidenciado no navegador porque exige um segundo profissional lotado no CREAS, que o seed E2E não possui.</li></ul></div><div class="evid"><p class="noimg">Sem prova visual: critério verificado pela suíte automatizada (ver anexo).</p></div></section><section class="ca"><h2>CA04 — Dois vigentes na mesma unidade e serviço são recusados <span class="pill" style="background:#0a7d33">ATENDIDO</span></h2><div class="gherkin"><p><strong>Dado</strong> um acompanhamento vigente no PAIF do CRAS Centro, <strong>quando</strong> se tenta registrar outro na mesma unidade e serviço, <strong>então</strong> a tela recusa e aponta o acompanhamento existente.</p></div><div class="results"><ul><li>A recusa é <strong>409</strong> com <code>error_code = follow_up_already_active</code> e <code>meta.follow_up_uuid</code> apontando o existente — a tela leva o profissional até a linha, em vez de dar erro cego.</li><li>Nada é duplicado: a família continua com exatamente um vigente.</li><li>A última linha de defesa é o índice único parcial no banco, provado por teste de corrida com dois <code>store</code> simultâneos.</li></ul></div><div class="evid"><figure><img src="screenshots/acomp02-c-duplicado.png" alt="Segundo ingresso recusado, apontando o acompanhamento vigente"><figcaption>acomp02-c-duplicado.png — Segundo ingresso recusado, apontando o acompanhamento vigente</figcaption></figure></div></section><section class="ca"><h2>CA05 — Reingresso após desligamento <span class="pill" style="background:#0a7d33">ATENDIDO</span></h2><div class="gherkin"><p><strong>Dado</strong> um acompanhamento desligado, <strong>quando</strong> a família ingressa de novo na mesma unidade e serviço, <strong>então</strong> a nova linha é aceita e a anterior permanece intacta.</p></div><div class="results"><ul><li><strong>Critério destravado pela entrega da US-ACOMP-03:</strong> até então não havia como desligar pela interface, e este CA só tinha cobertura de suíte.</li><li>Verificado na tela que o reingresso cria uma linha <strong>nova</strong> — o índice único parcial só barra dois VIGENTES.</li><li>A linha desligada permanece intacta no histórico, com o estado preservado.</li></ul></div><div class="evid"><figure><img src="screenshots/acomp03-reingresso.png" alt="Reingresso aceito após o desligamento (cenário da US-ACOMP-03)"><figcaption>acomp03-reingresso.png — Reingresso aceito após o desligamento (cenário da US-ACOMP-03)</figcaption></figure></div></section><section class="ca"><h2>CA06 — Data futura recusada <span class="pill" style="background:#0a7d33">ATENDIDO</span></h2><div class="gherkin"><p><strong>Dado</strong> o formulário de ingresso, <strong>quando</strong> o profissional informa uma data posterior a hoje, <strong>então</strong> o lançamento é barrado e nada é gravado.</p></div><div class="results"><ul><li>O bloqueio começa no próprio campo: o seletor de data traz <code>max</code> igual a hoje.</li><li>Forçada a data futura, a recusa é explicada na tela e o formulário permanece aberto.</li><li>Nenhum acompanhamento vigente é criado.</li></ul></div><div class="evid"><figure><img src="screenshots/acomp02-d-data-futura.png" alt="Data futura barrada no formulário"><figcaption>acomp02-d-data-futura.png — Data futura barrada no formulário</figcaption></figure></div></section><section class="ca"><h2>CA07 — Retroativo em período já declarado <span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></h2><div class="gherkin"><p><strong>Dado</strong> um mês cuja remessa SIAP já foi concluída, <strong>quando</strong> se registra um ingresso retroativo naquele mês, <strong>então</strong> o lançamento é <strong>salvo</strong> e vem acompanhado do aviso de necessidade de regeração.</p></div><div class="results"><ul><li>O aviso é <code>siap_remittance_regeneration_required</code>, com <code>meta.exercise</code> e <code>meta.reference_month</code> — é <strong>aviso, não bloqueio</strong>.</li><li>Coberto por teste Feature tanto no <code>store</code> quanto no <code>options</code> (o profissional é avisado <em>antes</em> de salvar).</li><li>Não evidenciado no navegador: exige uma remessa concluída no mês do lançamento, estado que o seed E2E não monta.</li></ul></div><div class="evid"><p class="noimg">Sem prova visual: critério verificado pela suíte automatizada (ver anexo).</p></div></section><section class="ca"><h2>CA08 — Unidade que não é CRAS nem CREAS <span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></h2><div class="gherkin"><p><strong>Dado</strong> um Centro POP, cujo tipo não oferta serviço de acompanhamento, <strong>quando</strong> o profissional abre o formulário, <strong>então</strong> a ação não é oferecida e o motivo é declarado.</p></div><div class="results"><ul><li><code>can_register: false</code> com <code>reason = unit_type_without_service</code> no <code>options</code>, e <strong>422</strong> com o mesmo código no <code>store</code>.</li><li>Não evidenciado no navegador porque o Operacional do seed não tem lotação em Centro POP.</li></ul></div><div class="evid"><p class="noimg">Sem prova visual: critério verificado pela suíte automatizada (ver anexo).</p></div></section><section class="ca"><h2>CA09 — Cancelar ingresso lançado por engano <span class="pill" style="background:#0a7d33">ATENDIDO</span></h2><div class="gherkin"><p><strong>Dado</strong> um acompanhamento lançado por engano, <strong>quando</strong> o profissional o cancela informando o motivo, <strong>então</strong> a linha permanece no prontuário marcada como cancelada e some dos contadores.</p></div><div class="results"><ul><li>O motivo é <strong>obrigatório</strong>: confirmar sem preenchê-lo não cancela nada.</li><li><strong>Cancelar não apaga</strong>: a linha continua visível, com estado “cancelado”, autor e data.</li><li>O <code>DELETE</code> HTTP mapeia para cancelar — nenhuma rota aciona <code>delete()</code> ou <code>forceDelete()</code>, o que é provado por teste.</li><li>O motivo do cancelamento <strong>nunca</strong> entra no log de auditoria (D11).</li></ul></div><div class="evid"><figure><img src="screenshots/acomp02-e-cancelado.png" alt="Acompanhamento cancelado: a linha permanece, marcada"><figcaption>acomp02-e-cancelado.png — Acompanhamento cancelado: a linha permanece, marcada</figcaption></figure></div></section><section class="ca"><h2>CA10 — Negativa por unidade declara o motivo <span class="pill" style="background:#0a7d33">ATENDIDO</span></h2><div class="gherkin"><p><strong>Dado</strong> um Operacional lotado apenas no “CRAS Centro” e uma família referenciada em outra unidade, que a sua não acompanha, <strong>quando</strong> ele tenta registrar o ingresso, <strong>então</strong> não é permitido e a tela informa o motivo, <strong>sem nomear a unidade que atende a família</strong>.</p></div><div class="results"><ul><li>A recusa chega ao profissional como motivo declarado, e não como erro cego.</li><li><strong>Nenhuma unidade é nomeada</strong> na negativa — é superfície de LGPD: dizer qual unidade atende a família já revelaria informação do prontuário a quem não tem acesso a ele.</li><li>Verificado no navegador e fixado em regressão pelo cenário (f) de <code>family-follow-up.spec.ts</code>, “Operacional sem acesso não vê o bloco, e a negativa não nomeia unidade”.</li></ul></div><div class="evid"><figure><img src="screenshots/acomp02-f-negativa.png" alt="Negativa de acesso, sem nomear unidade"><figcaption>acomp02-f-negativa.png — Negativa de acesso, sem nomear unidade</figcaption></figure></div></section><section class="ca"><h2>CA11 — Isolamento entre municípios <span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></h2><div class="gherkin"><p><strong>Dado</strong> um usuário do município A, <strong>quando</strong> ele registra ou consulta acompanhamentos, <strong>então</strong> alcança somente famílias e unidades do município A.</p></div><div class="results"><ul><li>Família de <strong>outro</strong> município responde <strong>404, nunca 403</strong>, em todas as rotas do acompanhamento: 403 confirmaria a existência do registro a quem não pode vê-lo.</li><li>Nenhum acompanhamento de outro município vaza através de um identificador de família do meu próprio.</li><li>O escopo é do <em>Model</em>, não só da rota: vale mesmo sem passar pela rota, pela trait de vínculo com a organização — defesa em profundidade, não um filtro só.</li><li>Requisição que aponta para uma organização à qual o usuário não pertence é bloqueada.</li><li>Sem prova visual por construção: o cenário exige dois municípios simultâneos, que a base do ambiente de verificação não encena. Coberto pelo bloco <code>FamilyFollowUpIsolationTest</code> do anexo automatizado.</li></ul></div></section><section class="ca"><h2>Extra — Cenário de borda além dos CA numerados <span class="pill" style="background:#0a7d33">ATENDIDO</span></h2><div class="gherkin"><p>Comportamento que a spec descreve mas não numera como CA, e que vale prova visual por ser superfície de usabilidade.</p></div><div class="results"><ul><li><strong>Estado vazio</strong>: família nunca acompanhada mostra orientação, não uma tabela vazia nem um erro.</li></ul></div><div class="evid"><figure><img src="screenshots/acomp02-g-estado-vazio.png" alt="Estado vazio do bloco: orientação, não tabela vazia"><figcaption>acomp02-g-estado-vazio.png — Estado vazio do bloco: orientação, não tabela vazia</figcaption></figure></div></section>
+<h2>Observações e ressalvas</h2>
+<section class="note"><h3>Defeito de produto encontrado por este dossiê — corrigido</h3><p>O cenário de cancelamento (CA09) <strong>falhou na primeira execução</strong>: o botão de cancelar não existia na tela. A causa era real e estava no backend — o contexto do leitor (<code>follow_up_viewer</code>) era carimbado apenas no FormRequest, mas a listagem devolve a <em>collection</em> e o Laravel só a serializa depois do controller, com o <code>Request</code> do container, que é outra instância. O viewer chegava nulo e <code>can_edit</code>/<code>can_cancel</code> saíam sempre <code>false</code> para quem não é Master.</p><p><strong>Efeito no produto:</strong> o profissional com lotação vigente na unidade que acompanha não via os botões de corrigir e cancelar, apesar de as RN10 e RN11 lhe darem esse direito. Os caminhos de escrita não adoeciam, porque serializam na hora com o próprio FormRequest — por isso os testes de backend passavam e só o E2E pegou.</p><p>Corrigido em <code>api@f29a9b6</code>, com <strong>dois testes de regressão</strong> que foram verificados nos dois sentidos: falham sem a correção, passam com ela.</p></section><section class="note"><h3>Limite de produto — questão aberta com o PO</h3><p>Um Operacional do CREAS <strong>não consegue lançar o primeiro ingresso</strong> de uma família referenciada no CRAS: ele não tem acesso ao prontuário, e o eixo de acesso da US-ACOMP-04 só abre <em>depois</em> que o acompanhamento existe. O ciclo se fecha sobre si mesmo.</p><p>Verificado empiricamente durante a escrita dos testes: o <code>POST</code> responde <strong>403</strong>. Nos testes, quem registra é o Master. A HU não diz quem faz esse primeiro lançamento — <strong>decisão pendente do PO</strong>. Está documentado no próprio teste, com o comentário de que trocar o ator reproduz o 403.</p></section><section class="note"><h3>O que este dossiê não prova</h3><ul><li><s>Desligamento e reingresso pela tela</s> — <strong>coberto desde a entrega da US-ACOMP-03</strong>: o CA05 passou a ter prova visual.</li><li>Aviso de remessa no navegador — exige remessa SIAP concluída, estado ausente do seed E2E.</li><li>Centro POP sem serviço ofertado no navegador — o Operacional do seed não tem lotação nesse tipo de unidade.</li><li>Convivência de duas unidades acompanhando pela tela — falta um segundo profissional lotado no CREAS no seed.</li></ul><p>Todos os quatro estão cobertos pela suíte automatizada (anexo).</p></section><section class="note"><h3>Nota de fuso descoberta na verificação</h3><p>O banco E2E corre em <strong>UTC</strong> e o host em horário local. O cenário de data futura passava por acidente: “amanhã” no host caía no “hoje” do banco. Na virada do dia o teste expôs o comportamento real — com data futura o <code>options</code> não devolve unidade elegível, e o select fica vazio. O cenário foi reordenado para o fluxo real (escolher a unidade primeiro, errar a data depois) e passou a medir a recusa da data, não um select vazio.</p></section>
+<h2>Anexo I — Cobertura automatizada (Pest 4, --filter=FollowUp)</h2><pre class="pest">PASS  Tests\Unit\FamilyFollowUpInvariantTest
+  ✓ it accepts the THREE legal state combinations (D03)                  0.44s  
+  ✓ it REFUSES an active row carrying discharge or cancellation columns… 0.03s  
+  ✓ it REFUSES an active row carrying discharge or cancellation columns… 0.03s  
+  ✓ it REFUSES an active row carrying discharge or cancellation columns… 0.03s  
+  ✓ it REFUSES an active row carrying discharge or cancellation columns… 0.04s  
+  ✓ it REFUSES a discharged row without date, without reason or carryin… 0.03s  
+  ✓ it REFUSES a discharged row without date, without reason or carryin… 0.03s  
+  ✓ it REFUSES a discharged row without date, without reason or carryin… 0.03s  
+  ✓ it REFUSES a cancelled row without timestamp, without reason or car… 0.03s  
+  ✓ it REFUSES a cancelled row without timestamp, without reason or car… 0.03s  
+  ✓ it REFUSES a cancelled row without timestamp, without reason or car… 0.03s  
+  ✓ it REFUSES a cancelled row without timestamp, without reason or car… 0.03s  
+  ✓ it is enforced by the Actions before every save (D03)                0.04s  
+  ✓ it lets the PARTIAL UNIQUE INDEX refuse a second ACTIVE row for the… 0.03s  
+  ✓ it produces ONE row when two simultaneous stores hit the same unit+… 0.03s  
+  ✓ it lets the index accept a NEW active row when the previous one is…  0.03s  
+  ✓ it scopes the unique index BY TENANT — the same family code in anot… 0.03s  
+  ✓ it refuses a FUTURE effective date inside the Update action, with a… 0.04s  
+  ✓ it refuses to EDIT a non-active follow-up inside the Update action…  0.03s  
+
+   PASS  Tests\Unit\FollowUpUsageServiceTest
+  ✓ it nasce sem consumidores declarados nos dois servicos (a US-ACOMP-… 0.02s  
+  ✓ it sem consumidores, nenhum servico esta em uso — a recusa sai como… 0.01s  
+  ✓ it sem consumidores, nenhuma razao esta em uso — a recusa sai como…  0.01s  
+  ✓ it reconhece o servico referenciado por um consumidor registrado     0.01s  
+  ✓ it reconhece a razao referenciada por um consumidor registrado       0.01s  
+  ✓ it ignora consumidor cuja tabela ainda nao existe, sem estourar      0.01s  
+  ✓ it devolve lista vazia quando nenhum uuid e informado                0.01s  
+
+   PASS  Tests\Feature\Client\FamilyAccessFollowUpAxisTest
+  ✓ it opens the record for a unit that FOLLOWS the family, auditing vi… 0.08s  
+  ✓ it reaches the WHOLE record, not just the follow-up block, includin… 0.08s  
+  ✓ it keeps the access after the follow-up is DISCHARGED (CA03/RN02)    0.05s  
+  ✓ it does NOT grant access through a CANCELLED follow-up, denying wit… 0.05s  
+  ✓ it does NOT grant access through a soft-deleted follow-up (RN02/D05… 0.05s  
+  ✓ it denies the unit with NEITHER reference NOR follow-up, stating bo… 0.06s  
+  ✓ it does not let the follow-up replace the LGPD add-on (CA06/RN03)    0.05s  
+  ✓ it does not let the follow-up replace an ACTIVE unit assignment (CA… 0.05s  
+  ✓ it keeps the Master accessing by bypass, never by the follow-up axi… 0.05s  
+  ✓ it audits the FOUR distinct access axes (CA01/CA03/CA08/RN04)        0.07s  
+  ✓ it does not let following ONE family authorize reaching another one… 0.05s  
+  ✓ it keeps the organization isolation ahead of the follow-up axis (CA… 0.06s  
+  ✓ it lists the FOLLOWED family in the person search and opens it from… 0.06s  
+  ✓ it filters the follow-up axis by tenant_id, even with a numerically… 0.07s  
+  ✓ it reports the assigned units that follow the family in the decisio… 0.05s  
+
+   PASS  Tests\Feature\Client\FamilyFollowUpTest
+  ✓ it registers the family admission into PAIF, signed and dated (CA01… 0.06s  
+  ✓ it IGNORES authorship and state columns sent by the client (RN13/§7… 0.06s  
+  ✓ it offers ONLY the service of the unit TYPE and refuses the other o… 0.05s  
+  ✓ it lets two units follow the SAME family at the same time (CA03/RN0… 0.06s  
+  ✓ it lets the SAME unit follow the family in two DIFFERENT services (… 0.06s  
+  ✓ it refuses a SECOND active follow-up in the same unit and service,…  0.06s  
+  ✓ it accepts a NEW admission after a discharge, keeping the previous…  0.07s  
+  ✓ it refuses a FUTURE admission date on store — 422 WITHOUT error_cod… 0.05s  
+  ✓ it accepts TODAY at 23h in the app timezone — the boundary never re… 0.05s  
+  ✓ it saves a retroactive admission in a remitted month AND returns th… 0.05s  
+  ✓ it does NOT warn when the month remittance is pending or failed (CA… 0.05s  
+  ✓ it warns BEFORE the submit, in the options of a remitted month (CA0… 0.05s  
+  ✓ it blocks the registration in a unit type that offers NO service (C… 0.06s  
+  ✓ it reports family_without_unit BEFORE any other reason (RN08)        0.06s  
+  ✓ it refuses a unit where the operator has NO assignment on the admis… 0.05s  
+  ✓ it evaluates the assignment ON THE ADMISSION DATE, not today (RN02/… 0.06s  
+  ✓ it CANCELS the admission with a reason and KEEPS the row in the rec… 0.07s  
+  ✓ it frees the unit+service pair after the cancellation (RN05/RN11)    0.06s  
+  ✓ it answers 409 when cancelling an ALREADY cancelled follow-up — ide… 0.06s  
+  ✓ it refuses to CANCEL a DISCHARGED follow-up — that is corrected by…  0.04s  
+  ✓ it requires a reason to cancel (RN11)                                0.07s  
+  ✓ it NEVER logs the cancel_reason in the activity trail (D11)          0.05s  
+  ✓ it denies the WHOLE follow-up surface for a family of ANOTHER unit,… 0.07s  
+  ✓ it does not let FOLLOWING one family authorize opening a follow-up…  0.06s  
+  ✓ it EDITS an active follow-up, restamping updated_by (RN10/RN13)      0.06s  
+  ✓ it accepts the PATCH verb on the same action (§11)                   0.06s  
+  ✓ it refuses to EDIT a cancelled or discharged follow-up (RN10)        0.05s  
+  ✓ it refuses a FUTURE date on update (RN07/RN10)                       0.05s  
+  ✓ it revalidates RN05 on update, excluding the row being edited (RN10… 0.07s  
+  ✓ it returns TWO deduplicated warnings when the update crosses two re… 0.06s  
+  ✓ it keeps social_unit_id FROZEN when the family reference unit chang… 0.05s  
+  ✓ it hides cancel_reason and the action flags from a reader who canno… 0.07s  
+  ✓ it returns an EMPTY block for a family never followed, and filters…  0.06s  
+  ✓ it exposes can_edit/can_cancel on the LISTING, not only on the writ… 0.05s  
+  ✓ it shows the OTHER unit&#x27;s line WITHOUT affordances, and its own WIT… 0.07s  
+
+   PASS  Tests\Feature\Manager\FollowUpExitReasonTest
+  ✓ it lista exatamente as quatro razoes com os codigos do instrumento,… 0.03s  
+  ✓ it nunca expoe o id no payload da razao                              0.02s  
+  ✓ it marca a incoerencia com progresso significativo apenas na razao…  0.02s  
+  ✓ it nasce com requires_description inerte nas quatro razoes           0.02s  
+  ✓ it nao expoe rota de criacao de uma quinta razao                     0.02s  
+  ✓ it colhe as sete abilities das rotas da razao e nao cria store       0.04s  
+  ✓ it nao oferece escrita da razao ao guard client, mas mantem a leitu… 0.03s  
+  ✓ it recusa a exclusao de razao sem uso com o motivo de vinculo ao in… 0.02s  
+  ✓ it recusa a exclusao da razao ja usada em um desligamento            0.02s  
+  ✓ it recusa a exclusao em massa de razoes item a item, sem excluir na… 0.02s  
+  ✓ it mantem a razao inativada na leitura e no historico, tirando-a so… 0.02s  
+  ✓ it atualiza a razao e audita a alteracao com autor, valor antigo e…  0.03s  
+  ✓ it recusa renumerar uma razao para um codigo ja ocupado              0.02s  
+  ✓ it bloqueia quem nao tem a permissao de escrita da razao             0.02s  
+  ✓ it nao tem tenant_id nem BelongsToTenant na razao                    0.02s  
+  ✓ it roda o seeder de razoes duas vezes sem duplicar nem desfazer a e… 0.02s  
+
+   PASS  Tests\Feature\Manager\FollowUpServiceTest
+  ✓ it lista exatamente os dois servicos do bloco 24, com code e nome p… 0.02s  
+  ✓ it nunca expoe o id no payload do servico                            0.02s  
+  ✓ it traz o tipo de unidade que oferta cada servico, resolvido por co… 0.02s  
+  ✓ it filtra os servicos ofertados por um tipo de unidade (predicado d… 0.02s  
+  ✓ it nao expoe rota de criacao de um terceiro servico                  0.02s  
+  ✓ it colhe as sete abilities das rotas do servico e nao cria store     0.02s  
+  ✓ it nao oferece escrita ao guard client, mas mantem a leitura via sh… 0.03s  
+  ✓ it recusa a exclusao de servico sem uso com o motivo de vinculo ao…  0.02s  
+  ✓ it recusa a exclusao de servico em uso com o motivo de uso registra… 0.02s  
+  ✓ it recusa a exclusao em massa item a item, sem excluir nada          0.02s  
+  ✓ it atualiza o nome do servico sem tocar no code normativo            0.02s  
+  ✓ it recusa desvincular o servico do tipo de unidade (coluna NOT NULL… 0.03s  
+  ✓ it recusa dois servicos com o mesmo code                             0.02s  
+  ✓ it inativa e reativa servicos em massa sem removê-los da leitura     0.02s  
+  ✓ it audita a troca do tipo de unidade com autor, valor antigo e novo  0.03s  
+  ✓ it bloqueia quem nao tem a permissao de escrita do servico           0.02s  
+  ✓ it da ao ADMIN as sete permissoes e ao ADMIN_OPERADOR apenas leitur… 0.87s  
+  ✓ it nao da a nenhum papel do guard client permissao de escrita dos d… 0.87s  
+  ✓ it nao tem tenant_id nem BelongsToTenant no servico                  0.02s  
+  ✓ it roda o seeder de servicos duas vezes sem duplicar nem desfazer a… 0.02s  
+
+   PASS  Tests\Feature\TenantIsolation\FamilyFollowUpIsolationTest
+  ✓ it answers 404 — never 403 — for a family of ANOTHER tenant, on ALL… 0.07s  
+  ✓ it never leaks a follow-up of ANOTHER tenant through MY family uuid… 0.05s  
+  ✓ it answers 404 when the follow-up belongs to ANOTHER family of the…  0.06s  
+  ✓ it scopes the Model by tenant_id even without the route (BelongsToT… 0.05s  
+  ✓ it blocks the request when the X-Tenant-UUID points at a tenant the… 0.04s  
+
+  Tests:    117 passed (660 assertions)
+  Duration: 7.20s</pre><h2>Anexo II — Cenários Playwright (project chromium-tenant)</h2><pre class="pest">[globalSetup] Rate-limiter cache do Laravel zerado.
+
+Running 20 tests using 2 workers
+
+  ✓   2 [setup] › tests/auth.setup.ts:10:6 › autentica super admin (UI) e propaga cookies para o api-client (1.3s)
+[tenant-auth.setup] sessão de tenant pronta em /Users/binho/Projetos/esuas-all/e2e/.auth/tenant.json
+  ✓   1 [setup] › tests/tenant-auth.setup.ts:82:6 › autentica usuário do tenant (client) e propaga cookies para o api-client (1.6s)
+  ✓   3 [chromium-tenant] › tests/client/family-follow-up.spec.ts:193:7 › US-ACOMP-02 — acompanhamento familiar no prontuário (client) › (g) família nunca acompanhada mostra o estado vazio do bloco (6.6s)
+  ✓   4 [chromium-tenant] › tests/client/family-follow-up.spec.ts:216:7 › US-ACOMP-02 — acompanhamento familiar no prontuário (client) › (b) num CRAS o select oferece só o PAIF — o PAEFI não é ofertado (7.9s)
+  ✓   5 [chromium-tenant] › tests/client/family-follow-up.spec.ts:234:7 › US-ACOMP-02 — acompanhamento familiar no prontuário (client) › (d) data futura é barrada no próprio formulário (8.0s)
+  ✓   6 [chromium-tenant] › tests/client/family-follow-up.spec.ts:262:7 › US-ACOMP-02 — acompanhamento familiar no prontuário (client) › (a) registra o ingresso no PAIF a partir de um CRAS (9.8s)
+  ✓   7 [chromium-tenant] › tests/client/family-follow-up.spec.ts:295:7 › US-ACOMP-02 — acompanhamento familiar no prontuário (client) › (c) segundo ingresso na mesma unidade e serviço é recusado, apontando o existente (9.4s)
+  ✓   8 [chromium-tenant] › tests/client/family-follow-up.spec.ts:323:7 › US-ACOMP-02 — acompanhamento familiar no prontuário (client) › (e) cancelar com motivo mantém a linha no prontuário, marcada (7.6s)
+  ✓   9 [chromium-tenant] › tests/client/family-follow-up.spec.ts:388:7 › US-ACOMP-02 — negativa de acesso ao bloco de acompanhamento (client) › (f) Operacional sem acesso não vê o bloco, e a negativa não nomeia unidade (6.4s)
+  ✓  10 [chromium-tenant] › tests/client/family-follow-up.spec.ts:511:7 › US-ACOMP-03 — desligamento e avaliação de resultados (client) › (c) os meses de acompanhamento são apresentados calculados e NÃO digitáveis (6.7s)
+  ✓  11 [chromium-tenant] › tests/client/family-follow-up.spec.ts:532:7 › US-ACOMP-03 — desligamento e avaliação de resultados (client) › (d) &quot;não se aplica&quot; vem sugerida quando não houve encaminhamento — e é alterável (7.5s)
+  ✓  12 [chromium-tenant] › tests/client/family-follow-up.spec.ts:562:7 › US-ACOMP-03 — desligamento e avaliação de resultados (client) › (b) concluir sem a avaliação é recusado, e o acompanhamento continua vigente (7.9s)
+  ✓  13 [chromium-tenant] › tests/client/family-follow-up.spec.ts:588:7 › US-ACOMP-03 — desligamento e avaliação de resultados (client) › (e) a combinação incoerente pede confirmação — e, confirmada, é salva como informada (9.8s)
+  ✓  14 [chromium-tenant] › tests/client/family-follow-up.spec.ts:636:7 › US-ACOMP-03 — desligamento e avaliação de resultados (client) › (a) o desligamento aparece no prontuário com a avaliação ao lado (6.4s)
+  ✓  15 [chromium-tenant] › tests/client/family-follow-up.spec.ts:659:7 › US-ACOMP-03 — desligamento e avaliação de resultados (client) › (f) a avaliação não tem ação de excluir nem de editar — e não há reabertura (6.5s)
+  ✓  16 [chromium-tenant] › tests/client/family-follow-up.spec.ts:680:7 › US-ACOMP-03 — desligamento e avaliação de resultados (client) › reingresso após desligamento é aceito, e a linha anterior permanece intacta (9.4s)
+  ✓  17 [chromium-tenant] › tests/client/family-follow-up.spec.ts:864:7 › US-ACOMP-04 — acesso ao prontuário pela unidade que acompanha (client) › (a) quando a minha unidade acompanha, o prontuário da família de outra unidade abre (5.9s)
+  ✓  18 [chromium-tenant] › tests/client/family-follow-up.spec.ts:875:7 › US-ACOMP-04 — acesso ao prontuário pela unidade que acompanha (client) › (b) o acesso é ao prontuário INTEIRO — composição, atendimentos e encaminhamentos (6.0s)
+  ✓  19 [chromium-tenant] › tests/client/family-follow-up.spec.ts:892:7 › US-ACOMP-04 — acesso ao prontuário pela unidade que acompanha (client) › (c) cancelado NÃO concede: o acesso fecha, e a negativa declara os dois eixos sem nomear unidade (12.9s)
+  ✓  20 [chromium-tenant] › tests/client/family-follow-up.spec.ts:940:7 › US-ACOMP-04 — acesso ao prontuário pela unidade que acompanha (client) › DESLIGADO mantém o acesso — só o cancelamento fecha (US-ACOMP-03 destrava este par) (18.0s)
+
+  20 passed (2.7m)</pre>
+<footer>SigSUAS — eSUAS · Dossiê de aceite gerado a partir de execução real contra a stack E2E · US-ACOMP-02</footer>
+</div></body></html>

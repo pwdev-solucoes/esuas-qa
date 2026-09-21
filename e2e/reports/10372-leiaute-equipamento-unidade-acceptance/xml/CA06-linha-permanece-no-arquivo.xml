@@ -1,0 +1,15 @@
+<!-- CA06 — a linha do equipamento inconsistente CONTINUA saindo, com os valores como o municipio os cadastrou (Quantidade 3, QuantidadeUso 5). O sistema nao corrige o dado dele -->
+<!-- Gerado pela remessa 07/2026 do tenant de teste. Conteudo do EquipamentoUnidade.xml do pacote, sem edicao. -->
+<?xml version="1.0"?>
+<SIAP>
+    <Codigo>004821</Codigo>
+    <Exercicio>2026</Exercicio>
+    <Mes>07</Mes>
+    <EquipamentoUnidade>
+        <NumeroMDS>6482536449946</NumeroMDS>
+        <Equipamento>2</Equipamento>
+        <Quantidade>3</Quantidade>
+        <QuantidadeUso>5</QuantidadeUso>
+        <DataUltimaCompra>2026-03-01</DataUltimaCompra>
+    </EquipamentoUnidade>
+</SIAP>

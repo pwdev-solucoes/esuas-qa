@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — Painel 1: Resumo Geral</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — Painel 1: Resumo Geral</h1>
+    <div class="sub">HU #10185 · Dashboard do tenant · Evidências end-to-end no client</div>
+    <div class="meta"><div><span>Gerado em:</span> 30/07/2026</div><div><span>HU:</span> #10185 — Painel 1: Resumo Geral</div><div><span>Branch:</span> feature/10185-painel-1-resumo-geral (api + client)</div><div><span>Spec:</span> .planning/specs/10185-painel-1-resumo-geral.md</div><div><span>Ambiente:</span> API Sail/PostgreSQL+PostGIS · client :5174 (não-mock)</div><div><span>Organização (tenant):</span> E2E CadÚnico · 96 famílias · 60 bairros</div><div><span>Salário mínimo vigente:</span> R$ 1.518,00 (tabela minimum_wages) · meio SM R$ 759,00</div><div><span>Ferramenta:</span> playwright-cli (Chromium) + Pest</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">8 critérios evidenciados: 5 por navegador dirigindo o client real (CA03 consistência de totais e faixas, RN03 indicadores do painel, e as três facetas do RG01 — visão padrão "Todos os Bairros", recálculo dinâmico ao selecionar um bairro e "Limpar Filtro") e 3 por suíte automatizada (isolamento multi-tenant, gate de permissão e salário mínimo cadastrável por exercício). Todos atendidos. Suíte Pest do backend: 26 testes verdes (103 asserções).</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA03</td><td>Consistência de totais e faixas (soma das 3 faixas = Total de Famílias)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">RN03</td><td>Indicadores do Painel 1 (Total de Famílias, Total de Pessoas, distribuição por renda)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">RG01-a</td><td>Filtro global por Bairro — comportamento padrão ("Todos os Bairros")</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">RG01-b</td><td>Filtro global por Bairro — recálculo dinâmico ao selecionar um bairro</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">RG01-c</td><td>Filtro global por Bairro — "Limpar Filtro" retorna à visão municipal</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">ISO</td><td>Isolamento multi-tenant (famílias de outro tenant nunca entram)</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">PERM</td><td>Gate de permissão (sem dashboard.view-indicators → 403 / painel oculto)</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">SM</td><td>Salário mínimo cadastrável por exercício (tabela minimum_wages)</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA03">
+      <h2>CA03 — Consistência de totais e faixas (soma das 3 faixas = Total de Famílias) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que estou na aba "Resumo Geral"
+E o filtro territorial está em "Todos os Bairros"
+Quando o painel é calculado
+Então o somatório das 3 faixas de renda (Extrema Pobreza + Baixa Renda + Acima de Meio SM) é EXATAMENTE igual ao Total de Famílias Cadastradas do município.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Login como Master, aba <b>Resumo Geral</b> com o filtro em <code>Todos os Bairros</code>. Leitura direta dos cartões e das faixas do painel.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Total de Famílias Cadastradas = 96.</li><li>Extrema Pobreza 76 (79,2%) + Pobreza/Baixa Renda 8 (8,3%) + Acima de Meio SM 12 (12,5%) = 96.</li><li>A soma das 3 faixas bate exatamente com o Total de Famílias (CA03 atendido). Inclui 1 família de origem manual com renda nula, contabilizada como R$ 0,00 na Extrema Pobreza (P3).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca03-rn03-painel-municipal.png" alt="CA03 evidência"/><figcaption>ca03-rn03-painel-municipal.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="RN03">
+      <h2>RN03 — Indicadores do Painel 1 (Total de Famílias, Total de Pessoas, distribuição por renda) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um recorte com famílias e integrantes
+Quando o painel é calculado
+Então "Total de Famílias Cadastradas" = famílias distintas do recorte
+E "Total de Pessoas Cadastradas" = cidadãos distintos (integrantes ativos)
+E a distribuição traz as 3 faixas com contagem e percentual.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Painel <b>Resumo Geral</b> no recorte municipal: cartões de totais + gráfico de barras das 3 faixas de renda per capita (<b>Apache ECharts</b>) + legenda com contagem/percentual.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Total de Famílias Cadastradas = 96; Total de Pessoas Cadastradas = 33 (integrantes ativos distintos).</li><li>Distribuição por Faixa de Renda Per Capita renderizada em ECharts: Extrema Pobreza (R$ 0,00–218,00), Pobreza/Baixa Renda (R$ 218,01–759,00) e Acima de Meio Salário Mínimo (&gt; R$ 759,00).</li><li>Faixa intermediária delimitada por meio salário mínimo (R$ 759,00) derivado da tabela cadastrável minimum_wages (SM R$ 1.518,00).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca03-rn03-painel-municipal.png" alt="RN03 evidência"/><figcaption>ca03-rn03-painel-municipal.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="RG01-a">
+      <h2>RG01-a — Filtro global por Bairro — comportamento padrão ("Todos os Bairros") <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que acabei de carregar a aba "Resumo Geral"
+Quando nenhum bairro está selecionado
+Então o filtro inicia em "Todos os Bairros"
+E os totais e a distribuição refletem a consolidação municipal completa do tenant.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Ao abrir o dashboard, o filtro global (topo, à direita) inicia em <code>Todos os Bairros</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Filtro em "Todos os Bairros"; barra fixa de KPIs e painel Resumo Geral exibem a consolidação municipal (96 famílias).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/rg01-01-todos-os-bairros.png" alt="RG01-a evidência"/><figcaption>rg01-01-todos-os-bairros.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="RG01-b">
+      <h2>RG01-b — Filtro global por Bairro — recálculo dinâmico ao selecionar um bairro <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o filtro global está em "Todos os Bairros"
+Quando eu seleciono o bairro "Itapoã"
+Então o Total de Famílias, o Total de Pessoas e as 3 faixas recalculam considerando apenas as famílias geocodificadas dentro do bairro (RN09)
+E o somatório das 3 faixas continua igual ao Total de Famílias do recorte.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Seleção do bairro <b>Itapoã</b> no filtro global. Um único evento recalcula a barra fixa E o painel ativo (RG01/RN08).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Recálculo instantâneo: Total de Famílias 96 → 3 e Total de Pessoas 33 → 7.</li><li>Distribuição do bairro: Extrema Pobreza 3 (100%), demais faixas 0 — soma 3 = Total (CA03 mantido no recorte).</li><li>A barra fixa de KPIs também recalcula (Atualização 100%, Válidos 71,4%…) e ambas exibem "Recalculado por bairro: Itapoã".</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/rg01-02-bairro-itapoa.png" alt="RG01-b evidência"/><figcaption>rg01-02-bairro-itapoa.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="RG01-c">
+      <h2>RG01-c — Filtro global por Bairro — "Limpar Filtro" retorna à visão municipal <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que estou com o bairro "Itapoã" selecionado
+Quando eu aciono "Limpar Filtro"
+Então o painel volta à consolidação municipal completa.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Clique no botão <b>Limpar Filtro</b> (visível quando há bairro selecionado).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Filtro volta a "Todos os Bairros"; Total de Famílias 3 → 96 e Total de Pessoas 7 → 33.</li><li>Painel e barra fixa retornam à consolidação municipal completa.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/rg01-03-limpar-filtro.png" alt="RG01-c evidência"/><figcaption>rg01-03-limpar-filtro.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="ISO">
+      <h2>ISO — Isolamento multi-tenant (famílias de outro tenant nunca entram) <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um usuário vinculado ao Tenant A
+Quando ele solicita o Resumo Geral
+Então apenas famílias/pessoas do Tenant A entram nos cálculos
+E um neighborhood_uuid de bairro fora do município do Tenant A retorna 422.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Coberto por teste automatizado (Pest) — ver apêndice.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>DashboardGeneralSummaryIsolationTest: famílias do Tenant B nunca são contadas para o Tenant A; totais e distribuição isolados por tenant_id.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="PERM">
+      <h2>PERM — Gate de permissão (sem dashboard.view-indicators → 403 / painel oculto) <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um usuário sem a permissão dashboard.view-indicators
+Quando ele chama o endpoint do Resumo Geral
+Então recebe 403 (e o painel não é exibido).</p>
+      <p class="steps"><strong>Como foi testado:</strong> Coberto por teste automatizado (Pest) — o endpoint reusa o mesmo gate da barra fixa (#10184).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>GeneralSummaryTest: operador sem o papel dedicado recebe 403; Master e geo_panel_viewer acessam. No frontend, o painel só é montado com a permissão.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="SM">
+      <h2>SM — Salário mínimo cadastrável por exercício (tabela minimum_wages) <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o meio salário mínimo delimita a faixa intermediária
+Quando o Super Admin cadastra o salário mínimo por exercício
+Então o painel usa MinimumWage::currentAmount()/2 (sem configuração por env).</p>
+      <p class="steps"><strong>Como foi testado:</strong> CRUD global de <code>minimum_wages</code> (guard manager) + resolução do valor vigente. Coberto por Pest.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>MinimumWageControllerTest: CRUD com unicidade por exercício, ativação e resolução de currentAmount (maior ano ≤ atual, com fallback).</li><li>No ambiente E2E, o valor vigente R$ 1.518,00 (tabela) define a faixa intermediária até R$ 759,00 — sem variável de ambiente.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+  
+  <h2>Anexo — Cobertura automatizada (Pest — GeneralSummary + MinimumWage + Isolamento)</h2>
+  <pre class="pest">
+   PASS  Tests\Feature\Dashboard\GeneralSummaryTest
+  ✓ it distributes families across the 3 income bands and the sum equal… 0.47s  
+  ✓ it counts families with null per_capita_income (manual origin) as e… 0.05s  
+  ✓ it uses the registered minimum wage of the exercise to size the mid… 0.05s  
+  ✓ it counts distinct persons among active members (a person in two fa… 0.06s  
+  ✓ it returns zeroed totals and bands without error when the scope has… 0.04s  
+  ✓ it recalculates the summary for a neighborhood, covering only geoco… 0.06s  
+  ✓ it returns 422 for a neighborhood_uuid outside the tenant municipal… 0.04s  
+  ✓ it returns 422 for a malformed neighborhood_uuid                     0.04s  
+  ✓ it reports the same total_families as the strategic indicators for…  0.06s  
+  ✓ it denies the summary to the base operator without the dedicated ro… 0.04s  
+  ✓ it grants the summary to the operator once the geo_panel_viewer rol… 0.04s  
+  ✓ it grants the summary to the Master without any add-on role          0.04s  
+
+   PASS  Tests\Feature\Api\MinimumWageControllerTest
+  ✓ it lists minimum wages sorted by year desc by default                0.03s  
+  ✓ it creates a minimum wage                                            0.02s  
+  ✓ it returns 422 on duplicate year                                     0.02s  
+  ✓ it validates required fields on create                               0.02s  
+  ✓ it rejects a non-positive amount                                     0.02s  
+  ✓ it updates a minimum wage amount                                     0.02s  
+  ✓ it keeps year unique on update but allows keeping its own year       0.02s  
+  ✓ it shows a minimum wage                                              0.02s  
+  ✓ it soft deletes a minimum wage                                       0.02s  
+  ✓ it filters by is_active                                              0.02s  
+  ✓ it requires authentication                                           0.01s  
+  ✓ it forbids access without permission                                 0.02s  
+  ✓ it resolves the current amount from the latest year &lt;= current, wit… 0.02s  
+
+   PASS  Tests\Feature\TenantIsolation\DashboardGeneralSummaryIsolationTest
+  ✓ it never counts families from another tenant in the general summary… 0.05s  
+
+  Tests:    26 passed (103 assertions)
+  Duration: 1.37s
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

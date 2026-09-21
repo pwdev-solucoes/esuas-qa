@@ -1,0 +1,6 @@
+PerfilGravidez (Q7g) — familias com gestante MENOR de 18 na data da anotacao
+periodo: 2026-09-01 a 2026-09-30 | tenant 5
+family_ids = [1]  => 1 familia(s)
+Detalhe da anotacao que entrou:
+  familia #1 | integrante #2 (E2E Integrante Local)
+  nascimento 2010-04-22 | anotacao 2026-09-17 | idade na anotacao = 16 anos  => MENOR de 18: SIM

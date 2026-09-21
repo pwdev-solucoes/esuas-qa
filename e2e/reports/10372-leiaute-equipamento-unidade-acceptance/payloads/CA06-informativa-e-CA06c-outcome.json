@@ -1,0 +1,33 @@
+{
+    "cenario": "CA06 / CA06c — computador com Quantidade 3 e QuantidadeUso 5 numa unidade completa",
+    "unidade_uuid": "493c517a-eb06-4d39-805f-4ac1bb0c5abf",
+    "GET  /pre-check.blocking.can_generate": true,
+    "GET  /pre-check.layouts[EquipamentoUnidade]": {
+        "name": "EquipamentoUnidade",
+        "sort_order": 3,
+        "file_name": "EquipamentoUnidade.xml",
+        "outcome": "complete",
+        "record_count": 1,
+        "skipped_count": 0,
+        "pendencies": [
+            {
+                "scope": "informative",
+                "kind": "inconsistent_data",
+                "field_name": "QuantidadeUso",
+                "subject_type": "social_unit",
+                "subject_uuid": "493c517a-eb06-4d39-805f-4ac1bb0c5abf",
+                "affected_count": 1,
+                "message_key": "siap_remittance.pendency.equipment_quantity_inconsistent",
+                "message": "This unit has more equipment in use (QuantidadeUso) than the total reported for equipment 2 of the SIAP table. The record is still included in the remittance with the registered values; review the unit inventory.",
+                "blocks_entire_remittance": false
+            }
+        ]
+    },
+    "GET  /pre-check.summary": {
+        "layout_count": 11,
+        "record_count": 2,
+        "blocking_pendency_count": 0,
+        "informative_pendency_count": 1,
+        "layout_pendency_count": 17
+    }
+}

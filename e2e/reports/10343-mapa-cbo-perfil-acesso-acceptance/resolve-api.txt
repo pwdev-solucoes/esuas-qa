@@ -1,0 +1,64 @@
+GET /api/cbo-access-profiles/resolve?cbo_code=5153-20  ->  HTTP 200
+{
+  "data": null,
+  "meta": {
+    "cbo": {
+      "uuid": "90f15e2a-d17f-471f-881e-da52a37896e5",
+      "code": "5153-20",
+      "name": "Conselheiro tutelar"
+    },
+    "fallback": "minimum_base_post",
+    "base_role": "operador",
+    "message": "Esta ocupação (CBO) não possui entrada no mapa e segue o padrão mínimo: posto base Operacional do Tenant, nenhum módulo operacional adicional e nenhum add-on."
+  }
+}
+
+GET /api/cbo-access-profiles/resolve?cbo_code=2516-05  ->  HTTP 200
+{
+  "data": {
+    "id": 14,
+    "uuid": "4855cbce-12d1-41f6-93a6-fbb412638071",
+    "cbo": {
+      "uuid": "60c9b76c-b7d2-4561-8fb9-d559bb453bb2",
+      "code": "2516-05",
+      "name": "Assistente social"
+    },
+    "roles": [
+      {
+        "uuid": "f8dd30de-d7f9-45d1-af4a-87e0376bd81b",
+        "name": "operador",
+        "label": "Operador",
+        "level": 30,
+        "is_suggested": false
+      },
+      {
+        "uuid": "a7e3174e-29ff-41c0-9469-4dae398321fc",
+        "name": "pf_tecnico_referencia",
+        "label": "Técnico de Referência (PAIF / PAEFI)",
+        "level": 40,
+        "is_suggested": false
+      },
+      {
+        "uuid": "3ab11c97-0826-403a-8e1d-7795bb9af65e",
+        "name": "family_viewer",
+        "label": "Visualização de Detalhes da Família — LGPD",
+        "level": 910,
+        "is_suggested": true
+      }
+    ],
+    "notes": "Anexo A (HU #10343) — pf_tecnico_referencia",
+    "is_active": true,
+    "created_at": "2026-08-06T18:44:33.000000Z",
+    "updated_at": "2026-08-06T18:44:33.000000Z"
+  },
+  "meta": {
+    "cbo": {
+      "uuid": "60c9b76c-b7d2-4561-8fb9-d559bb453bb2",
+      "code": "2516-05",
+      "name": "Assistente social"
+    },
+    "fallback": null,
+    "base_role": null,
+    "message": null
+  }
+}

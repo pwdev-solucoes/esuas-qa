@@ -1,0 +1,26 @@
+{
+  "skill_name": "e2e-testing",
+  "evals": [
+    {
+      "id": 0,
+      "name": "explicit-ca-to-spec-request",
+      "prompt": "Escreve os testes E2E do chamado #10888 no Playwright, a partir dos critérios de aceite, e roda até passar.",
+      "expected_output": "Invokes the e2e-testing flow: pulls the CA blocks from the GLPI ticket via get_ticket (pwdev-glpi), presents the triage table CA -> (Pest | E2E | both) BEFORE writing code, picks project/folder (chromium-tenant for tests/client, chromium otherwise), reads real data-testid from the .vue files and the route from client/src/router/index.ts, writes e2e/tests/<area>/<subject>.spec.ts with 'CA01 — …' titles, idempotent API-seeded beforeAll (tolerating 409), locale pt-BR, dismissPlatformUpdates after each goto, then runs npx playwright test until green plus the sibling folder. Does not touch E2ESeeder, does not commit, does not build the HTML/PDF dossier.",
+      "files": []
+    },
+    {
+      "id": 1,
+      "name": "spec-file-as-source",
+      "prompt": "Pega os critérios de aceite da spec .planning/specs/US-ACOMP-06-acesso-pelo-encaminhamento-recebido.md e automatiza no Playwright os que dá para provar pela tela.",
+      "expected_output": "Recognizes this as the e2e-testing skill: parses the '**CAnn — title**' + Gherkin blocks from section 5 of the spec, triages each CA (browser-provable affordance/wording/filter vs backend-only rules such as tenant isolation, missing FK, HTTP error codes), writes only the browser-provable ones as tests titled 'CA01 — …', names the Pest counterpart for the rest, seeds mass through the tenant API client, and iterates with npx playwright test -g until the spec is green. Never edits the seeders and never fabricates selectors.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "terse-phrasing",
+      "prompt": "Essa HU precisa de teste de ponta a ponta.",
+      "expected_output": "Despite terse phrasing, triggers e2e-testing (not acceptance-evidence-report): asks for or locates the CA source (ticket, spec or pasted Gherkin), produces the triage table, writes the committed Playwright spec in e2e/tests/ following the harness molds, runs it against the already-running dev stack, and reports CA -> test -> status. Refuses to run start-stack.sh or npm run e2e:local without explicit confirmation because they overwrite api/.env and run migrate:fresh.",
+      "files": []
+    }
+  ]
+}

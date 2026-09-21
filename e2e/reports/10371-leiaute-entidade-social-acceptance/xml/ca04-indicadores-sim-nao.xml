@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<SIAP>
+    <Codigo>004821</Codigo>
+    <Exercicio>2026</Exercicio>
+    <Mes>08</Mes>
+    <EntidadeSocial>
+        <NumeroCNEAS>9867577369489</NumeroCNEAS>
+        <NomeEntidadeSocial>Instituto Esperança</NomeEntidadeSocial>
+        <CNPJEntidadeSocial>58532550825344</CNPJEntidadeSocial>
+        <EnderecoEntidadeSocial>Rua, Largo Gabriela, 38, do Leste, Montenegro do Leste</EnderecoEntidadeSocial>
+        <CEP>57000000</CEP>
+        <SituacaoEntidadeSocial>1</SituacaoEntidadeSocial>
+        <Email>contato@entidade.test</Email>
+        <TipoLocalizacao>1</TipoLocalizacao>
+        <ParceriaPoderPublico>1</ParceriaPoderPublico>
+        <ParticipanteSUAS>1</ParticipanteSUAS>
+        <BeneficioEventual>2</BeneficioEventual>
+        <ExecucaoServicos>1</ExecucaoServicos>
+        <SituacaoUnidade>1</SituacaoUnidade>
+        <Modalidade>2</Modalidade>
+        <ValorVinculo>12345.20</ValorVinculo>
+    </EntidadeSocial>
+</SIAP>

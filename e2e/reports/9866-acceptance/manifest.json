@@ -1,0 +1,35 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — HU #9866 · Alternador de Camadas de Infraestrutura Atual (CRAS/CREAS)",
+    "subtitle": "Sprint 9 · Painel de Georreferenciamento do Tenant · CA09 · Evidências end-to-end no client",
+    "rows": [
+      ["Gerado em", "05/07/2026"],
+      ["Branch", "sprint9-geo-busca-setor (client f1a3ce2 — funcionalidade entregue na HU-GEO-01 #9862; nenhum código novo nesta HU)"],
+      ["Specs de origem", "hu-geo-01-painel-georreferenciamento-evolucao.md (RN17/CA27–CA29) · HU-9863 RN09 (evidência)"],
+      ["Ambiente", "API e2e :8090 (esuas_app / esuas_e2e, PostGIS) · client build preview :4173"],
+      ["Organização (tenant)", "E2E CadÚnico · Fortaleza · IBGE 2304400"],
+      ["Ferramenta", "playwright-cli (Chromium) + Pest 4"]
+    ]
+  },
+  "summary": "1 critério de aceite (CA09). A funcionalidade — camada built-in \"CRAS e CREAS\" ligável/desligável na sidebar de camadas, plotando marcadores fixos nas coordenadas reais das unidades geocodificadas do tenant — foi entregue na HU-GEO-01 (#9862) e já revalidada na HU #9863; esta HU (#9866) é 100% evidência, sem código novo. O cenário do CA09 foi dirigido ao vivo: filtro de extrema pobreza aplicado (manchas de calor + legenda), seletor ligado (2 marcadores plotados: CRAS Fixture Centro e CREAS Fixture Leste, sobre o calor e o limite municipal) e desligado (marcadores removidos, calor preservado). Backend de suporte: endpoint tenant-scoped GET geo-panel/social-units (fetch sob demanda com cache, type_code exposto). Regressão: Pest geo-panel 51 testes / 186 asserções verdes.",
+  "cas": [
+    {
+      "id": "CA09",
+      "title": "Exibição das unidades existentes sobre as manchas de calor (PO)",
+      "status": "nav",
+      "gherkin": "Dado que apliquei o filtro de extrema pobreza e visualizo as manchas de calor, Quando ativo o seletor de \"Unidades de Atendimento\", Então o sistema plota marcadores fixos indicando onde estão localizados os prédios físicos dos CRAS e CREAS atuais do município.",
+      "steps_html": "Login master → <code>/app/georreferenciamento</code> → Busca avançada → <b>Extrema pobreza</b> → Aplicar no mapa (calor + legenda) → sidebar <b>Camadas</b> → ligar <b>CRAS e CREAS</b> → ajustar zoom para o território completo → desligar o seletor.",
+      "results": [
+        "Com o seletor DESLIGADO: apenas as manchas de calor da busca (estado de contraste).",
+        "Com o seletor LIGADO: 2 marcadores fixos plotados nas coordenadas reais das unidades do município — CRAS Fixture Centro (noroeste) e CREAS Fixture Leste (sudeste) — sobrepostos às manchas de adensamento e ao limite municipal, permitindo confrontar visualmente serviço instalado × risco.",
+        "Com o seletor DESLIGADO novamente: marcadores removidos, calor e legenda preservados (alternância sem recarregar o painel).",
+        "Isolamento de tenant: unidades servidas por GET geo-panel/social-units sob EnsureTenantScope (cobertura na suíte Pest do apêndice)."
+      ],
+      "images": ["screenshots/ca09-calor-sem-marcadores.png", "screenshots/ca09-toggle-camada-ligado.png", "screenshots/ca09-marcadores-sobre-calor.png", "screenshots/ca09-toggle-desligado.png"]
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Pest, --filter=GeoPanel — 51 testes / 186 asserções, inclui endpoint social-units e isolamento tenant)",
+    "file": "pest-geo-panel.txt"
+  }
+}

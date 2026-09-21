@@ -1,0 +1,13 @@
+[globalSetup] Rate-limiter cache do Laravel zerado.
+
+Running 6 tests using 2 workers
+
+  ✓  1 [setup] › tests/auth.setup.ts:10:6 › autentica super admin (UI) e propaga cookies para o api-client (1.3s)
+[tenant-auth.setup] sessão de tenant pronta em /Users/binho/Projetos/esuas-all/e2e/.auth/tenant.json
+  ✓  2 [setup] › tests/tenant-auth.setup.ts:82:6 › autentica usuário do tenant (client) e propaga cookies para o api-client (1.6s)
+  ✓  3 [chromium] › tests/lookups/participation-domains.spec.ts:64:7 › US-SCFV-01 — domínios de participação no Painel Global (admin) › (a) os oito serviços aparecem com os códigos do instrumento, e o salto 6 → 99 é preservado (6.7s)
+  ✓  4 [chromium] › tests/lookups/participation-domains.spec.ts:91:7 › US-SCFV-01 — domínios de participação no Painel Global (admin) › (b) o SCFV para adultos é distinguível como extensão posterior ao instrumento (6.7s)
+  ✓  5 [chromium] › tests/lookups/participation-domains.spec.ts:118:7 › US-SCFV-01 — domínios de participação no Painel Global (admin) › (c) a matriz dos três atributos de contagem confere item a item na tela (6.6s)
+  ✓  6 [chromium] › tests/lookups/participation-domains.spec.ts:160:7 › US-SCFV-01 — domínios de participação no Painel Global (admin) › (d) os cinco locais de realização, e só o primeiro é a própria unidade (6.8s)
+
+  6 passed (29.6s)

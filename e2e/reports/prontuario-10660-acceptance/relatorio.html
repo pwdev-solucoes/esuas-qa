@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — Cadastro de Pessoa no Painel do Tenant</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  section.note { border:1px solid var(--line); border-left:4px solid #b06a00; border-radius:6px; padding:10px 14px; margin:10px 0; background:#fffdf7; font-size:13px; }
+  section.note h3 { margin:0 0 6px; font-size:13.5px; color:#8a5200; }
+  section.note p { margin:6px 0; }
+  section.note ul { margin:6px 0 6px 18px; padding:0; }
+  section.note pre { background:var(--bg); border:1px solid var(--line); border-radius:4px; padding:8px; overflow-x:auto; font-size:11px; white-space:pre-wrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — Cadastro de Pessoa no Painel do Tenant</h1>
+    <div class="sub">Épico Prontuário SUAS F0 · HU #10660 · 12 critérios · evidências dirigidas no client</div>
+    <div class="meta"><div><span>Gerado em:</span> 27/08/2026</div><div><span>História:</span> #10660 — Cadastro e vinculação de pessoa no Painel do Tenant (balcão)</div><div><span>Spec:</span> .planning/specs/10660-cadastro-pessoa-painel-tenant.md</div><div><span>Branch:</span> prontuario (api, client, admin)</div><div><span>Ambiente:</span> API Laravel :8090 (esuas_app) · PostgreSQL esuas_e2e · client vite preview :4174</div><div><span>Organização (tenant):</span> E2E CadÚnico</div><div><span>Ferramenta:</span> playwright-cli (Chromium headless) + Pest 4</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">12 critérios de aceite, &lt;b&gt;todos os 12 evidenciados no navegador&lt;/b&gt;. Nenhum critério reprovado e nenhum defeito encontrado. A suíte fecha &lt;b&gt;117 testes / 419 asserções&lt;/b&gt;. Esta é a história de maior risco de privacidade do épico — a busca por CPF que atravessa a fronteira entre municípios — e por isso a verificação foi feita no &lt;b&gt;corpo bruto das respostas da API&lt;/b&gt;, não apenas no que a tela desenha: para um CPF de fora, a resposta carrega apenas existência e um token criptografado, sem nome, nascimento, família ou município. A única exceção autorizada pela spec (o alerta de duplicidade sem CPF) foi verificada como confinada: não alcança a auditoria e só considera candidatas sem CPF. Detalhes em “Observações e ressalvas”.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA01</td><td>Pessoa já no município (comportamento atual preservado)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA02</td><td>CPF existe no repositório, fora do município</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA03</td><td>Vinculação exige confirmar a identidade</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA04</td><td>Confirmação de identidade que não coincide</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA05</td><td>Cadastrar pessoa nova</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA06</td><td>Nome da mãe é exigido no cadastro pelo município</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA07</td><td>CPF já existente não cria segunda pessoa</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA08</td><td>Pessoa sem CPF, com alerta de duplicidade</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA09</td><td>Completar campo vazio de pessoa existente</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA10</td><td>Campo preenchido não é alterado pelo município</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA11</td><td>Exclusão não é oferecida</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA12</td><td>Busca por nome não atravessa municípios</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA01">
+      <h2>CA01 — Pessoa já no município (comportamento atual preservado) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Operacional do Tenant e a pessoa buscada já integra uma família do meu município
+Quando eu pesquisar pelo CPF dela
+Então ela aparece no resultado com os dados que a pesquisa já apresenta hoje
+  E o comportamento atual da tela não muda</p>
+      <p class="steps"><strong>Como foi testado:</strong> Tela <b>Pesquisa de Pessoas</b> → busca pelo CPF de integrante ativo de família do município.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A pessoa aparece na tabela de resultados com todas as colunas de hoje: código familiar, CPF, NIS, nome, nascimento e idade, filiação 1 e município de cadastramento.</li><li>A ação “Visualizar Família” continua disponível na linha.</li><li>Nenhum aviso de privacidade ou fluxo adicional é introduzido — o caminho conhecido pela equipe não muda.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca01-pessoa-do-municipio.png" alt="CA01 evidência"/><figcaption>ca01-pessoa-do-municipio.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA02">
+      <h2>CA02 — CPF existe no repositório, fora do município <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o CPF pesquisado pertence a uma pessoa cadastrada, que não integra nenhuma família do meu município
+Quando eu pesquisar por esse CPF
+Então o sistema informa que a pessoa já está cadastrada na plataforma
+  E não apresenta nome, endereço, família nem município de origem
+  E oferece a ação de vincular</p>
+      <p class="steps"><strong>Como foi testado:</strong> Busca pelo CPF de pessoa que existe na plataforma mas não integra família deste município, com inspeção da <b>resposta crua da API</b> além da tela.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A tela informa apenas a existência: “Esta pessoa já está cadastrada na plataforma.”</li><li>E declara a razão ao profissional: “Por proteção de dados (LGPD), nenhuma informação da pessoa é apresentada antes da vinculação: o sistema informa apenas que o CPF já existe.”</li><li>NA RESPOSTA DA API, o array &lt;code&gt;data&lt;/code&gt; volta &lt;b&gt;vazio&lt;/b&gt; e o bloco &lt;code&gt;global&lt;/code&gt; carrega somente quatro campos: &lt;code&gt;exists&lt;/code&gt;, &lt;code&gt;can_link&lt;/code&gt;, &lt;code&gt;message&lt;/code&gt; genérica e um &lt;code&gt;person_ref&lt;/code&gt;.</li><li>&lt;b&gt;Não há nome, data de nascimento, nome da mãe, endereço, família, município de origem nem id&lt;/b&gt; — verificado no corpo bruto da resposta, não apenas no que a tela desenha.</li><li>O &lt;code&gt;person_ref&lt;/code&gt; é um token &lt;b&gt;criptografado&lt;/b&gt; (formato iv/value/mac do Laravel): é opaco ao cliente e não pode ser revertido no navegador. É ele que permite seguir para a vinculação sem transportar identidade.</li><li>A ação “Vincular a família” é oferecida, como o critério exige.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca02-existe-fora-do-municipio.png" alt="CA02 evidência"/><figcaption>ca02-existe-fora-do-municipio.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA03">
+      <h2>CA03 — Vinculação exige confirmar a identidade <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o sistema informou que o CPF já está cadastrado
+Quando eu acionar a vinculação
+Então o sistema pede a data de nascimento ou o nome da mãe
+  E só conclui a vinculação se o dado informado coincidir com o registro existente
+  E, ao concluir, os dados da pessoa passam a ser visíveis no prontuário da minha família</p>
+      <p class="steps"><strong>Como foi testado:</strong> <b>Vincular a família</b> → informar o código familiar da família receptora → escolher o segundo dado de confirmação → confirmar com o valor correto.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O diálogo “Confirmar identidade” exige duas coisas: a família deste município que receberá a pessoa e “um segundo dado que confira com o cadastro”.</li><li>O segundo dado é uma escolha entre &lt;b&gt;Data de nascimento&lt;/b&gt; e &lt;b&gt;Nome da mãe&lt;/b&gt; — exatamente as duas opções previstas no critério.</li><li>Os campos de confirmação só são habilitados após a família ser localizada — a vinculação não pode ser tentada no vazio.</li><li>Com o dado correto: POST /families/{uuid}/members/link-global → &lt;b&gt;201 Created&lt;/b&gt;.</li><li>O CONTRASTE É A PROVA: repetida a mesma busca, pelo mesmo CPF e pelo mesmo operador, a pessoa agora aparece com nome, nascimento e filiação. Antes da vinculação, só existência; depois, o dado completo.</li><li>Ela passa a constar da composição da família, com os dados visíveis no prontuário.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca03-confirmar-identidade.png" alt="CA03 evidência"/><figcaption>ca03-confirmar-identidade.png</figcaption></figure><figure><img src="screenshots/ca03-vinculada.png" alt="CA03 evidência"/><figcaption>ca03-vinculada.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA04">
+      <h2>CA04 — Confirmação de identidade que não coincide <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o sistema informou que o CPF já está cadastrado
+Quando eu informar uma data de nascimento que não coincide
+Então a vinculação não é concluída
+  E o sistema não revela qual é a data correta
+  E a tentativa é registrada na trilha de auditoria</p>
+      <p class="steps"><strong>Como foi testado:</strong> Mesmo fluxo do CA03, informando uma data de nascimento propositalmente errada, com inspeção do corpo da resposta e da trilha.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>POST /link-global → &lt;b&gt;422&lt;/b&gt;. A vinculação não é concluída.</li><li>A tela informa sem entregar nada: “O dado informado não confere. Verifique com a pessoa atendida.”</li><li>O CORPO DA RESPOSTA foi inspecionado e contém &lt;b&gt;apenas&lt;/b&gt; &lt;code&gt;{"message": "Não foi possível confirmar a identidade com o dado informado.", "error_code": "identity_not_confirmed"}&lt;/code&gt; — nenhum valor correto, nenhuma pista, nenhum campo extra.</li><li>A tentativa é auditada: description &lt;code&gt;person.identity_confirmation_failed&lt;/code&gt;, com o usuário, o tenant, IP, horário e &lt;code&gt;attempted_field: "birth_date"&lt;/code&gt; — registra QUAL campo foi tentado, e não o valor tentado.</li><li>O CPF do profissional é gravado mascarado na trilha (&lt;code&gt;***.444.777-**&lt;/code&gt;).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca04-identidade-nao-confere.png" alt="CA04 evidência"/><figcaption>ca04-identidade-nao-confere.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA05">
+      <h2>CA05 — Cadastrar pessoa nova <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o CPF pesquisado não existe no repositório
+Quando eu cadastrar a pessoa informando CPF, nome completo, data de nascimento, nome da mãe e sexo
+Então a pessoa é criada
+  E fica disponível para ser vinculada a uma família do meu município
+  E a criação consta da trilha de auditoria, identificando o município e o usuário</p>
+      <p class="steps"><strong>Como foi testado:</strong> Busca por CPF inexistente → <b>Cadastrar nova pessoa</b> → preenchimento dos cinco campos → <b>Cadastrar</b>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Para CPF inexistente a tela é explícita e oferece o caminho: “Ninguém com este CPF está cadastrado na plataforma. É possível cadastrar a pessoa agora e seguir com o atendimento.”</li><li>POST /client/persons → &lt;b&gt;201 Created&lt;/b&gt;.</li><li>A criação é auditada com a identificação exigida: description &lt;code&gt;person.created_by_tenant&lt;/code&gt;, com &lt;code&gt;tenant_id&lt;/code&gt; (o município), &lt;code&gt;user_id&lt;/code&gt; (o usuário), &lt;code&gt;person_id&lt;/code&gt;, &lt;code&gt;without_cpf&lt;/code&gt;, IP e horário.</li><li>A pessoa fica disponível para vinculação: a busca pelo mesmo CPF passa a oferecer “Vincular a família”.</li><li>OBSERVAÇÃO COERENTE: a pessoa recém-criada já entra sob a mesma fronteira de privacidade — enquanto não for vinculada a uma família, seus dados não são reapresentados, nem ao profissional que acabou de digitá-los. É consequência direta da RN12 (pertencer ao município é ter vínculo), e não uma falha.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca05-cpf-inexistente.png" alt="CA05 evidência"/><figcaption>ca05-cpf-inexistente.png</figcaption></figure><figure><img src="screenshots/ca05-pessoa-criada.png" alt="CA05 evidência"/><figcaption>ca05-pessoa-criada.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA06">
+      <h2>CA06 — Nome da mãe é exigido no cadastro pelo município <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que estou cadastrando uma pessoa nova
+Quando eu tentar salvar sem informar o nome da mãe
+Então o cadastro não é salvo
+  E o sistema indica que o nome da mãe é necessário para a prestação de contas ao TCE-AL</p>
+      <p class="steps"><strong>Como foi testado:</strong> Preenchimento de todos os campos exceto o nome da mãe → <b>Cadastrar</b>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O cadastro não é salvo: nenhuma requisição de criação é emitida.</li><li>A mensagem cita a razão exata que o critério exige: “Informe o nome da mãe: o dado é obrigatório &lt;b&gt;para a prestação de contas ao TCE-AL&lt;/b&gt;.”</li><li>A justificativa já é apresentada de forma preventiva, antes da tentativa, no rodapé do campo: “Exigido para a prestação de contas ao TCE-AL.”</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca06-nome-mae-exigido.png" alt="CA06 evidência"/><figcaption>ca06-nome-mae-exigido.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA07">
+      <h2>CA07 — CPF já existente não cria segunda pessoa <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que estou cadastrando uma pessoa e informo um CPF já cadastrado
+Quando eu tentar salvar
+Então nenhuma pessoa nova é criada
+  E o sistema oferece o caminho de vinculação da pessoa existente, com a confirmação de identidade</p>
+      <p class="steps"><strong>Como foi testado:</strong> No formulário de cadastro, informar um CPF que já existe na base, com nome e demais dados diferentes, e tentar salvar.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>POST /client/persons → &lt;b&gt;409 Conflict&lt;/b&gt;.</li><li>Nenhuma pessoa nova é criada — verificado em banco: o nome fictício usado na tentativa não existe, e o CPF continua com exatamente um registro.</li><li>O sistema não apenas recusa: &lt;b&gt;abre imediatamente o diálogo “Confirmar identidade”&lt;/b&gt;, oferecendo o caminho de vinculação da pessoa existente — exatamente o que o critério pede.</li><li>Note que o CPF informado pertencia a pessoa DO município, e ainda assim nenhum dado dela foi apresentado na recusa: o caminho continua sendo confirmar identidade.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca07-cpf-ja-existente.png" alt="CA07 evidência"/><figcaption>ca07-cpf-ja-existente.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA08">
+      <h2>CA08 — Pessoa sem CPF, com alerta de duplicidade <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que estou cadastrando uma criança que ainda não tem CPF
+Quando eu informar nome, data de nascimento e nome da mãe, deixando o CPF vazio
+Então o sistema apresenta as pessoas já cadastradas com nome e data de nascimento semelhantes
+  E exige que eu confirme que não se trata de duplicidade
+  E, ao confirmar, a pessoa é criada marcada como sem CPF</p>
+      <p class="steps"><strong>Como foi testado:</strong> Marcar <b>Pessoa não tem CPF</b>, informar nome e nascimento coincidentes com pessoa já cadastrada sem CPF, e tentar salvar; depois confirmar a não-duplicidade.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A criação é interrompida por uma checagem própria (POST /persons/check-duplicates) — e nenhuma requisição de criação a acompanha.</li><li>O alerta é apresentado: “Encontramos pessoas com nome e nascimento semelhantes.”, com a explicação “Sem CPF não há como o sistema garantir que se trata de outra pessoa. Confira com a pessoa atendida antes de continuar.”</li><li>As candidatas são listadas com &lt;b&gt;nome e data de nascimento&lt;/b&gt; — a exceção de privacidade declarada na spec (§7.4), sem a qual a decisão “é a mesma pessoa?” não poderia ser tomada.</li><li>A confirmação é exigida de forma explícita, por aceite: “Confirmo que não é nenhuma dessas e é uma pessoa nova”.</li><li>Ao confirmar, POST /client/persons → 201 Created, e a pessoa é gravada com &lt;code&gt;cpf = NULL&lt;/code&gt;; a trilha registra &lt;code&gt;without_cpf: true&lt;/code&gt;.</li><li>A EXCEÇÃO NÃO VAZA PARA A AUDITORIA: a consulta é auditada como &lt;code&gt;person.duplicate_check_performed&lt;/code&gt; com &lt;b&gt;apenas&lt;/b&gt; &lt;code&gt;results_count&lt;/code&gt;. Verificado: o nome exibido tem &lt;b&gt;zero ocorrências&lt;/b&gt; em todo o activity_log.</li><li>O alcance do alerta é restrito por desenho (RN06): só entram candidatas &lt;b&gt;sem CPF&lt;/b&gt; — quem tem CPF é resolvido pelo caminho da vinculação (CA07). Isso também estreita a superfície da exceção de privacidade.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca08-alerta-duplicidade.png" alt="CA08 evidência"/><figcaption>ca08-alerta-duplicidade.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA09">
+      <h2>CA09 — Completar campo vazio de pessoa existente <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que vinculei uma pessoa cujo nome da mãe está em branco
+Quando eu informar o nome da mãe
+Então o dado é gravado
+  E a alteração consta da auditoria, identificando o município de origem da informação</p>
+      <p class="steps"><strong>Como foi testado:</strong> Campo do nome da mãe, no detalhe do integrante dentro da composição familiar (mesmo controle evidenciado na #10620/CA06).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>PATCH /client/persons/{uuid}/mother-name → 200 OK; o dado é gravado no cadastro da PESSOA.</li><li>A auditoria identifica a origem municipal da informação: description &lt;code&gt;person.mother_name_filled_from_family_record&lt;/code&gt;, com &lt;code&gt;{"source": "family_record", "tenant_id": …, "family_id": …, "user_id": …}&lt;/code&gt;.</li><li>A mudança do dado é registrada em separado, com o valor anterior e o novo.</li><li>A tela avisa antes da ação: “O campo está vazio no cadastro da pessoa e pode ser completado pelo prontuário. A alteração fica registrada na trilha de auditoria.”</li><li>Cobertura correspondente: “it fills an empty field of a person linked to the municipality (CA09…)”.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca10-nome-mae-nao-editavel.png" alt="CA09 evidência"/><figcaption>ca10-nome-mae-nao-editavel.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA10">
+      <h2>CA10 — Campo preenchido não é alterado pelo município <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que vinculei uma pessoa cujo nome da mãe já está preenchido
+Quando eu abrir os dados dela
+Então o nome da mãe é apresentado
+  E não é oferecido para edição — a correção continua sendo ação do Painel de Administração Global</p>
+      <p class="steps"><strong>Como foi testado:</strong> Detalhe da pessoa vinculada cujo cadastro já possui o nome da mãe.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O nome da mãe é apresentado como texto.</li><li>Não há campo de edição nem botão de salvar — a edição não é oferecida.</li><li>A tela declara a regra: “Informado no cadastro de pessoas. O prontuário apresenta o dado e não o sobrescreve.”</li><li>A recusa também vale por payload: “it refuses to overwrite a field that is already filled (CA10/RN08)”.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca10-nome-mae-nao-editavel.png" alt="CA10 evidência"/><figcaption>ca10-nome-mae-nao-editavel.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA11">
+      <h2>CA11 — Exclusão não é oferecida <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que cadastrei uma pessoa por engano
+Quando eu abrir os dados dela
+Então não existe ação de excluir
+  E a correção se faz por edição dos dados</p>
+      <p class="steps"><strong>Como foi testado:</strong> Varredura das ações disponíveis na tela onde os dados da pessoa são abertos.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Verificação programática sobre todos os botões da página: &lt;b&gt;nenhuma&lt;/b&gt; ação de excluir, remover, apagar ou deletar.</li><li>A única ação de saída é “Desvincular”, que — como provado no dossiê da #10620 — não apaga: registra status &lt;code&gt;unlinked&lt;/code&gt; mantendo &lt;code&gt;deleted_at&lt;/code&gt; nulo e a pessoa intacta.</li><li>A ausência é estrutural, não apenas visual: “it has no delete route for a person (CA11/RN07)” — não existe rota de exclusão a ser chamada.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca11-sem-exclusao.png" alt="CA11 evidência"/><figcaption>ca11-sem-exclusao.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA12">
+      <h2>CA12 — Busca por nome não atravessa municípios <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que existe pessoa cadastrada em outro município com nome semelhante ao que pesquiso
+Quando eu pesquisar por nome parcial no Painel do Tenant
+Então ela não aparece no resultado
+  E somente a busca por CPF exato informa a existência fora do município</p>
+      <p class="steps"><strong>Como foi testado:</strong> Busca por nome parcial que corresponde tanto a pessoa do município quanto a pessoa fora dele, com inspeção da resposta da API.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O resultado traz &lt;b&gt;apenas&lt;/b&gt; a pessoa do município. A pessoa correspondente que está fora não aparece.</li><li>Na resposta da API, o bloco &lt;code&gt;global&lt;/code&gt; &lt;b&gt;não é retornado&lt;/b&gt; para busca por nome — ele existe somente na busca por CPF exato.</li><li>Ou seja, a fronteira não é filtrada na tela: a informação de existência fora do município sequer é produzida por este caminho de busca.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca12-busca-por-nome.png" alt="CA12 evidência"/><figcaption>ca12-busca-por-nome.png</figcaption></figure></div>
+    </section>
+  
+  <h2>Observações e ressalvas</h2>
+  <section class="note"><h3>A fronteira entre municípios foi verificada na resposta da API, não só na tela</h3><p>Este é o ponto de maior risco do épico: uma busca por CPF que atravessa a fronteira entre municípios. Filtrar o dado na interface não bastaria — bastaria abrir o inspetor do navegador para vê-lo. Por isso a verificação foi feita no <b>corpo bruto da resposta</b>.</p><p>O que a API devolve para um CPF de fora é apenas:</p><pre>"data": [],
+"global": { "exists": true, "can_link": true,
+             "person_ref": "&lt;token criptografado&gt;",
+             "message": "Esta pessoa já está cadastrada na plataforma." }</pre><p>Nenhum nome, nascimento, nome da mãe, endereço, família, município de origem ou id. O <code>person_ref</code> é cifrado (formato iv/value/mac), então nem serve como identificador estável para correlacionar pessoas entre buscas. É ele que carrega a referência até a vinculação sem transportar identidade.</p></section><section class="note"><h3>A exceção de privacidade do CA08 está confinada — e foi verificada nos dois lados</h3><p>A spec (§7.4) autoriza <b>uma única</b> exceção à regra de não revelar dados de pessoa de outro município: o alerta de duplicidade para cadastro sem CPF, que precisa exibir nome e data de nascimento — sem eles, o profissional não tem como decidir se é a mesma pessoa.</p><p>Verificamos que a exceção não escapa desse caminho:</p><ul><li><b>Na auditoria:</b> a consulta é registrada como <code>person.duplicate_check_performed</code> com apenas <code>results_count</code>. O nome exibido na tela tem <b>zero ocorrências</b> em todo o <code>activity_log</code>.</li><li><b>No alcance:</b> por RN06, só entram candidatas <b>sem CPF</b>. Quem tem CPF é resolvido pelo caminho da vinculação com confirmação de identidade (CA07). A superfície da exceção é, portanto, menor do que o critério sozinho sugeriria.</li></ul><p>Nota metodológica: a primeira tentativa de provocar o alerta usou uma pessoa <b>com</b> CPF e não disparou nada. O comportamento estava correto — era o teste que estava errado.</p></section><section class="note"><h3>A negativa do CA04 não entrega nada — nem no corpo, nem na trilha</h3><p>Uma confirmação de identidade malsucedida é um caminho clássico de vazamento: a mensagem de erro pode revelar o valor correto, ou a auditoria pode gravar o valor tentado, que é dado pessoal digitado por um terceiro.</p><p>Nenhum dos dois acontece. O corpo do 422 traz somente <code>message</code> genérica e <code>error_code: identity_not_confirmed</code> — um código estável, adequado para o front detectar o caso sem depender do texto. E a trilha grava <code>attempted_field: "birth_date"</code>: registra <b>qual campo</b> foi tentado, nunca o valor tentado.</p><p>Some-se a isso que os CPFs aparecem mascarados na trilha (<code>***.444.777-**</code>) e que a própria consulta de existência é auditada (<code>person.global_existence_checked</code>, com <code>searched_cpf</code> igualmente mascarado). A auditoria de consulta exigida para esta história está presente.</p></section><section class="note"><h3>Efeito colateral coerente: a pessoa recém-cadastrada some da vista de quem a cadastrou</h3><p>Ao cadastrar uma pessoa nova pelo balcão, ela é criada — mas, como ainda não integra família alguma, volta a cair sob a fronteira de privacidade. O profissional que acabou de digitar nome e data de nascimento não os vê mais na busca seguinte: recebe apenas “Esta pessoa já está cadastrada na plataforma”.</p><p>É consequência direta e correta da RN12 — pertencer ao município é ter vínculo, não ter sido cadastrado por ele. E o caminho de saída está oferecido na mesma tela (“Vincular a família”), o que satisfaz o critério. Registra-se aqui porque é o tipo de comportamento que gera dúvida no primeiro atendimento, e vale estar previsto no treinamento da equipe.</p></section><section class="note"><h3>Integridade da massa</h3><p>Os critérios exigiram vincular uma pessoa de fora a uma família do município (CA03) e criar três pessoas pelo balcão (CA05 e CA08). Todas as alterações foram revertidas ao final: o vínculo foi removido e as três pessoas criadas foram excluídas em definitivo.</p><p>Estado confirmado: a pessoa de fora existe e voltou a ter <b>zero</b> vínculos, e a família de evidência tem novamente 3 integrantes ativos.</p></section>
+  
+  <h2>Anexo — Cobertura automatizada (Pest — PersonGlobal, LinkGlobal, Duplicates, ConfirmIdentity, PersonSearch)</h2>
+  <pre class="pest">
+   PASS  Tests\Unit\Family\FamilyIntakeActionsTest
+  ✓ it deduplicates a repeated (program, member) pair in the payload     0.40s  
+
+   PASS  Tests\Unit\Http\Resources\PersonSearchResultResourceTest
+  ✓ it computes the age from birth_date without persisting it            0.01s  
+  ✓ it prefers the social name over the civil name (RN03)                0.01s  
+  ✓ it falls back to the civil name when social name is empty or null (… 0.01s  
+  ✓ it uses the member NIS when present (RN03)                           0.01s  
+  ✓ it falls back to the responsible NIS only for the RF (RN03)          0.01s  
+  ✓ it exposes null filiation and city when absent (premissa 5 — UI exi… 0.01s  
+  ✓ it defaults can_view_details to false without an authenticated user… 0.01s  
+
+   PASS  Tests\Unit\Person\ConfirmPersonIdentityActionTest
+  ✓ it confirms by birth date in STRICT ISO — ambiguity is refusal with… 0.01s  
+  ✓ it confirms by birth date in STRICT ISO — ambiguity is refusal with… 0.01s  
+  ✓ it confirms by birth date in STRICT ISO — ambiguity is refusal with… 0.01s  
+  ✓ it confirms by birth date in STRICT ISO — ambiguity is refusal with… 0.01s  
+  ✓ it confirms by birth date in STRICT ISO — ambiguity is refusal with… 0.01s  
+  ✓ it confirms by mother name ignoring case, accents and extra spaces…  0.02s  
+  ✓ it confirms by mother name ignoring case, accents and extra spaces…  0.01s  
+  ✓ it confirms by mother name ignoring case, accents and extra spaces…  0.01s  
+  ✓ it confirms by mother name ignoring case, accents and extra spaces…  0.02s  
+  ✓ it confirms by mother name ignoring case, accents and extra spaces…  0.01s  
+  ✓ it never confirms against an empty field — blank is not a master ke… 0.01s  
+  ✓ it refuses a field outside the two allowed by RN03                   0.01s  
+
+   PASS  Tests\Unit\Services\Geo\GeoLayerSyncServiceTest
+  ✓ it deduplicates repeated ibge codes within the same load keeping th… 0.02s  
+
+   PASS  Tests\Unit\Services\TenantPermissionResolverTest
+  ✓ it unions permissions of stacked roles in the same tenant without d… 0.03s  
+  ✓ it groups bindings by tenant with roles and deduplicated permission… 0.02s  
+
+   PASS  Tests\Feature\Api\CboControllerTest
+  ✓ it returns 422 on duplicate code                                     0.03s  
+  ✓ it rejects updating a cbo to a duplicate code                        0.01s  
+
+   PASS  Tests\Feature\Api\CityControllerTest
+  ✓ it rejects duplicate ibge_code with 422                              0.01s  
+
+   PASS  Tests\Feature\Api\CivilDocumentTypeControllerTest
+  ✓ it rejects a duplicate code                                          0.01s  
+
+   WARN  Tests\Feature\Api\Client\PersonSearchTest
+  ✓ it returns an empty collection when no criteria is given (CA01/RN01… 0.03s  
+  ✓ it denies access without the person-search.index permission          0.03s  
+  ✓ it finds a person by exact CPF, sanitizing the mask (CA02/RN02/RN08… 0.03s  
+  ✓ it rejects a partial CPF (RN02 requires the full document)           0.01s  
+  ✓ it lists every active member of the family block by family code (CA… 0.03s  
+  ✓ it finds people by partial name on full_name OR social_name (CA04/R… 0.02s  
+  - it matches a partial name case-insensitively (RN02 ILIKE) → ILIKE c… 0.02s  
+  ✓ it rejects a name shorter than 2 characters                          0.01s  
+  ✓ it combines criteria with AND (RN02)                                 0.02s  
+  ✓ it returns the RN03 triage columns with computed age and NIS fallba… 0.02s  
+  ✓ it never returns people from another tenant (CA10/RN07)              0.03s  
+  ✓ it exposes can_view_details=false for the base operator and true wh… 0.03s  
+  ✓ it keeps families.view-details out of every role on automatic assig… 0.60s  
+  ✓ it memoizes the Master bypass check: 1 query for N rows, not N (reg… 0.03s  
+
+   PASS  Tests\Feature\Api\Client\ProfessionalControllerTest
+  ✓ it blocks duplicate professional in the same tenant (E4)             0.03s  
+  ✓ it blocks duplicate registration number in the same tenant           0.02s  
+
+   PASS  Tests\Feature\Api\ContractModalityControllerTest
+  ✓ it returns 422 on duplicate code_tceal                               0.01s  
+
+   PASS  Tests\Feature\Api\CountryControllerTest
+  ✓ it rejects duplicate iso_code with 422                               0.01s  
+
+   PASS  Tests\Feature\Api\DneImportControllerTest
+  ✓ it logs a single force_destroyed activity without a duplicate delet… 0.03s  
+
+   PASS  Tests\Feature\Api\FamilyIntakeFormControllerTest
+  ✓ it rejects a duplicate code                                          0.01s  
+
+   PASS  Tests\Feature\Api\GeoLayerImportControllerTest
+  ✓ it logs a single force_destroyed activity without a duplicate delet… 0.01s  
+
+   PASS  Tests\Feature\Api\Manager\GeoLayerControllerTest
+  ✓ it blocks a duplicated name case-insensitively, but frees it after…  0.02s  
+
+   PASS  Tests\Feature\Api\Manager\UserPermissionsTest
+  ✓ it returns tenant_permissions grouped by tenant with deduplicated r… 0.03s  
+
+   PASS  Tests\Feature\Api\MemberUnlinkReasonControllerTest
+  ✓ it rejects a duplicate code                                          0.01s  
+
+   PASS  Tests\Feature\Api\MinimumWageControllerTest
+  ✓ it returns 422 on duplicate year                                     0.02s  
+
+   PASS  Tests\Feature\Api\PersonControllerTest
+  ✓ it blocks a duplicate cpf on create (CA01/#9594)                     0.01s  
+  ✓ it flags a duplicate cpf (RN07/#9594)                                0.01s  
+  ✓ it blocks a duplicate cnpj on create (CA03)                          0.02s  
+  ✓ it validates and detects a duplicate alphanumeric cnpj on check-cnp… 0.01s  
+
+   PASS  Tests\Feature\Api\PlatformVersionControllerTest
+  ✓ it rejects a duplicated version_number on store                      0.01s  
+
+   PASS  Tests\Feature\Api\PostalCodeControllerTest
+  ✓ it returns 422 on duplicate cep                                      0.02s  
+
+   PASS  Tests\Feature\Api\RaceColorControllerTest
+  ✓ it rejects a duplicate code                                          0.01s  
+
+   PASS  Tests\Feature\Api\RoleControllerTest
+  ✓ it rejects duplicate role name within same guard on store            0.02s  
+  ✓ it rejects clone with duplicate name in same guard                   0.03s  
+
+   PASS  Tests\Feature\Api\SocialEntityControllerTest
+  ✓ it CA06: store with duplicate active CNPJ returns 422 and existing_… 0.02s  
+  ✓ it RN06: store with duplicate active CNEAS returns 422               0.02s  
+  ✓ it RN06: rejected store (duplicate CNEAS) leaves no orphan address   0.02s  
+
+   PASS  Tests\Feature\Api\SocialProfessionalControllerTest
+  ✓ it rejects duplicate cpf in same tenant                              0.02s  
+  ✓ it rejects duplicate mds_number in same tenant                       0.02s  
+  ✓ it still rejects duplicate CPF when both rows are alive              0.01s  
+
+   PASS  Tests\Feature\Api\SocialProgramControllerTest
+  ✓ it rejects a duplicate code                                          0.01s  
+
+   PASS  Tests\Feature\Api\SocialUnitControllerTest
+  ✓ it rejects duplicated social_unit_equipment_id in equipments payloa… 0.02s  
+
+   PASS  Tests\Feature\Api\SocialUnitEquipmentAssignmentControllerTest
+  ✓ it store rejects duplicate process_number for the same unit and equ… 0.02s  
+
+   PASS  Tests\Feature\Api\StateControllerTest
+  ✓ it rejects duplicate ibge_code within the same country with 422      0.02s  
+  ✓ it rejects duplicate uf in the same country with 422                 0.01s  
+
+   PASS  Tests\Feature\Api\UserAttachTenantControllerTest
+  ✓ it is idempotent — does not duplicate existing UTR                   0.01s  
+
+   PASS  Tests\Feature\Api\UserFromCpfControllerTest
+  ✓ it rejects duplicated CPF (already exists in system)                 0.02s  
+
+   PASS  Tests\Feature\Api\UserTenantRoleControllerTest
+  ✓ it rejects a duplicate (user, tenant, role)                          0.01s  
+
+   PASS  Tests\Feature\Console\BackfillTenantLegalDocumentsTest
+  ✓ it is idempotent — re-running does not duplicate documents or versi… 0.02s  
+
+   PASS  Tests\Feature\CopyGlobalLegalDocumentsToTenantTest
+  ✓ it is idempotent — re-running does not duplicate documents or versi… 0.02s  
+
+   PASS  Tests\Feature\Dashboard\RegistrationQualityTest
+  ✓ it counts duplicate records by repeated NIS per record, not per gro… 0.04s  
+  ✓ it counts duplicate records by repeated CPF (same person in more th… 0.04s  
+  ✓ it does not treat empty CPF/NIS as duplicates (RN03.1)               0.03s  
+  ✓ it deduplicates a pending citizen linked to more than one family     0.03s  
+
+   PASS  Tests\Feature\Migrations\MigrateSocialProfessionalAssignmentsToTenantTest
+  ✓ it is idempotent — running twice does not duplicate                  0.02s  
+
+   PASS  Tests\Feature\Person\TenantPersonSecurityTest
+  ✓ it rejects the raw id and the raw uuid in place of the person_ref (… 0.03s  
+  ✓ it rejects an expired person_ref (§10 — TTL curto)                   0.04s  
+  ✓ it rejects a person_ref issued to another municipality (§10)         0.03s  
+  ✓ it does not leak the person identifiers inside the token (§10 — opa… 0.03s  
+  ✓ it throttles the search that reaches the global repository (§10)     0.04s  
+  ✓ it throttles the identity confirmation, the trial-and-error oracle…  0.03s  
+  ✓ it denies filling fields of a person NOT linked to the municipality… 0.03s  
+  ✓ it denies linking into a family of another organization (RN07)       0.03s  
+  ✓ it requires person-search.index to register a person                 0.03s  
+  ✓ it keeps persons a global repository: no tenant scope, and authorsh… 0.03s  
+  ✓ it never accepts provenance or authorship from the payload (§10)     0.04s  
+  ✓ it never writes a plain CPF, a full name or a confirmation value to… 0.03s  
+
+   PASS  Tests\Feature\Person\TenantPersonTest
+  ✓ it keeps the current person search payload untouched for someone in… 0.04s  
+  ✓ it reports only the existence of a person from another municipality… 0.03s  
+  ✓ it offers the registration path when the CPF does not exist anywher… 0.03s  
+  ✓ it audits every query that reaches the global repository, with the…  0.03s  
+  ✓ it never reaches other municipalities on a partial name search (CA1… 0.03s  
+  ✓ it links a person from outside after confirming the identity (CA03)  0.03s  
+  ✓ it confirms the identity by the mother name, ignoring case and acce… 0.03s  
+  ✓ it never reveals the correct value when the confirmation fails, and… 0.03s  
+  ✓ it refuses the confirmation when the existing record has the field…  0.03s  
+  ✓ it registers a new person from the municipality, stamping the prove… 0.03s  
+  ✓ it requires the mother name when the municipality registers a perso… 0.03s  
+  ✓ it does not create a second person when the CPF already exists (CA0… 0.03s  
+  ✓ it does not create a person without CPF while there are similar one… 0.03s  
+  ✓ it audits the duplicate check by the COUNT, never by the names (CA0… 0.03s  
+  ✓ it creates a person without CPF with no fuss when there is nobody s… 0.03s  
+  ✓ it fills an empty field of a person linked to the municipality (CA0… 0.04s  
+  ✓ it refuses to overwrite a field that is already filled (CA10/RN08)   0.03s  
+  ✓ it has no delete route for a person (CA11/RN07)                      0.03s  
+
+   PASS  Tests\Feature\Seeders\CboAccessProfileSeederTest
+  ✓ it is idempotent — re-running duplicates nothing                     1.66s  
+
+   PASS  Tests\Feature\Seeders\CompositionLookupSeedersTest
+  ✓ it is idempotent — running both seeders twice does not duplicate     0.02s  
+
+   PASS  Tests\Feature\Seeders\IntakeLookupSeedersTest
+  ✓ it is idempotent — running both seeders twice does not duplicate     0.02s  
+
+   PASS  Tests\Feature\Seeders\LocalDevSeederTest
+  ✓ it is idempotent — a second run duplicates nothing and breaks no un… 1.10s  
+
+   PASS  Tests\Feature\Services\Cadunico\CadunicoSyncAddressInconsistencyTest
+  ✓ it does not duplicate the open row when the same family fails again… 0.04s  
+
+   PASS  Tests\Feature\Services\SetTenantOfficialAddressActionTest
+  ✓ it reuses the config created beforehand (does not duplicate tenant_… 0.01s  
+
+  Tests:    1 skipped, 117 passed (419 assertions)
+  Duration: 6.66s
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

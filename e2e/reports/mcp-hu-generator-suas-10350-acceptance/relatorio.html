@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — Criação do MCP do Projeto</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — Criação do MCP do Projeto</h1>
+    <div class="sub">Ticket GLPI #10350 · Evidências ad-hoc (sem UI do SigSUAS)</div>
+    <div class="meta"><div><span>Gerado em:</span> 07/08/2026</div><div><span>Ticket GLPI:</span> #10350 — HU - #10350 Criação do MCP do Projeto</div><div><span>Repositório:</span> pwdev-solucoes/hu-generator-suas-mcp (privado), submódulo em .claude/mcp/hu-generator-suas</div><div><span>Commit avaliado:</span> a5b0e3e</div><div><span>Ambiente de conexão do Agente:</span> Claude Desktop</div><div><span>Ferramenta:</span> node scripts/test-client.mjs (cliente MCP real via stdio) + npm/git em terminal — sem playwright/navegador, este ticket não envolve tela do SigSUAS</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">6 critérios de aceite, todos verificados por execução real de comando (instalação limpa, script de atualização, cliente MCP de teste ponta-a-ponta) — nenhum via navegador, já que o escopo do ticket é o servidor MCP e sua integração com o Claude Desktop, não uma tela do SigSUAS. 6/6 atendidos.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA01</td><td>Conectar o MCP ao Claude Desktop</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA02</td><td>Consultar a base de conhecimento via tools</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA03</td><td>Repositório autocontido, pronto para instalar</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA04</td><td>Atualizar com um comando</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA05</td><td>Pacote pronto para uso como Claude Project</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA06</td><td>Acesso restrito só ao conteúdo autorizado</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA01">
+      <h2>CA01 — Conectar o MCP ao Claude Desktop <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado o repositório hu-generator-suas-mcp instalado localmente, quando o usuário configura o servidor no claude_desktop_config.json (macOS, Linux ou Windows) e reinicia o Claude Desktop, então o servidor aparece conectado e suas tools/resources ficam disponíveis em qualquer conversa.</p>
+      <p class="steps"><strong>Como foi testado:</strong> O README documenta o caminho exato de <code>claude_desktop_config.json</code> para macOS/Linux/Windows e o JSON de configuração (com barras invertidas escapadas na variante Windows). O mesmo mecanismo de conexão (stdio, <code>StdioClientTransport</code>) que o Claude Desktop usa foi exercitado por <code>scripts/test-client.mjs</code>, que abre o processo <code>node dist/index.js</code> via stdio e conecta como um cliente MCP real.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Saída real do teste: "=== connected ===" seguido de "=== resources/list: 88 recursos ===" e "=== tools/list ===" listando as 5 tools — confirma que a conexão stdio (o mesmo transporte usado pelo Claude Desktop) expõe corretamente tools e resources assim que o servidor sobe.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA02">
+      <h2>CA02 — Consultar a base de conhecimento via tools <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado o MCP conectado, quando o Agente usa as tools list_modules, search_modules, get_module, get_business_rule ou lookup_glossary, então recebe o conteúdo correspondente (módulos, regras de negócio, glossário) sem precisar copiar/colar arquivo.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Execução de <code>node scripts/test-client.mjs</code> chamando as 5 tools em sequência contra o conteúdo empacotado real.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>tools/list retornou exatamente: list_modules, search_modules, get_module, get_business_rule, lookup_glossary.</li><li>list_modules(frontend='client', status='entregue') retornou linhas reais do inventário (ex.: INV-003 · social-units, INV-004 · families, INV-005 · address-inconsistencies).</li><li>search_modules(query='LGPD') retornou trecho da tabela condensada + trechos de fichas completas (address-inconsistencies, geo-panel).</li><li>get_module(slug='families') retornou a ficha completa com citação de fonte real (Model + migrations).</li><li>get_business_rule(id='RN-domain-01') retornou o texto da regra de negócio real.</li><li>lookup_glossary(term='CRAS') retornou as entradas de glossário CRAS e PAIF.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA03">
+      <h2>CA03 — Repositório autocontido, pronto para instalar <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um clone limpo do repositório do MCP, quando o usuário instala as dependências, então o servidor já está pronto para rodar (build já versionado, conteúdo já empacotado), sem precisar de outro checkout do projeto nem de build manual.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Simulação de clone limpo no checkout real: <code>rm -rf node_modules dist</code> (remove tudo que .gitignore ignora) → <code>npm install</code> → <code>git checkout -- dist</code> (restaura só o que está versionado, sem rodar build) → roda o cliente de teste direto contra o dist/ restaurado do git.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Após remover dist/, ele não existia mais no disco ("ls: dist: No such file or directory").</li><li>git checkout -- dist restaurou dist/index.js a partir do git (arquivo rastreado no repositório, confirmado por git ls-files dist/ → dist/index.js).</li><li>node scripts/test-client.mjs, usando esse dist/ restaurado do git (sem rodar npm run build), conectou e listou os 88 resources normalmente — confirma que o build versionado funciona sem rebuild.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA04">
+      <h2>CA04 — Atualizar com um comando <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado uma nova versão de conteúdo/código publicada no repositório do MCP, quando o usuário roda o comando de atualização, então sua cópia local é atualizada (código + dependências + build), sem passos manuais adicionais.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Execução de <code>bash scripts/update.sh</code> (equivalente a <code>npm run update</code>) no checkout real.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Saída real: "== git pull ==" → "Already up to date." → "== npm install ==" → "up to date, audited 101 packages" → "== npm run build ==" → "tsc -p ." → "Atualizado. dist/index.js reconstruído." — as 3 etapas (pull, install, build) rodaram em sequência com um único comando.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA05">
+      <h2>CA05 — Pacote pronto para uso como Claude Project <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um usuário que quer criar um Project no Claude.ai com o mesmo conhecimento, quando ele usa os arquivos da pasta claude-project/ do MCP, então consegue configurar o Project tanto com o MCP conectado (fonte viva) quanto sem MCP (arquivo de conhecimento estático anexado).</p>
+      <p class="steps"><strong>Como foi testado:</strong> Inspeção do diretório <code>claude-project/</code> no repositório real.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Pasta contém os 3 arquivos esperados: README.md (explica os dois modos de uso + instalação), claude-project-instructions.md (v2, com seção 'FONTE DE CONHECIMENTO' que detecta MCP conectado ou não) e claude-project-knowledge.md (v2, fallback estático).</li><li>README.md da raiz do repositório referencia claude-project/ na seção 'Usar como Claude Project'.</li><li>Nenhuma referência a 'esuas-all' ou 'eSUAS/SigSUAS' nos 3 arquivos (grep -c retornou 0 em todos), consistente com o repositório ser distribuível de forma independente.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA06">
+      <h2>CA06 — Acesso restrito só ao conteúdo autorizado <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado uma tentativa de leitura de arquivo fora dos diretórios de conhecimento expostos pelo MCP, quando essa tentativa acontece através de uma tool/resource, então o servidor recusa o acesso.</p>
+      <p class="steps"><strong>Como foi testado:</strong> get_module(slug='../../../SKILL') via <code>scripts/test-client.mjs</code> — tentativa de path traversal usando <code>../</code> para escapar do diretório de conhecimento exposto.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Resultado real: "Acesso negado: \"../../../SKILL\" resolve para um caminho fora do que este servidor expõe." — a tentativa foi rejeitada com mensagem de acesso negado, sem expor nenhum arquivo fora do escopo autorizado (knowledge/catalog/templates/checklists).</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+  
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

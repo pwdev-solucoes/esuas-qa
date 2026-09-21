@@ -1,0 +1,131 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — US-BENEF-01",
+    "subtitle": "Épico HU-PRONT-BENEF (fase F5) · Tipos de benefício eventual no Painel de Administração Global",
+    "rows": [
+      [
+        "Gerado em",
+        "15/09/2026"
+      ],
+      [
+        "História",
+        "US-BENEF-01 — Manter os tipos de benefício eventual no Painel Global"
+      ],
+      [
+        "Spec",
+        ".planning/specs/US-BENEF-01-tipos-de-beneficio-painel-global.md"
+      ],
+      [
+        "Branch",
+        "feature/benef-prontuario-bloco-12"
+      ],
+      [
+        "Commits (api/)",
+        "3ea2b7b · a9a336d · 3d88ee4 · fd1768a · 1ec4a12"
+      ],
+      [
+        "Commits (admin/)",
+        "626d860"
+      ],
+      [
+        "Commits (e2e/)",
+        "a ser fixado pelo orquestrador junto com este dossiê"
+      ],
+      [
+        "Ambiente",
+        "Stack E2E Docker · API em :8090 · admin em :4173 · base recém-semeada"
+      ],
+      [
+        "Perfil usado",
+        "Administrador do Painel Global (guard manager, permissão eventual-benefit-types.index)"
+      ],
+      [
+        "Ferramenta",
+        "Playwright (Chromium) + Pest 4"
+      ]
+    ]
+  },
+  "summary": "Onze critérios de aceite (CA01–CA10, com o CA06b do tipo \"Outros\"). Seis evidenciados no navegador (CA01, CA02, CA04, CA05, CA06/CA06b — cinco prints, um deles reaproveitado para dois critérios) e cinco cobertos pela suíte automatizada (CA03, CA07, CA09, CA10, e a recusa REAL de exclusão do CA08). A suíte fecha com 34 testes e 150 asserções. Os 7 cenários Playwright passam contra base recém-semeada, sem tocar massa de outros specs da fase. Nenhum critério em falha. O CA08 é o único critério ATENDIDO de forma parcial pela UI — ver Observações e ressalvas.",
+  "criteria": [
+    {
+      "id": "CA01",
+      "title": "Seis tipos disponíveis",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "ca01-os-seis-tipos-aparecem-com-os-codigos-1-a-6-do-instrumento-s-listagem-seis-tipos.png"
+      ]
+    },
+    {
+      "id": "CA02",
+      "title": "Regra de apuração visível em cada tipo",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "ca02-a-regra-de-apuracao-do-leiaute-15-6-confere-item-a-item-na-l-matriz-contadores.png"
+      ]
+    },
+    {
+      "id": "CA03",
+      "title": "Nenhum tipo sem contador",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "CA04",
+      "title": "Campo adicional exigido no natalidade",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "ca04-so-o-tipo-1-exige-registro-de-nascimento-e-so-o-tipo-2-exige-detalhe-natalidade.png"
+      ]
+    },
+    {
+      "id": "CA05",
+      "title": "Campo adicional exigido no funeral",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "ca05-so-o-tipo-1-exige-registro-de-nascimento-e-so-o-tipo-2-exige-detalhe-funeral.png"
+      ]
+    },
+    {
+      "id": "CA06",
+      "title": "Demais tipos sem campo adicional",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "ca06-os-demais-tipos-nao-exigem-campo-adicional-e-so-o-tipo-6-exi-tipo-outros-exige-descricao.png"
+      ]
+    },
+    {
+      "id": "CA06b",
+      "title": "O tipo \"Outros\" exige a observação",
+      "status": "ATENDIDO",
+      "screenshots": [
+        "ca06-os-demais-tipos-nao-exigem-campo-adicional-e-so-o-tipo-6-exi-tipo-outros-exige-descricao.png"
+      ]
+    },
+    {
+      "id": "CA07",
+      "title": "Município não edita a lista",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "CA08",
+      "title": "Item em uso não é excluído",
+      "status": "ATENDIDO (PARCIAL UI + SUITE)",
+      "screenshots": [
+        "ca08-a-exclusao-oferece-a-afordancia-e-o-dialogo-de-confirmacao-s-dialogo-confirmacao-exclusao.png"
+      ]
+    },
+    {
+      "id": "CA09",
+      "title": "Item inativado continua contando no histórico",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    },
+    {
+      "id": "CA10",
+      "title": "Alteração da regra de apuração auditada",
+      "status": "ATENDIDO (SUITE)",
+      "screenshots": []
+    }
+  ]
+}

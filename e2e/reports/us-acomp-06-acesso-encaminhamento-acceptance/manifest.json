@@ -1,0 +1,288 @@
+{
+ "meta": {
+  "title": "Relatório de Critérios de Aceite — US-ACOMP-06",
+  "subtitle": "Épico HU-PRONT-ACOMP (fase F3) · GLPI #10888 · Acesso ao prontuário pela unidade que recebeu o encaminhamento",
+  "rows": [
+   [
+    "Gerado em",
+    "16/09/2026 00:49"
+   ],
+   [
+    "História",
+    "US-ACOMP-06 — Acesso ao prontuário pela unidade que recebeu o encaminhamento (GLPI #10888)"
+   ],
+   [
+    "Spec",
+    ".planning/specs/US-ACOMP-06-acesso-pelo-encaminhamento-recebido.md"
+   ],
+   [
+    "Branch",
+    "feature/acomp-06-07-encaminhamento-recebido (a partir de develop)"
+   ],
+   [
+    "Commits (api)",
+    "1b00897 (eixo de acesso) · 998138e (regressão do §17-P6)"
+   ],
+   [
+    "Spec E2E",
+    "e2e/tests/client/referral-received-access.spec.ts (5 critérios no navegador)"
+   ],
+   [
+    "Ambiente",
+    "Stack Sail · API em :80 · client (Vite) em :5175 · base de desenvolvimento semeada por E2ESeeder"
+   ],
+   [
+    "Organização (tenant)",
+    "E2E CadÚnico"
+   ],
+   [
+    "Perfis usados",
+    "Operacional do tenant com add-on LGPD, lotado no E2E CRAS Centro (unidade de destino); Master apenas para preparar a massa"
+   ],
+   [
+    "Ferramenta",
+    "Playwright (project chromium-tenant) + Pest 4"
+   ]
+  ]
+ },
+ "summary": "Dezessete critérios: treze numerados e quatro extras. Cinco evidenciados no navegador (CA01, CA02, CA03, CA05 e CA04/CA11, com seis prints) e os demais cobertos pela suíte automatizada, onde o cenário exige um segundo município, duas unidades do mesmo tipo, um segundo operador ou a leitura da trilha de auditoria. Os prints NÃO foram capturados à mão: saem do próprio caso de teste que assevera o critério, de modo que, se a asserção cair, não há imagem. A suíte do eixo de acesso fecha com 60 testes e 348 asserções, e a suíte completa da API com 4607 testes, sem falhas. Nenhum critério em falha. Esta entrega fecha a metade do CA07 que o dossiê da US-ACOMP-07 declarou pendente por design. Uma ressalva de produto, levantada pela revisão de código, está declarada nas observações: o eixo também amplia a escrita, inclusive a troca da unidade de referência — comportamento herdado, fixado por teste e submetido ao PO.",
+ "cas": [
+  {
+   "id": "CA01",
+   "title": "Unidade encaminhada acessa (happy path)",
+   "status": "parc",
+   "gherkin": "Dado que sou CLIENT_OPERADOR com CLIENT_FAMILY_VIEWER e lotação vigente no \"CREAS\"\nE que a família Silva é referenciada no \"CRAS Centro\" e não é acompanhada pelo \"CREAS\"\nE que existe referrals (Silva, origem \"CRAS Centro\", código \"13\", destination_social_unit_id = \"CREAS\",\n     status 'registered', outcome 'awaiting_return')\nQuando eu chamar GET /api/client/families/{silva}/details\nEntão recebo 200\nE activity_log grava record_opened com access_granted_via = 'referral_received'",
+   "steps_html": "No navegador, o operador lotado apenas na unidade de <b>destino</b> abre o prontuário da família referenciada em outra unidade. O <code>activity_log</code> é verificado pela suíte automatizada.",
+   "results": [
+    "O prontuário abre: o título \"Visualizar Família\" é exibido e nenhum painel de negativa aparece (acesso restrito, família não encontrada ou sem lotação vigente).",
+    "Pest: “opens the record for the DESTINATION unit of an open referral, auditing via referral_received”, que confere o <code>access_granted_via</code> e o <code>social_unit_id</code> da unidade de referência."
+   ],
+   "images": [
+    "screenshots/ca01-a-unidade-de-destino-abre-o-prontuario-da-familia-referencia.png"
+   ]
+  },
+  {
+   "id": "CA02",
+   "title": "O ingresso no acompanhamento passa a ser possível sem o Master",
+   "status": "parc",
+   "gherkin": "Dado o contexto do CA01 e um serviço PAEFI oferecido pelo tipo CREAS\nQuando eu chamar POST /api/client/families/{silva}/follow-ups\n     com social_unit_uuid = {creas}, follow_up_service_uuid = {paefi}\nEntão recebo 201\nE um novo GET …/details grava access_granted_via = 'follow_up' (D04)",
+   "steps_html": "Pelo próprio operador, sem intervenção do Master: aba Acompanhamento → registrar ingresso na unidade de destino. É a circularidade que motivou a HU — antes, só o Master conseguia fazer este primeiro lançamento.",
+   "results": [
+    "O ingresso é aceito (201) e a linha vigente passa a exibir a unidade.",
+    "Pest prova a ordem da decisão (D04): com acompanhamento <b>e</b> encaminhamento abertos, a via auditada é <code>follow_up</code>, o eixo mais estável, e não <code>referral_received</code>."
+   ],
+   "images": [
+    "screenshots/ca02-o-ingresso-no-acompanhamento-passa-a-ser-possivel-sem-o-mast.png"
+   ]
+  },
+  {
+   "id": "CA03",
+   "title": "Prontuário inteiro",
+   "status": "parc",
+   "gherkin": "Dado o contexto do CA01\nQuando eu chamar members, intake, social-programs, age-profile, attendances, referrals e follow-ups da família Silva\nEntão todas respondem 200\nE enxergo registros feitos por qualquer unidade",
+   "steps_html": "Navegação pelas abas do prontuário e conferência de que o encaminhamento registrado pela unidade de <b>origem</b> é visível para a unidade de destino.",
+   "results": [
+    "As abas abrem sem negativa.",
+    "O encaminhamento da origem aparece com o destino correto e o desfecho \"Aguardando retorno\".",
+    "Pest cobre as demais rotas do prontuário uma a uma."
+   ],
+   "images": [
+    "screenshots/ca03-o-acesso-e-ao-prontuario-inteiro-incluindo-o-que-a-unidade-d.png"
+   ]
+  },
+  {
+   "id": "CA04",
+   "title": "Desfecho registrado encerra o acesso",
+   "status": "parc",
+   "gherkin": "Dado o contexto do CA01\nQuando eu chamar POST …/referrals/{r}/counter-references com outcome = 'not_attended'\nEntão recebo 201\nE sem acompanhamento aberto, o próximo GET …/details retorna 403 com error_code = \"unit_not_assigned\"\nE a mensagem não contém nome de unidade",
+   "steps_html": "Com o desfecho lançado e o acompanhamento cancelado, o operador recarrega o prontuário.",
+   "results": [
+    "O acesso cessa na requisição seguinte: a tela passa a exibir o painel de acesso restrito.",
+    "O <code>error_code</code> permanece <code>unit_not_assigned</code> — contrato consumido pelo frontend.",
+    "Na tela foi usado o desfecho \"Atendido\" (o mesmo caminho); a suíte cobre <code>not_attended</code> literal, além de <code>closed_without_response</code>, cancelado, soft-deletado e FK nula."
+   ],
+   "images": [
+    "screenshots/ca04-sem-acompanhamento-e-com-o-desfecho-lancado-a-negativa-decla.png"
+   ]
+  },
+  {
+   "id": "CA05",
+   "title": "Quem assumiu continua acessando depois do desfecho",
+   "status": "parc",
+   "gherkin": "Dado que registrei o ingresso no PAEFI do \"CREAS\" (CA02) e depois o desfecho 'attended'\nQuando eu abrir o prontuário\nEntão recebo 200\nE activity_log grava access_granted_via = 'follow_up', não 'referral_received'",
+   "steps_html": "O operador lança o desfecho do encaminhamento e reabre o prontuário, ainda com o acompanhamento vigente.",
+   "results": [
+    "O prontuário continua abrindo, agora sustentado pelo acompanhamento.",
+    "Pest confirma que a via auditada passa a ser <code>follow_up</code>."
+   ],
+   "images": [
+    "screenshots/ca05-quem-assumiu-o-caso-continua-acessando-depois-do-desfecho.png"
+   ]
+  },
+  {
+   "id": "CA06",
+   "title": "Encaminhamento para órgão externo não dá acesso",
+   "status": "auto",
+   "gherkin": "Dado que o \"CRAS Centro\" registrou encaminhamento \"05\" da família Silva, destination_social_unit_id NULL\nQuando eu, lotado no \"CREAS\", abrir o prontuário\nEntão recebo 403 unit_not_assigned",
+   "steps_html": "Critério de backend: o eixo lê apenas a chave estrangeira, nunca o texto do destino.",
+   "results": [
+    "Pest: “does NOT grant access through an external referral (destination FK NULL)”."
+   ],
+   "images": []
+  },
+  {
+   "id": "CA07",
+   "title": "Encaminhamento cancelado não dá acesso",
+   "status": "auto",
+   "gherkin": "Dado um encaminhamento \"13\" para o \"CREAS\" sobre a família Souza com status = 'cancelled'\nQuando eu, lotado no \"CREAS\", abrir o prontuário\nEntão recebo 403 unit_not_assigned",
+   "steps_html": "Critério de backend.",
+   "results": [
+    "Pest: “does NOT grant access through a CANCELLED referral”.",
+    "Um caso dedicado varre todos os desfechos: só <code>registered</code> + <code>awaiting_return</code> concede."
+   ],
+   "images": []
+  },
+  {
+   "id": "CA08",
+   "title": "Encaminhamento para outro CREAS não me alcança",
+   "status": "auto",
+   "gherkin": "Dado um encaminhamento \"13\" da família Silva com destination_social_unit_id = \"CREAS Norte\"\nE que sou lotado apenas no \"CREAS Sul\"\nQuando eu abrir o prontuário\nEntão recebo 403 unit_not_assigned",
+   "steps_html": "Critério de backend: exige duas unidades do mesmo tipo, cenário que a massa da tela não possui.",
+   "results": [
+    "Pest: “does not let a referral to ANOTHER CREAS reach me”."
+   ],
+   "images": []
+  },
+  {
+   "id": "CA09",
+   "title": "Add-on continua obrigatório",
+   "status": "auto",
+   "gherkin": "Dado que sou Operacional lotado no \"CREAS\" de destino, SEM CLIENT_FAMILY_VIEWER\nQuando eu abrir o prontuário\nEntão recebo 403 com details_access_denied\nE activity_log grava record_access_denied com reason = 'missing_addon'\nE referral_social_unit_ids do outcome é []",
+   "steps_html": "Critério de backend.",
+   "results": [
+    "Pest: “does not let the referral replace the LGPD add-on”.",
+    "<b>Ressalva declarada:</b> o 403 chega pelo gate de rota, <i>antes</i> do controller, então o registro <code>record_access_denied</code> com motivo <code>missing_addon</code> não é alcançável por HTTP — comportamento pré-existente, idêntico ao da US-ACOMP-04. O teste prova o invariante consultando o ponto único de decisão diretamente."
+   ],
+   "images": []
+  },
+  {
+   "id": "CA10",
+   "title": "Sem lotação vigente não acessa",
+   "status": "auto",
+   "gherkin": "Dado que minha lotação no \"CREAS\" foi encerrada (end_date <= hoje)\nE que o \"CREAS\" é destino de encaminhamento sem desfecho sobre a Silva\nQuando eu abrir o prontuário\nEntão recebo 403 com error_code = \"no_active_assignment\"",
+   "steps_html": "Critério de backend.",
+   "results": [
+    "Pest: “does not let the referral replace an ACTIVE unit assignment”."
+   ],
+   "images": []
+  },
+  {
+   "id": "CA11",
+   "title": "Negativa contempla os três eixos",
+   "status": "parc",
+   "gherkin": "Dado que sou Operacional lotado apenas no \"CRAS Rural\"\nE que a Silva é referenciada no \"CRAS Centro\", acompanhada e encaminhada ao \"CREAS\"\nQuando eu abrir o prontuário\nEntão recebo 403 unit_not_assigned\nE a mensagem (pt_BR) contém \"referenciada\", \"acompanhada\", \"encaminhada\" e \"Master\"\nE não contém \"CRAS Centro\", \"CREAS\", \"CRAS Rural\" nem \":unit\"",
+   "steps_html": "O texto exibido na tela é lido e verificado palavra a palavra, nos dois sentidos: o que deve conter e o que <b>não</b> pode conter.",
+   "results": [
+    "A mensagem declara os três eixos e orienta procurar o gestor Master.",
+    "Nenhum nome de unidade aparece — é a garantia de LGPD do critério: a negativa não revela onde a família é atendida a quem não tem acesso a ela.",
+    "Pest repete a asserção nos dois idiomas."
+   ],
+   "images": [
+    "screenshots/ca11-sem-acompanhamento-e-com-o-desfecho-lancado-a-negativa-decla.png"
+   ]
+  },
+  {
+   "id": "CA12",
+   "title": "Auditoria distingue os motivos de concessão",
+   "status": "auto",
+   "gherkin": "Dado que abriram o prontuário da mesma família: um pela referência, um pelo acompanhamento,\n     um pelo encaminhamento recebido e o Master (e, noutra família sem unidade, um pela transição)\nQuando eu consultar activity_log (log_name 'family_access', event 'record_opened')\nEntão access_granted_via traz exatamente {'unit_assignment','follow_up','referral_received','master_bypass','transition'}",
+   "steps_html": "Critério de backend.",
+   "results": [
+    "Pest: “audits the FIVE distinct access vias, exactly”, comparando o conjunto com a lista fechada de vias."
+   ],
+   "images": []
+  },
+  {
+   "id": "CA13",
+   "title": "Isolamento entre municípios inalterado",
+   "status": "auto",
+   "gherkin": "Dado que sou usuário do município A\nQuando eu tentar acessar o prontuário de família do município B\nEntão recebo 404",
+   "steps_html": "Critério de backend: exige um segundo município.",
+   "results": [
+    "Pest: “keeps the organization isolation ahead of the referral axis”, comparando o corpo do 404 com o de um identificador inexistente."
+   ],
+   "images": []
+  },
+  {
+   "id": "CA-extra-A",
+   "title": "A pesquisa de pessoas enxerga a família encaminhada",
+   "status": "auto",
+   "gherkin": "Dado o contexto do CA01\nQuando eu chamar GET /api/client/person-search por um integrante da Silva\nEntão ele aparece no resultado\nE depois do desfecho (CA04) deixa de aparecer",
+   "steps_html": "Critério de backend — é o recorte por consulta, que usa o mesmo predicado do eixo.",
+   "results": [
+    "Pest: “lists the REFERRED family in the person search, opens it from there, and drops it after the outcome”.",
+    "A revisão de código extraiu o SQL gerado e confirmou a correlação correta com a família, sem vazar registros de terceiros."
+   ],
+   "images": []
+  },
+  {
+   "id": "CA-extra-B",
+   "title": "O eixo não vaza para outro tenant",
+   "status": "auto",
+   "gherkin": "Dado um encaminhamento do tenant B cuja destination_social_unit_id é numericamente igual à minha unidade de lotação no tenant A\nQuando eu, do tenant A, abrir a família do tenant B\nEntão recebo 404\nE o predicado filtra referrals.tenant_id explicitamente",
+   "steps_html": "Critério de backend, adversarial.",
+   "results": [
+    "Pest: “filters the referral axis by tenant_id, even with a numerically identical destination_social_unit_id”."
+   ],
+   "images": []
+  },
+  {
+   "id": "CA-extra-C",
+   "title": "Desfecho revertido reabre o acesso",
+   "status": "auto",
+   "gherkin": "Dado o CA04 concluído (acesso encerrado)\nQuando o \"CRAS Centro\" chamar PATCH …/referrals/{r}/outcome com outcome = 'awaiting_return'\nEntão o próximo GET …/details do \"CREAS\" retorna 200 via 'referral_received'\nE activity_log 'referral' registra a reversão com causer_id",
+   "steps_html": "Critério de backend. Também é exercitado na prática: é assim que o spec de navegador devolve a massa ao ponto de partida a cada execução.",
+   "results": [
+    "Pest: “REOPENS the access when the origin unit reverts the outcome to awaiting_return, with the reversal audited”."
+   ],
+   "images": []
+  },
+  {
+   "id": "CA-extra-D",
+   "title": "Via fora do domínio é recusada",
+   "status": "auto",
+   "gherkin": "Quando FamilyAccessAuditService::recordOpened for chamado com accessGrantedVia = 'qualquer'\nEntão lança InvalidArgumentException e nada é gravado",
+   "steps_html": "Critério de backend (teste unitário).",
+   "results": [
+    "A guarda roda <b>antes</b> de qualquer escrita, e o teste confirma que o registro de auditoria fica vazio após a exceção."
+   ],
+   "images": []
+  }
+ ],
+ "notes": [
+  {
+   "title": "Fecha a metade que o dossiê da US-ACOMP-07 declarou pendente",
+   "html": "<p>O CA07 da <b>US-ACOMP-07 (#10887)</b> foi entregue como <i>PARCIAL — metade deferida à US-ACOMP-06</i>: lá se provou que a unidade de destino é gravada no encaminhamento, mas não que ela passa a enxergar o prontuário, porque o eixo de acesso ainda não existia. <b>Esta entrega fecha essa metade</b> — é exatamente o que o CA01 deste dossiê mostra.</p>"
+  },
+  {
+   "title": "Direção do trânsito invertida na evidência de tela (e por quê)",
+   "html": "<p>A spec narra o trânsito CRAS → CREAS. A massa de teste, porém, <b>não tem nenhum profissional lotado no CREAS</b>, e sem lotação não há como exercitar o eixo pela interface. A evidência de tela usa, por isso, o sentido inverso: família referenciada no CREAS e encaminhamento de código <b>14 (CREAS → CRAS)</b>, com destino no CRAS onde o operador tem lotação vigente. <b>O eixo provado é o mesmo</b>; muda apenas o sentido. A direção literal da spec está coberta pela suíte automatizada.</p>"
+  },
+  {
+   "title": "Achado da revisão: o eixo amplia a ESCRITA, ao contrário do que a RN11 afirma",
+   "html": "<p>A revisão de código constatou que o guard de acesso é o gate único de várias rotas de escrita do prontuário — inclusive <code>PUT …/reference-unit</code>. Consequência: enquanto o encaminhamento estiver sem desfecho, a unidade de destino pode editar o prontuário e <b>assumir a unidade de referência da família</b>, tirando o acesso de quem encaminhou.</p><p>Não há auto-escalada (para criar o encaminhamento já é preciso ter acesso à família) e o eixo do acompanhamento, entregue antes, já tinha a mesma propriedade — é herdado, não introduzido aqui. <b>Nenhum comportamento foi alterado nesta entrega</b>: o fato foi fixado por um teste de regressão dedicado, que documenta a cadeia inteira (escrita → troca da unidade de referência → a origem perde o acesso), e registrado como pendência <b>§17-P6</b> na spec. <b>Decisão de produto para o PO:</b> se a troca da unidade de referência não puder ser feita por quem só recebeu um encaminhamento, a trava é exigir os eixos de referência ou acompanhamento nessa rota específica.</p>"
+  },
+  {
+   "title": "Outras decisões pendentes declaradas na spec (§17)",
+   "html": "<p><b>P1:</b> o acesso cessa imediatamente com o desfecho — a unidade que registrou “não atendido” não consegue reconsultar para justificar. <b>P4:</b> um encaminhamento esquecido em aberto mantém o acesso indefinidamente; a consulta §8.4 da spec dá visibilidade por unidade. Nenhuma das duas está no escopo desta entrega.</p>"
+  },
+  {
+   "title": "Migrations, índice e permissões",
+   "html": "<p>Esta HU não tem migration própria (a coluna e o índice vieram da US-ACOMP-07): o diff de <code>database/migrations</code> é vazio. O <code>EXPLAIN</code> confirma que o predicado do eixo usa o índice parcial <code>referrals_destination_access_idx</code> com varredura apenas por índice, tanto na decisão quanto no recorte da pesquisa de pessoas. Nenhuma permissão nova.</p>"
+  }
+ ],
+ "appendix": {
+  "label": "Cobertura automatizada (Pest, --filter=FamilyAccess)",
+  "file": "pest-familyaccess.txt"
+ }
+}

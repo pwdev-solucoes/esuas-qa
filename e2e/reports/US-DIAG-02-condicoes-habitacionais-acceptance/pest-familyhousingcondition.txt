@@ -1,0 +1,35 @@
+
+   PASS  Tests\Feature\Api\Client\FamilyHousingConditionTest
+  ✓ it registers residence type, risk area and vulnerability, signed an… 0.72s  
+  ✓ it offers the nine Manual residence types to the tenant operator, i… 0.11s  
+  ✓ it keeps domicile_vulnerability NULL after recording in_risk_area =… 0.10s  
+  ✓ it never lets the risk area answer leak into the vulnerability colu… 0.17s  
+  ✓ it has NO column and NO payload field for difficult access or viole… 0.12s  
+  ✓ it returns data null and is_pending true for a family that was neve… 0.13s  
+  ✓ it returns NULL as null — never as false — in the payload (CA05/D03… 0.12s  
+  ✓ it reads the string "false" as false, not as true (§10)              0.12s  
+  ✓ it refuses an unrecognizable answer instead of silently erasing the… 0.09s  
+  ✓ it names exactly which of the three fields are still missing (CA06)  0.10s  
+  ✓ it corrects the record in place and audits the change with author a… 0.25s  
+  ✓ it audits the three value fields — and only them (D07)               0.24s  
+  ✓ it neither offers nor accepts address, postal code or residence zon… 0.16s  
+  ✓ it answers 403 with unit_not_assigned, naming no unit, to an operat… 0.28s  
+  ✓ it answers 403 with missing_addon to an operator without the LGPD a… 0.15s  
+  ✓ it answers 404 — never 403 — for a family from another municipality… 0.09s  
+  ✓ it answers 405 to POST and DELETE — registering is the same PUT, an… 0.08s  
+  ✓ it leaves out-of-payload fields untouched and clears a field only w… 0.12s  
+  ✓ it keeps ONE row per family however many times it is saved (RN01)    0.10s  
+  ✓ it refuses a residence type outside the Manual domain (RN02)         0.08s  
+  ✓ it refuses authorship sent by the client (RN10)                      0.09s  
+
+   PASS  Tests\Feature\TenantIsolation\FamilyHousingConditionIsolationTest
+  ✓ it applies BelongsToTenant to FamilyHousingCondition                 0.05s  
+  ✓ it makes the housing condition of another municipality unreachable…  0.03s  
+  ✓ it keeps NULL as NULL across the tenant scope — the pending answer…  0.03s  
+  ✓ it keeps the scope a NO-OP outside the HTTP cycle — which is why th… 0.03s  
+  ✓ it never lets the Action reach the row of another municipality (RN0… 0.03s  
+  ✓ it keeps the residence_types lookup GLOBAL — without BelongsToTenan… 0.02s  
+
+  Tests:    27 passed (152 assertions)
+  Duration: 4.34s
+

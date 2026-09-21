@@ -1,0 +1,248 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — Painel de Georreferenciamento (Evolução)",
+    "subtitle": "HU-GEO-01 · Sprint 9 · Evidências end-to-end no Painel do Tenant",
+    "rows": [
+      ["Gerado em", "04/07/2026"],
+      ["HU", "HU-GEO-01 — Inicialização e Navegação Cartográfica Livre (evolução CA17–CA36)"],
+      ["Branch", "sprint9-geo-painel (api @ 5ad0418 · client @ 34095f2)"],
+      ["Spec", ".planning/specs/sprint9/hu-geo-01-painel-georreferenciamento-evolucao.md"],
+      ["Ambiente", "API PostgreSQL/PostGIS (:8090) · fila geo · client (tenant) :4173 · provedores OpenLayers/Leaflet"],
+      ["Organização (tenant)", "Organização E2E CadÚnico · Fortaleza (IBGE 2304400) · fixture: 12 famílias geocodificadas, 3 setores, 2 unidades, 3 inconsistências"],
+      ["Ferramenta", "playwright-cli (Chromium) + Pest"]
+    ]
+  },
+  "summary": "22 critérios evidenciados: 20 por navegador dirigindo o Painel do Tenant no PostGIS real (a atribuição espacial família→setor via ST_Contains foi exercitada de ponta a ponta pela busca, resumo e exportações) e a matriz de governança RN10/RN21 por navegador + suíte. CA29 é verificado na entrega do Construtor de Camadas (o contrato do endpoint de camadas já prevê a mescla). Apêndice: 42 testes Pest (144 asserções) cobrindo os contratos (context 200/409, busca AND, isolamento cross-tenant 404/403, CA36 422, export XLSX/PDF reais).",
+  "cas": [
+    {
+      "id": "CA01",
+      "title": "Estado inicial neutro com instrução",
+      "status": "nav",
+      "gherkin": "Dado que sou um Profissional com o perfil habilitado e acesso o painel de Georreferenciamento, Quando a interface termina de carregar, Então o sistema exibe os limites do meu município em mapa limpo (sem manchas), mantém o painel lateral de setores censitários zerado e apresenta o alerta visual correspondente.",
+      "steps_html": "Login master &rarr; menu <b>Georreferenciamento</b> &rarr; painel carrega com limite municipal de Fortaleza, alerta de estado neutro e nenhuma mancha projetada.",
+      "results": [
+        "Alerta: \"Fortaleza. Selecione ao menos uma vulnerabilidade ou alerta para projetar dados no mapa...\"",
+        "Mapa limpo (apenas o limite municipal); resumo analítico recolhido e zerado."
+      ],
+      "images": ["screenshots/ca01-17-20-33-estado-inicial.png"]
+    },
+    {
+      "id": "CA02",
+      "title": "Movimentação livre no mapa",
+      "status": "nav",
+      "gherkin": "Dado que estou visualizando o mapa do município, Quando utilizo os botões de controle de zoom ou clico e arrasto o mouse sobre a tela, Então o sistema responde executando a aproximação, distanciamento ou o deslocamento por arrasto na direção comandada.",
+      "steps_html": "Botões <code>geo-zoom-in</code>/<code>geo-zoom-out</code> da toolbar + arrasto do mouse sobre o mapa.",
+      "results": ["Zoom aplicado em 2 níveis mantendo o enquadramento; pan por arrasto responde na direção comandada."],
+      "images": ["screenshots/ca02-zoom-pan.png"]
+    },
+    {
+      "id": "CA17",
+      "title": "Abertura padrão integrada ao sistema",
+      "status": "nav",
+      "gherkin": "Dado que acesso o painel de Georreferenciamento, Quando a interface termina de carregar, Então o painel é exibido integrado à área de trabalho do sistema (shell), com o comando de expansão visível no cabeçalho do painel.",
+      "steps_html": "Painel abre dentro do shell (menu lateral e cabeçalho do sistema visíveis) com o botão <b>Expandir</b> no cabeçalho.",
+      "results": ["Modo integrado por padrão; comando de expansão visível."],
+      "images": ["screenshots/ca01-17-20-33-estado-inicial.png"]
+    },
+    {
+      "id": "CA18",
+      "title": "Expansão para tela cheia preservando o contexto",
+      "status": "nav",
+      "gherkin": "Dado que estou com o painel aberto no modo integrado, com camadas ativas e um nível de zoom aplicado, Quando aciono o comando de expandir no cabeçalho, Então o painel passa a ocupar a tela cheia mantendo a mesma posição, zoom, provedor, camadas e filtros, e exibe o comando para retornar ao modo integrado.",
+      "steps_html": "Com zoom aplicado, clicar <b>Expandir</b>: o painel ocupa a tela inteira (overlay), sem nenhuma nova requisição (engine preservado, não recriado).",
+      "results": ["Tela cheia com posição/zoom idênticos; botão \"Voltar ao painel\" exibido; zero requests na alternância."],
+      "images": ["screenshots/ca18-tela-cheia.png"]
+    },
+    {
+      "id": "CA19",
+      "title": "Retorno ao modo integrado",
+      "status": "nav",
+      "gherkin": "Dado que estou em tela cheia, Quando aciono o comando de retorno, Então o painel volta ao modo integrado preservando integralmente o contexto de análise.",
+      "steps_html": "Clicar <b>Voltar ao painel</b> em tela cheia.",
+      "results": ["Retorno ao shell com posição, zoom e camadas intactos."],
+      "images": ["screenshots/ca19-retorno-integrado.png"]
+    },
+    {
+      "id": "CA20",
+      "title": "Centralização no município do tenant",
+      "status": "parc",
+      "gherkin": "Dado que o meu tenant possui endereço com município identificado, Quando o painel carrega, Então o mapa abre centralizado nesse município com seus limites geográficos em destaque.",
+      "steps_html": "Resolução RN20: <code>tenant_config.address_id &rarr; addresses.city_id &rarr; cities.ibge_code &rarr; city_geometries</code> (Fortaleza 2304400). Contrato provado por Pest (context 200 com centroide+geometria).",
+      "results": ["Mapa abre centralizado em Fortaleza com o polígono municipal em destaque (fixture PostGIS SRID 4326)."],
+      "images": ["screenshots/ca01-17-20-33-estado-inicial.png"]
+    },
+    {
+      "id": "CA21",
+      "title": "Município do tenant indisponível",
+      "status": "parc",
+      "gherkin": "Dado que o endereço do tenant não possui município identificável ou a malha do município não está homologada, Quando o painel carrega, Então o sistema exibe um aviso claro informando a indisponibilidade e não projeta dados no mapa.",
+      "steps_html": "Capturado ANTES do seed da malha de Fortaleza: o backend respondeu <b>409</b> <code>geo_panel.city_unavailable</code> e a UI exibiu o aviso sem projetar dados. Pest cobre o contrato 409.",
+      "results": [
+        "Aviso: \"Município indisponível para o painel — O endereço da organização não possui município identificável ou a malha geográfica ainda não está homologada...\"",
+        "Nenhum dado projetado; orientação para verificar o endereço oficial/contatar administração."
+      ],
+      "images": ["screenshots/ca21-municipio-indisponivel.png"]
+    },
+    {
+      "id": "CA22",
+      "title": "Troca de provedor de visualização",
+      "status": "nav",
+      "gherkin": "Dado que o mapa está carregado no provedor padrão (OpenLayers), Quando seleciono a visão Google Maps ou a visão Leaflet na barra de ferramentas, Então o mapa é reapresentado no provedor escolhido mantendo o mesmo ponto central, nível de zoom e camadas ativas.",
+      "steps_html": "Seletor de provedor na toolbar: OpenLayers &rarr; <b>Leaflet</b> (engine real, chunk lazy) com build-then-swap preservando centro/zoom/camadas, sem novo fetch.",
+      "results": ["Mapa reapresentado no Leaflet com o mesmo enquadramento e camadas; retorno ao OpenLayers idem."],
+      "images": ["screenshots/ca22-provedor-leaflet.png"]
+    },
+    {
+      "id": "CA23",
+      "title": "Provedor indisponível",
+      "status": "parc",
+      "gherkin": "Dado que seleciono um provedor de visualização, Quando esse provedor está temporariamente indisponível, Então o sistema mantém o provedor atual, exibe uma mensagem informativa e preserva o trabalho em andamento.",
+      "steps_html": "Sem chave de tiles do Google no ambiente: a opção <b>Google</b> aparece desabilitada com a explicação \"Provedor Google indisponível — chave de tiles não configurada\" (indisponibilidade antecipada). O caminho de falha em runtime (rollback build-then-swap mantendo o engine atual + toast) é provado por Vitest.",
+      "results": ["Opção indisponível claramente informada; provedor atual mantido; trabalho preservado."],
+      "images": ["screenshots/ca23-google-indisponivel.png"]
+    },
+    {
+      "id": "CA24",
+      "title": "Medição de distância",
+      "status": "nav",
+      "gherkin": "Dado que ativo a ferramenta de medição na barra de ferramentas, Quando marco dois ou mais pontos sobre o mapa, Então o sistema exibe a distância parcial entre os pontos e a distância total do trajeto marcado.",
+      "steps_html": "Ativar <b>Medir distância</b> &rarr; marcar 3 pontos sobre Fortaleza.",
+      "results": ["Painel de medição: Trecho 1 = 4,51 km; Trecho 2 = 4,17 km; Total = 8,67 km (geodésico)."],
+      "images": ["screenshots/ca24-medicao-distancia.png"]
+    },
+    {
+      "id": "CA25",
+      "title": "Limpeza da medição",
+      "status": "nav",
+      "gherkin": "Dado que existe uma medição de distância desenhada no mapa, Quando aciono o comando de limpar medição, Então os pontos e valores exibidos são removidos e a ferramenta fica pronta para nova medição.",
+      "steps_html": "Clicar <b>Limpar medição</b> (borracha).",
+      "results": ["Pontos e valores removidos; ferramenta pronta para nova medição."],
+      "images": ["screenshots/ca25-medicao-limpa.png"]
+    },
+    {
+      "id": "CA26",
+      "title": "Troca de formato do mapa",
+      "status": "parc",
+      "gherkin": "Dado que estou visualizando o mapa em um formato (ex.: ruas), Quando seleciono outro formato disponível na barra de ferramentas (ex.: satélite), Então o mapa é reapresentado no novo formato mantendo posição, zoom e camadas ativas.",
+      "steps_html": "O comando de formato existe na toolbar. Neste ambiente a fonte satélite não está disponível (a sessão de tiles do backend é roadmap-only), então o botão aparece desabilitado com a explicação \"Formato satélite indisponível neste provedor\" — comportamento honesto previsto na spec; a interface (<code>supportsSatellite/setFormat</code>) está pronta para o provedor com satélite.",
+      "results": ["Comando presente; indisponibilidade do formato claramente informada (limitação de ambiente registrada, não regressão)."],
+      "images": ["screenshots/ca26-formato-indisponivel.png"]
+    },
+    {
+      "id": "CA27",
+      "title": "Barra lateral de camadas",
+      "status": "nav",
+      "gherkin": "Dado que estou com o painel aberto, Quando acesso a barra lateral sobreposta ao lado direito do mapa, Então visualizo a lista de camadas disponíveis para o meu tenant — no mínimo \"Limites dos municípios\" e \"Setores censitários\" — cada uma com comando individual de ligar/desligar.",
+      "steps_html": "Botão <b>Camadas</b> (borda direita) abre a barra recolhível com as 3 camadas built-in e switches individuais.",
+      "results": ["Camadas listadas: Limites dos municípios (ligada), Setores censitários (IBGE) e CRAS e CREAS (desligadas por padrão)."],
+      "images": ["screenshots/ca27-sidebar-camadas.png"]
+    },
+    {
+      "id": "CA28",
+      "title": "Ligar e desligar camadas",
+      "status": "nav",
+      "gherkin": "Dado que a camada \"Setores censitários\" está desligada, Quando aciono o comando de ligar, Então as delimitações dos setores são sobrepostas ao mapa; e Quando aciono o comando de desligar, Então as delimitações são removidas sem afetar as demais camadas ativas.",
+      "steps_html": "Ligar <b>Setores censitários</b> (3 fatias sobrepostas) e <b>CRAS e CREAS</b> (2 marcadores); desligar setores mantendo unidades — independência comprovada. Cache: religar não gera nova requisição (1 fetch total).",
+      "results": [
+        "Delimitações dos 3 setores fixture sobrepostas; marcadores das 2 unidades.",
+        "Desligar setores removeu apenas essa camada; unidades permaneceram."
+      ],
+      "images": ["screenshots/ca28-camadas-ligadas.png", "screenshots/ca28b-setores-desligados-unidades-ficam.png"]
+    },
+    {
+      "id": "CA29",
+      "title": "Nova camada publicada aparece automaticamente",
+      "status": "auto",
+      "gherkin": "Dado que o Administrador publicou uma nova camada contemplando o meu tenant, Quando abro ou atualizo o painel, Então a nova camada aparece na barra lateral, desligada por padrão, disponível para ativação.",
+      "steps_html": "Deferido por arquitetura: o catálogo de camadas custom pertence à HU do <b>Construtor de Camadas</b> (CA37–CA52, spec própria). O endpoint <code>GET geo-panel/layers</code> desta entrega já nasce com contrato estável preparado para a mescla — a verificação final do CA29 ocorre no dossiê do Construtor.",
+      "results": ["Contrato do endpoint de camadas validado por Pest; CA evidenciado na entrega do Construtor de Camadas (registrado nos dois artefatos)."],
+      "images": []
+    },
+    {
+      "id": "CA30",
+      "title": "Busca avançada em modal",
+      "status": "nav",
+      "gherkin": "Dado que aciono o comando de busca avançada, Quando a janela sobreposta abre e informo critérios combinados sobre os dados georreferenciados, Então o sistema exibe os resultados que atendem aos critérios, restritos ao meu tenant.",
+      "steps_html": "Botão <b>Busca avançada</b> &rarr; modal com os 8 filtros de vulnerabilidade (RN04), alertas de atualização (RN05) e setor censitário (RN08) &rarr; marcar <b>Bolsa Família</b> &rarr; <b>Buscar</b>.",
+      "results": ["\"6 família(s) encontrada(s)\" — exatamente as 6 famílias PBF da fixture, com distribuição por setor; isolamento por tenant garantido pelo backend (Pest)."],
+      "images": ["screenshots/ca30-busca-resultados.png"]
+    },
+    {
+      "id": "CA31",
+      "title": "Aplicação da busca no mapa",
+      "status": "nav",
+      "gherkin": "Dado que executei uma busca avançada com resultados, Quando aplico o resultado, Então o mapa foca a área correspondente e projeta apenas os dados que atendem aos critérios informados.",
+      "steps_html": "Clicar <b>Aplicar no mapa</b>: fit no bbox retornado + projeção dos pontos agregados (cores quentes RN04); chip \"Bolsa Família\" com remoção individual e \"Limpar filtros\".",
+      "results": ["Mapa focado na área dos resultados; apenas os pontos das famílias que atendem aos critérios projetados (coordenadas anônimas)."],
+      "images": ["screenshots/ca31-aplicado-no-mapa.png"]
+    },
+    {
+      "id": "CA32",
+      "title": "Busca avançada sem resultados",
+      "status": "nav",
+      "gherkin": "Dado que executei uma busca avançada, Quando nenhum registro atende aos critérios, Então o sistema informa que não há resultados e mantém a visualização anterior do mapa inalterada.",
+      "steps_html": "Buscar interseção impossível na fixture: <b>Trabalho infantil + Situação de rua + GPTE</b> (lógica AND da RN06).",
+      "results": ["\"Nenhum registro atende aos critérios informados. A visualização anterior do mapa foi mantida.\" — projeção anterior intacta."],
+      "images": ["screenshots/ca32-sem-resultados.png"]
+    },
+    {
+      "id": "CA33",
+      "title": "Resumo analítico recolhido por padrão",
+      "status": "nav",
+      "gherkin": "Dado que o painel terminou de carregar, Quando observo a parte inferior da tela, Então a faixa de resumo analítico aparece recolhida, com comando visível de expansão.",
+      "steps_html": "Estado inicial do painel: faixa \"Resumo analítico\" recolhida na parte inferior, com o indicador RN07 e o comando <b>Expandir</b>.",
+      "results": ["Faixa recolhida por padrão; \"Famílias com Endereço Inconsistente: 3\" visível mesmo recolhida."],
+      "images": ["screenshots/ca01-17-20-33-estado-inicial.png"]
+    },
+    {
+      "id": "CA34",
+      "title": "Expansão do resumo analítico",
+      "status": "nav",
+      "gherkin": "Dado que apliquei ao menos um filtro e a faixa de resumo está recolhida, Quando aciono o comando de expandir, Então o resumo apresenta os indicadores consolidados da visualização atual, incluindo o indicador fixo de famílias com endereço inconsistente.",
+      "steps_html": "Com o filtro Bolsa Família aplicado, expandir a faixa.",
+      "results": [
+        "Total de famílias nos filtros ativos (6), distribuição por setor censitário (Oeste/Centro/Leste) e o indicador fixo \"Famílias com Endereço Inconsistente: 3\".",
+        "Botões de exportação XLSX/PDF exibidos."
+      ],
+      "images": ["screenshots/ca34-resumo-expandido.png"]
+    },
+    {
+      "id": "CA35",
+      "title": "Exportação do resumo analítico",
+      "status": "nav",
+      "gherkin": "Dado que o resumo analítico está expandido com filtros ativos, Quando aciono uma opção de exportação, Então o sistema gera o arquivo no formato escolhido refletindo exatamente os filtros e camadas ativos no momento.",
+      "steps_html": "Exportar <b>planilha (XLSX)</b> e <b>PDF</b>: job assíncrono na fila <code>geo</code>, diálogo com polling (Na fila &rarr; Gerando &rarr; Concluída) e download. PDF composto com a imagem do mapa capturada do canvas (downscale ≤1600px, ≤4096KB).",
+      "results": [
+        "XLSX gerado (6,3 KB, agregados por setor + metadados dos filtros, anti CSV-injection) e baixado.",
+        "PDF gerado (2,0 MB) com a imagem da visualização atual do mapa (map_image capturada e validada por magic bytes PNG no backend)."
+      ],
+      "images": ["screenshots/ca35-export-xlsx-concluida.png", "screenshots/ca35b-export-pdf-concluida.png"]
+    },
+    {
+      "id": "CA36",
+      "title": "Exportação bloqueada sem filtros",
+      "status": "parc",
+      "gherkin": "Dado que nenhum filtro está ativo (estado inicial neutro), Quando tento exportar o resumo analítico, Então o sistema bloqueia a ação e orienta a selecionar ao menos uma vulnerabilidade ou alerta.",
+      "steps_html": "\"Limpar filtros\" (estado neutro de volta) &rarr; clicar <b>Exportar planilha (XLSX)</b>. Gate duplo: bloqueio client-side com orientação + 422 <code>errors.filters[0]</code> do backend (provado por Pest).",
+      "results": ["Toast: \"Selecione ao menos uma vulnerabilidade ou alerta antes de exportar o resumo analítico.\" — nenhuma requisição de export enviada."],
+      "images": ["screenshots/ca36-export-bloqueado.png"]
+    },
+    {
+      "id": "RN10/RN21",
+      "title": "Governança — acesso restrito por papel dedicado",
+      "status": "parc",
+      "gherkin": "RN10: o acesso ao painel é concedido/bloqueado pela atribuição do perfil apropriado na tela de detalhes do Profissional. RN21: recursos disponíveis igualmente para o Master e para o Operacional com o perfil autorizado.",
+      "steps_html": "Login como <b>Operador</b> (sem o papel <code>geo_panel_viewer</code>): item \"Georreferenciamento\" ausente do menu e acesso direto à rota redireciona para <b>/403</b>. Matriz completa (operador sem papel 403 / com papel 200 / master 200 / papel no Tenant A não abre o Tenant B) provada por Pest; permissões geo-panel.* são RESTRITAS (nunca herdadas automaticamente).",
+      "results": [
+        "Operador sem papel: módulo invisível + /403 no acesso direto.",
+        "Master: acesso pleno (todas as evidências deste dossiê).",
+        "Suíte: matriz 403/200/200 + isolamento cross-tenant verde."
+      ],
+      "images": ["screenshots/rn10-operador-sem-menu.png", "screenshots/rn10-operador-403.png"]
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Pest --filter=GeoPanel) — 42 testes, 144 asserções",
+    "file": "pest-geo-panel.txt"
+  }
+}

@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — Exportar Inconsistências para Busca Ativa</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:980px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-wrap:wrap; gap:14px; margin-top:12px; }
+  figure { margin:0; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:300px; background:#fff; }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:11px; color:var(--muted); padding:6px 8px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { .evid, section.ca { break-inside:avoid; } figure { width:280px; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — Exportar Inconsistências para Busca Ativa</h1>
+    <div class="sub">Sprint 8 · HU #9763 · Evidências end-to-end no frontend do tenant</div>
+    <div class="meta"><div><span>Gerado em:</span> 02/07/2026 08:20</div><div><span>Branch:</span> sprint9-familias (api 179feb5+25ca310 · client 12ecbea)</div><div><span>Spec:</span> .planning/specs/sprint8/9763-exportar-inconsistencias-busca-ativa.md</div><div><span>Ambiente:</span> API Sail/PostgreSQL (localhost:80) · client Vite :5174 (não-mock)</div><div><span>Organização (tenant):</span> E2E CadÚnico · uuid 00000000-0000-4000-8000-0000000000c1 · IBGE 2304400 (Fortaleza)</div><div><span>Usuários:</span> Master E2E (address-inconsistencies.export semeada no papel master)</div><div><span>Ferramenta:</span> playwright-cli (Chromium 1440×900) + Pest 4</div><div><span>Artefato anexo:</span> inconsistencias-busca-ativa-2026-07-02.csv — arquivo REAL baixado pelo navegador durante a evidência</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">HU #9763: 5 Critérios de Aceite evidenciados — CA04 (download do CSV pelo botão "Exportar Lista para Busca Ativa") demonstrado ao vivo no navegador, com o arquivo real anexado ao dossiê (BOM UTF-8, separador ';', 6 famílias); CA05 (auditoria do export) verificado no banco com CPF do usuário mascarado e contagem exportada; CA-extra-A (5 colunas RN04 na ordem) conferido no próprio arquivo; CA-extra-B (bloqueio sem permissão) e CA-extra-C (isolamento territorial) cobertos pela suíte automatizada. A revisão de código desta etapa adicionou proteção contra CSV Formula Injection (CWE-1236) — campos de texto livre iniciados por caracteres de fórmula são neutralizados com apóstrofo (fix 25ca310, testado com payload real). Suíte: 45 testes, 186 assertions, 100% verdes. Resultado geral: todos os critérios atendidos.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA04</td><td>Geração do arquivo para download</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA05</td><td>Registro de auditoria do Usuário</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA-extra-A</td><td>Colunas obrigatórias do arquivo (RN04)</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA-extra-B</td><td>Bloqueio sem permissão (RN05)</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA-extra-C</td><td>Isolamento territorial do arquivo (RN07)</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA04">
+      <h2>CA04 — Geração do arquivo para download <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que estou no Painel de Inconsistências com permissão de exportação
+Quando clico no botão "Exportar Lista para Busca Ativa"
+E o processamento do arquivo termina
+Então o sistema baixa uma planilha (CSV) com os dados estruturados das famílias
+     e seus respectivos endereços textuais inválidos</p>
+      <p class="steps"><strong>Como foi testado:</strong> Login como <b>Master E2E</b> → <b>Qualificação Territorial</b> → clicar em <b>Exportar Lista para Busca Ativa</b> (botão no cabeçalho do painel).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O navegador baixa o arquivo &lt;code&gt;inconsistencias-busca-ativa-2026-07-02.csv&lt;/code&gt; — nome vindo do Content-Disposition do backend (header exposto via CORS, fix da revisão).</li><li>Conteúdo íntegro: BOM UTF-8 (EF BB BF), separador ';', 6 famílias com endereços textuais rejeitados (campos com vírgula corretamente entre aspas RFC-4180).</li><li>Streaming no backend (cursor) — o dataset não é materializado em memória.</li><li>Arquivo real anexado ao dossiê: &lt;code&gt;inconsistencias-busca-ativa-2026-07-02.csv&lt;/code&gt;.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca04-painel-com-botao-exportar.png" alt="CA04 evidência"/><figcaption>ca04-painel-com-botao-exportar.png</figcaption></figure><figure><img src="screenshots/ca04-export-toast-sucesso.png" alt="CA04 evidência"/><figcaption>ca04-export-toast-sucesso.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA05">
+      <h2>CA05 — Registro de auditoria do Usuário <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o download foi concluído com sucesso (CA04)
+Quando o sistema encerra a operação
+Então uma linha de log de auditoria é gravada com o dia, o horário e o
+     Usuário único (CPF/Login) que extraiu as informações daquele município</p>
+      <p class="steps"><strong>Como foi testado:</strong> Após o download do CA04, consulta direta à tabela <code>activity_log</code> no PostgreSQL (saída em <code>auditoria-export.txt</code>).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Registro #3172 gravado no ato do download via UI: log_name=address_inconsistency_export, event=exported, causer (Usuário global), tenant_id, datetime, exported_count=6 (bate com o CSV), filtros aplicados, IP e user-agent.</li><li>CPF do usuário MASCARADO na trilha (***.982.247-**) — a auditoria em si não vaza PII.</li><li>Suíte cobre: 1 registro por export e comportamento em caso de falha da trilha (log técnico sem PII; débito conhecido registrado sobre durabilidade da contingência).</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA-extra-A">
+      <h2>CA-extra-A — Colunas obrigatórias do arquivo (RN04) <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um export gerado
+Quando abro a planilha
+Então cada linha traz Código Familiar, Nome do RUF, NIS do RUF, Telefone (se houver)
+     e o texto completo do Endereço Inconsistente</p>
+      <p class="steps"><strong>Como foi testado:</strong> Inspeção do arquivo baixado no CA04 (anexo ao dossiê).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Header exato na ordem da RN04: &lt;code&gt;codigo_familiar;nome_ruf;nis_ruf;telefone;endereco_inconsistente&lt;/code&gt;.</li><li>NIS e telefone EM CLARO no arquivo (finalidade legítima: Busca Ativa em campo) — diferente do painel em tela, que permanece mascarado (LGPD, RN03 do #9762).</li><li>Proteção CSV Formula Injection: campos de texto livre iniciados por =, +, -, @, TAB ou CR são prefixados com apóstrofo (fix 25ca310, testado com payload =cmd|'/c calc'!A1).</li><li>Suíte confirma colunas/ordem/valores, telefone vazio quando ausente e ordenação por Código Familiar.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA-extra-B">
+      <h2>CA-extra-B — Bloqueio sem permissão (RN05) <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado um Operador SEM o papel de Qualificação Territorial
+Quando acesso o painel
+Então o botão "Exportar Lista para Busca Ativa" não aparece
+E o endpoint de exportação responde 403 se acessado diretamente</p>
+      <p class="steps"><strong>Como foi testado:</strong> Coberto pela suíte automatizada (apêndice) + Vitest do botão <code>v-can</code>. Evidência visual complementar no dossiê #9764 (operador sem papel não acessa sequer o painel).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Endpoint GET address-inconsistencies/export responde 403 sem a permissão address-inconsistencies.export (rota com can:).</li><li>Botão "Exportar Lista para Busca Ativa" oculto sem a permissão (v-can, testado no Vitest).</li><li>Permissão restrita: nunca atribuída automaticamente a papéis base; semeada apenas em territorial_qualifier e master.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA-extra-C">
+      <h2>CA-extra-C — Isolamento territorial do arquivo (RN07) <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que estou no Tenant A
+Quando exporto a lista
+Então o arquivo contém apenas famílias do meu município, sem dados de outro tenant</p>
+      <p class="steps"><strong>Como foi testado:</strong> Coberto pela suíte automatizada (apêndice): inconsistências em dois tenants; export autenticado no Tenant A.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O CSV traz somente famílias do tenant ativo (Global Scope + enforcement tenant-scoped no controller, molde do prontuário #9760).</li><li>Papel concedido em um tenant não habilita export em outro (checagens via user_tenant_role, tenant-scoped).</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+  
+  <h2>Anexo — Cobertura automatizada (Pest, --filter=AddressInconsistency) — 45 passed, 186 assertions · Trilha de auditoria em auditoria-export.txt · CSV real anexado</h2>
+  <pre class="pest">
+   PASS  Tests\Unit\Models\FamilyAddressInconsistencyTest
+  ✓ it uses tenant scope, soft deletes, HasUuid and LogsActivity         0.39s  
+  ✓ it casts status/failure_reason to enums and defaults status to open  0.01s  
+  ✓ it generates a uuid on create and resolves route by uuid             0.08s  
+  ✓ it relates to family, address and both imports                       0.01s  
+  ✓ it hydrates the resolved factory state                               0.03s  
+  ✓ it never logs the rejected address text in the activity log (LGPD)   0.01s  
+  ✓ it enforces one open inconsistency per (tenant, family) via partial… 0.03s  
+
+   PASS  Tests\Unit\Services\AddressInconsistencyExportServiceTest
+  ✓ it builds the CSV row with the 5 RN04 columns in the spec order      0.02s  
+  ✓ it renders missing phone and nulls as empty strings (RN04)           0.01s  
+  ✓ it quotes only fields containing separator, comma, quotes or line b… 0.01s  
+  ✓ it prefixes an apostrophe on fields starting with a formula-trigger… 0.01s  
+  ✓ it does not alter fields without a leading formula-trigger char      0.02s  
+  ✓ it exposes the pt-BR spreadsheet format constants (BOM UTF-8, semic… 0.01s  
+  ✓ it records the export audit with masked causer CPF and no raw PII (… 0.02s  
+  ✓ it does not throw when the audit write fails — logs a technical err… 0.02s  
+
+   PASS  Tests\Feature\Api\Client\AddressInconsistencyAccessTest
+  ✓ it denies the panel to the base operator without the dedicated role… 0.07s  
+  ✓ it grants panel + export on the next request when the Master assign… 0.06s  
+  ✓ it blocks with 403 on the request right after the Master revokes th… 0.06s  
+  ✓ it lets the Master always view, export and manage the panel (CA-ext… 0.03s  
+  ✓ it offers the role as assignable in the drawer with the LGPD label…  0.04s  
+  ✓ it does not let a grant in Tenant A open the panel in Tenant B (CA-… 0.05s  
+  ✓ it blocks immediately when the professional is inactivated, keeping… 0.05s  
+
+   PASS  Tests\Feature\Api\Client\AddressInconsistencyExportTest
+  ✓ it downloads a CSV with BOM, semicolon and the 5 RN04 columns in or… 0.05s  
+  ✓ it neutralizes CSV formula injection in free-text fields without al… 0.04s  
+  ✓ it leaves the phone column empty when the family has no contact pho… 0.05s  
+  ✓ it quotes fields containing the separator and skips resolved incons… 0.05s  
+  ✓ it records exactly ONE audit line per download with causer, datetim… 0.04s  
+  ✓ it applies the same filters as the panel and audits them (RN04/RN06… 0.04s  
+  ✓ it denies the export without the .export permission — even holding…  0.05s  
+  ✓ it exports only families of the active tenant (CA-extra-C/RN07)      0.05s  
+
+   PASS  Tests\Feature\Api\Client\AddressInconsistencyPanelTest
+  ✓ it lists Código Familiar, RUF name and rejected address for open in… 0.04s  
+  ✓ it always masks CPF and NIS on screen (CA03/LGPD)                    0.04s  
+  ✓ it shows only open inconsistencies (resolved leave the panel — RN01… 0.05s  
+  ✓ it filters by failure_reason and searches by family code or RUF nam… 0.05s  
+  ✓ it denies access without the address-inconsistencies.index permissi… 0.03s  
+  ✓ it isolates the panel by tenant (CA-extra-D / RN07)                  0.05s  
+  ✓ it seeds the dedicated role with the restricted permissions and gra… 0.03s  
+  ✓ it keeps the permission away from the base operador and preserves t… 1.04s  
+  ✓ it is a read-only resource: no write routes are registered (RN03)    0.02s  
+
+   PASS  Tests\Feature\Services\Cadunico\CadunicoSyncAddressInconsistencyTest
+  ✓ it flags the family as open inconsistency when the CEP is missing (… 0.10s  
+  ✓ it flags cep_not_found when the CEP does not exist in the DNE base…  0.10s  
+  ✓ it accumulates new failures over previous batches (CA02: 50 + 10 =…  0.50s  
+  ✓ it resolves the open inconsistency when a future import fixes the a… 0.09s  
+  ✓ it does not duplicate the open row when the same family fails again… 0.08s  
+  ✓ it never breaks the sync when the checker fails internally (regress… 0.07s  
+
+  Tests:    45 passed (186 assertions)
+  Duration: 4.15s
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

@@ -1,0 +1,29 @@
+<!-- CA01 — CRAS Centro com 10 computadores (cod 2) e 4 impressoras (cod 6); CREAS com 6 computadores. Esperado: 3 linhas, cada uma com NumeroMDS, Equipamento, Quantidade, QuantidadeUso e DataUltimaCompra -->
+<!-- Gerado pela remessa 07/2026 do tenant de teste. Conteudo do EquipamentoUnidade.xml do pacote, sem edicao. -->
+<?xml version="1.0"?>
+<SIAP>
+    <Codigo>004821</Codigo>
+    <Exercicio>2026</Exercicio>
+    <Mes>07</Mes>
+    <EquipamentoUnidade>
+        <NumeroMDS>3444306986234</NumeroMDS>
+        <Equipamento>2</Equipamento>
+        <Quantidade>10</Quantidade>
+        <QuantidadeUso>8</QuantidadeUso>
+        <DataUltimaCompra>2026-04-01</DataUltimaCompra>
+    </EquipamentoUnidade>
+    <EquipamentoUnidade>
+        <NumeroMDS>3444306986234</NumeroMDS>
+        <Equipamento>6</Equipamento>
+        <Quantidade>4</Quantidade>
+        <QuantidadeUso>4</QuantidadeUso>
+        <DataUltimaCompra>2026-04-02</DataUltimaCompra>
+    </EquipamentoUnidade>
+    <EquipamentoUnidade>
+        <NumeroMDS>8881679404805</NumeroMDS>
+        <Equipamento>2</Equipamento>
+        <Quantidade>6</Quantidade>
+        <QuantidadeUso>5</QuantidadeUso>
+        <DataUltimaCompra>2026-04-03</DataUltimaCompra>
+    </EquipamentoUnidade>
+</SIAP>

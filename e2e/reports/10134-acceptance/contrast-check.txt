@@ -1,0 +1,6 @@
+CA03 cenário 1 — success, tema claro: 6.99:1 (PASS >= 4.5:1)
+CA03 cenário 2 — success, tema escuro (.dark, valor espelhado): 6.99:1 (PASS >= 4.5:1)
+CA03 cenário 3 — warning, tema claro: 7.38:1 (PASS >= 4.5:1)
+CA03 cenário 4 — warning, tema escuro (.dark, valor espelhado): 7.38:1 (PASS >= 4.5:1)
+
+OK: os 4 cenários atendem AA (>=4.5:1).

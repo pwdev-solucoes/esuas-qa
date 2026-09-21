@@ -1,0 +1,92 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — Criação do MCP do Projeto",
+    "subtitle": "Ticket GLPI #10350 · Evidências ad-hoc (sem UI do SigSUAS)",
+    "rows": [
+      ["Gerado em", "07/08/2026"],
+      ["Ticket GLPI", "#10350 — HU - #10350 Criação do MCP do Projeto"],
+      ["Repositório", "pwdev-solucoes/hu-generator-suas-mcp (privado), submódulo em .claude/mcp/hu-generator-suas"],
+      ["Commit avaliado", "a5b0e3e"],
+      ["Ambiente de conexão do Agente", "Claude Desktop"],
+      ["Ferramenta", "node scripts/test-client.mjs (cliente MCP real via stdio) + npm/git em terminal — sem playwright/navegador, este ticket não envolve tela do SigSUAS"]
+    ]
+  },
+  "summary": "6 critérios de aceite, todos verificados por execução real de comando (instalação limpa, script de atualização, cliente MCP de teste ponta-a-ponta) — nenhum via navegador, já que o escopo do ticket é o servidor MCP e sua integração com o Claude Desktop, não uma tela do SigSUAS. 6/6 atendidos.",
+  "cas": [
+    {
+      "id": "CA01",
+      "title": "Conectar o MCP ao Claude Desktop",
+      "status": "auto",
+      "gherkin": "Dado o repositório hu-generator-suas-mcp instalado localmente, quando o usuário configura o servidor no claude_desktop_config.json (macOS, Linux ou Windows) e reinicia o Claude Desktop, então o servidor aparece conectado e suas tools/resources ficam disponíveis em qualquer conversa.",
+      "steps_html": "O README documenta o caminho exato de <code>claude_desktop_config.json</code> para macOS/Linux/Windows e o JSON de configuração (com barras invertidas escapadas na variante Windows). O mesmo mecanismo de conexão (stdio, <code>StdioClientTransport</code>) que o Claude Desktop usa foi exercitado por <code>scripts/test-client.mjs</code>, que abre o processo <code>node dist/index.js</code> via stdio e conecta como um cliente MCP real.",
+      "results": [
+        "Saída real do teste: \"=== connected ===\" seguido de \"=== resources/list: 88 recursos ===\" e \"=== tools/list ===\" listando as 5 tools — confirma que a conexão stdio (o mesmo transporte usado pelo Claude Desktop) expõe corretamente tools e resources assim que o servidor sobe."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA02",
+      "title": "Consultar a base de conhecimento via tools",
+      "status": "auto",
+      "gherkin": "Dado o MCP conectado, quando o Agente usa as tools list_modules, search_modules, get_module, get_business_rule ou lookup_glossary, então recebe o conteúdo correspondente (módulos, regras de negócio, glossário) sem precisar copiar/colar arquivo.",
+      "steps_html": "Execução de <code>node scripts/test-client.mjs</code> chamando as 5 tools em sequência contra o conteúdo empacotado real.",
+      "results": [
+        "tools/list retornou exatamente: list_modules, search_modules, get_module, get_business_rule, lookup_glossary.",
+        "list_modules(frontend='client', status='entregue') retornou linhas reais do inventário (ex.: INV-003 · social-units, INV-004 · families, INV-005 · address-inconsistencies).",
+        "search_modules(query='LGPD') retornou trecho da tabela condensada + trechos de fichas completas (address-inconsistencies, geo-panel).",
+        "get_module(slug='families') retornou a ficha completa com citação de fonte real (Model + migrations).",
+        "get_business_rule(id='RN-domain-01') retornou o texto da regra de negócio real.",
+        "lookup_glossary(term='CRAS') retornou as entradas de glossário CRAS e PAIF."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA03",
+      "title": "Repositório autocontido, pronto para instalar",
+      "status": "auto",
+      "gherkin": "Dado um clone limpo do repositório do MCP, quando o usuário instala as dependências, então o servidor já está pronto para rodar (build já versionado, conteúdo já empacotado), sem precisar de outro checkout do projeto nem de build manual.",
+      "steps_html": "Simulação de clone limpo no checkout real: <code>rm -rf node_modules dist</code> (remove tudo que .gitignore ignora) → <code>npm install</code> → <code>git checkout -- dist</code> (restaura só o que está versionado, sem rodar build) → roda o cliente de teste direto contra o dist/ restaurado do git.",
+      "results": [
+        "Após remover dist/, ele não existia mais no disco (\"ls: dist: No such file or directory\").",
+        "git checkout -- dist restaurou dist/index.js a partir do git (arquivo rastreado no repositório, confirmado por git ls-files dist/ → dist/index.js).",
+        "node scripts/test-client.mjs, usando esse dist/ restaurado do git (sem rodar npm run build), conectou e listou os 88 resources normalmente — confirma que o build versionado funciona sem rebuild."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA04",
+      "title": "Atualizar com um comando",
+      "status": "auto",
+      "gherkin": "Dado uma nova versão de conteúdo/código publicada no repositório do MCP, quando o usuário roda o comando de atualização, então sua cópia local é atualizada (código + dependências + build), sem passos manuais adicionais.",
+      "steps_html": "Execução de <code>bash scripts/update.sh</code> (equivalente a <code>npm run update</code>) no checkout real.",
+      "results": [
+        "Saída real: \"== git pull ==\" → \"Already up to date.\" → \"== npm install ==\" → \"up to date, audited 101 packages\" → \"== npm run build ==\" → \"tsc -p .\" → \"Atualizado. dist/index.js reconstruído.\" — as 3 etapas (pull, install, build) rodaram em sequência com um único comando."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA05",
+      "title": "Pacote pronto para uso como Claude Project",
+      "status": "auto",
+      "gherkin": "Dado um usuário que quer criar um Project no Claude.ai com o mesmo conhecimento, quando ele usa os arquivos da pasta claude-project/ do MCP, então consegue configurar o Project tanto com o MCP conectado (fonte viva) quanto sem MCP (arquivo de conhecimento estático anexado).",
+      "steps_html": "Inspeção do diretório <code>claude-project/</code> no repositório real.",
+      "results": [
+        "Pasta contém os 3 arquivos esperados: README.md (explica os dois modos de uso + instalação), claude-project-instructions.md (v2, com seção 'FONTE DE CONHECIMENTO' que detecta MCP conectado ou não) e claude-project-knowledge.md (v2, fallback estático).",
+        "README.md da raiz do repositório referencia claude-project/ na seção 'Usar como Claude Project'.",
+        "Nenhuma referência a 'esuas-all' ou 'eSUAS/SigSUAS' nos 3 arquivos (grep -c retornou 0 em todos), consistente com o repositório ser distribuível de forma independente."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA06",
+      "title": "Acesso restrito só ao conteúdo autorizado",
+      "status": "auto",
+      "gherkin": "Dado uma tentativa de leitura de arquivo fora dos diretórios de conhecimento expostos pelo MCP, quando essa tentativa acontece através de uma tool/resource, então o servidor recusa o acesso.",
+      "steps_html": "get_module(slug='../../../SKILL') via <code>scripts/test-client.mjs</code> — tentativa de path traversal usando <code>../</code> para escapar do diretório de conhecimento exposto.",
+      "results": [
+        "Resultado real: \"Acesso negado: \\\"../../../SKILL\\\" resolve para um caminho fora do que este servidor expõe.\" — a tentativa foi rejeitada com mensagem de acesso negado, sem expor nenhum arquivo fora do escopo autorizado (knowledge/catalog/templates/checklists)."
+      ],
+      "images": []
+    }
+  ]
+}

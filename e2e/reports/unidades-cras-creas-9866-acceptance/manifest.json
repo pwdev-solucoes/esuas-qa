@@ -1,0 +1,41 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — HU #9866 Alternador de Camadas de Infraestrutura (CRAS/CREAS)",
+    "subtitle": "Painel de Georreferenciamento (rota /georreferenciamento) · módulo client · Evidências end-to-end no app real",
+    "rows": [
+      ["Gerado em", "10/07/2026"],
+      ["História", "HU #9866 — Alternador de Camadas de Infraestrutura Atual (CRAS/CREAS)"],
+      ["Critérios", "CA09 (1 critério)"],
+      ["Submódulos", "client 99e397d · api feature/geo-9862-google-satelite-zindex (+ seeder MaceioSocialUnitsSeeder)"],
+      ["Ambiente", "API Sail/PostgreSQL · client Vite :5175 (não-mock) → http://localhost/api"],
+      ["Organização (tenant)", "Maceió Geo (massa geo) · 25 unidades CRAS/CREAS geocodificadas (seed) · 12 famílias"],
+      ["Perfil de acesso", "Master (CPF 27043020140) com geo-panel.view — RN10/RN21"],
+      ["Ferramenta", "playwright-cli (Chromium, viewport 1680×1050) + Pest + Vitest"]
+    ]
+  },
+  "summary": "O critério de aceite da HU #9866 sobre o alternador da camada de infraestrutura (CRAS/CREAS) foi verificado dirigindo o app real no navegador e reforçado pela suíte automatizada — ATENDIDO. Pré-requisito de dado: foi criado o seeder MaceioSocialUnitsSeeder que popula as 25 unidades oficiais de Maceió (20 CRAS + 5 CREAS, coordenadas WGS84 das páginas da Prefeitura) no tenant Maceió Geo, cada uma geocodificada (addresses_geometries POINT ativo, reusando o UpsertAddressGeometryAction). CA09: com o filtro de Extrema pobreza aplicado (manchas de calor no mapa), ao ativar o seletor da camada builtin \"CRAS e CREAS\" (Unidades de Atendimento), o sistema plota os 25 marcadores fixos nos prédios físicos dos CRAS/CREAS — permitindo confrontar visualmente onde o serviço está instalado com as manchas de adensamento de risco; ao desligar o seletor, os marcadores somem (alternador liga/desliga). O endpoint client/geo-panel/social-units retornou 200 com os 25 pontos. Cobertura automatizada: Pest \"serves the tenant social units as anonymous points with type_code (RN09)\" (53 testes/190 asserções) + Vitest useGeoPanel (camada de unidades, 24 testes).",
+  "cas": [
+    {
+      "id": "CA09",
+      "title": "Exibição das unidades existentes (alternador CRAS/CREAS)",
+      "status": "nav",
+      "gherkin": "Dado que apliquei o filtro de extrema pobreza e visualizo as manchas de calor, Quando ativo o seletor de \"Unidades de Atendimento\", Então o sistema plota marcadores fixos indicando onde estão localizados os prédios físicos dos CRAS e CREAS atuais do município.",
+      "steps_html": "Pré-requisito: rodado o seeder <code>MaceioSocialUnitsSeeder</code> (25 unidades — 20 CRAS + 5 CREAS — geocodificadas no tenant Maceió Geo). No painel, aplicado o filtro <b>Extrema pobreza</b> (manchas de calor) e, na barra <b>Camadas</b>, ativado o seletor <b>CRAS e CREAS</b> (Unidades de Atendimento); em seguida desativado para contraste.",
+      "results": [
+        "Com a camada ligada, o sistema plota os 25 marcadores fixos (pinos) nos prédios físicos dos CRAS/CREAS espalhados por Maceió, sobre o mapa com as manchas de calor da extrema pobreza — confronto visual serviço x risco.",
+        "O seletor CRAS e CREAS aparece na barra de Camadas com switch ligado; a chamada client/geo-panel/social-units retorna 200 com os 25 pontos (uuid, name, type_code, lat, lng).",
+        "Ao desligar o seletor, os marcadores são removidos do mapa mantendo o heatmap (alternador liga/desliga — RN09).",
+        "Cobertura: Pest GeoPanelTest \"serves the tenant social units as anonymous points with type_code\" + Vitest useGeoPanel (camada de unidades) — ver Anexo."
+      ],
+      "images": [
+        "screenshots/ca09-unidades-marcadores.png",
+        "screenshots/ca09-seletor-camada.png",
+        "screenshots/ca09-camada-desligada.png"
+      ]
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada — Pest (social units como pontos anônimos RN09) + Vitest useGeoPanel (camada de unidades)",
+    "file": "tests-9866.txt"
+  }
+}

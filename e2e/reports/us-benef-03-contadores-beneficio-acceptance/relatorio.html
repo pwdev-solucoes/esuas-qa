@@ -1,0 +1,143 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — US-BENEF-03</title><style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  section.note { border:1px solid var(--line); border-left:4px solid #b06a00; border-radius:6px; padding:10px 14px; margin:10px 0; background:#fffdf7; font-size:13px; }
+  section.note h3 { margin:0 0 6px; font-size:13.5px; color:#8a5200; }
+  section.note p { margin:6px 0; }
+  section.note ul { margin:6px 0 6px 18px; padding:0; }
+  section.note pre { background:var(--bg); border:1px solid var(--line); border-radius:4px; padding:8px; overflow-x:auto; font-size:11px; white-space:pre-wrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style>
+<body><div class="wrap">
+<header class="cover"><h1>Relatório de Critérios de Aceite — US-BENEF-03</h1>
+<div class="sub">Épico HU-PRONT-BENEF (fase F5) · Contadores de benefício na apuração (leiaute 15.6) — o leiaute fecha por completo</div>
+<div class="meta"><div><span>Gerado em:</span> 15/09/2026</div><div><span>História:</span> US-BENEF-03 — Ligar os contadores do leiaute 15.6 à apuração</div><div><span>Spec:</span> <code>.planning/specs/US-BENEF-03-contadores-de-beneficio-na-apuracao.md</code></div><div><span>Branch:</span> <code>feature/benef-prontuario-bloco-12</code></div><div><span>Commits (api/):</span> <code>470734e</code> · <code>f1cdcfc</code> · <code>e6e206f</code></div><div><span>Commits (client/):</span> <code>1e24138</code></div><div><span>Commits (e2e/):</span> a ser fixado pelo orquestrador junto com este dossiê</div><div><span>Ambiente:</span> Stack E2E Docker · API em :8090 · client em :4174 · base recém-semeada, com massa acumulada de execuções anteriores</div><div><span>Perfil usado:</span> Master do município (a tela exige <code>attendance-reports.view</code>; sessão própria de Master, não a herdada do Operacional)</div><div><span>Ferramenta:</span> Playwright (Chromium) + Pest 4</div></div></header>
+<h2 style="border-top:none;padding-top:0">Resumo</h2>
+<p>Quatorze critérios de aceite. <strong>Quatro evidenciados no navegador</strong> (CA01, CA03, CA09 e CA10, com quatro prints) e <strong>dez cobertos pela suíte automatizada</strong> (CA02, CA04, CA05, CA06, CA07, CA08, CA11, CA12, CA13, CA14). A suíte fecha com <strong>20 testes e 68 asserções</strong>, em <code>AttendanceReportEventualBenefitTest</code> e <code>EventualBenefitReportServiceTest</code>. Os <strong>4 cenários Playwright</strong> passam contra base recém-semeada e persistente, compartilhada com outros specs da fase. <strong>Nenhum critério em falha.</strong> Os números com massa (cestas básicas, natalidades, funerais) são provados pelo backend; o E2E prova o que é da UI — os quatro contadores acesos, as três naturezas declaradas lado a lado, a ausência do painel de indisponíveis e o zero declarado. <strong>Com esta HU o leiaute 15.6 fecha por completo.</strong></p>
+<table class="summary"><thead><tr><th>CA</th><th>Critério</th><th>Situação</th><th>Evidência</th></tr></thead>
+<tbody>
+<tr><td class="caid">CA01</td><td>Contadores acesos (happy path)</td><td><span class="pill" style="background:#0a7d33">ATENDIDO</span></td><td>Print + Pest</td></tr>
+<tr><td class="caid">CA02</td><td>Contam concessões, não famílias</td><td><span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></td><td>Pest</td></tr>
+<tr><td class="caid">CA03</td><td>As três formas de contagem declaradas na tela</td><td><span class="pill" style="background:#0a7d33">ATENDIDO</span></td><td>Print</td></tr>
+<tr><td class="caid">CA04</td><td>Kit, aluguel social e outros somam em "outros benefícios"</td><td><span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></td><td>Pest</td></tr>
+<tr><td class="caid">CA05</td><td>Tipo de atendimento não soma nestes contadores</td><td><span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></td><td>Pest</td></tr>
+<tr><td class="caid">CA06</td><td>Encaminhamento para benefício não soma</td><td><span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></td><td>Pest</td></tr>
+<tr><td class="caid">CA07</td><td>Cancelada não conta</td><td><span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></td><td>Pest</td></tr>
+<tr><td class="caid">CA08</td><td>Retroativo conta no mês da concessão</td><td><span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></td><td>Pest</td></tr>
+<tr><td class="caid">CA09</td><td>Leiaute 15.6 sem indisponíveis</td><td><span class="pill" style="background:#0a7d33">ATENDIDO</span></td><td>Print + Pest</td></tr>
+<tr><td class="caid">CA10</td><td>Unidade sem concessão no período</td><td><span class="pill" style="background:#0a7d33">ATENDIDO</span></td><td>Print + Pest</td></tr>
+<tr><td class="caid">CA11</td><td>Operacional vê apenas as suas unidades</td><td><span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></td><td>Pest</td></tr>
+<tr><td class="caid">CA12</td><td>Isolamento entre municípios</td><td><span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></td><td>Pest</td></tr>
+<tr><td class="caid">CA13</td><td>Tipo inativado continua contando</td><td><span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></td><td>Pest</td></tr>
+<tr><td class="caid">CA14</td><td>Nada é persistido</td><td><span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></td><td>Pest</td></tr>
+</tbody></table>
+
+<section class="ca"><h2>CA01 — Contadores acesos (happy path) <span class="pill" style="background:#0a7d33">ATENDIDO</span></h2><div class="gherkin"><p><strong>Dado</strong> que em 08/2026 o "CRAS Centro" concedeu cestas básicas, auxílios natalidade, auxílios funeral e aluguéis sociais, <strong>quando</strong> eu consultar a apuração do "CRAS Centro" para o mês de referência, <strong>então</strong> <code>food_assistance</code>, <code>birth_assistance</code>, <code>funeral_assistance</code> e <code>other_benefits</code> vêm todos com <code>available: true</code>, e <code>eventual_benefits</code> NÃO consta mais em <code>unavailable_counters</code>.</p></div><div class="results"><ul><li>Os quatro cartões de benefício eventual aparecem acesos — número, nunca travessão — para a unidade "E2E CRAS Centro".</li><li>A aritmética exata (quantas cestas, quantos natalidades) é provada pela suíte de backend com massa controlada; a tela prova que os números, sejam quais forem, chegam ACESOS por unidade.</li></ul></div><div class="evid"><figure><img src="screenshots/ca01-os-quatro-contadores-de-beneficio-eventual-aparecem-acesos-n.png" alt="Apuração de atendimentos com os quatro contadores de benefício eventual acesos"><figcaption>ca01-…-acesos-n.png — Os quatro contadores de benefício eventual, acesos por unidade, na tela de apuração</figcaption></figure></div></section>
+
+<section class="ca"><h2>CA02 — Contam concessões, não famílias <span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></h2><div class="gherkin"><p><strong>Dado</strong> que a família Silva recebeu TRÊS cestas básicas em agosto de 2026, <strong>quando</strong> eu consultar a apuração, <strong>então</strong> <code>food_assistance</code> apresenta 3, e NÃO apresenta 1.</p></div><div class="results"><ul><li><strong>É o teste que falharia com a contagem de distintos</strong> (DoD explícito do épico): massa desenhada de propósito com uma família recebendo três cestas, provando <code>COUNT(*)</code> em vez de <code>COUNT(DISTINCT family_id)</code>.</li></ul></div><div class="evid"><p class="noimg">Sem prova visual: critério verificado pela suíte automatizada (ver anexo).</p></div></section>
+
+<section class="ca"><h2>CA03 — As três formas de contagem declaradas na tela <span class="pill" style="background:#0a7d33">ATENDIDO</span></h2><div class="gherkin"><p><strong>Quando</strong> eu olhar os contadores do leiaute 15.6, <strong>então</strong> os quatro de benefício indicam que somam CONCESSÕES, os dois de CadÚnico indicam que somam FAMÍLIAS distintas, e o de BPC indica que soma PESSOAS distintas.</p></div><div class="results"><ul><li>As <strong>três naturezas</strong> ficam declaradas lado a lado, na MESMA captura: o grupo de benefício eventual soma concessões e avisa explicitamente para não somar com CadÚnico nem com BPC; o rótulo de CadÚnico diz "famílias distintas"; o de BPC diz "pessoas distintas" — a natureza OPOSTA à do CadÚnico, no mesmo leiaute.</li><li>É o núcleo deste spec: um gestor que somasse os sete números soltos, ou comparasse auxílio alimentação com famílias encaminhadas ao CadÚnico, estaria comparando coisas que não são a mesma coisa.</li></ul></div><div class="evid"><figure><img src="screenshots/ca03-as-tres-naturezas-de-contagem-do-leiaute-15-6-ficam-declarad-tres-naturezas-lado-a-lado.png" alt="As três naturezas de contagem do leiaute 15.6 — concessões, famílias distintas e pessoas distintas — na mesma tela"><figcaption>ca03-…-tres-naturezas-lado-a-lado.png — As três naturezas do leiaute 15.6 (concessões, famílias distintas, pessoas distintas) na mesma captura</figcaption></figure></div></section>
+
+<section class="ca"><h2>CA04 — Kit de emergência, aluguel social e outros somam em "outros benefícios" <span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></h2><div class="gherkin"><p><strong>Dado</strong> kits de emergência, aluguéis sociais e um benefício do tipo "Outros" em agosto, <strong>quando</strong> eu consultar a apuração, <strong>então</strong> <code>other_benefits</code> soma os três juntos.</p></div><div class="results"><ul><li>Prova que os três códigos que compartilham o mesmo <code>remittance_counter</code> (3, 5 e 6, D02 da US-BENEF-01) somam de fato no mesmo campo do leiaute.</li></ul></div><div class="evid"><p class="noimg">Sem prova visual: critério verificado pela suíte automatizada (ver anexo).</p></div></section>
+
+<section class="ca"><h2>CA05 — Tipo de atendimento não soma nestes contadores <span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></h2><div class="gherkin"><p><strong>Dado</strong> atendimentos do tipo "Solicitação ou concessão de benefício eventual" (código 6) e concessões de cesta básica em agosto, <strong>quando</strong> eu consultar a apuração, <strong>então</strong> <code>food_assistance</code> reflete só as concessões, e os atendimentos somam apenas em <code>total_attendances</code>.</p></div><div class="results"><ul><li>Teste dedicado de ausência de dupla contagem (risco R1 do épico): a query de benefício eventual nunca toca <code>attendances</code>.</li></ul></div><div class="evid"><p class="noimg">Sem prova visual: critério verificado pela suíte automatizada (ver anexo).</p></div></section>
+
+<section class="ca"><h2>CA06 — Encaminhamento para benefício não soma <span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></h2><div class="gherkin"><p><strong>Dado</strong> encaminhamentos para acesso a benefícios eventuais em agosto, <strong>quando</strong> eu consultar a apuração, <strong>então</strong> nenhum dos quatro contadores de benefício foi afetado, e os contadores de CadÚnico e BPC também não.</p></div><div class="results"><ul><li>Segundo teste dedicado de ausência de dupla contagem: a query de benefício eventual nunca toca <code>referrals</code>.</li></ul></div><div class="evid"><p class="noimg">Sem prova visual: critério verificado pela suíte automatizada (ver anexo).</p></div></section>
+
+<section class="ca"><h2>CA07 — Cancelada não conta <span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></h2><div class="gherkin"><p><strong>Dado</strong> que uma das cestas básicas foi cancelada, <strong>quando</strong> eu consultar a apuração novamente, <strong>então</strong> <code>food_assistance</code> diminui em uma unidade, e a concessão cancelada continua visível no prontuário da família.</p></div><div class="results"><ul><li>Massa desenhada com 40 cestas menos 1 cancelada = 39 — a contagem reflete só concessões com <code>status = 'registered'</code>.</li></ul></div><div class="evid"><p class="noimg">Sem prova visual: critério verificado pela suíte automatizada (ver anexo).</p></div></section>
+
+<section class="ca"><h2>CA08 — Retroativo conta no mês da concessão <span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></h2><div class="gherkin"><p><strong>Dado</strong> que uma concessão foi registrada com data de lançamento posterior a <code>granted_on</code>, <strong>quando</strong> eu consultar a apuração do mês de <code>granted_on</code>, <strong>então</strong> ela está contada nesse mês, e não no mês do lançamento.</p></div><div class="results"><ul><li>A data que vale é sempre <code>granted_on</code> — a mesma disciplina dos demais leiautes de execução do período de referência (D10).</li></ul></div><div class="evid"><p class="noimg">Sem prova visual: critério verificado pela suíte automatizada (ver anexo).</p></div></section>
+
+<section class="ca"><h2>CA09 — Leiaute 15.6 sem indisponíveis <span class="pill" style="background:#0a7d33">ATENDIDO</span></h2><div class="gherkin"><p><strong>Quando</strong> eu olhar o leiaute 15.6 na apuração, <strong>então</strong> nenhum contador de benefício aparece como indisponível, <code>unavailable_counters</code> vem VAZIO, e o painel de indisponíveis não é renderizado.</p></div><div class="results"><ul><li>O DADO: o backend não declara mais <code>eventual_benefits</code> — nem nenhum outro contador do leiaute 15.6 — como indisponível; <code>unavailable_counters</code> vem <code>[]</code>.</li><li>A TELA: o painel inteiro deixa de existir no DOM — não fica presente e vazio, ele SOME (<code>v-if="counters.length &gt; 0"</code>). É o fechamento completo do leiaute 15.6, cobrindo as cinco fases (F1–F5).</li></ul></div><div class="evid"><figure><img src="screenshots/ca09-o-leiaute-15-6-fechou-nao-existe-mais-painel-de-contadores-i.png" alt="Apuração sem nenhum painel de contadores indisponíveis na tela"><figcaption>ca09-…-i.png — O painel de contadores indisponíveis não existe mais no DOM</figcaption></figure></div></section>
+
+<section class="ca"><h2>CA10 — Unidade sem concessão no período <span class="pill" style="background:#0a7d33">ATENDIDO</span></h2><div class="gherkin"><p><strong>Dado</strong> que a unidade não concedeu nenhum benefício em referência, <strong>quando</strong> eu consultar a apuração, <strong>então</strong> os quatro contadores aparecem com 0 e <code>available: true</code> — zero DECLARADO.</p></div><div class="results"><ul><li>Verificado na "E2E CRAS Sem MDS" (unidade diferente da do CA01, para não repetir a mesma leitura): os quatro contadores aparecem em 0, com o selo de "zero declarado" — nunca travessão, que é a marca de indisponível.</li><li>A explicação viaja no <code>title</code> do selo: zero declarado não é "não sabemos" — é "apuramos e deu zero".</li></ul></div><div class="evid"><figure><img src="screenshots/ca10-unidade-sem-concessao-no-periodo-mostra-os-quatro-contadores.png" alt="Unidade sem concessão de benefício eventual no período, com os quatro contadores em zero declarado"><figcaption>ca10-…-quatro-contadores.png — Zero declarado nos quatro contadores, com a explicação no selo</figcaption></figure></div></section>
+
+<section class="ca"><h2>CA11 — Operacional vê apenas as suas unidades <span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></h2><div class="gherkin"><p><strong>Dado</strong> que sou Operacional lotado apenas no "CRAS Centro", <strong>então</strong> vejo apenas o "CRAS Centro".</p></div><div class="results"><ul><li>Reusa o recorte por perfil já existente (<code>scopeUnits()</code>); o add-on LGPD não é exigido, por ser tela agregada.</li></ul></div><div class="evid"><p class="noimg">Sem prova visual: critério verificado pela suíte automatizada (ver anexo).</p></div></section>
+
+<section class="ca"><h2>CA12 — Isolamento entre municípios <span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></h2><div class="gherkin"><p><strong>Sendo</strong> usuário do município A, <strong>então</strong> vejo apenas unidades do município A.</p></div><div class="results"><ul><li>Verificado que nenhuma concessão de outro município entra em contador nenhum (<code>tenant_id</code> explícito na query, RN11).</li></ul></div><div class="evid"><p class="noimg">Sem prova visual: critério verificado pela suíte automatizada (ver anexo).</p></div></section>
+
+<section class="ca"><h2>CA13 — Tipo inativado continua contando <span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></h2><div class="gherkin"><p><strong>Dado</strong> que o tipo "Cesta Básica" foi inativado depois de usado em agosto, <strong>quando</strong> eu consultar a apuração de agosto, <strong>então</strong> as concessões registradas com ele continuam contadas.</p></div><div class="results"><ul><li>A query nunca filtra <code>is_active</code> do tipo (US-BENEF-01 RN05) — inativar não pode apagar meses já prestados ao TCE-AL.</li></ul></div><div class="evid"><p class="noimg">Sem prova visual: critério verificado pela suíte automatizada (ver anexo).</p></div></section>
+
+<section class="ca"><h2>CA14 — Nada é persistido <span class="pill" style="background:#0b5cad">ATENDIDO (SUITE)</span></h2><div class="gherkin"><p><strong>Quando</strong> eu consultar a apuração duas vezes, <strong>então</strong> a contagem de linhas de todas as tabelas é idêntica antes e depois.</p></div><div class="results"><ul><li>Verificado que a apuração é inteiramente derivada — sem cache, sem coluna, sem tabela nova (D01) — e que o payload não devolve identificador de pessoa ou família (RN10/RN12).</li></ul></div><div class="evid"><p class="noimg">Sem prova visual: critério verificado pela suíte automatizada (ver anexo).</p></div></section>
+
+<h2>Observações e ressalvas</h2>
+<section class="note"><h3>⚠️ As quatro perguntas ao TCE-AL — validação necessária</h3><p>Quatro decisões que <strong>mudam os números enviados na remessa</strong> do bloco 12 não vieram do instrumento nem de resposta do Tribunal. Cada uma está isolada em um ponto do código para cair barato — mas, depois de declarado, corrigir significa reenviar.</p>
+<table class="summary"><thead><tr><th>#</th><th>Pergunta</th><th>Regra adotada</th><th>Onde cai a correção</th></tr></thead><tbody>
+<tr><td class="caid">1</td><td>Auxílio alimentação = cesta básica?</td><td>Sim</td><td>UPDATE em uma linha do cadastro (US-BENEF-01)</td></tr>
+<tr><td class="caid">2</td><td>Kit de emergência e aluguel social em "outros benefícios"?</td><td>Sim</td><td>UPDATE em duas linhas do cadastro</td></tr>
+<tr><td class="caid">3</td><td>Contam concessões ou famílias?</td><td><strong>Concessões</strong></td><td>Uma linha do service — <strong>muda TODOS os números</strong></td></tr>
+<tr><td class="caid">4</td><td>Concedido em um mês, entregue no outro?</td><td>Vale <code>granted_on</code></td><td>Predicado da query</td></tr>
+</tbody></table>
+<p><strong>Destaque para a pergunta 3 (I1):</strong> contar concessões (<code>COUNT(*)</code>) em vez de famílias distintas (<code>COUNT(DISTINCT family_id)</code>) é a decisão de maior impacto das quatro — se o Tribunal esperar o oposto, TODOS os números de benefício eventual já declarados mudam, não só um contador isolado. É por isso que o CA02 deste dossiê usa massa desenhada propositalmente para falhar sob a contagem errada (uma família, três cestas básicas, contador deve valer 3): é o teste que garante que a decisão certa foi a implementada, não a análoga aos vizinhos de CadÚnico/BPC (que contam distintos).</p>
+</section>
+<section class="note"><h3>Com esta HU o leiaute 15.6 fecha por completo</h3><p><code>eventual_benefits</code> era o ÚLTIMO item de <code>UNAVAILABLE_COUNTERS</code>. Removê-lo esvazia o array, e o painel de indisponíveis do <code>client/</code> — que tem <code>v-if="counters.length &gt; 0"</code> — some sozinho, sem qualquer alteração de template. O leiaute 15.6 (Manual SIAP, item 15.6) fica coberto pelas cinco fases entregues (F1 a F5): não sobra nenhum contador dependente de fase futura.</p></section>
+
+<h2>Anexo I — Cobertura automatizada (Pest 4, filtro EventualBenefit|AttendanceReport)</h2>
+<pre class="pest">  PASS  Tests\Feature\Client\AttendanceReportEventualBenefitTest
+  ✓ it acende os quatro contadores de beneficio no payload da unidade,… 0.45s
+  ✓ it nao alimenta os contadores de beneficio a partir do tipo de aten… 0.15s
+  ✓ it nao alimenta nenhum dos quatro contadores de beneficio nem os de… 0.06s
+  ✓ it devolve unavailable_counters VAZIO e nenhum contador de benefici… 0.05s
+  ✓ it devolve zero DECLARADO nos quatro contadores para a unidade sem… 0.05s
+  ✓ it mostra ao Operacional apenas a unidade em que esta lotado, com o… 0.06s
+  ✓ it nao conta concessao de outro municipio em contador nenhum (CA12) 0.06s
+  ✓ it persiste absolutamente nada ao consultar a apuracao duas vezes (… 0.06s
+  ✓ it nunca vaza dado de cidadao pelos quatro contadores de beneficio,… 0.05s
+
+  PASS  Tests\Feature\Client\EventualBenefitReportServiceTest
+  ✓ it conta CONCESSOES, nao familias distintas — a mesma familia com t… 0.02s
+  ✓ it soma kit de emergencia, aluguel social e "outros" no mesmo conta… 0.03s
+  ✓ it nao conta concessao CANCELADA — 40 cestas menos 1 cancelada = 39… 0.10s
+  ✓ it conta a concessao no mes de granted_on, nao no mes do lancamento… 0.03s
+  ✓ it devolve zero DECLARADO nos quatro contadores para a unidade sem… 0.02s
+  ✓ it continua contando concessao cujo tipo foi INATIVADO depois de us… 0.02s
+  ✓ it nao conta concessao REMOVIDA operacionalmente — deleted_at (RN08… 0.02s
+  ✓ it nao conta concessao de outro municipio (RN11)                    0.02s
+  ✓ it curto-circuita sem tocar o banco quando o recorte de unidades e… 0.02s
+  ✓ it nao persiste absolutamente nada — a apuracao e derivada (RN09)   0.02s
+  ✓ it nao devolve nenhum identificador de pessoa ou familia no resulta… 0.02s
+
+  Tests:    20 passed (68 assertions)
+  Duration: 1.71s</pre>
+
+<h2>Anexo II — Cenários Playwright (client, 4 cenários)</h2>
+<pre class="pest">[globalSetup] Rate-limiter cache do Laravel zerado.
+
+Running 6 tests using 2 workers
+
+  ✓  1 [setup] › tests/auth.setup.ts:10:6 › autentica super admin (UI) e propaga cookies para o api-client (1.1s)
+[tenant-auth.setup] sessão de tenant pronta em /Users/binho/Projetos/esuas-all/e2e/.auth/tenant.json
+  ✓  2 [setup] › tests/tenant-auth.setup.ts:82:6 › autentica usuário do tenant (client) e propaga cookies para o api-client (1.4s)
+  ✓  3 [chromium-tenant] › tests/client/eventual-benefit-counters.spec.ts:192:7 › US-BENEF-03 — contadores de benefício eventual na apuração (client) › CA01 — os quatro contadores de benefício eventual aparecem ACESOS na apuração, por unidade (5.1s)
+  ✓  4 [chromium-tenant] › tests/client/eventual-benefit-counters.spec.ts:217:7 › US-BENEF-03 — contadores de benefício eventual na apuração (client) › CA03 — as TRÊS naturezas de contagem do leiaute 15.6 ficam declaradas lado a lado na mesma tela (5.1s)
+  ✓  5 [chromium-tenant] › tests/client/eventual-benefit-counters.spec.ts:258:7 › US-BENEF-03 — contadores de benefício eventual na apuração (client) › CA09 — o leiaute 15.6 fechou: não existe mais painel de contadores indisponíveis na tela (5.0s)
+  ✓  6 [chromium-tenant] › tests/client/eventual-benefit-counters.spec.ts:283:7 › US-BENEF-03 — contadores de benefício eventual na apuração (client) › CA10 — unidade sem concessão no período mostra os quatro contadores em zero declarado, com a explicação (5.1s)
+
+  6 passed (28.7s)</pre>
+<footer>SigSUAS — eSUAS · Dossiê de aceite gerado a partir de execução real contra a stack E2E · US-BENEF-03 · o leiaute 15.6 fecha por completo</footer>
+</div></body></html>

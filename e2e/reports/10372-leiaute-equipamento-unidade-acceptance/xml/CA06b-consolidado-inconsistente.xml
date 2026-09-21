@@ -1,0 +1,15 @@
+<!-- CA06b — linha consolidada com Quantidade 8 e QuantidadeUso 9 -->
+<!-- Gerado pela remessa 07/2026 do tenant de teste. Conteudo do EquipamentoUnidade.xml do pacote, sem edicao. -->
+<?xml version="1.0"?>
+<SIAP>
+    <Codigo>004821</Codigo>
+    <Exercicio>2026</Exercicio>
+    <Mes>07</Mes>
+    <EquipamentoUnidade>
+        <NumeroMDS>2381435364661</NumeroMDS>
+        <Equipamento>2</Equipamento>
+        <Quantidade>8</Quantidade>
+        <QuantidadeUso>9</QuantidadeUso>
+        <DataUltimaCompra>2026-01-10</DataUltimaCompra>
+    </EquipamentoUnidade>
+</SIAP>

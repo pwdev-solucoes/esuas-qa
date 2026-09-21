@@ -1,0 +1,66 @@
+====================================================================
+ EVIDÊNCIA BACKEND — Gestão de Versões da Plataforma (:8090 / esuas_e2e)
+ api @ b2d5577 (sprint9-gestao-versoes) · 2026-07-05
+ Massa: 1.0.0 e 1.1.0 PUBLICADAS · 1.2.0 e 1.3.0-draft RASCUNHO
+ Leituras iniciais: admin(4498…) leu 1.0.0 · master(5299…) leu 1.1.0
+====================================================================
+
+### RN02 (HU01-CA04) — ADMIN_OPERADOR (manager 1234…) bloqueado na gestão
+   login[manager 12345678909] http=200
+   GET index    -> <<http=403>>
+   GET show     -> <<http=403>>
+   GET reads    -> <<http=403>>
+   POST publish -> <<http=403>>
+
+### RN06/HU04-CA01 — MASTER (leu a 1.1.0 mais recente) NÃO recebe aviso (pré-publish)
+   login[client 52998224725] http=200
+   latest-unread -> <<http=204>>
+   history       = ['1.1.0', '1.0.0']
+
+### RN06/RN10/RN11 — consumo do ADMIN (leu 1.0.0)
+   login[manager 44983702016] http=200
+   latest-unread = 1.1.0 (published)
+   current       = 1.1.0
+   history       = ['1.1.0', '1.0.0']
+   → 1.2.0 e 1.3.0-draft (rascunhos) AUSENTES dos três — RN04/CA HU02-CA03 ✔
+
+### HU07-CA01/CA02 — adesão da 1.1.0 (só ADMIN): quem confirmou + resumo
+   confirmados=1 / total_ativos=10
+   leram: ['E2E Master CadÚnico']
+
+### RN05 (HU02-CA02) — publicar rascunho 1.3.0 SEM conteúdo → 422 errors.platform_version
+   publish -> http 422 | chave: ['platform_version'] | Não é possível publicar esta versão: falta preencher o texto das novid
+
+### RN07/RN09 — acknowledge idempotente (admin confirma a 1.1.0)
+   1ª confirmação   -> <<http=201>>
+   2ª (idempotente) -> <<http=200>>
+   admin latest-unread agora -> <<http=204>>
+   (admin lera 1.0.0; após confirmar 1.1.0 e sem outra publicada → 204) ✔
+
+### HU06-CA02/HU04-CA03 — publicar 1.2.0 → rodapé muda e aviso volta ao master
+   current(rodapé) agora = 1.2.0
+   login[client 52998224725] http=200
+   master latest-unread agora = 1.2.0 (published)
+   (master lera a 1.1.0; nova 1.2.0 publicada → aviso volta) ✔
+
+==================== APÊNDICE PEST (suíte da feature) ====================
+  ✓ it does not overwrite published_at when re-publishing (RN05)         0.01s  
+  ✓ it lists the reads with user identification and adhesion summary (H… 0.01s  
+  ✓ it forbids every management action for an ADMIN_OPERADOR (RN02/HU01… 0.01s  
+  ✓ it rejects the client guard on the management routes (RN02)          0.01s  
+  ✓ it does not expose a destroy route for platform versions             0.01s  
+
+   PASS  Tests\Feature\Console\SyncPermissionsTest
+  ✓ it extracts the can: abilities declared by controllers from the rou… 0.03s  
+  ✓ it keeps full parity with the previous hardcoded permission set (no… 0.01s  
+  ✓ it seeds permissions for both guards and assigns them to roles       0.42s  
+  ✓ it runs permissions:sync idempotently without duplicating permissio… 0.72s  
+  ✓ it prunes orphan permissions not present in the registry             0.77s  
+  ✓ it does not write anything on --dry-run                              0.03s  
+  ✓ it does not assign RESTRICTED_PERMISSIONS to any role                0.42s  
+  ✓ it permissions:sync --coverage fails when an authenticated route ha… 0.38s  
+  ✓ it never mirrors platform-versions write abilities into the client…  0.41s  
+
+  Tests:    39 passed (182 assertions)
+  Duration: 4.02s
+

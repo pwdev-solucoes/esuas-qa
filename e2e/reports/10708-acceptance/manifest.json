@@ -1,0 +1,275 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — HU #10708",
+    "subtitle": "Manter os tipos de atendimento no Painel Global · Evidências end-to-end no frontend Admin",
+    "rows": [
+      [
+        "Gerado em",
+        "01/09/2026 00:35 · complementado em 04/09/2026 14:16"
+      ],
+      [
+        "Ticket GLPI",
+        "#10708 — User Story"
+      ],
+      [
+        "Spec (contrato)",
+        ".planning/specs/10708-tipos-atendimento-painel-global.md"
+      ],
+      [
+        "Branch",
+        "feature/10708-tipos-atendimento (não pushada)"
+      ],
+      [
+        "Commits api/",
+        "f2964e0 · 4ccca9b · ecd059a · dab6cd5 (complemento sobre 7b13d2d, com a F1/F2 já integradas)"
+      ],
+      [
+        "Commits admin/",
+        "175a9d5 · e9d1f10"
+      ],
+      [
+        "Ambiente",
+        "API Sail/PostgreSQL :80 · Admin (Vite) :5175 · Painel do Tenant (Vite) :5174 · banco esuas migrado e semeado"
+      ],
+      [
+        "Perfis usados",
+        "Administrador (ADMIN) e Operacional Global (ADMIN_OPERADOR) — guard manager"
+      ],
+      [
+        "Ferramenta",
+        "playwright-cli (Chromium) + Pest 4"
+      ]
+    ]
+  },
+  "summary": "13 critérios verificados (CA01–CA09 da HU, mais CA05b, CA08b e CA09b derivados na spec, mais a RN08/§16). 9 evidenciados no navegador dirigindo o Admin e o Painel do Tenant reais, 3 pela suíte automatizada (48 testes Pest verdes) e 1 de forma combinada. Nenhum critério reprovado. Complemento de 04/09/2026: com a Fase F1 do prontuário entregue (registro, histórico e apuração de atendimentos), os CA05, CA06 e CA07 — que na captura original só podiam ser evidenciados pelo contrato, por ausência da tela consumidora — passaram a ser verificados de ponta a ponta na interface, em comportamento de produção.",
+  "cas": [
+    {
+      "id": "CA01",
+      "title": "Lista disponível com os códigos do instrumento",
+      "status": "nav",
+      "gherkin": "Dado que sou Administrador no Painel de Administração Global\nQuando eu consultar o cadastro de tipos de atendimento\nEntão vejo os oito tipos do instrumento, com os códigos 1 a 7 e 9\nE não existe um tipo de código 8.",
+      "steps_html": "Login como Administrador (CPF <code>620.174.905-55</code>), aceite dos documentos legais, e navegação para <code>/app/attendance-types</code> pelo menu lateral (<b>Tipos de Atendimento</b>, ao lado de Formas de Ingresso).",
+      "results": [
+        "A tabela lista exatamente <b>8</b> tipos, ordenados por código.",
+        "Leitura direta do DOM da tabela: <code>[\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"7\",\"9\"]</code> — o salto do 8 do instrumento está preservado.",
+        "Confirmado no banco: <code>total=8</code>, <code>tem_codigo_8=NAO</code>."
+      ],
+      "images": [
+        "screenshots/ca01-lista-oito-tipos.png",
+        "screenshots/ca02-ca03-regra-apuracao-tabela.png"
+      ]
+    },
+    {
+      "id": "CA02",
+      "title": "Regra de apuração visível em cada tipo",
+      "status": "nav",
+      "gherkin": "Dado que estou consultando o tipo \"Atendimento socioassistencial individualizado\"\nQuando eu abrir o detalhe dele\nEntão vejo que ele conta como atendimento individualizado para a remessa\nE o tipo \"Visita domiciliar\" conta como visita domiciliar\nE o tipo \"Participação em atividade coletiva de caráter não continuado\" conta como participação em atividade coletiva não continuada.",
+      "steps_html": "Leitura da coluna <b>Regra de apuração</b> na listagem e abertura do formulário de edição, onde o campo é um select com as opções nomeadas.",
+      "results": [
+        "Código <b>1</b> → “Atendimento individualizado (leiaute 15.6)”.",
+        "Código <b>7</b> → “Visita domiciliar (leiaute 15.6)”.",
+        "Código <b>3</b> → “Participação em atividade coletiva não continuada (leiaute 15.8)”.",
+        "O rótulo vem pronto do backend (<code>remittance_counter_label</code>) — a tela não recria o de-para."
+      ],
+      "images": [
+        "screenshots/ca02-ca03-regra-apuracao-tabela.png",
+        "screenshots/ca02-ca03-select-regra-apuracao.png"
+      ]
+    },
+    {
+      "id": "CA03",
+      "title": "Tipo sem regra de apuração específica",
+      "status": "nav",
+      "gherkin": "Dado que estou consultando o tipo \"Outros\"\nQuando eu abrir o detalhe dele\nEntão ele não conta para nenhum contador específico\nE continua somando no total de atendimentos da unidade.",
+      "steps_html": "Verificação do tipo <code>9 — Outros</code> na listagem e no formulário de edição.",
+      "results": [
+        "Na listagem, o tipo 9 exibe “<b>Não conta para contador específico</b>” — opção explícita, não campo vazio.",
+        "No formulário, o select traz 4 opções: os 3 contadores mais a opção nula, que aparece <b>selecionada</b> ao abrir um tipo com <code>remittance_counter = null</code>.",
+        "Os outros quatro tipos sem contador (2, 4, 5, 6) exibem o mesmo rótulo.",
+        "O tipo continua ativo e listado — não deixa de existir para a remessa (RN09)."
+      ],
+      "images": [
+        "screenshots/ca02-ca03-select-regra-apuracao.png",
+        "screenshots/ca02-ca03-regra-apuracao-tabela.png"
+      ]
+    },
+    {
+      "id": "CA04",
+      "title": "Código não é gerado automaticamente",
+      "status": "nav",
+      "gherkin": "Dado que estou cadastrando um tipo\nQuando eu informar os dados\nEntão o código é informado por mim, não gerado pelo sistema\nE o sistema recusa código já utilizado por outro tipo.",
+      "steps_html": "Clique em <b>Novo Tipo de Atendimento</b>; inspeção do campo Código ao abrir; preenchimento com o código <code>7</code> (já usado por “Visita domiciliar”) e tentativa de salvar.",
+      "results": [
+        "O campo Código abre <b>vazio</b> — leitura direta do input: <code>{\"valor\":\"\",\"placeholder\":\"Ex: 7\"}</code>. Nada é sugerido, sorteado ou incrementado pelo sistema.",
+        "Ao salvar com o código 7, o sistema recusa com a mensagem <b>“O campo código já está sendo utilizado.”</b>, exibida no próprio campo (422 do backend).",
+        "Nenhum registro é criado."
+      ],
+      "images": [
+        "screenshots/ca04-codigo-informado-duplicado-recusado.png"
+      ]
+    },
+    {
+      "id": "CA05",
+      "title": "Tipo em uso não é excluído",
+      "status": "parc",
+      "gherkin": "Dado que o tipo \"Visita Domiciliar\" já foi usado em atendimentos registrados\nQuando eu tentar excluí-lo\nEntão a exclusão é recusada\nE o sistema indica que ele pode ser inativado.",
+      "steps_html": "Duas frentes. <b>(a) Na tela, em comportamento de produção</b> (complemento de 04/09/2026): com um atendimento registrado usando o tipo <code>9 — Outros</code>, tenta-se excluí-lo pelo Painel Global (menu de ações → Excluir → confirmar). <b>(b) Na suíte Pest</b>, com um consumidor de teste registrado no <code>AttendanceTypeUsageService</code>, cobrindo também o caminho sem uso e o bulk.",
+      "results": [
+        "Na tela, a exclusão é <b>recusada</b> e o diálogo passa a exibir a mensagem do backend: “Não é possível excluir um tipo de atendimento já utilizado em atendimentos registrados. Inative-o para que ele deixe de ser oferecido em novos lançamentos.”",
+        "O botão de confirmação <b>troca de “Excluir” para “Inativar”</b> — o sistema indica o caminho permitido, exatamente como o critério pede.",
+        "Nada é excluído: após a tentativa, o cadastro segue com <b>8 tipos</b> e o tipo 9 permanece <code>is_active = true</code>, <code>deleted_at = null</code>.",
+        "<code>✓ it refuses to delete a type in use with 422, guiding deactivation</code> — a exclusão é recusada e a mensagem orienta a inativação.",
+        "<code>✓ it still soft deletes a type NOT referenced by any consumer</code> — sem uso, a exclusão funciona normalmente.",
+        "<code>✓ it ignores a registered consumer whose table does not exist yet</code> — protege a checagem contra tabela ausente."
+      ],
+      "images": [
+        "screenshots/ca05-exclusao-recusada-tipo-em-uso.png"
+      ]
+    },
+    {
+      "id": "CA05b",
+      "title": "Exclusão em massa também respeita o uso (derivado, spec §5.1)",
+      "status": "auto",
+      "gherkin": "Dado que selecionei três tipos, um deles já usado em atendimentos\nQuando eu confirmar a exclusão em massa\nEntão nenhum dos três é excluído\nE o sistema identifica qual deles está em uso.",
+      "steps_html": "Coberto por Pest, pelo mesmo motivo do CA05.",
+      "results": [
+        "<code>✓ it bulk destroy is ATOMIC: one item in use blocks all and is identified</code>.",
+        "A checagem roda <b>dentro</b> da transação e antes de qualquer <code>delete()</code>; a resposta 422 traz <code>in_use_uuids</code> no topo.",
+        "Na tela, o diálogo lista <b>código — nome</b> de cada bloqueado (e “…e mais N fora desta página” quando aplicável)."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA06",
+      "title": "Tipo inativado sai dos lançamentos novos",
+      "status": "nav",
+      "gherkin": "Dado que inativei o tipo \"Outros\"\nQuando um profissional registrar um atendimento novo no Painel do Tenant\nEntão esse tipo não é oferecido.",
+      "steps_html": "Ciclo completo <b>antes → inativação → depois</b> na tela real (complemento de 04/09/2026, com a aba de Atendimentos já entregue): (1) no Painel do Tenant, prontuário da família <code>9900000001</code> → aba <b>Atendimentos</b> → <b>Registrar atendimento</b> → abrir o select <b>Tipo de atendimento</b>; (2) no Painel Global, inativar o tipo <code>9 — Outros</code> (menu de ações → Inativar); (3) de volta ao Painel do Tenant, recarregar e reabrir o mesmo select.",
+      "results": [
+        "<b>Antes</b> — o select oferece os oito tipos, incluindo <code>9 — Outros</code>. Leitura direta do DOM: <code>[\"1 — …\",\"2 — …\",\"3 — …\",\"4 — …\",\"5 — …\",\"6 — …\",\"7 — Visita domiciliar\",\"9 — Outros\"]</code>.",
+        "No Painel Global, o tipo 9 passa a exibir status <b>Inativo</b> na listagem do cadastro.",
+        "<b>Depois</b> — o mesmo select do registro de atendimento novo passa a oferecer <b>sete</b> opções: <code>[\"1 — …\",\"2 — …\",\"3 — …\",\"4 — …\",\"5 — …\",\"6 — …\",\"7 — Visita domiciliar\"]</code>. <b>O tipo 9 não é mais oferecido</b>.",
+        "A oferta vem do endpoint <code>options</code> do registro, cujo <code>selectableTypes()</code> é a única consulta que filtra <code>is_active = true</code> — a tela não recria a regra."
+      ],
+      "images": [
+        "screenshots/ca06-antes-select-com-tipo-9.png",
+        "screenshots/ca06-admin-tipo-9-inativado.png",
+        "screenshots/ca06-depois-select-sem-tipo-9.png"
+      ]
+    },
+    {
+      "id": "CA07",
+      "title": "Tipo inativado continua no histórico e na apuração",
+      "status": "nav",
+      "gherkin": "Dado que existem atendimentos registrados com o tipo \"Outros\" antes da inativação\nQuando eu consultar o histórico e a apuração daquele período\nEntão esses atendimentos continuam listados com esse tipo\nE continuam somando no total de atendimentos.",
+      "steps_html": "Com o tipo <code>9 — Outros</code> <b>ainda ativo</b>, registra-se um atendimento em 04/09/2026 na unidade <b>E2E CRAS Centro</b>, com pessoa atendida identificada. Em seguida o tipo é inativado no Painel Global e consultam-se, no Painel do Tenant, (1) o histórico da aba <b>Atendimentos</b> e (2) a tela <b>Prestação de Contas → Apuração de Atendimentos</b> no mesmo período.",
+      "results": [
+        "<b>Histórico</b> — após a inativação, o atendimento de <b>04/09/2026</b> continua listado com o tipo <b>Outros</b>, situação <b>Registrado</b>, ao lado dos demais. O tipo inativado não some do prontuário.",
+        "<b>Apuração</b> — no recorte 2026 / 09 — Setembro, a unidade E2E CRAS Centro apresenta <b>Total de atendimentos = 2</b> e <b>Atendimentos individualizados = 1</b>: o atendimento de tipo 9 <b>continua somando no total</b>, e não entra em contador específico (coerente com o CA03).",
+        "Conferido no banco no momento da captura: <code>atend=1 tipo=1 tipo_ativo=S</code>, <code>atend=3 tipo=9 tipo_ativo=N status=registered</code> — o registro que soma no total é justamente o do tipo inativado.",
+        "Nenhuma consulta de histórico ou apuração filtra <code>is_active</code> (RN06), e não há Global Scope de <code>is_active</code> no Model — há teste unitário afirmando que o único scope global é o de soft delete."
+      ],
+      "images": [
+        "screenshots/ca07-registro-com-tipo-9-antes.png",
+        "screenshots/ca07-historico-mantem-tipo-inativado.png",
+        "screenshots/ca07-apuracao-soma-tipo-inativado.png"
+      ]
+    },
+    {
+      "id": "CA08",
+      "title": "Município não edita a lista",
+      "status": "auto",
+      "gherkin": "Dado que sou Master no Painel do Tenant\nQuando eu procurar onde alterar os tipos de atendimento\nEntão a ação não existe para mim\nE a lista é apresentada apenas para escolha no registro de atendimento.",
+      "steps_html": "Coberto por Pest e pela conferência do contrato de permissões no banco real. O cadastro <b>não existe</b> no frontend do tenant — as rotas de escrita vivem apenas em <code>manager.php</code>, sob <code>auth:manager</code>.",
+      "results": [
+        "<code>✓ it keeps attendance-types write abilities out of the client guard roles</code> — Master e Operador do tenant <b>não</b> possuem <code>store</code>, <code>update</code>, <code>destroy</code>, <code>bulk-update</code>, <code>bulk-destroy</code> nem <code>view-activity</code>.",
+        "<code>✓ it keeps the shared read alive for the client guard</code> — mas <b>continuam</b> com <code>index</code>/<code>show</code>, que é o que alimenta o select do lançamento.",
+        "Conferido no banco real após <code>permissions:sync</code>: <code>master/client → index, show</code> e <code>operador/client → index, show</code>, apenas."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA08b",
+      "title": "Escrita negada ao guard client no backend (derivado, spec §5.1)",
+      "status": "auto",
+      "gherkin": "Dado que estou autenticado com um token do guard `client`\nQuando eu chamar POST /api/attendance-types\nEntão a requisição é recusada pela autenticação (401)\nE nenhum registro é criado.",
+      "steps_html": "Coberto por Pest, cobrindo as 7 rotas de escrita/trilha do guard manager.",
+      "results": [
+        "<code>✓ it rejects client-guard tokens on every write route with 401, creating nothing</code>.",
+        "Cobre <code>store</code>, <code>update</code>, <code>destroy</code>, <code>bulk-activate</code>, <code>bulk-deactivate</code>, <code>bulk-destroy</code> e <code>activity</code>.",
+        "O teste assere também que a contagem de registros não muda — o 401 não é apenas de fachada."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA09",
+      "title": "Alteração auditada",
+      "status": "parc",
+      "gherkin": "Dado que alterei a regra de apuração de um tipo\nQuando eu consultar a trilha de auditoria\nEntão a alteração consta registrada, com autor e data.",
+      "steps_html": "Alteração real pela tela: tipo <code>9 — Outros</code> teve a regra de apuração mudada de “Não conta para contador específico” para “Atendimento individualizado (leiaute 15.6)”, seguida de consulta ao <code>activity_log</code>.",
+      "results": [
+        "Registro gravado: <code>event=updated</code>, <code>subject=AttendanceType #8</code>.",
+        "<b>Autor e data</b>: <code>causer_id=4 — Dev Admin Global</code>, <code>2026-09-01 03:31:02</code>.",
+        "De→para preservado: <code>{\"attributes\":{\"remittance_counter\":\"individualized_attendance\"},\"old\":{\"remittance_counter\":null}}</code>.",
+        "O estado semeado do tipo 9 foi restaurado após a captura."
+      ],
+      "images": [
+        "screenshots/ca09-alteracao-regra-apuracao.png"
+      ]
+    },
+    {
+      "id": "CA09b",
+      "title": "Inativação em massa é auditada (derivado, spec §5.1)",
+      "status": "auto",
+      "gherkin": "Dado que inativei quatro tipos de uma vez\nQuando eu consultar a trilha\nEntão consta um registro de inativação em massa, com autor, data e os itens afetados.",
+      "steps_html": "Coberto por Pest. <b>Não é evidenciável por tela</b> — ver a ressalva sobre o log de operações em massa.",
+      "results": [
+        "Os testes de bulk asseguram o evento (<code>bulk_activated</code>/<code>bulk_deactivated</code>/<code>bulk_destroyed</code>), as <code>properties</code> com <code>uuids</code>/<code>count</code>, e o <code>causer_id</code>.",
+        "O log de operação em massa é gravado <b>sem subject</b>, então o endpoint <code>/activity</code> (que lê por subject) não o devolve — comportamento herdado do padrão do projeto."
+      ],
+      "images": []
+    },
+    {
+      "id": "RN08/§16",
+      "title": "Somente o Administrador mantém; o Operacional Global consulta",
+      "status": "nav",
+      "gherkin": "Dado que sou Operacional Global no Painel de Administração Global\nQuando eu abrir o cadastro de tipos de atendimento\nEntão vejo a lista\nE não vejo nenhuma ação de escrita.",
+      "steps_html": "Segunda sessão de navegador, login como Operacional Global (CPF <code>731.285.016-29</code>), navegação para <code>/app/attendance-types</code> e inspeção da visibilidade real dos controles (<code>display</code> e <code>offsetParent</code>).",
+      "results": [
+        "A lista carrega normalmente, com os 8 tipos — a consulta é permitida.",
+        "O botão <b>Novo Tipo de Atendimento</b> está oculto: <code>display: none</code>, <code>offsetParent: null</code> (escondido pela diretiva <code>v-can</code>).",
+        "No menu de ações da linha, os três itens de escrita estão invisíveis: <code>Editar</code>, <code>Inativar</code> e <code>Excluir</code> com <code>vis: false</code>.",
+        "No backend: <code>✓ it gives the admin_operador read-only access — every write is 403</code>; e no banco real, <code>admin_operador/manager → index, show</code> apenas."
+      ],
+      "images": [
+        "screenshots/rn08-operacional-global-somente-leitura.png"
+      ]
+    }
+  ],
+  "notes": [
+    {
+      "title": "Complemento de 04/09/2026 — o que mudou desde a captura original",
+      "html": "Na captura original (01/09/2026), CA05, CA06 e CA07 dependiam de atendimentos registrados e da tela que os registra — e o módulo de Registro de Atendimento ainda não existia. A spec previu exatamente isso (decisão D05): o <code>AttendanceTypeUsageService</code> nasceu com a lista de consumidores protegida por <code>Schema::hasTable()</code>, e a HU de Registro de Atendimento fecharia o CA05 acrescentando uma linha, sem reescrever o <code>destroy</code>.<br><br><b>Isso já aconteceu.</b> A Fase F1 do épico (HUs #10709/#10710/#10711) criou a tabela <code>attendances</code> e acrescentou a entrada <code>['table' =&gt; 'attendances', 'column' =&gt; 'attendance_type_id']</code> ao registro de consumidores. Portanto a ressalva anterior — “hoje, na tela, uma exclusão sempre é permitida, porque não há atendimento algum que possa bloquear” — <b>está superada</b>: a trava do CA05 é comportamento de produção, e foi evidenciada na tela neste complemento. Pelo mesmo motivo, CA06 e CA07 deixaram de ser verificados apenas pelo contrato e passaram a ser dirigidos no Painel do Tenant real.<br><br>Permanece coberto apenas por suíte o <b>CA09b</b>, por razão diferente e não relacionada a tela faltante: o log de operação em massa é gravado sem <i>subject</i>, e o endpoint <code>/activity</code> lê por <i>subject</i> — o registro existe e nenhuma API o devolve."
+    },
+    {
+      "title": "A trilha de auditoria vive em attribute_changes, não em properties",
+      "html": "<p>A versão inicial da spec (§9.4) mostrava o de→para da auditoria em <code>activity_log.properties</code>. <b>Está errado nesta base</b>, e a captura do CA09 confirmou empiricamente: <code>properties</code> voltou <code>[]</code> e o de→para veio em <code>attribute_changes</code>. O <code>spatie/laravel-activitylog</code> 5.0.0 grava as mudanças automáticas do trait em coluna própria, reservando <code>properties</code> aos logs manuais. A spec foi corrigida e o frontend já lê a coluna certa.</p>"
+    },
+    {
+      "title": "Ambiente: o banco local precisou ser reconciliado antes das evidências",
+      "html": "<p>O volume do PostgreSQL local era de 2026-06-23 e não continha o role nem o banco que o <code>.env</code> esperava, além de <code>DB_HOST</code> apontar para um host inexistente na rede do compose. O caminho <b>não destrutivo</b> foi adotado (criação do role e do banco, preservando os bancos existentes), seguido de <code>migrate --force</code> (22 migrations pendentes, incluindo a desta HU) e da semeadura dos tipos, papéis e permissões.</p>"
+    },
+    {
+      "title": "Débitos conhecidos, registrados e não corrigidos nesta entrega",
+      "html": "<ul><li>Não há como filtrar “sem contador específico” na listagem — o backend não define contrato para consultar <code>remittance_counter = null</code>. Alinhar numa próxima HU.</li><li>O badge de status é clicável sem <code>v-can</code>: o Operacional Global vê a afordância, embora o backend responda 403 e a tela reverta o estado. É débito <b>do molde</b> — o mesmo trecho existe em <code>family-intake-forms</code> — e corrigi-lo só aqui esconderia o problema no vizinho.</li><li>FK <code>RESTRICT</code> <b>não</b> protege soft delete (só bloqueia DELETE físico), e rodar a checagem dentro da transação <b>encurta</b> a janela TOCTOU sob READ COMMITTED, não a fecha. Anotado no contrato da HU de Registro de Atendimento.</li></ul>"
+    },
+    {
+      "title": "Estado do ambiente restaurado após o complemento",
+      "html": "Para evidenciar CA05, CA06 e CA07 foi necessário criar um atendimento com o tipo <code>9 — Outros</code> e inativar/reativar esse tipo. Ao final, a baseline do ambiente E2E foi restaurada: o tipo 9 voltou a <code>is_active = true</code> (pela própria tela, menu de ações → Ativar) e o atendimento criado para a evidência foi removido, deixando os 2 atendimentos originais da semeadura. Conferido no banco: 8 tipos, nenhum excluído, <code>attendances = 2</code>."
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Pest — AttendanceType: 35 testes; SyncPermissions: 13 testes; todos verdes)",
+    "file": "pest-10708.txt"
+  }
+}

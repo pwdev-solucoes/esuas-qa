@@ -1,0 +1,166 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — Painel 5: Atendimento",
+    "subtitle": "HU #10190 · Dashboard do Tenant · Evidências end-to-end no client",
+    "rows": [
+      [
+        "Gerado em",
+        "30/07/2026"
+      ],
+      [
+        "HU",
+        "#10190 — Painel 5: Atendimento"
+      ],
+      [
+        "Branch",
+        "feature/10190-painel-5-atendimento (api + client)"
+      ],
+      [
+        "Spec",
+        ".planning/specs/10190-painel-5-atendimento.md"
+      ],
+      [
+        "Endpoint",
+        "GET /api/client/dashboard/attendance"
+      ],
+      [
+        "Ambiente",
+        "API Sail/PostgreSQL (:80) · client Vite :5174 (não-mock)"
+      ],
+      [
+        "Organização (tenant)",
+        "E2E CadÚnico · bairro de teste: Alazão"
+      ],
+      [
+        "Ferramenta",
+        "playwright-cli (Chromium) + Pest 4"
+      ]
+    ]
+  },
+  "summary": "9 Critérios de Aceite verificados: 4 por navegador (dirigindo o app real como Master), 1 parcial (UI + suíte) e 4 automatizados (Pest). O Painel 5 entrega as duas séries temporais distintas — Volume de Novos Cadastros (por mês de source_registered_at) e Volume de Atualizações Cadastrais (por mês de source_updated_at) —, recalculadas sob o filtro global por Bairro (RG01) e isoladas por tenant. Resultado geral: todos os critérios ATENDIDOS. Dados de evidência semeados no tenant E2E (0 novas inclusões / 20 atualizações no recorte municipal; 0 / 0 no bairro Alazão).",
+  "cas": [
+    {
+      "id": "CA07",
+      "title": "Acompanhamento temporal de produção (duas curvas distintas)",
+      "status": "nav",
+      "gherkin": "Dado que consulto o Painel 5 (aba \"Atendimento\")\nQuando navego pela linha do tempo\nEntão visualizo, em gráficos distintos, a curva de novas famílias inseridas (por mês de source_registered_at) e a curva de cadastros atualizados (por mês de source_updated_at), mês a mês.",
+      "steps_html": "Login como Master → abrir a aba <code>Atendimento</code> do Painel do Técnico. A aba apresenta <b>dois gráficos de linha independentes</b>: \"Volume de Novos Cadastros\" (verde) e \"Volume de Atualizações Cadastrais\" (azul), cada um com 12 pontos mês a mês (ago/25 → jul/26).",
+      "results": [
+        "Duas curvas temporais distintas renderizadas em Apache ECharts, uma por indicador.",
+        "Volume de Novos Cadastros = 0 nos últimos 12 meses; Volume de Atualizações Cadastrais = 20 nos últimos 12 meses.",
+        "Eixo temporal contíguo de 12 meses; meses sem produção aparecem com volume 0."
+      ],
+      "images": [
+        "screenshots/ca07-municipal-duas-curvas.png"
+      ]
+    },
+    {
+      "id": "RG01-a",
+      "title": "Comportamento padrão — \"Todos os Bairros\" (consolidação municipal)",
+      "status": "nav",
+      "gherkin": "Dado que acabei de carregar a aba \"Atendimento\"\nQuando nenhum bairro está selecionado\nEntão o endpoint é chamado sem neighborhood_uuid\nE as duas curvas refletem a consolidação municipal.",
+      "steps_html": "Ao carregar, o filtro global de Bairro inicia em <code>Todos os Bairros</code>. As curvas exibem a consolidação municipal (0 inclusões / 20 atualizações).",
+      "results": [
+        "Filtro em \"Todos os Bairros\" por padrão (sem neighborhood_uuid).",
+        "Séries no nível municipal: 0 novos cadastros e 20 atualizações."
+      ],
+      "images": [
+        "screenshots/ca07-municipal-duas-curvas.png"
+      ]
+    },
+    {
+      "id": "RG01-b",
+      "title": "Comportamento dinâmico — seleção de bairro recalcula",
+      "status": "nav",
+      "gherkin": "Dado que o filtro global está em \"Todos os Bairros\"\nQuando eu seleciono um bairro\nEntão o endpoint é chamado com o neighborhood_uuid do bairro\nE as duas curvas recalculam considerando apenas as famílias geocodificadas dentro do bairro.",
+      "steps_html": "Selecionar o bairro <code>Alazão</code> no filtro global. A barra fixa e as duas curvas recalculam instantaneamente, restringindo-se às famílias geocodificadas dentro do polígono do bairro (ST_Contains).",
+      "results": [
+        "Filtro passa a \"Alazão\"; surge o botão \"Limpar Filtro\".",
+        "Legenda \"Recalculado por bairro: Alazão\" exibida no painel.",
+        "Curvas recalculadas para o recorte espacial: 0 novos cadastros e 0 atualizações (subconjunto do municipal)."
+      ],
+      "images": [
+        "screenshots/rg01b-bairro-alazao.png"
+      ]
+    },
+    {
+      "id": "RG01-c",
+      "title": "Ação rápida — \"Limpar Filtro\" volta ao município",
+      "status": "nav",
+      "gherkin": "Dado que estou com um bairro selecionado\nQuando eu aciono \"Limpar Filtro\"\nEntão o endpoint é chamado sem neighborhood_uuid\nE o painel volta à consolidação municipal completa.",
+      "steps_html": "Com \"Alazão\" selecionado, acionar <code>Limpar Filtro</code>. O painel retorna imediatamente à visão \"Todos os Bairros\".",
+      "results": [
+        "Filtro volta a \"Todos os Bairros\"; legenda de bairro removida.",
+        "Curvas retornam à consolidação municipal (0 novos cadastros e 20 atualizações)."
+      ],
+      "images": [
+        "screenshots/rg01c-limpar-filtro.png"
+      ]
+    },
+    {
+      "id": "RN07",
+      "title": "Indicadores do Painel 5 (fontes de data corretas)",
+      "status": "parc",
+      "gherkin": "Dado um recorte com famílias\nQuando o painel é calculado\nEntão \"Volume de Novos Cadastros\" traz 12 pontos (mês → nº de famílias inseridas, por source_registered_at)\nE \"Volume de Atualizações Cadastrais\" traz 12 pontos (mês → nº de famílias atualizadas, por source_updated_at)\nE cada série traz o total do período.",
+      "steps_html": "A UI evidencia os dois indicadores com seus totais do período; a corretude da fonte de data por série (source_registered_at para inclusões, source_updated_at para atualizações), a contiguidade dos 12 pontos e a exclusão de nulos são cobertas pela suíte Pest (apêndice).",
+      "results": [
+        "Novos Cadastros agregados por mês de source_registered_at (curva verde).",
+        "Atualizações agregadas por mês de source_updated_at (curva azul).",
+        "Cada série acompanha o total do período (\"nos últimos 12 meses\").",
+        "Corretude do agrupamento e das bordas verificada pela suíte automatizada."
+      ],
+      "images": [
+        "screenshots/ca07-municipal-duas-curvas.png"
+      ]
+    },
+    {
+      "id": "CA-CONSISTENCIA",
+      "title": "Curva de atualizações bate ponto a ponto com o Painel 2",
+      "status": "auto",
+      "gherkin": "Dado o mesmo recorte e a mesma janela de 12 meses\nQuando comparo cadastral_updates.points do Painel 5 com monthly_evolution.points do Painel 2 (#10186)\nEntão os meses e volumes são iguais ponto a ponto.",
+      "steps_html": "Verificado pela suíte Pest — teste cruzado <code>it matches the Painel 2 monthly evolution point by point (RN07)</code>.",
+      "results": [
+        "cadastral_updates.points idêntico a monthly_evolution.points do Painel 2 para o mesmo recorte."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA-NULL",
+      "title": "Famílias sem data são excluídas da respectiva série",
+      "status": "auto",
+      "gherkin": "Dado uma família com source_registered_at nulo\nQuando a curva de novos cadastros é calculada\nEntão ela não é contada em nenhum ponto da curva de inclusões\nE, analogamente, source_updated_at nulo a exclui da curva de atualizações.",
+      "steps_html": "Verificado pela suíte Pest — <code>it excludes families with a null date from the respective series</code>.",
+      "results": [
+        "source_registered_at nulo não entra na curva de inclusões; source_updated_at nulo não entra na de atualizações."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA-VAZIO",
+      "title": "Recorte sem produção retorna 12 pontos zerados",
+      "status": "auto",
+      "gherkin": "Dado um recorte sem nenhuma família (ou sem produção na janela)\nQuando o painel é calculado\nEntão cada série retorna 12 pontos com families 0 e total 0, sem erro.",
+      "steps_html": "Verificado pela suíte Pest — <code>it returns two 12-point zero series when the scope has no families</code>.",
+      "results": [
+        "Cada série retorna 12 pontos contíguos com families 0 e total 0, sem erro."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA-ISOLAMENTO",
+      "title": "Isolamento multi-tenant",
+      "status": "auto",
+      "gherkin": "Dado um usuário vinculado ao Tenant A\nQuando ele solicita o Painel 5\nEntão apenas famílias do Tenant A entram nas curvas\nE um neighborhood_uuid fora do município do Tenant A retorna 422.",
+      "steps_html": "Verificado pela suíte Pest — <code>DashboardAttendanceIsolationTest</code> (BelongsToTenant) e <code>it returns 422 for a neighborhood_uuid outside the tenant municipality</code>.",
+      "results": [
+        "Famílias de outro tenant nunca entram nos agregados (Global Scope BelongsToTenant).",
+        "neighborhood_uuid fora do município do tenant retorna 422; sem permissão retorna 403."
+      ],
+      "images": []
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Pest — AttendanceTest + DashboardAttendanceIsolationTest)",
+    "file": "attendance.txt"
+  }
+}

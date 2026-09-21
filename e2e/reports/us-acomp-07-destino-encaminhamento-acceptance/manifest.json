@@ -1,0 +1,291 @@
+{
+ "meta": {
+  "title": "Relatório de Critérios de Aceite — US-ACOMP-07",
+  "subtitle": "Épico HU-PRONT-ACOMP (fase F3) · GLPI #10887 · Unidade de destino no encaminhamento de trânsito interno",
+  "rows": [
+   [
+    "Gerado em",
+    "15/09/2026 20:02"
+   ],
+   [
+    "História",
+    "US-ACOMP-07 — Unidade de destino no encaminhamento de trânsito interno (GLPI #10887)"
+   ],
+   [
+    "Spec",
+    ".planning/specs/US-ACOMP-07-ajuste-unidade-de-destino-no-encaminhamento.md"
+   ],
+   [
+    "Branch",
+    "feature/acomp-06-07-encaminhamento-recebido (api, admin e client), a partir de develop"
+   ],
+   [
+    "Commits (api)",
+    "b52b731 (entrega) · 6f54a18 (revisão) · bf6f2b8 (mensagem neutra)"
+   ],
+   [
+    "Commits (admin)",
+    "5f5ebbf (catálogo) · 5d7d1cd (teste da trilha)"
+   ],
+   [
+    "Commits (client)",
+    "3e28b2d (registro e diálogo) · 6fec6f7 (revisão)"
+   ],
+   [
+    "Ambiente",
+    "Stack Sail · API em :80 · admin (Vite) em :5173 · client (Vite) em :5175 · base de desenvolvimento semeada por E2ESeeder"
+   ],
+   [
+    "Organização (tenant)",
+    "E2E CadÚnico"
+   ],
+   [
+    "Perfis usados",
+    "Administrador do Painel Global (guard manager) e Operacional do tenant com add-on LGPD, lotado no E2E CRAS Centro"
+   ],
+   [
+    "Ferramenta",
+    "playwright-cli (Chromium) + Pest 4"
+   ]
+  ]
+ },
+ "summary": "Quinze critérios: doze numerados e três extras. Oito evidenciados no navegador (CA01, CA02, CA04, CA05, CA07, CA08, CA-extra-A e CA-extra-C, com onze prints), dois por artefato gerado pelo próprio sistema (CA09, com os dois PDFs anexados, e CA10, com a trilha de auditoria) e cinco cobertos pela suíte automatizada, onde o cenário exige um segundo município, dois operadores ou duas unidades do mesmo tipo (CA03, CA06, CA11, CA12 e CA-extra-B). A suíte de encaminhamentos fecha com 193 testes e 1275 asserções, e a suíte completa da API com 4581 testes, sem falhas. Nenhum critério em falha. A única pendência é declarada por desenho: a segunda metade do CA07 — o acesso ao prontuário pela unidade de destino — é a US-ACOMP-06 (#10888), HU seguinte na mesma branch.",
+ "cas": [
+  {
+   "id": "CA01",
+   "title": "Escolher a unidade de destino (happy path)",
+   "status": "parc",
+   "gherkin": "Dado que sou CLIENT_OPERADOR com CLIENT_FAMILY_VIEWER e lotação vigente no \"CRAS Centro\"\nQuando eu chamar GET /api/client/families/{silva}/referrals/options?social_unit_uuid={crasCentro}\nEntão o código \"13\" vem com destination_unit_type_uuid = {tipo CREAS}\nE destination_units lista as unidades do município em atividade\nQuando eu chamar POST /api/client/families/{silva}/referrals com referral_code_uuid={13}\n     e destination_social_unit_uuid={creas}, sem destination_organization\nEntão recebo 201\nE referrals.destination_social_unit_id = {creas.id}\nE referrals.destination_organization = \"CREAS\" (snapshot gravado pelo servidor)",
+   "steps_html": "Como operador do tenant, no prontuário da família <b>E2E Família No CRAS</b>, aba Encaminhamentos → <b>Registrar encaminhamento</b>. Origem <b>E2E CRAS Centro</b>, código <b>13</b>, unidade de destino <b>E2E CREAS</b>, objetivo preenchido, <b>Salvar</b>. Conferência do registro direto no banco.",
+   "results": [
+    "Com a origem escolhida, o código 13 passa a ser oferecido (o 14, que sai do CREAS, não).",
+    "O campo de destino deixa de ser texto livre e vira seleção de unidade.",
+    "Após salvar: toast “Encaminhamento registrado no prontuário.”.",
+    "No banco: destination_social_unit_id aponta para o E2E CREAS e destination_organization = \"E2E CREAS\", escrito pelo servidor (o formulário não envia texto), com status registered e desfecho aguardando retorno."
+   ],
+   "images": [
+    "screenshots/ca01-ca04-toast-registro.png"
+   ]
+  },
+  {
+   "id": "CA02",
+   "title": "A escolha respeita o tipo de destino do código",
+   "status": "parc",
+   "gherkin": "Dado que estou registrando um encaminhamento com o código \"13\" a partir do \"CRAS Centro\"\nQuando o front filtrar destination_units por destination_unit_type_uuid do código\nEntão só aparecem unidades do tipo CREAS\nQuando eu forçar POST com destination_social_unit_uuid = {crasRural}\nEntão recebo 422 em destination_social_unit_uuid com referral.destination_unit_not_selectable",
+   "steps_html": "Abrir a lista de unidades de destino no formulário com o código 13 selecionado. A recusa no servidor é coberta pela suíte (unidade de tipo errado, paralisada e excluída, todas com a mesma mensagem).",
+   "results": [
+    "A lista traz apenas <b>E2E CREAS</b>; nenhum CRAS aparece, embora o município tenha três unidades.",
+    "Pest: “refuses a unit of the WRONG type, a PARALYSED one and a SOFT-DELETED one — same message, nothing created”."
+   ],
+   "images": [
+    "screenshots/ca02-lista-so-creas.png"
+   ]
+  },
+  {
+   "id": "CA03",
+   "title": "Não é possível encaminhar para a própria unidade",
+   "status": "auto",
+   "gherkin": "Dado que registro a partir do \"CREAS Norte\" com o código \"14\"\nQuando eu chamar o options com social_unit_uuid = {creasNorte}\nEntão destination_units não contém o \"CREAS Norte\"\nE um POST com destination_social_unit_uuid = {creasNorte} recebe 422",
+   "steps_html": "Critério provado pela suíte: exige duas unidades do MESMO tipo (origem e destino candidatos), cenário que a massa de evidência do navegador não tem — no município E2E há um único CREAS.",
+   "results": [
+    "Pest: “never offers nor accepts the ORIGIN as destination — CREAS Norte with code 14 (CA03/RN04)”.",
+    "Na captura do CA02 a origem também não aparece na lista, mas ali ela já sairia pelo filtro de tipo."
+   ],
+   "images": []
+  },
+  {
+   "id": "CA04",
+   "title": "Aviso sobre o efeito no acesso",
+   "status": "nav",
+   "gherkin": "Dado que escolhi o \"CREAS\" como unidade de destino no formulário\nEntão vejo o aviso \"A equipe de CREAS passará a enxergar o prontuário desta família até o desfecho do encaminhamento.\"\nQuando eu salvar\nEntão o registro é salvo sem diálogo de confirmação\nE o toast de sucesso repete o aviso",
+   "steps_html": "Escolher a unidade de destino e observar o aviso; salvar e observar os toasts.",
+   "results": [
+    "Ao escolher a unidade aparece o aviso, como região de status: “A equipe de E2E CREAS passará a enxergar o prontuário desta família até o desfecho do encaminhamento.”.",
+    "O salvamento ocorre direto, <b>sem nenhum diálogo de confirmação</b>.",
+    "Dois toasts: o de sucesso e o informativo repetindo o aviso."
+   ],
+   "images": [
+    "screenshots/ca04-aviso-acesso.png",
+    "screenshots/ca01-ca04-toast-registro.png"
+   ]
+  },
+  {
+   "id": "CA05",
+   "title": "Os demais códigos continuam com destino em texto",
+   "status": "parc",
+   "gherkin": "Dado que escolhi o código \"05\" (externo, destination_unit_type_uuid = null)\nEntão o campo de destino é o input de texto livre de antes\nE um POST com destination_social_unit_uuid recebe 422 (prohibited)\nE um POST sem destination_organization recebe 422 com referral.destination_required",
+   "steps_html": "No mesmo formulário, trocar o código para <b>05</b> (externo) e observar o campo de destino.",
+   "results": [
+    "O campo volta a ser texto livre, com o placeholder de sempre; não há seleção de unidade nem aviso.",
+    "Pest: “keeps external codes on free text: unit prohibited, text required; internal codes the reverse”."
+   ],
+   "images": [
+    "screenshots/ca05-codigo-externo-texto.png"
+   ]
+  },
+  {
+   "id": "CA06",
+   "title": "Encaminhamento antigo não concede acesso",
+   "status": "auto",
+   "gherkin": "Dado um encaminhamento \"13\" registrado antes da migration, com destination_social_unit_id NULL\n     e destination_organization = \"CREAS Centro\"\nQuando eu, lotado no \"CREAS\", abrir o prontuário da família\nEntão recebo 403 unit_not_assigned\nE destination_social_unit_id continua NULL (nenhuma dedução)",
+   "steps_html": "Critério de backend. A massa E2E tem um encaminhamento 13 anterior ao ajuste, com a chave estrangeira nula e o texto preservado (visível no CA07).",
+   "results": [
+    "Pest: “keeps the pre-migration referral with FK NULL and text preserved — the CREAS professional still gets 403 unit_not_assigned (CA06/RN06/D09)”.",
+    "A migration de dados não deduz unidade a partir do texto: anexo <code>backend/activity-log-migration.txt</code>."
+   ],
+   "images": []
+  },
+  {
+   "id": "CA07",
+   "title": "Completar a unidade em encaminhamento antigo sem desfecho",
+   "status": "parc",
+   "gherkin": "Dado o encaminhamento do CA06, com outcome = 'awaiting_return'\nE que sou o autor (created_by), mesmo sem lotação vigente na origem na data do encaminhamento\nQuando eu chamar PATCH /api/client/families/{f}/referrals/{r}/destination-unit\n     com destination_social_unit_uuid = {creasCentro}\nEntão recebo 200\nE referrals.destination_social_unit_id = {creasCentro.id}\nE o profissional lotado no \"CREAS Centro\" passa a abrir o prontuário (via referral_received — US-ACOMP-06)",
+   "steps_html": "No prontuário da família <b>E2E Família Encaminhamento Legado</b>, o encaminhamento antigo mostra o destino em texto. Acionar <b>Definir unidade de destino</b>, escolher <b>E2E CREAS</b> e confirmar.",
+   "results": [
+    "Antes: a coluna de destino mostra “E2E CREAS (texto legado)” e a ação está disponível.",
+    "O diálogo declara “Nenhuma unidade escolhida (destino registrado em texto)”, oferece só o E2E CREAS e repete o aviso de acesso.",
+    "Depois de confirmar, a linha passa a “E2E CREAS” <b>sem recarregar a página</b>; no banco, a chave estrangeira e o texto mudam juntos.",
+    "<b>Metade deferida:</b> “o profissional lotado no CREAS passa a abrir o prontuário” depende do eixo de acesso da US-ACOMP-06 (#10888), que ainda não existe. Ver as observações."
+   ],
+   "images": [
+    "screenshots/ca07-1-legado-sem-unidade.png",
+    "screenshots/ca07-2-dialogo-unidade.png",
+    "screenshots/ca07-3-unidade-definida.png"
+   ]
+  },
+  {
+   "id": "CA08",
+   "title": "Encaminhamento com desfecho não é alterado",
+   "status": "parc",
+   "gherkin": "Dado um encaminhamento \"13\" com outcome = 'not_attended'\nEntão ReferralResource.destination_unit_editable = false e a ação não é exibida\nQuando eu forçar o PATCH destination-unit\nEntão recebo 409 com error_code = \"referral_destination_locked_by_outcome\"",
+   "steps_html": "No encaminhamento registrado no CA01, lançar o desfecho <b>Não atendido</b> e observar a lista; depois forçar a chamada PATCH pela própria sessão autenticada do navegador.",
+   "results": [
+    "Com o desfecho lançado, a ação “Definir unidade de destino” <b>desaparece</b> da linha.",
+    "A chamada forçada responde <b>409</b> com error_code <code>referral_destination_locked_by_outcome</code> (anexo <code>respostas-api.txt</code>).",
+    "Pest cobre também o cancelado (409) e o código externo (422)."
+   ],
+   "images": [
+    "screenshots/ca08-desfecho-sem-acao.png"
+   ]
+  },
+  {
+   "id": "CA09",
+   "title": "Formulário traz o nome da unidade escolhida",
+   "status": "parc",
+   "gherkin": "Dado um encaminhamento \"13\" com destination_social_unit_id = {creasCentro} (\"CREAS Centro\")\nQuando eu chamar POST …/referrals/{r}/form\nEntão o PDF traz \"CREAS Centro\" em \"Órgão ou unidade de destino\"\nE, se a unidade for renomeada para \"CREAS Centro-Sul\", a reemissão traz o nome novo\nE os demais campos do PDF são idênticos aos de antes",
+   "steps_html": "Emitir o formulário do cidadão pelo prontuário; renomear a unidade no cadastro para “E2E CREAS Centro-Sul”; reemitir o formulário. Os dois PDFs estão anexados ao dossiê.",
+   "results": [
+    "1ª emissão (<code>ca09-formulario-encaminhamento.pdf</code>): “ÓRGÃO OU UNIDADE DE DESTINO: <b>E2E CREAS</b>”.",
+    "Após renomear a unidade, a reemissão (<code>ca09-formulario-apos-renomear.pdf</code>) traz “<b>E2E CREAS Centro-Sul</b>” — o nome vem do cadastro, ao vivo.",
+    "O instantâneo gravado em referrals.destination_organization continuou “E2E CREAS”, como previsto.",
+    "O nome da unidade foi restaurado depois da captura."
+   ],
+   "images": []
+  },
+  {
+   "id": "CA10",
+   "title": "Alteração da unidade auditada",
+   "status": "parc",
+   "gherkin": "Dado que alterei a unidade de destino de {creasCentro} para {creasNorte}\nQuando eu consultar activity_log (log_name = 'referral', subject = o encaminhamento)\nEntão há um evento 'updated' com old.destination_social_unit_id = {creasCentro.id},\n     attributes.destination_social_unit_id = {creasNorte.id}, causer_id e created_at",
+   "steps_html": "Depois da ação do CA07 (feita pela interface), consultar a trilha do encaminhamento. Anexo <code>activity-log-ca10.txt</code>.",
+   "results": [
+    "Evento <code>updated</code> com autor identificado (causer_id) e data.",
+    "De: destination_social_unit_id nulo e texto “E2E CREAS (texto legado)”. Para: a chave estrangeira da unidade e o texto “E2E CREAS” — os dois campos mudam juntos.",
+    "Nota: nesta base o de/para fica na coluna <code>attribute_changes</code> do activity_log; <code>properties</code> guarda apenas o tenant_id."
+   ],
+   "images": []
+  },
+  {
+   "id": "CA11",
+   "title": "Contadores da remessa não mudam",
+   "status": "auto",
+   "gherkin": "Dado o cenário de AttendanceReportReferralCrossTest, acrescido de encaminhamentos \"13\"/\"14\" com unidade de destino\nQuando eu chamar GET /api/client/attendance-reports do mesmo período\nEntão os três contadores do 15.6 (cadunico_inclusion, cadunico_update, bpc) têm os mesmos valores de antes",
+   "steps_html": "Critério de backend, coberto em AttendanceReportReferralCrossTest; o serviço de apuração não foi tocado pelo commit (conferido por diff).",
+   "results": [
+    "A suíte compara os contadores antes e depois de acrescentar encaminhamentos internos com unidade de destino.",
+    "AttendanceReportService não aparece no diff da entrega."
+   ],
+   "images": []
+  },
+  {
+   "id": "CA12",
+   "title": "Isolamento entre municípios",
+   "status": "auto",
+   "gherkin": "Dado que sou usuário do município A\nQuando eu chamar o options\nEntão destination_units só contém unidades do tenant A\nE um POST/PATCH com destination_social_unit_uuid de unidade do tenant B recebe 422\n     com a mesma mensagem de unidade inexistente",
+   "steps_html": "Critério de backend (exige um segundo município). Coberto pela suíte de encaminhamentos e pela de isolamento.",
+   "results": [
+    "Pest: “answers 422 with the SAME message for a unit of ANOTHER tenant and for a nonexistent uuid — on POST and on PATCH”.",
+    "Pest (isolamento): “lists only the tenant own destination units in options and refuses…”."
+   ],
+   "images": []
+  },
+  {
+   "id": "CA-extra-A",
+   "title": "Marcação no Painel Global (RN01/RN09)",
+   "status": "nav",
+   "gherkin": "Dado que sou ADMIN no admin/\nQuando eu chamar PUT /api/manager/referral-codes/{13} com destination_unit_type_uuid = {tipo CREAS}\nEntão recebo 200 e o activity_log (log_name 'referral_code') registra a mudança\nQuando eu enviar destination_unit_type_uuid igual ao restricted_to_unit_type\nEntão recebo 422 com referral_code.destination_type_equals_origin_type",
+   "steps_html": "No Painel Global, catálogo de códigos: conferir a coluna nova, abrir o código 13, tentar salvar com o tipo de destino igual ao de origem, corrigir e conferir a trilha. Ao final o código foi desmarcado e remarcado para gerar trilha com autor.",
+   "results": [
+    "A coluna “Destino (trânsito interno)” traz CREAS no código 13 e CRAS no 14; os demais ficam com “—”.",
+    "O formulário tem o campo “Tipo da unidade de destino (trânsito interno)”, com a opção “Não é trânsito interno”.",
+    "Escolher o mesmo tipo da origem é recusado: “O tipo da unidade de destino não pode ser igual ao tipo da unidade de origem (restrição).”.",
+    "A trilha mostra as duas alterações feitas pelo administrador (com autor) e as da migration de dados (sem autor), sempre com nomes, nunca identificadores."
+   ],
+   "images": [
+    "screenshots/ca-extra-a-1-catalogo-13-14.png",
+    "screenshots/ca-extra-a-2-form-tipo-destino.png",
+    "screenshots/ca-extra-a-3-destino-igual-origem-recusado.png",
+    "screenshots/ca-extra-a-4-trilha-auditoria.png"
+   ]
+  },
+  {
+   "id": "CA-extra-B",
+   "title": "Autor ou Master (D06)",
+   "status": "auto",
+   "gherkin": "Dado um encaminhamento \"13\" sem desfecho registrado pelo operador X\nQuando o operador Y, com acesso ao prontuário, chamar o PATCH destination-unit\nEntão recebo 403 com error_code = \"referral_destination_not_author\"\nE o Master recebe 200 na mesma chamada",
+   "steps_html": "Critério de backend (exige dois operadores com acesso ao mesmo prontuário e o Master).",
+   "results": [
+    "Pest: “answers 403 referral_destination_not_author for another operator with record access — and 200 for the Master”.",
+    "Pest (revisão): “treats a CLIENT_ADMIN of ANOTHER tenant as a plain operator here — editable false e 403”."
+   ],
+   "images": []
+  },
+  {
+   "id": "CA-extra-C",
+   "title": "PUT não troca a classe do código (D08)",
+   "status": "parc",
+   "gherkin": "Dado um encaminhamento \"05\" (externo)\nQuando eu chamar PUT com referral_code_uuid = {13}\nEntão recebo 422 com error_code = \"referral_code_transit_class_change\"",
+   "steps_html": "Abrir a correção do encaminhamento interno e observar o campo de destino e os códigos oferecidos; depois forçar o PUT trocando o 13 por um código externo.",
+   "results": [
+    "Na correção de um código interno o destino fica <b>somente leitura</b>, com a orientação de usar a ação “Definir unidade de destino”.",
+    "O seletor de código só oferece códigos da mesma classe — nenhum externo.",
+    "A chamada forçada responde <b>422</b> com error_code <code>referral_code_transit_class_change</code> (anexo <code>respostas-api.txt</code>)."
+   ],
+   "images": [
+    "screenshots/ca-extra-c-correcao-readonly.png"
+   ]
+  }
+ ],
+ "notes": [
+  {
+   "title": "CA07 — metade deferida à US-ACOMP-07 → US-ACOMP-06 (#10888)",
+   "html": "<p>A última linha do CA07 (“o profissional lotado no CREAS passa a abrir o prontuário”) depende do terceiro eixo de acesso, que é a <b>US-ACOMP-06 (#10888)</b> — HU seguinte, planejada para a mesma branch. Esta entrega cria a coluna, o índice parcial e o caminho de escrita que a 06 consome; o dossiê da 06 fecha essa metade. Nada além disso ficou pendente nos demais critérios.</p>"
+  },
+  {
+   "title": "Redação a calibrar com a área de negócio (P4 da spec)",
+   "html": "<p>O aviso interpola o <b>nome</b> da unidade (“A equipe de E2E CREAS passará…”), enquanto o exemplo do CA04 usa o tipo (“A equipe de CREAS”). A mensagem de unidade incompatível na correção também pode ser revista. Ambas são decisão de redação, registradas para o PO e sem efeito sobre o comportamento.</p>"
+  },
+  {
+   "title": "Débito conhecido — código de trânsito inativado no catálogo",
+   "html": "<p>A lista de unidades de destino considera apenas os tipos de códigos internos <b>ativos</b>, enquanto o servidor aceita a unidade mesmo com o código inativado. Se o 13 ou o 14 for inativado, o diálogo “Definir unidade de destino” de um encaminhamento antigo fica sem opções. Registrado como acompanhamento de backend; não afeta nenhum critério desta HU.</p>"
+  },
+  {
+   "title": "Migrations, índice e invariante",
+   "html": "<p>As três migrations aplicam e revertem em base com dados (anexo <code>backend/migrate-rollback.txt</code>). O <code>EXPLAIN</code> confirma que o predicado do eixo da US-ACOMP-06 usa o índice parcial novo com varredura apenas por índice (<code>backend/explain-idx.txt</code>). A invariante §8.5 devolve zero linhas, com contraprova na suíte (<code>backend/invariante-8-5.txt</code>). Nenhuma permissão nova (<code>backend/permissions-sync.txt</code>).</p>"
+  }
+ ],
+ "appendix": {
+  "label": "Cobertura automatizada (Pest, --filter=Referral)",
+  "file": "pest-referral.txt"
+ }
+}

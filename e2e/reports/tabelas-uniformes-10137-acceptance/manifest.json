@@ -1,0 +1,90 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — US-04 Comportamento uniforme de tabelas",
+    "subtitle": "Ticket GLPI #10137 · Evidências end-to-end no admin e no client",
+    "rows": [
+      ["Gerado em", "30/07/2026 14:30"],
+      ["Ticket GLPI", "#10137 — HU - #10137 Comportamento uniforme de tabelas entre módulos"],
+      ["Spec", ".planning/product/stories/US-04-comportamento-uniforme-de-tabelas.md"],
+      ["Branch (admin)", "develop @ d1235db (PR #71 mergeado)"],
+      ["Branch (client)", "develop @ 96400c2 + df8386a fix (PR #60 mergeado)"],
+      ["Ambiente", "API Sail/PostgreSQL · admin :5173 · client :5174"],
+      ["Organização (tenant)", "E2E CadÚnico · IBGE 2304400"],
+      ["Ferramenta", "playwright-cli (Chromium) + Vitest"]
+    ]
+  },
+  "summary": "5 critérios de aceite, verificados nos dois frontends (admin e client) via navegador, com uma amostra representativa por módulo. CA02 e CA05 (foco da leva de implementação) estão plenamente atendidos nos módulos migrados de ambos os frontends, com evidência adicional do gap conhecido e deliberado no módulo `users` do client (fora de escopo desta leva, ainda sem o tratamento). CA01, CA03 e CA04 — não tocados por esta leva de implementação — foram verificados agora pela primeira vez com evidência fresca (incluindo medição real de Cumulative Layout Shift via Layout Instability API) e confirmam a alegação anterior, não verificada, do relatório-piloto.",
+  "cas": [
+    {
+      "id": "CA01",
+      "title": "Paginação idêntica",
+      "status": "nav",
+      "gherkin": "Dado qualquer listagem de `client/` ou `admin/`\nQuando chego ao rodapé da tabela\nEntão encontro o mesmo controle de paginação, com o mesmo padrão de itens por página e o mesmo texto de contagem de resultados.",
+      "steps_html": "Aberto <code>/app/sexes</code> (admin) e <code>/app/cadastros/profissionais-municipais</code> (client), rolado até o rodapé da tabela.",
+      "results": [
+        "Admin: rodapé mostra 'Exibindo 1–3 de 3', botões Primeira/Anterior/Página N/Próxima/Última e combobox 'Itens por página: 15'.",
+        "Client: rodapé mostra 'Exibindo 1–1 de 1', mesmos botões de navegação e mesmo combobox 'Itens por página: 15'.",
+        "Mesmo texto-padrão de contagem ('Exibindo X–Y de Z') e mesmo conjunto de controles nos dois frontends.",
+        "Nuance observada (não bloqueante): no admin o texto de contagem tem role=\"status\"; no client é um parágrafo simples sem role — mesmo padrão visual/textual, papel semântico levemente distinto."
+      ],
+      "images": ["screenshots/ca01-admin-paginacao.png", "screenshots/ca01-client-paginacao.png"]
+    },
+    {
+      "id": "CA02",
+      "title": "Estado vazio padronizado",
+      "status": "nav",
+      "gherkin": "Dado uma listagem sem resultados\nQuando a tela termina de carregar\nEntão exibe o mesmo componente de estado vazio, com mensagem em pt-BR e, quando couber, a ação de criar o primeiro registro.",
+      "steps_html": "Buscado por um termo inexistente (<code>zzz_inexistente_zzz</code>) em <code>/app/sexes</code> (admin) e em <code>/app/cadastros/profissionais-municipais</code> (client).",
+      "results": [
+        "Admin: bloco role=\"status\" com 'Nenhum resultado encontrado' + hint em pt-BR + botão 'Limpar filtros'.",
+        "Client: bloco role=\"status\" com 'Nenhum resultado para os filtros aplicados.' + hint em pt-BR + botão 'Limpar filtros'.",
+        "Mesmo componente compartilhado (TableStatusMessage) usado nos dois frontends, com role=\"status\" e mesma estrutura ícone+título+hint+ação.",
+        "Gap conhecido e deliberado: o módulo `users` do client (fora do escopo desta leva) ainda usa um bloco de vazio próprio, sem role e sem distinguir erro de vazio — ver evidência negativa anexada."
+      ],
+      "images": ["screenshots/ca02-admin-vazio.png", "screenshots/ca02-client-vazio.png"]
+    },
+    {
+      "id": "CA03",
+      "title": "Carregando sem salto de layout",
+      "status": "parc",
+      "gherkin": "Dado uma listagem em carregamento\nQuando os dados chegam\nEntão o skeleton ocupa a mesma altura das linhas reais\nE o cumulative layout shift da transição é ≤ 0,1.",
+      "steps_html": "Instalado um <code>PerformanceObserver</code> (Layout Instability API) via <code>page.addInitScript</code> antes do reload, acumulando o CLS real da navegação; atrasada a resposta da API (~1.5–2.5s) para capturar o skeleton em pleno carregamento.",
+      "results": [
+        "Admin (sexes): CLS medido = 0 (bem abaixo do limite de 0,1). Skeleton com linhas de 49px vs linhas reais de 53px — diferença de 4px por linha, não pixel-perfect, mas sem gerar layout shift mensurável na prática.",
+        "Client (professionals): CLS medido = 0, mesmo padrão de skeleton (linhas cinza no formato da tabela).",
+        "Classificado como parcial (não 'nav' puro) porque a altura do skeleton não é idêntica, pixel a pixel, à da linha real — apesar de o CLS medido ser 0 nos dois frontends, o critério textual ('mesma altura') não é atendido de forma literal."
+      ],
+      "images": ["screenshots/ca03-admin-skeleton.png", "screenshots/ca03-admin-carregado.png", "screenshots/ca03-client-skeleton.png", "screenshots/ca03-client-carregado.png"]
+    },
+    {
+      "id": "CA04",
+      "title": "Ordenação consistente e acessível",
+      "status": "nav",
+      "gherkin": "Dado uma coluna ordenável\nQuando a aciono por clique ou por teclado\nEntão o indicador de direção é o mesmo componente em todos os módulos\nE o estado é exposto via `aria-sort`.",
+      "steps_html": "Clicado no cabeçalho ordenável (<code>Código</code> no admin, <code>Nome</code> no client) e lido o atributo <code>aria-sort</code> via <code>page.evaluate</code> antes/depois do clique.",
+      "results": [
+        "Admin: aria-sort inicial 'ascending' (ordenação padrão), após clique vira 'descending' — atributo exposto corretamente, ícone de direção visível no cabeçalho.",
+        "Client: aria-sort inicial 'none', após clique vira 'ascending' — mesmo padrão de exposição via aria-sort.",
+        "Mesmo componente de indicador de direção (ícone + botão no columnheader) nos dois frontends."
+      ],
+      "images": ["screenshots/ca04-admin-ordenacao.png", "screenshots/ca04-client-ordenacao.png"]
+    },
+    {
+      "id": "CA05",
+      "title": "Falha de carregamento tratada (caminho de erro)",
+      "status": "nav",
+      "gherkin": "Dado que a requisição da listagem falha\nQuando a tela reage\nEntão exibe o mesmo componente de erro, com a causa em linguagem de usuário e uma ação de tentar novamente — nunca uma tabela vazia silenciosa, que o usuário leria como \"não há registros\".",
+      "steps_html": "Interceptada a chamada de listagem via <code>page.route(...).abort('connectionrefused')</code> (falha de rede, não HTTP 500 — evita disparar a página de erro global) em <code>/app/sexes</code> (admin) e <code>/app/cadastros/profissionais-municipais</code> (client); depois removida a rota e clicado 'Tentar novamente'.",
+      "results": [
+        "Admin: bloco role=\"alert\" com 'Não foi possível carregar os dados' + hint + botão 'Tentar novamente'; após remover a falha e clicar retry, a tabela real recarrega normalmente.",
+        "Client: mesmo bloco role=\"alert\", mesmo texto, mesmo botão de retry; recuperação confirmada após clique.",
+        "Evidência negativa (gap deliberado, módulo `users` do client, fora de escopo desta leva): a mesma falha de rede não produz alerta nenhum — a tela mostra silenciosamente 'Nenhum usuário encontrado', sem role e sem ação de retry, exatamente o comportamento que este CA proíbe. Confirma que o gap documentado é real e ainda não corrigido."
+      ],
+      "images": ["screenshots/ca05-admin-erro.png", "screenshots/ca05-client-erro.png", "screenshots/gap-client-users-sem-tratamento.png"]
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Vitest — amostra admin/sexes + client/professionals + client/cadunico-imports)",
+    "file": "vitest-amostra.txt"
+  }
+}

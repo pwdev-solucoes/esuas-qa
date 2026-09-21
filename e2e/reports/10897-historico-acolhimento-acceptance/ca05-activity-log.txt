@@ -1,0 +1,2 @@
+no-reason-text
+{"id":3451,"log_name":"family_sheltering","description":"Campos de texto livre alterados (conteúdo não registrado na trilha).","subject_type":"App\\Models\\FamilySheltering","subject_id":2,"event":"updated","causer_type":"App\\Models\\User","causer_id":12,"attribute_changes":"[]","properties":"{\"sensitive_fields_changed\":[\"reason\"],\"tenant_id\":5}","created_at":"2026-09-18 20:22:37","updated_at":"2026-09-18 20:22:37"}

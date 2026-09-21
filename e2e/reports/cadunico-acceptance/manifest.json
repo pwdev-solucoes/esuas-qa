@@ -1,0 +1,109 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — Importação do Cadastro Único (CadÚnico)",
+    "subtitle": "Sprint 8 · HU01–HU05 · Evidências end-to-end no frontend do Tenant (client)",
+    "rows": [
+      ["Branch", "sprint8-cadunico"],
+      ["Spec", ".planning/specs/sprint8/cadunico-imports-importacao-cadastro-unico.md"],
+      ["Ambiente", "API Laravel (Sail/PostgreSQL) · fila cadunico (worker) · client Vite :5174"],
+      ["Organização (tenant)", "E2E CadÚnico · município Fortaleza (IBGE 2304400)"],
+      ["Ferramenta", "playwright-cli (Chromium) + Pest"],
+      ["Gerado pela skill", "acceptance-evidence-report"]
+    ]
+  },
+  "summary": "Os 12 critérios de aceite (CA01–CA12) foram exercitados: 9 com evidência direta no navegador (prints), 2 por cobertura automatizada (mecanismo de permissão por papel) e 1 combinado. Nenhuma falha.",
+  "cas": [
+    {
+      "id": "CA01", "title": "Sucesso na validação inicial (HU01)", "status": "nav",
+      "gherkin": "Dado que sou Operacional do Tenant com a permissão de importação, quando faço upload de um CSV válido no layout oficial do CadÚnico, então o sistema confirma a validação estrutural e habilita o botão para confirmar o processamento do lote.",
+      "steps_html": "Master abre “Nova importação”, seleciona <code>cadunico-valido.csv</code> (IBGE 2304400, mesmo município da organização) e clica “Validar arquivo”.",
+      "results": ["O sistema exibe “Arquivo validado” e habilita “Confirmar importação”."],
+      "images": ["screenshots/ca01-validado.png"]
+    },
+    {
+      "id": "CA02", "title": "Rejeição de formato/layout (HU01)", "status": "nav",
+      "gherkin": "Dado que sou Operacional do Tenant com a permissão, quando seleciono um arquivo que não é CSV ou com colunas divergentes, então o sistema rejeita o arquivo imediatamente e exibe mensagem clara com o motivo.",
+      "steps_html": "Três rejeições: cabeçalho divergente, arquivo não-CSV (.pdf) e arquivo de outro município (RN01 — validação cd_ibge × município da organização).",
+      "results": [
+        "Cabeçalho divergente → “…não corresponde ao layout oficial… Colunas ausentes: cd_ibge, …”.",
+        "Não-CSV (.pdf) → “O arquivo deve estar no formato CSV.” (botão Validar desabilitado).",
+        "Outro município → “O arquivo é de outro município (IBGE 3550308) e não corresponde ao da organização (IBGE 2304400).”"
+      ],
+      "images": ["screenshots/ca02-layout.png", "screenshots/ca02-naocsv.png", "screenshots/ca02-municipio.png"]
+    },
+    {
+      "id": "CA03", "title": "Bloqueio de interface por falta de permissão (HU01)", "status": "nav",
+      "gherkin": "Dado que sou Operacional do Tenant SEM a permissão de importação, quando acesso o Painel do Tenant, então a funcionalidade de importação do CadÚnico não está visível/habilitada para mim.",
+      "steps_html": "Login como Operador (sem <code>cadunico-imports.*</code>): inspeção da sidebar e tentativa de navegação direta para <code>/app/cadunico-imports</code>.",
+      "results": ["O item “Importações do CadÚnico” não aparece na sidebar do Operador.", "A navegação direta é bloqueada → página “403 — Acesso negado”."],
+      "images": ["screenshots/ca03-operador.png", "screenshots/ca03-403.png"]
+    },
+    {
+      "id": "CA04", "title": "Criação de famílias inéditas (HU02)", "status": "nav",
+      "gherkin": "Dado que o arquivo validado foi confirmado para processamento, quando o sistema encontra um Código Familiar inexistente no tenant, então cadastra a nova unidade familiar, o domicílio e todos os membros do bloco.",
+      "steps_html": "Confirmação do lote válido (Etapa 1) e disparo da “Sincronizar famílias” (Etapa 2).",
+      "results": ["Resumo da sincronização: “Total analisado 2”, “Novas famílias 1”. No banco: 1 família (código 1600345009, responsible_cpf 52998224725) + 2 membros."],
+      "images": ["screenshots/ca04-ca08-detalhe.png"]
+    },
+    {
+      "id": "CA05", "title": "Atualização por data mais recente (HU02)", "status": "nav",
+      "gherkin": "Dado que o arquivo contém família já existente, quando a Data de Última Atualização do arquivo é maior que a do sistema, então o sistema atualiza em bloco os dados e desvincula (sem excluir) os membros ausentes.",
+      "steps_html": "Segundo lote <code>cadunico-atualizado.csv</code> (mesma família, data 2026-06-01 &gt; 2026-05-11) + sincronização.",
+      "results": ["Resumo: “Atualizadas por data 1” (Novas 0). A mesma família foi atualizada, sem duplicar."],
+      "images": ["screenshots/ca05-atualizadas.png"]
+    },
+    {
+      "id": "CA06", "title": "Bloqueio de dados defasados/iguais (HU02)", "status": "nav",
+      "gherkin": "Dado que o arquivo contém família já existente, quando a Data de Última Atualização do arquivo é menor ou igual à do sistema, então o sistema ignora o bloco integralmente e contabiliza como “Ignorado por Sincronização”.",
+      "steps_html": "Terceiro lote <code>cadunico-defasado.csv</code> (mesma família, data 2026-01-01, mais antiga) + sincronização.",
+      "results": ["Resumo: “Ignoradas por sincronização 1”. O cadastro local permaneceu intocado."],
+      "images": ["screenshots/ca06-ignoradas.png"]
+    },
+    {
+      "id": "CA07", "title": "Bloqueio por concorrência ativa (HU02/RN11)", "status": "nav",
+      "gherkin": "Dado que já há uma importação em processamento no meu município, quando eu ou outro Profissional do mesmo tenant tenta iniciar um novo upload, então o sistema nega a ação e exibe: “Existe uma importação em andamento para este município. Aguarde a conclusão”.",
+      "steps_html": "Com um lote em <code>status=processing</code> ativo para o tenant, a tela de importações é recarregada.",
+      "results": ["O botão “Nova importação” fica desabilitado; o tooltip exibe “Já existe uma importação em andamento para esta organização.”"],
+      "images": ["screenshots/ca07-concorrencia.png"]
+    },
+    {
+      "id": "CA08", "title": "Métricas detalhadas do resultado (HU03)", "status": "nav",
+      "gherkin": "Dado que o processamento terminou em segundo plano, quando acesso o resultado ou o histórico, então vejo: Total Analisado, Novas Famílias, Atualizadas por Data, Ignoradas, Linhas com Erro e a lista detalhada dos motivos das falhas.",
+      "steps_html": "Abertura do detalhe de um lote sincronizado.",
+      "results": ["O detalhe mostra o bloco de “Processamento do arquivo” (Linhas de famílias/pessoas) e o “Resumo da sincronização” com os 5 contadores."],
+      "images": ["screenshots/ca04-ca08-detalhe.png"]
+    },
+    {
+      "id": "CA09", "title": "Atribuição de permissão ao Profissional (HU04)", "status": "auto",
+      "gherkin": "Dado que sou Master no tenant, quando atribuo ao Profissional um papel que carrega “cadunico-imports.*”, então o Usuário vinculado passa a ter acesso imediato ao módulo de importação.",
+      "steps_html": "A concessão é por papel (Spatie) — <code>cadunico-imports.*</code> está em <code>MASTER_ONLY_RESOURCES</code>: o papel Master recebe; o Operador só recebe quando o Master sincroniza um papel que a carregue (tela Profissionais→papéis, HU #9358). Demonstração de UI da tela de papéis fora do escopo deste relatório.",
+      "results": ["Pest: o Operador sem a permissão recebe 403 (gating); o Master a possui. <code>permissions:sync --coverage</code> sem gaps."],
+      "images": []
+    },
+    {
+      "id": "CA10", "title": "Revogação de acesso (HU04)", "status": "auto",
+      "gherkin": "Dado que o Master remove do Profissional o papel com a permissão de importação, quando a sincronização de papéis é salva, então o acesso às telas de importação e histórico é bloqueado imediatamente.",
+      "steps_html": "Mesmo mecanismo de papéis do CA09 (efeito imediato na revalidação do próximo request). Evidência equivalente ao gating do Operador (CA03) no navegador + Pest.",
+      "results": ["Pest: gating por permissão (Operador sem acesso → 403). A revogação é o inverso da atribuição (CA09)."],
+      "images": []
+    },
+    {
+      "id": "CA11", "title": "Histórico auditável (HU05)", "status": "nav",
+      "gherkin": "Dado que sou Master ou Profissional autorizado, quando acesso o Histórico de Importações, então vejo a listagem cronológica com data/hora, nome do arquivo, resultado estatístico e o nome do Profissional ou Usuário (RN05) que executou.",
+      "steps_html": "Listagem de importações do tenant.",
+      "results": ["A lista mostra arquivo, tamanho, status de processamento, status de sincronização, data e o executor “E2E Master CadÚnico [Master]” (sufixo [Master] — RN05)."],
+      "images": ["screenshots/ca11-historico.png"]
+    },
+    {
+      "id": "CA12", "title": "Isolamento multi-tenant no histórico (HU05/RN10)", "status": "parc",
+      "gherkin": "Dado que consulto o histórico de importações, quando a lista é carregada, então vejo apenas os lotes do meu município, sem acesso a outros tenants.",
+      "steps_html": "Navegador: o histórico exibe somente os lotes desta organização. Backend: acesso cruzado a um lote de outro tenant responde 404 (Pest — <code>BelongsToTenant</code>).",
+      "results": ["A listagem contém apenas os lotes do tenant E2E. Pest: “returns 404 for a cross-tenant import (CA12/RN10)”."],
+      "images": ["screenshots/ca12-historico-tenant.png"]
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Pest, --filter=Cadunico)",
+    "file": "pest-cadunico.txt"
+  }
+}

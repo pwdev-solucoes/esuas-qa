@@ -1,0 +1,29 @@
+== Apos alterar o CBO de 2516-05 para 4110-10 ==
+user_tenant_role vigentes: operador
+
+professional_role_grants (RN11 — revogar MARCA, nao apaga):
+  operador                   origin=suggested  revoked_at=- motivo=-
+  family_viewer              origin=suggested  revoked_at=2026-08-07 13:15:38 motivo=cbo_changed
+  pf_tecnico_referencia      origin=suggested  revoked_at=2026-08-07 13:15:38 motivo=cbo_changed
+
+== CA08 — trilha ==
+event: cbo_access_reprocessed  log_name: tenant_professional
+causer: User#7  subject: TenantProfessional#8
+properties: {
+    "tenant_id": 3,
+    "previous_cbo_code": "2516-05",
+    "new_cbo_code": "4110-10",
+    "new_cbo_has_mapping": true,
+    "revoked": [
+        "family_viewer",
+        "pf_tecnico_referencia"
+    ],
+    "suggested": [
+        "pf_apoio_administrativo"
+    ],
+    "preserved_manual": [],
+    "legacy": false
+}
+
+CPF em claro? NAO
+Nome completo em claro? NAO

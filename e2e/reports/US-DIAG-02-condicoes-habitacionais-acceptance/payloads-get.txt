@@ -1,0 +1,60 @@
+GET /api/client/families/{uuid}/housing-conditions — respostas reais capturadas no navegador
+==========================================================================================
+
+familia 9900000007 (CA03)
+-------------------------
+{
+  "data": {
+    "uuid": "5cc444ff-68de-43ee-b520-2b41f6534ab0",
+    "residence_type": null,
+    "in_risk_area": true,
+    "domicile_vulnerability": null,
+    "missing_fields": [
+      "residence_type",
+      "domicile_vulnerability"
+    ],
+    "created_by": {
+      "id": 14,
+      "name": "E2E Operador Prontuário"
+    },
+    "created_at": "2026-09-17T20:59:27+00:00",
+    "updated_by": null,
+    "updated_at": "2026-09-17T20:59:27+00:00"
+  },
+  "is_pending": false
+}
+
+familia 9900000008 (CA05)
+-------------------------
+{
+  "data": null,
+  "is_pending": true
+}
+
+familia 9900000009 (CA01)
+-------------------------
+{
+  "data": {
+    "uuid": "ffa3d750-270c-49fd-b0b6-5b5fbd1b16c1",
+    "residence_type": {
+      "id": 2,
+      "uuid": "d4da544b-7b0d-4957-a6e9-06ed90161309",
+      "code": "2",
+      "name": "Alugada"
+    },
+    "in_risk_area": false,
+    "domicile_vulnerability": false,
+    "missing_fields": [],
+    "created_by": {
+      "id": 14,
+      "name": "E2E Operador Prontuário"
+    },
+    "created_at": "2026-09-17T21:00:41+00:00",
+    "updated_by": {
+      "id": 14,
+      "name": "E2E Operador Prontuário"
+    },
+    "updated_at": "2026-09-17T21:01:45+00:00"
+  },
+  "is_pending": false
+}

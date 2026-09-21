@@ -1,0 +1,226 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — Cadastro de Família Fora do CadÚnico",
+    "subtitle": "Épico Prontuário SUAS F0 · HU #10661 · 10 critérios · evidências dirigidas no client",
+    "rows": [
+      [
+        "Gerado em",
+        "27/08/2026"
+      ],
+      [
+        "História",
+        "#10661 — Cadastro de família fora do CadÚnico (origem manual)"
+      ],
+      [
+        "Spec",
+        ".planning/specs/10661-cadastro-familia-fora-cadunico.md"
+      ],
+      [
+        "Branch",
+        "prontuario (api, client, admin)"
+      ],
+      [
+        "Ambiente",
+        "API Laravel :8090 (esuas_app) · PostgreSQL esuas_e2e · client vite preview :4174"
+      ],
+      [
+        "Organização (tenant)",
+        "E2E CadÚnico"
+      ],
+      [
+        "Ferramenta",
+        "playwright-cli (Chromium headless) + Pest 4"
+      ]
+    ]
+  },
+  "summary": "10 critérios de aceite. <b>8 evidenciados no navegador</b> e <b>2 por suíte automatizada</b> (CA02 e CA08, por dependerem de cenários que o ambiente de evidências não reproduz). Nenhum critério reprovado. A suíte da história fecha <b>17 testes / 128 asserções</b>. Esta é a segunda emissão do relatório: os dois critérios que estavam parciais foram <b>corrigidos no produto</b> e reevidenciados. O CA07 declarava “não recebe” o Bolsa Família de uma família manual sem que ninguém tivesse informado — o que poderia virar uma declaração ao TCE-AL que o município não fez —, e agora exibe “não informado”. O CA09 oferecia no cadastro manual unidades fora da lotação do profissional, que o backend recusava só ao final do preenchimento; a lista passou a sair do mesmo recorte por lotação que governa a abertura de prontuário. Detalhes em “Observações e ressalvas”.",
+  "cas": [
+    {
+      "id": "CA01",
+      "title": "Cadastrar família de responsável já cadastrado",
+      "status": "nav",
+      "gherkin": "Dado que sou Operacional do Tenant com o add-on LGPD, lotado no \"CRAS Centro\"\n  E que a pessoa que será a responsável já existe no repositório e foi vinculada\nQuando eu cadastrar a família informando o \"CRAS Centro\" como unidade de referência\nEntão a família é criada com origem manual\n  E recebe número de prontuário gerado pelo sistema\n  E a data de abertura é registrada\n  E o responsável consta da composição familiar como pessoa de referência",
+      "steps_html": "Menu <b>Nova Família</b> → <b>Buscar pessoa</b> pelo CPF de alguém já vinculado ao município → <b>Selecionar como responsável</b> → unidade <code>E2E CRAS Centro</code> → <b>Cadastrar família</b>.",
+      "results": [
+        "POST /client/families → <b>201 Created</b>.",
+        "A família nasce com <b>origem manual</b> (origin = 'manual' em banco).",
+        "O número do prontuário é <b>gerado pelo sistema</b>: 2026-000001. O formulário anuncia isso antes de salvar (“Gerado pelo sistema ao cadastrar.”).",
+        "A data de abertura é registrada e apresentada no cabeçalho: “Aberto em 27/08/2026”.",
+        "O responsável consta da composição como <b>Responsável pela Unidade Familiar</b>, com vínculo ativo.",
+        "A tela deixa a regra explícita desde o início: “O prontuário nasce com o responsável familiar e a unidade de referência.”",
+        "Efeito derivado observado: o perfil de vulnerabilidade “Famílias unipessoais” é calculado sozinho, já que a família nasce com um único integrante."
+      ],
+      "images": [
+        "screenshots/ca01-familia-manual-criada.png"
+      ]
+    },
+    {
+      "id": "CA02",
+      "title": "Cadastrar família de pessoa que não existia",
+      "status": "auto",
+      "gherkin": "Dado que a pessoa que procurou a unidade não está no repositório\nQuando eu cadastrá-la pelo caminho da US-PRONT-06 e criar a família com ela como responsável\nEntão a família é criada\n  E o prontuário fica disponível para receber os demais blocos",
+      "steps_html": "Evidência <b>automatizada</b>. O caminho existe e foi observado na tela — o diálogo de identificação do responsável oferece “Cadastrar pessoa” sem sair do formulário, e a tela anuncia: “A pessoa vem do repositório. Não encontrou? Cadastre pelo balcão, sem sair deste formulário.” A conclusão do fluxo encadeado (cadastrar pessoa dentro do cadastro de família) não pôde ser completada nesta sessão.",
+      "results": [
+        "Pest: “it registers a family for a person who did not exist yet, through t…” — PASS.",
+        "O caminho de cadastro pelo balcão foi evidenciado integralmente no dossiê da #10660 (CA05), que é a US-PRONT-06 citada por este critério.",
+        "O prontuário resultante recebe os demais blocos normalmente — comprovado pelo CA07 deste mesmo dossiê, que percorre os blocos de uma família manual recém-criada."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA03",
+      "title": "Família sem responsável não é criada",
+      "status": "nav",
+      "gherkin": "Dado que estou cadastrando uma família\nQuando eu tentar salvar sem identificar o responsável familiar\nEntão a família não é criada\n  E o sistema indica que o responsável precisa ser identificado",
+      "steps_html": "Preencher a unidade de referência e tentar <b>Cadastrar família</b> sem identificar responsável.",
+      "results": [
+        "<b>Nenhuma requisição de criação é emitida</b> — a família não é criada.",
+        "A validação indica exatamente o que falta: “Identifique o responsável familiar antes de cadastrar.”",
+        "A exigência é anunciada de forma preventiva, antes de qualquer tentativa: “Nenhuma pessoa identificada. A família não é cadastrada sem responsável.”",
+        "A regra também vale no backend: “it refuses to create a family without an identified responsible”."
+      ],
+      "images": [
+        "screenshots/ca03-sem-responsavel.png"
+      ]
+    },
+    {
+      "id": "CA04",
+      "title": "Sem código familiar do CadÚnico",
+      "status": "nav",
+      "gherkin": "Dado que cadastrei uma família de origem manual\nQuando eu consultar o prontuário dela\nEntão o código familiar do MDS aparece vazio\n  E isso não gera pendência",
+      "steps_html": "Prontuário da família manual recém-criada.",
+      "results": [
+        "O código familiar aparece vazio no cabeçalho do prontuário (“CÓDIGO FAMILIAR —”), e em banco o campo é NULL.",
+        "A ausência não é tratada como falta: já no formulário de cadastro o campo é apresentado como <b>“— (não se aplica: família fora do CadÚnico)”</b>, o que evita que a equipe procure um dado que não existe.",
+        "Não gera pendência: o prontuário funciona normalmente, com todas as abas disponíveis.",
+        "Cobertura correspondente: “it keeps the manual family without a CadUnico family code, and that…”."
+      ],
+      "images": [
+        "screenshots/ca01-familia-manual-criada.png"
+      ]
+    },
+    {
+      "id": "CA05",
+      "title": "Aviso por endereço incompleto",
+      "status": "nav",
+      "gherkin": "Dado que estou cadastrando uma família e ainda não tenho o endereço completo\nQuando eu salvar sem o CEP\nEntão a família é criada normalmente\n  E o sistema avisa que ela não poderá ser declarada na remessa ao TCE-AL\n    enquanto o endereço não estiver completo",
+      "steps_html": "Cadastro concluído com o bloco de endereço em branco (o formulário o marca como opcional).",
+      "results": [
+        "A família é criada normalmente — 201 Created. O aviso é <b>não-bloqueante</b>.",
+        "Dois avisos são apresentados após a criação: “A família foi cadastrada sem endereço. Ela não poderá ser declarada na remessa ao TCE-AL enquanto o endereço não estiver completo.” e “A zona de residência (urbana ou rural) não foi informada. A família não poderá ser declarada na remessa ao TCE-AL enquanto ela não for preenchida.”",
+        "O aviso é antecipado ainda durante o preenchimento, junto ao bloco de endereço: “Sem o CEP e a zona de residência, esta família não poderá ser declarada na remessa ao TCE-AL. O cadastro será salvo normalmente.”",
+        "A consequência é declarada em termos do negócio (a remessa ao TCE-AL), não em termos de campo obrigatório — o profissional entende o que perde ao seguir sem o dado."
+      ],
+      "images": [
+        "screenshots/ca01-familia-manual-criada.png"
+      ]
+    },
+    {
+      "id": "CA06",
+      "title": "Responsável já encabeça outra família",
+      "status": "nav",
+      "gherkin": "Dado que a pessoa escolhida como responsável já é responsável da família Silva no meu município\nQuando eu tentar criar uma nova família com ela\nEntão a família não é criada\n  E o sistema avisa que ela já é responsável de outra família\n  E oferece o caminho para abrir a família existente",
+      "steps_html": "Busca, no diálogo de identificação do responsável, pelo CPF de quem já é pessoa de referência de outra família do município.",
+      "results": [
+        "A família não chega a ser tentada: para essa pessoa a ação <b>“Selecionar como responsável” não é oferecida</b>. O erro é evitado antes de acontecer.",
+        "A única ação disponível é <b>“Abrir família”</b> — o caminho para a família existente, como o critério exige.",
+        "A regra é explicada no mesmo lugar: “Se ela já encabeça uma família, o caminho é abrir a existente; se apenas integra outra família, ela pode ser a responsável desta nova.”",
+        "O contraste confirma a leitura: a pessoa que apenas INTEGRA outra família recebe as duas ações (“Selecionar como responsável” e “Abrir família”), e foi por esse caminho que o CA01 foi executado.",
+        "A defesa não depende da tela: a API recusa com 409 e o banco impõe a regra “uma família por responsável” — “it enforces the one-family-per-responsible rule at the database level”. Há ainda tratamento de corrida, que traduz o conflito concorrente no mesmo 409."
+      ],
+      "images": [
+        "screenshots/ca06-ja-encabeca-familia.png"
+      ]
+    },
+    {
+      "id": "CA07",
+      "title": "Família manual nasce sem os dados do CadÚnico",
+      "status": "nav",
+      "gherkin": "Dado que cadastrei uma família de origem manual\nQuando eu consultar o prontuário\nEntão renda, per capita, Bolsa Família, grupo populacional e especificidade social aparecem sem valor\n  E a especificidade social consta como pendente, conforme a regra do prontuário",
+      "steps_html": "Percurso pelos blocos do prontuário de uma família manual recém-criada. <b>Reexecutado após a correção descrita em “Observações e ressalvas”.</b>",
+      "results": [
+        "Renda familiar total e renda per capita aparecem sem valor (“—”), e em banco os campos são NULL.",
+        "Nenhum grupo populacional é apresentado — a família não tem insumo de importação.",
+        "O <b>Bolsa Família aparece como “Não informado”</b>, e não como “Não recebe”: em banco o campo é NULL. Antes da correção, o default do banco fazia a família manual nascer declarando que não recebe o benefício — afirmação que ninguém tinha feito.",
+        "A especificidade social consta como <b>pendente</b>, exatamente conforme a regra da #10621: “Especificidade ainda não informada”, com a consequência declarada (a remessa 15.11 fica impedida).",
+        "O critério agora se cumpre por inteiro: todos os dados que só o CadÚnico traz aparecem sem valor, conforme a RN09."
+      ],
+      "images": [
+        "screenshots/ca07-pbf-nao-informado.png"
+      ]
+    },
+    {
+      "id": "CA08",
+      "title": "A família aparece depois no CadÚnico",
+      "status": "auto",
+      "gherkin": "Dado que cadastrei a família Souza manualmente, registrei o ingresso e três atendimentos\n  E que a remessa seguinte do CadÚnico traz uma família cujo responsável tem o mesmo CPF\nQuando a importação for processada\nEntão nenhuma família duplicada é criada\n  E a família existente recebe o snapshot do CadÚnico e passa a ser tratada como importada\n  E o ingresso, os atendimentos e a composição registrados pela equipe permanecem intactos",
+      "steps_html": "Evidência <b>automatizada</b>. Exercer este critério exigiria processar uma remessa do CadÚnico contendo o CPF do responsável de uma família criada manualmente — um ciclo de importação fora do alcance deste dossiê.",
+      "results": [
+        "Pest: “it consolidates the manually registered family when the CadUnico re…” — PASS.",
+        "Pest: “it keeps the manual family out of the remittance when the responsib…” — PASS.",
+        "A recusa a campos de snapshot no cadastro manual também é coberta: “it rejects CadUnico snapshot fields sent in the manual payload” — a família manual não pode nascer fingindo ter vindo da importação.",
+        "ATENÇÃO PARA A RATIFICAÇÃO PENDENTE: este é o critério que a premissa P3 do documento de premissas não ratificadas afeta diretamente. A consolidação já está construída, o que eleva o custo de uma decisão contrária do PO."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA09",
+      "title": "Operacional só cadastra na própria unidade",
+      "status": "nav",
+      "gherkin": "Dado que sou Operacional do Tenant lotado apenas no \"CRAS Centro\"\nQuando eu cadastrar uma família\nEntão só posso atribuir o \"CRAS Centro\" como unidade de referência",
+      "steps_html": "Abertura do seletor de unidade no formulário de nova família, como operador lotado em duas unidades (<code>E2E CRAS Centro</code> e <code>E2E CRAS Sem MDS</code>). <b>Reexecutado após a correção descrita em “Observações e ressalvas”.</b>",
+      "results": [
+        "São oferecidas <b>exatamente as duas unidades onde o profissional tem lotação vigente</b>. O <code>E2E CREAS</code>, onde ele não atua, não aparece na lista — verificado programaticamente sobre as opções do seletor.",
+        "A oferta agora sai do mesmo recorte por lotação que já governa a abertura de prontuário da #10618: o backend passou a expor a lista sem exigir uma família em mãos, e o formulário a consome.",
+        "A defesa de gravação continua onde estava: a API recusa unidade fora da lotação mesmo quando enviada diretamente no payload, com mensagem específica.",
+        "Antes da correção, o seletor listava todas as unidades ativas da organização e o profissional só descobria o problema ao submeter o formulário inteiro. Ver “Observações e ressalvas”."
+      ],
+      "images": [
+        "screenshots/ca09-unidades-recortadas.png"
+      ]
+    },
+    {
+      "id": "CA10",
+      "title": "Isolamento entre municípios",
+      "status": "auto",
+      "gherkin": "Dado que sou usuário do município A\nQuando eu cadastrar uma família\nEntão ela pertence ao município A\n  E não é visível a nenhum outro município da plataforma",
+      "steps_html": "Evidência <b>automatizada</b>. O ambiente de evidências possui uma única organização semeada, o que impede montar o cenário de dois municípios pelo navegador.",
+      "results": [
+        "A família criada nasce vinculada ao tenant do profissional, e o Model usa a trait BelongsToTenant — o escopo é aplicado por Global Scope, não por filtro de consulta.",
+        "O isolamento de famílias entre municípios foi evidenciado nos dossiês da #10617 (CA09) e da #10618 (CA09), com testes dedicados que recusam inclusive unidade de outro município enviada por payload.",
+        "Cobertura de exclusão relacionada: “it does not expose a deletion verb for families (P4)” — a família criada não pode ser apagada, o que preserva o registro para o município."
+      ],
+      "images": []
+    }
+  ],
+  "notes": [
+    {
+      "title": "Uma armadilha de migration que a suíte pegou",
+      "html": "<p>Registrado porque pode reaparecer: a primeira versão da migration que tornou o campo nulável usava o <code>change()</code> do framework. No driver em que a suíte roda, esse comando <b>recria a tabela</b> — e a recriação levou junto um índice único <b>parcial</b> (o que impede o mesmo responsável de encabeçar duas famílias, mas libera o vínculo quando a família é excluída logicamente).</p><p>O índice voltou como único total, e o teste que cobre justamente esse comportamento falhou — foi ele que denunciou. A migration foi reescrita com SQL específico por banco, recriando o índice parcial onde a reconstrução o derruba. Em produção o efeito não existiria, porque lá a alteração de coluna não mexe em índices; o problema aparecia apenas no ambiente de testes, e teria passado despercebido se aquele teste não existisse.</p>"
+    },
+    {
+      "title": "CA09 — o seletor oferecia unidades fora da lotação; CORRIGIDO nesta validação",
+      "html": "<p>O formulário de nova família listava <b>todas</b> as unidades em atividade da organização, incluindo aquelas em que o profissional não tem lotação. Ele podia escolher uma delas, preencher responsável, data e endereço, e só ao submeter receber a recusa. A família nunca era criada em unidade indevida — o backend sempre recusou, inclusive contra payload forjado —, mas a oferta contrariava o CA09.</p><p><b>Por que estava assim:</b> o endpoint que já devolvia a lista recortada por lotação exigia uma família existente, e no cadastro manual ela ainda não existe. A opção anterior foi usar o lookup de unidades ativas e deixar o backend barrar — uma decisão defensável, porque filtrar no front criaria uma segunda cópia da regra de acesso, que poderia divergir da primeira.</p><p><b>Correção aplicada:</b> o backend passou a expor a MESMA lista sem exigir família em mãos, usando a mesma primitiva do corte por unidade, e o formulário passou a consumi-la. O front continua sem reimplementar a regra — quem decide segue sendo o backend. A rota nova carrega o mesmo gate de permissão das demais, e há teste de regressão garantindo que o operador vê apenas as suas unidades e o Master vê todas as do município.</p><p><b>Verificação:</b> o seletor passou a oferecer apenas as duas unidades de lotação do profissional. Suíte da API: 3760 testes; frontend: 1726; ambos verdes.</p>"
+    },
+    {
+      "title": "CA07 — o Bolsa Família era declarado por omissão; CORRIGIDO nesta validação",
+      "html": "<p>O critério pede que o Bolsa Família apareça <b>sem valor</b> numa família manual, e a RN09 é explícita: nada do snapshot do CadÚnico é preenchido automaticamente, porque não há de onde tirar. O que a tela mostrava era <b>“Não recebe”</b>, e em banco o campo valia <code>false</code> — não nulo.</p><p>A origem do problema era o <i>default</i> da coluna. A importação preenche o campo explicitamente a partir do indicador do CadÚnico; a família manual não passa por lá, então herdava o <code>false</code> do banco.</p><p><b>Por que isso importa:</b> o leiaute da remessa tem campo de perfil do Bolsa Família. Declarar “não recebe” por omissão é declarar ao TCE-AL algo que o município nunca afirmou. É exatamente a fronteira que a #10621 guarda com rigor entre “Família Sem Especificidades” (resposta dada) e “não informado” — o mesmo cuidado não havia alcançado o Bolsa Família.</p><p><b>Correção aplicada:</b> a coluna passou a admitir nulo e perdeu o default, e a serialização deixou de coagir o valor para booleano. A tela ganhou um terceiro estado e passa a exibir “Não informado”. Famílias já existentes não foram convertidas retroativamente: no que já está gravado não há como distinguir o <code>false</code> vindo da importação do <code>false</code> vindo do default.</p><p><b>Verificação:</b> família manual recém-criada nasce com o campo nulo e a tela exibe “Não informado”. Há teste cobrindo tanto o valor em banco quanto a serialização do detalhe.</p>"
+    },
+    {
+      "title": "A mensagem enganosa da #10620 reaparece aqui — em um segundo componente",
+      "html": "<p>Ao buscar como responsável uma pessoa que existe na plataforma mas está em outro município, a tela exibe novamente: “A vinculação exige a permissão de Visualização de Detalhes da Família. Solicite ao gestor Master da organização.” — para um profissional que <b>possui</b> essa permissão.</p><p>A causa é a mesma do achado registrado no dossiê da #10620: o componente <code>GlobalPersonOutcome</code> tem uma única mensagem de recusa, escrita para falta de permissão, e ela aparece sempre que o chamador fixa <code>can-link=\"false\"</code>. Aqui o chamador é <code>ResponsiblePersonField.vue:310</code>.</p><p>Ou seja: <b>não é um caso isolado</b>, são dois pontos de entrada com o mesmo sintoma. E, como lá, a explicação correta aparece logo ao lado (“A pessoa existe na plataforma, em outro município. A vinculação parte de um prontuário já existente — cadastre a família por lá ou procure o gestor Master da sua organização.”). Corrigir a mensagem no componente resolve os dois de uma vez.</p>"
+    },
+    {
+      "title": "O que a tela acerta: a regra de responsável é ensinada, não apenas imposta",
+      "html": "<p>Vale registrar um acerto de desenho observado no CA06. Ao buscar o responsável, a tela distingue os dois casos e explica ambos numa frase: “Se ela já encabeça uma família, o caminho é abrir a existente; se apenas integra outra família, ela pode ser a responsável desta nova.”</p><p>E age de acordo: para quem já encabeça, a ação de selecionar simplesmente não é oferecida — o erro não chega a ser possível. Para quem apenas integra, as duas ações aparecem. A equipe aprende a regra no momento em que precisa dela, em vez de descobri-la por uma mensagem de erro.</p>"
+    },
+    {
+      "title": "Integridade da massa",
+      "html": "<p>O CA01 exigiu criar uma família manual, e as tentativas dos CA03 e CA09 foram recusadas pelo próprio sistema (nada foi gravado). A família criada foi removida em definitivo ao final, junto com seu vínculo de composição.</p><p>Estado confirmado: o banco voltou a ter 12 famílias — exatamente as do seeder — e a pessoa usada como responsável preserva seu vínculo original na família de origem.</p>"
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Pest — CreateManualFamily, ManualFamilyConsolidation)",
+    "file": "pest-10661.txt"
+  }
+}

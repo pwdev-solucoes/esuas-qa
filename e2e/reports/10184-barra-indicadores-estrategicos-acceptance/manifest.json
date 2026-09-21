@@ -1,0 +1,130 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — Barra de Indicadores Estratégicos (KPIs)",
+    "subtitle": "HU #10184 · Evidências end-to-end no client (Painel do Tenant) — regeneradas na UI redesenhada",
+    "rows": [
+      [
+        "Gerado em",
+        "30/07/2026"
+      ],
+      [
+        "HU",
+        "#10184 — Barra de Indicadores Estratégicos (KPIs do Topo Fixo)"
+      ],
+      [
+        "Branch",
+        "feature/10184-barra-indicadores-estrategicos (api/ + client/)"
+      ],
+      [
+        "Spec",
+        ".planning/specs/10184-barra-indicadores-estrategicos.md"
+      ],
+      [
+        "Endpoint",
+        "GET /api/client/dashboard/strategic-indicators (auth:client + EnsureTenantScope, can:dashboard.view-indicators)"
+      ],
+      [
+        "Ambiente",
+        "API Sail/PostgreSQL+PostGIS · client :5174 (não-mock) · tenant E2E CadÚnico"
+      ],
+      [
+        "Organização (tenant)",
+        "E2E CadÚnico (id 3) → município Arapiraca (IBGE 2700300) — 96 famílias cadastradas; bairro \"Centro Demo #10184\" com geometria PostGIS (3 famílias)"
+      ],
+      [
+        "Ferramenta",
+        "playwright-cli (Chromium) + Pest"
+      ]
+    ]
+  },
+  "summary": "6 Critérios de Aceite verificados. 4 por navegador (CA01 exibição persistente, CA02 recálculo por bairro, CA03 limpar filtro, CA05 gate de permissão na UI) e 2 pela suíte automatizada Pest (CA04 isolamento/validação de bairro, CA06 denominador zero). A barra renderiza os 5 KPIs do RN02: na visão municipal Atualização 22,9% · Válidos 44,1% · Bolsa Família 22 · Unipessoais 22,9% · Extrema Pobreza 19,8%; ao selecionar o bairro \"Centro Demo #10184\" (recorte espacial ST_Contains, 3 de 96 famílias) recalcula para 100,0% · 71,4% · 2 · 33,3% · 100,0% e volta ao municipal ao limpar o filtro. Endpoint respondeu 200 para o Master (com e sem neighborhood_uuid) e a barra fica oculta (sem chamada ao endpoint) para o Operador sem a permissão dedicada. Suíte: 16 testes, 64 asserções, todos verdes.",
+  "cas": [
+    {
+      "id": "CA01",
+      "title": "Exibição persistente dos KPIs",
+      "status": "nav",
+      "gherkin": "Dado que navego entre as abas/telas do dashboard, Quando altero de painel, Então os 5 cartões do topo fixo permanecem visíveis sem reiniciar seus valores.",
+      "steps_html": "Login como <b>Master</b> (52998224725) → dashboard <code>/app</code> exibe a região <code>Indicadores estratégicos</code> com os 5 cartões. Navegação para <code>/app/geo-panel</code> e retorno a <code>/app</code>: a barra reaparece com os mesmos valores.",
+      "results": [
+        "A barra renderiza os 5 KPIs: Atualização Cadastral 22,9% · Cadastros Válidos 44,1% · Famílias no Bolsa Família 22 · Cadastros Unipessoais 22,9% · Extrema Pobreza 19,8%.",
+        "Após navegar para outro módulo e voltar, os cartões permanecem visíveis com os mesmos valores (persistência)."
+      ],
+      "images": [
+        "screenshots/ca01-barra-kpis-master.png",
+        "screenshots/ca01-persistencia-apos-navegar.png"
+      ]
+    },
+    {
+      "id": "CA02",
+      "title": "Recálculo por bairro selecionado",
+      "status": "nav",
+      "gherkin": "Dado que seleciono o bairro \"Centro\" no filtro global, Quando a página reprocessa, Então os 5 cartões do topo recalculam seus percentuais e totais absolutos considerando apenas os moradores do Centro.",
+      "steps_html": "Login como <b>Master</b> → dashboard mostra a visão municipal (96 famílias). No filtro <code>Bairro</code> seleciono <code>Centro Demo #10184</code>: o frontend chama <code>GET /dashboard/strategic-indicators?neighborhood_uuid=61c87f4f-…</code> (200) e os cartões recalculam. O recorte é espacial (<code>ST_Contains</code>, RN07): das 96 famílias, apenas as <b>3 geocodificadas dentro do polígono</b> do bairro entram.",
+      "results": [
+        "Requisição disparada com o neighborhood_uuid do bairro selecionado (200 OK).",
+        "KPIs recalculam de municipal (22,9% · 44,1% · 22 · 22,9% · 19,8%) para o bairro: Atualização 100,0% · Válidos 71,4% · Bolsa Família 2 · Unipessoais 33,3% · Extrema Pobreza 100,0%.",
+        "Legenda do cartão passa a exibir \"Recalculado por bairro: Centro Demo #10184\"."
+      ],
+      "images": [
+        "screenshots/ca02-recalculo-bairro.png"
+      ]
+    },
+    {
+      "id": "CA03",
+      "title": "Limpar filtro (RG01)",
+      "status": "nav",
+      "gherkin": "Dado que estou com o bairro \"Centro\" selecionado, Quando aciono \"Limpar Filtro\", Então a visão retorna imediatamente à consolidação municipal completa do município.",
+      "steps_html": "Com o bairro \"Centro Demo #10184\" selecionado (CA02), aciono o botão <code>Limpar Filtro</code>: o frontend chama <code>GET /dashboard/strategic-indicators</code> <b>sem</b> <code>neighborhood_uuid</code> (200) e o filtro volta para <code>Todos os Bairros</code>.",
+      "results": [
+        "Requisição refeita sem neighborhood_uuid (200 OK) — recorte municipal.",
+        "Filtro volta a \"Todos os Bairros\" e os 5 cartões retornam à consolidação municipal (22,9% · 44,1% · 22 · 22,9% · 19,8%)."
+      ],
+      "images": [
+        "screenshots/ca03-limpar-filtro-municipal.png"
+      ]
+    },
+    {
+      "id": "CA04",
+      "title": "Isolamento multi-tenant e validação do bairro",
+      "status": "auto",
+      "gherkin": "Dado um usuário de um tenant, Quando solicita os indicadores, Então apenas famílias/pessoas do próprio tenant entram nos cálculos; E um neighborhood_uuid de bairro fora do município retorna 422.",
+      "steps_html": "Coberto pela suíte Pest: <code>DashboardIndicatorsIsolationTest</code> (\"it never counts families from another tenant\") e <code>StrategicIndicatorsTest</code> (\"422 for a neighborhood_uuid outside the tenant municipality\" e \"422 for a malformed neighborhood_uuid\").",
+      "results": [
+        "Agregados nunca contam famílias de outro tenant (RN05).",
+        "422 para bairro fora do município do tenant e para uuid malformado."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA05",
+      "title": "Gate de permissão (dashboard.view-indicators)",
+      "status": "parc",
+      "gherkin": "Dado um usuário sem a permissão dashboard.view-indicators, Quando acessa o dashboard, Então a barra de indicadores não é exibida (e o endpoint retorna 403).",
+      "steps_html": "UI: login como <b>Operador</b> sem a permissão (39053344705, papel <code>operador</code>, vinculado ao tenant 3) → dashboard <code>/app</code> exibe \"Painel do Técnico\" <b>sem</b> a região \"Indicadores estratégicos\"; o frontend sequer chama o endpoint. Backend: Pest confirma Master e geo_panel_viewer autorizados e Operador-base negado.",
+      "results": [
+        "Operador sem a permissão NÃO vê a barra de KPIs (gate no frontend).",
+        "Pest: Master (RN03) e Operador+geo_panel_viewer recebem; Operador-base é negado.",
+        "Confirmação de permissão no banco: master=Y, operador-base=N."
+      ],
+      "images": [
+        "screenshots/ca05-operador-sem-barra.png"
+      ]
+    },
+    {
+      "id": "CA06",
+      "title": "Denominador zero → percentuais 0 (RN02.2)",
+      "status": "auto",
+      "gherkin": "Dado um recorte sem nenhuma família, Quando os indicadores são calculados, Então cada percentual retorna 0 e cada numerador/denominador retorna 0, sem erro.",
+      "steps_html": "Coberto pela suíte Pest: <code>StrategicIndicatorsTest</code> (\"it returns zeroed percentages without error when the scope has no families\") e <code>DashboardIndicatorServiceTest</code> (\"it returns zero percentages without dividing by zero\"). Observado também na UI antes do seed de demonstração: tenant sem famílias exibia 0,0% em todos os cartões.",
+      "results": [
+        "Percentuais retornam 0 sem divisão por zero quando o recorte não tem famílias.",
+        "Comportamento observado na UI (estado zero) e garantido em unidade e feature."
+      ],
+      "images": []
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Pest — Dashboard indicators + isolamento): 16 testes, 64 asserções, todos verdes",
+    "file": "pest-dashboard.txt"
+  }
+}

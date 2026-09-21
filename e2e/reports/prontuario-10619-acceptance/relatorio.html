@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — Forma de Ingresso e Primeiro Atendimento</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  section.note { border:1px solid var(--line); border-left:4px solid #b06a00; border-radius:6px; padding:10px 14px; margin:10px 0; background:#fffdf7; font-size:13px; }
+  section.note h3 { margin:0 0 6px; font-size:13.5px; color:#8a5200; }
+  section.note p { margin:6px 0; }
+  section.note ul { margin:6px 0 6px 18px; padding:0; }
+  section.note pre { background:var(--bg); border:1px solid var(--line); border-radius:4px; padding:8px; overflow-x:auto; font-size:11px; white-space:pre-wrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — Forma de Ingresso e Primeiro Atendimento</h1>
+    <div class="sub">Épico Prontuário SUAS F0 · HU #10619 · 10 critérios · evidências dirigidas no client</div>
+    <div class="meta"><div><span>Gerado em:</span> 27/08/2026</div><div><span>História:</span> #10619 — Forma de ingresso e motivo do primeiro atendimento</div><div><span>Spec:</span> .planning/specs/10619-forma-ingresso-primeiro-atendimento.md</div><div><span>Branch:</span> prontuario (api, client, admin)</div><div><span>Ambiente:</span> API Laravel :8090 (esuas_app) · PostgreSQL esuas_e2e · client vite preview :4174</div><div><span>Organização (tenant):</span> E2E CadÚnico</div><div><span>Ferramenta:</span> playwright-cli (Chromium headless) + Pest 4</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">10 critérios de aceite, &lt;b&gt;todos os 10 evidenciados no navegador&lt;/b&gt;. Nenhum critério reprovado. A suíte da história fecha &lt;b&gt;52 testes / 251 asserções&lt;/b&gt;, incluindo os testes de isolamento por tenant das duas tabelas novas. Esta é a segunda emissão do relatório: o CA10 foi reevidenciado após a revisão da regra de acesso da #10617, e o CA06 recebeu a investigação completa do elo com a remessa ao TCE-AL — a marcação do BPC está provada, e o leiaute que a consome só poderá carregá-la quando o acompanhamento PAIF/PAEFI existir, na fase F3. Dois achados merecem registro: um acerto de LGPD — o texto livre do motivo não entra na trilha de auditoria, e há teste dedicado a garantir isso — e um defeito menor de usabilidade, em que a mensagem de erro não some depois que o campo é corrigido. Detalhes em “Observações e ressalvas”.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA01</td><td>Registrar ingresso por demanda espontânea</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA02</td><td>Encaminhamento exige o órgão de origem</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA03</td><td>Busca ativa não pede órgão</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA04</td><td>Motivo é obrigatório</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA05</td><td>Bolsa Família vem da importação e não é editável</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA06</td><td>BPC é declarado e indica o beneficiário</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA07</td><td>Registro único por prontuário</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA08</td><td>Correção auditada</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA09</td><td>Bloco pendente não impede o resto</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA10</td><td>Isolamento e acesso por unidade</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA01">
+      <h2>CA01 — Registrar ingresso por demanda espontânea <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Operacional do Tenant com o add-on LGPD e o prontuário da família Silva está aberto no "CRAS Centro"
+Quando eu registrar que a família chegou por demanda espontânea e descrever as razões do primeiro atendimento
+Então o registro é salvo com meu nome e a data
+  E aparece no prontuário da família</p>
+      <p class="steps"><strong>Como foi testado:</strong> Prontuário da família com ingresso pendente → aba <b>Ingresso e programas</b> → forma <code>Demanda espontânea</code> + texto das razões → <b>Registrar ingresso</b>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>POST /families/{uuid}/intake → 201 Created.</li><li>O bloco deixa de ser “Pendente de preenchimento” e passa a “Registrado”.</li><li>O registro aparece no prontuário com a forma de ingresso e o texto das razões.</li><li>A autoria e a data ficam visíveis na própria tela: “Registrado por E2E Operador Prontuário em 27/08/2026”.</li><li>Ao escolher demanda espontânea, os campos de órgão encaminhador não são apresentados.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca01-ingresso-registrado.png" alt="CA01 evidência"/><figcaption>ca01-ingresso-registrado.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA02">
+      <h2>CA02 — Encaminhamento exige o órgão de origem <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que estou registrando o ingresso da família Souza
+Quando eu marcar que ela chegou por encaminhamento do Conselho Tutelar
+  e tentar salvar sem informar o nome e o contato do órgão
+Então o registro não é salvo
+  E o sistema indica que o órgão que encaminhou precisa ser identificado</p>
+      <p class="steps"><strong>Como foi testado:</strong> Forma <code>Encaminhamento do Conselho Tutelar</code>, com o motivo preenchido e os campos de órgão deixados em branco → <b>Registrar ingresso</b>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Ao escolher um encaminhamento, a tela explica por que os campos apareceram: “A forma escolhida é um encaminhamento: identifique o órgão de origem.”</li><li>Surgem dois campos obrigatórios: &lt;b&gt;Órgão que encaminhou&lt;/b&gt; e &lt;b&gt;Contato do órgão&lt;/b&gt;.</li><li>Ao tentar salvar sem eles, a validação recusa com mensagens específicas: “Informe o nome do órgão que encaminhou.” e “Informe o contato do órgão que encaminhou.”</li><li>&lt;b&gt;Nenhuma requisição de gravação é emitida&lt;/b&gt; — o registro não é salvo.</li><li>A suíte mostra que a exigência não está codificada na tela: ela vem da própria linha do lookup (“it requires the referring agency because THE LOOKUP ROW says so”), e a validação acompanha quando a coluna vira.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca02-orgao-exigido.png" alt="CA02 evidência"/><figcaption>ca02-orgao-exigido.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA03">
+      <h2>CA03 — Busca ativa não pede órgão <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que estou registrando o ingresso de uma família localizada pela equipe em visita ao território
+Quando eu marcar busca ativa realizada pela equipe da unidade
+Então o campo de órgão encaminhador não é exigido nem apresentado</p>
+      <p class="steps"><strong>Como foi testado:</strong> Seleção da forma <code>Busca ativa realizada pela equipe da unidade</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O painel inteiro deixa de mencionar “órgão” — verificação programática sobre o texto do bloco: nenhuma ocorrência.</li><li>O campo não é apenas opcional: ele &lt;b&gt;não é apresentado&lt;/b&gt;, como o critério exige.</li><li>A suíte cobre também o outro lado: “it does NOT ask for the referring agency on active search — and rej…” — enviar o órgão mesmo assim é recusado.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca03-busca-ativa-sem-orgao.png" alt="CA03 evidência"/><figcaption>ca03-busca-ativa-sem-orgao.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA04">
+      <h2>CA04 — Motivo é obrigatório <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que estou registrando o ingresso de uma família
+Quando eu escolher a forma de ingresso e tentar salvar sem descrever as razões ou necessidades
+Então o registro não é salvo
+  E o sistema indica que o motivo do primeiro atendimento precisa ser informado</p>
+      <p class="steps"><strong>Como foi testado:</strong> Tentativa de <b>Registrar ingresso</b> com o campo de razões em branco.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A validação recusa com “Descreva o motivo do primeiro atendimento.”</li><li>Nenhuma requisição de gravação é emitida — o registro não é salvo.</li><li>O campo é declaradamente livre: “Texto livre — o prontuário não é questionário.”</li><li>Cobertura correspondente: “it refuses to save without the reason (CA04/RN04)”.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca04-motivo-obrigatorio.png" alt="CA04 evidência"/><figcaption>ca04-motivo-obrigatorio.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA05">
+      <h2>CA05 — Bolsa Família vem da importação e não é editável <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que a família Silva foi importada do CadÚnico como beneficiária do Bolsa Família
+Quando eu abrir o bloco de programas sociais
+Então a marcação de Bolsa Família aparece já preenchida, identificada como vinda do CadÚnico
+  E não posso alterá-la neste bloco</p>
+      <p class="steps"><strong>Como foi testado:</strong> Bloco <b>Programas sociais</b> no prontuário da família importada como beneficiária do PBF.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A marcação de Bolsa Família aparece &lt;b&gt;já preenchida&lt;/b&gt;: aria-checked = true.</li><li>E está &lt;b&gt;bloqueada&lt;/b&gt;: aria-disabled = true — não é possível alterá-la neste bloco.</li><li>A origem é identificada na própria tela: “Informado pelo CadÚnico — não editável aqui.”</li><li>O contraste confirma que o bloqueio é do PBF e não do bloco: BPC e PETI aparecem desmarcados e plenamente editáveis.</li><li>A defesa não é só visual — a suíte cobre a tentativa por payload: “it REJECTS any attempt to change receives_pbf through this block”.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca05-pbf-cadunico-nao-editavel.png" alt="CA05 evidência"/><figcaption>ca05-pbf-cadunico-nao-editavel.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA06">
+      <h2>CA06 — BPC é declarado e indica o beneficiário <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que a família Silva tem um integrante beneficiário do BPC
+Quando eu marcar o BPC e indicar qual integrante é o beneficiário
+Então a marcação é salva
+  E fica disponível como perfil da família para a remessa ao TCE-AL</p>
+      <p class="steps"><strong>Como foi testado:</strong> Marcação do <b>Benefício de Prestação Continuada (BPC)</b> no bloco de programas sociais, escolha do integrante beneficiário e <b>Salvar programas sociais</b>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Ao marcar o BPC, surge o seletor &lt;b&gt;Beneficiário&lt;/b&gt;, oferecendo os integrantes da família.</li><li>PUT /families/{uuid}/social-programs → 200 OK.</li><li>A marcação é salva com o beneficiário vinculado — linha em banco com o programa BPC e o integrante indicado — e a tela passa a exibir o nome dele no bloco.</li><li>A marcação fica disponível como perfil da família: o modelo que a guarda é a origem declarada do campo &lt;code&gt;PerfilBPC&lt;/code&gt; do leiaute 15.7, e o leiaute declara esse campo.</li><li>LIMITE DECLARADO PELO PRÓPRIO SISTEMA: o leiaute 15.7 não pode ser emitido com conteúdo hoje. Ele lista as famílias &lt;b&gt;incluídas em acompanhamento no mês&lt;/b&gt;, e o registro de acompanhamento PAIF/PAEFI pertence à fase F3 — não existe nesta fase. O leiaute sai apenas com o cabeçalho, o que o Manual do SIAP determina para leiaute sem movimento (“enviar em branco não é o mesmo que não enviar”). Ver “Observações e ressalvas”.</li><li>A suíte cobre o caso plural, que a tela não evidencia sozinha: aceita dois beneficiários de BPC na mesma família, e recusa beneficiário que não seja integrante ativo dela.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca06-bpc-beneficiario.png" alt="CA06 evidência"/><figcaption>ca06-bpc-beneficiario.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA07">
+      <h2>CA07 — Registro único por prontuário <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que já registrei a forma de ingresso da família Silva
+Quando eu abrir o bloco novamente
+Então vejo o registro existente, com autor e data
+  E a ação disponível é corrigir o registro, não criar um segundo</p>
+      <p class="steps"><strong>Como foi testado:</strong> Recarga da página e reabertura da aba <b>Ingresso e programas</b> após o registro do CA01.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O registro existente é apresentado, com a forma, as razões, o autor e a data.</li><li>A única ação oferecida é &lt;b&gt;Corrigir registro&lt;/b&gt;. O botão “Registrar ingresso” deixou de existir — verificação programática sobre a lista de botões da página.</li><li>A unicidade não depende da tela: a suíte prova a recusa na API (“it refuses a SECOND intake record on the same family record”) e &lt;b&gt;no próprio banco&lt;/b&gt;, por índice único parcial (“it blocks the second record at the DATABASE too”).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca07-registro-unico.png" alt="CA07 evidência"/><figcaption>ca07-registro-unico.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA08">
+      <h2>CA08 — Correção auditada <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que registrei a forma de ingresso como demanda espontânea por engano
+Quando eu corrigir para encaminhamento da Saúde e informar o órgão
+Então a correção é salva
+  E a trilha de auditoria da família registra a alteração, com autor e data</p>
+      <p class="steps"><strong>Como foi testado:</strong> <b>Corrigir registro</b> → forma <code>Encaminhamento da Saúde</code> → preenchimento do órgão e do contato → <b>Salvar correção</b>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>PUT /families/{uuid}/intake → 200 OK — a correção é feita no registro existente, sem criar um segundo.</li><li>A tela passa a mostrar a nova forma e o órgão informado, e troca o rótulo de autoria: “Corrigido por E2E Operador Prontuário em 27/08/2026”.</li><li>A trilha registra a alteração com autor e data: description=updated, causer_id = o profissional, em 27/08/2026 04:04:31.</li><li>As mudanças ficam rastreáveis campo a campo: intake_form_id 1 → 5, referring_agency_name null → “UBS Central - E2E”, referring_agency_contact null → o contato informado.</li><li>A suíte cobre a contrapartida: corrigir para uma forma que não pede órgão &lt;b&gt;limpa&lt;/b&gt; os campos de órgão (“it CLEARS the referring agency when corrected to a form that does n…”).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca08-correcao-auditada.png" alt="CA08 evidência"/><figcaption>ca08-correcao-auditada.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA09">
+      <h2>CA09 — Bloco pendente não impede o resto <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o prontuário da família Souza foi aberto e a forma de ingresso ainda não foi registrada
+Quando eu consultar o prontuário
+Então ele é apresentado normalmente
+  E o bloco aparece identificado como pendente de preenchimento</p>
+      <p class="steps"><strong>Como foi testado:</strong> Abertura do prontuário de uma família com ingresso ainda não registrado.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O prontuário é apresentado normalmente, com todas as abas disponíveis (Resumo, Composição Familiar, Ingresso e programas, Vulnerabilidades e Alertas).</li><li>O bloco de ingresso aparece marcado como &lt;b&gt;Pendente de preenchimento&lt;/b&gt;.</li><li>A tela explicita que a pendência não trava nada: “O prontuário funciona normalmente sem este bloco; ele fica registrado como pendência até alguém preencher.”</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca09-bloco-pendente.png" alt="CA09 evidência"/><figcaption>ca09-bloco-pendente.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA10">
+      <h2>CA10 — Isolamento e acesso por unidade <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Operacional lotado apenas no "CRAS Centro"
+Quando eu tentar registrar o ingresso de uma família referenciada no "CREAS"
+Então o prontuário não é acessível a mim, conforme o corte de acesso vigente</p>
+      <p class="steps"><strong>Como foi testado:</strong> Como operador, acesso direto ao prontuário da família referenciada no <code>E2E CREAS</code>. <b>Reexecutado após a revisão da RN08 da #10617</b>, descrita em “Observações e ressalvas”.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O prontuário NÃO é acessível — o resultado exigido pelo critério é atendido.</li><li>GET /families/{uuid}/details → &lt;b&gt;403 Forbidden&lt;/b&gt;, com a tela “Acesso restrito” e o motivo declarado: “Esta família é referenciada em uma unidade socioassistencial onde você não possui lotação vigente.”</li><li>Sem o prontuário, não há como alcançar o bloco de ingresso.</li><li>MUDANÇA EM RELAÇÃO À VERSÃO ANTERIOR DESTE RELATÓRIO: até 27/08/2026 este caso respondia 404, indistinguível de um registro inexistente. O critério não especifica o código — exige apenas que o prontuário não seja acessível —, e segue atendido.</li><li>A suíte separa as respostas do corte: acesso negado para família de unidade fora da lotação, 403 com error_code estável quando não há lotação vigente, e registro inexistente para família de outro município.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca10-creas-acesso-negado.png" alt="CA10 evidência"/><figcaption>ca10-creas-acesso-negado.png</figcaption></figure></div>
+    </section>
+  
+  <h2>Observações e ressalvas</h2>
+  <section class="note"><h3>Revisão da RN08 da #10617 — o CA10 foi reevidenciado</h3><p>Em 27/08/2026 a regra de acesso da HU #10617 foi revisada: a família referenciada em unidade fora da lotação do profissional deixou de ser tratada como registro inexistente (404) e passou a responder acesso negado (403), com o motivo declarado.</p><p>O CA10 desta história foi <b>reexecutado</b> após a mudança e segue atendido: o critério exige que o prontuário não seja acessível, sem especificar o código de retorno. A evidência anterior, que mostrava “Prontuário não encontrado”, foi substituída pela tela atual de “Acesso restrito”.</p><p>Nenhum outro critério desta história é afetado.</p></section><section class="note"><h3>LGPD — o texto livre do motivo não vaza para a trilha de auditoria</h3><p>O campo de razões do primeiro atendimento é texto livre preenchido pelo profissional e pode conter relato sensível sobre a família. Verificamos a trilha após registrar e após corrigir o ingresso: o <code>activity_log</code> guarda apenas os campos estruturados (<code>intake_form_id</code>, nome e contato do órgão) — o <code>reason</code> <b>não aparece</b>.</p><p>Não é acidente: existe teste dedicado a isso — “it NEVER leaks the reason (nor other_programs) into the activity_lo…”. Vale registrar como acerto, porque é o tipo de vazamento que costuma passar despercebido até uma auditoria.</p></section><section class="note"><h3>CA06 — o elo com a remessa existe, mas não pode ser exercido até a fase F3</h3><p>A primeira metade do critério está provada na tela e em banco: a marcação do BPC é salva com o integrante beneficiário indicado.</p><p>A segunda metade — “fica disponível como perfil da família para a remessa ao TCE-AL” — foi investigada até o fim, e o resultado merece registro. O campo <code>PerfilBPC</code> pertence ao leiaute <b>15.7</b>, que relaciona as famílias <b>incluídas em acompanhamento no mês</b>. Como o registro de acompanhamento PAIF/PAEFI é da fase F3 e não existe nesta fase, o leiaute 15.7 <b>sai apenas com o cabeçalho</b>. O próprio código declara isso: “sem fonte no eSUAS: depende de registro de início de acompanhamento PAIF/PAEFI, que não existe no sistema”.</p><p>Isso não é omissão do sistema. O Manual do SIAP determina que todo leiaute integre a Remessa Parcial e que, sem movimento, se envie o XML apenas com o cabeçalho — “enviar em branco não é o mesmo que não enviar”. Gerar uma remessa hoje produziria um 15.7 vazio, o que não comprovaria nem desmentiria este critério.</p><p><b>Consequência de planejamento, que interessa ao PO:</b> enquanto a F3 não existir, o BPC declarado no prontuário não chega ao TCE-AL. A declaração está sendo coletada e guardada corretamente desde já — o que evita ter de reconstruí-la depois —, mas o elo com a remessa só se fecha quando o acompanhamento entrar.</p><p>Simetria que ajuda a ler o épico: a mesma ausência da F3 <i>satisfaz</i> o CA08 da #10618 (abrir prontuário não coloca em acompanhamento, porque acompanhamento não existe) e <i>impede</i> a prova deste CA06.</p></section><section class="note"><h3>Defeito menor de usabilidade: a mensagem de erro não some ao corrigir o campo</h3><p>Após uma tentativa de salvar sem preencher, a mensagem “Escolha a forma de ingresso.” continua exibida mesmo depois de o profissional escolher uma forma válida. Observado em duas seleções diferentes (busca ativa e encaminhamento do Conselho Tutelar); a mensagem só desaparece na gravação seguinte.</p><p><b>Severidade baixa</b> — não impede o registro nem corrompe dado. Mas induz dúvida: o profissional corrige o campo e a tela segue acusando erro. O ajuste natural é limpar o erro do campo no evento de mudança.</p></section><section class="note"><h3>Unicidade do registro é defendida em duas camadas</h3><p>O CA07 exige que não exista um segundo registro de ingresso por prontuário. A tela cumpre a parte dela oferecendo apenas “Corrigir registro”, mas a garantia real está abaixo: a API recusa a segunda criação <b>e</b> o banco a bloqueia por índice único parcial. Ou seja, mesmo uma requisição fabricada fora da tela não consegue duplicar o registro.</p></section><section class="note"><h3>Integridade da massa</h3><p>Os critérios exigiram gravar um ingresso (família de ingresso pendente) e declarar o BPC com beneficiário (família de programas). Ambas as alterações foram revertidas ao final por re-execução do <code>E2EProntuarioSeeder</code>. Nenhum outro dado foi alterado.</p></section>
+  
+  <h2>Anexo — Cobertura automatizada (Pest — FamilyIntake, FamilyIntakeActions, FamilySocialProgram, FamilyIntakeIsolation)</h2>
+  <pre class="pest">
+   PASS  Tests\Unit\Family\FamilyIntakeActionsTest
+  ✓ it reads the referring-agency requirement STRAIGHT FROM THE LOOKUP…  0.75s  
+  ✓ it registers signing the record with the acting user and the tenant… 0.02s  
+  ✓ it never turns a second register into an update — the DB refuses it… 0.02s  
+  ✓ it classifies the unique-index collision so the controller can answ… 0.02s  
+  ✓ it finds the existing record scoped to the tenant, never across mun… 0.02s  
+  ✓ it corrects IN PLACE and clears the agency when the new form does n… 0.02s  
+  ✓ it syncs social programs treating (program, member) as the unit — t… 0.03s  
+  ✓ it deduplicates a repeated (program, member) pair in the payload     0.02s  
+  ✓ it offers only ACTIVE programs from the global lookup                0.02s  
+
+   PASS  Tests\Unit\Models\FamilyIntakeFormTest
+  ✓ it has correct fillable, casts and defaults                          0.02s  
+  ✓ it uses soft deletes, HasUuid, LogsActivity and resolves by uuid     0.01s  
+  ✓ it is a GLOBAL lookup — never tenant-scoped                          0.01s  
+  ✓ it keeps the referring agency rule as data, in a column              0.05s  
+  ✓ it enforces unique code                                              0.01s  
+
+   PASS  Tests\Feature\Api\FamilyIntakeFormControllerTest
+  ✓ it lists family intake forms                                         0.05s  
+  ✓ it shows a family intake form by uuid                                0.02s  
+  ✓ it creates a family intake form carrying the referring agency rule   0.02s  
+  ✓ it defaults requires_referring_agency to false when omitted          0.02s  
+  ✓ it rejects a duplicate code                                          0.02s  
+  ✓ it requires code and name                                            0.02s  
+  ✓ it lets the super admin fix the referring agency rule without a dep… 0.03s  
+  ✓ it soft deletes a family intake form                                 0.01s  
+  ✓ it bulk deactivates and bulk activates family intake forms           0.02s  
+  ✓ it filters by is_active and by requires_referring_agency             0.02s  
+  ✓ it blocks write without permission                                   0.02s  
+
+   PASS  Tests\Feature\Family\FamilyIntakeTest
+  ✓ it registers the intake by spontaneous demand, signed and dated (CA… 0.08s  
+  ✓ it requires the referring agency because THE LOOKUP ROW says so (CA… 0.06s  
+  ✓ it does NOT ask for the referring agency on active search — and rej… 0.06s  
+  ✓ it FLIPS the lookup column and the validation follows — WITHOUT tou… 0.06s  
+  ✓ it serves the lookup RULE to the screen on load, so the front never… 0.05s  
+  ✓ it refuses to save without the reason (CA04/RN04)                    0.05s  
+  ✓ it shows Bolsa Familia as imported and LOCKED (CA05/RN06)            0.05s  
+  ✓ it REJECTS any attempt to change receives_pbf through this block (C… 0.07s  
+  ✓ it accepts TWO BPC beneficiaries in the SAME family (CA06/P5)        0.07s  
+  ✓ it demands the beneficiary because THE LOOKUP says the program requ… 0.08s  
+  ✓ it refuses a beneficiary who is not an active member of THIS family… 0.05s  
+  ✓ it synchronises declarations idempotently, soft-deleting what left…  0.06s  
+  ✓ it serves everything the programs screen reads on load (CA05/CA06)   0.06s  
+  ✓ it refuses a SECOND intake record on the same family record (CA07/R… 0.05s  
+  ✓ it blocks the second record at the DATABASE too — the partial uniqu… 0.05s  
+  ✓ it corrects the record IN PLACE and audits the change (CA08/RN09)    0.07s  
+  ✓ it CLEARS the referring agency when corrected to a form that does n… 0.07s  
+  ✓ it answers 404 with a stable error_code when correcting a record th… 0.07s  
+  ✓ it NEVER leaks the reason (nor other_programs) into the activity_lo… 0.06s  
+  ✓ it presents the block as PENDING without blocking the record (CA09/… 0.07s  
+  ✓ it answers 404 for a family referenced in a unit outside my assignm… 0.05s  
+  ✓ it answers 403 with a stable error_code when there is no current as… 0.05s  
+  ✓ it answers 404 for a family of ANOTHER municipality (CA10/RN07)      0.05s  
+
+   PASS  Tests\Feature\TenantIsolation\FamilyIntakeIsolationTest
+  ✓ it applies BelongsToTenant to FamilyIntake                           0.04s  
+  ✓ it applies BelongsToTenant to FamilySocialProgram                    0.03s  
+  ✓ it keeps the scope a NO-OP outside the HTTP cycle — which is why pr… 0.03s  
+  ✓ it keeps the two lookups GLOBAL — without BelongsToTenant, on purpo… 0.03s  
+
+  Tests:    52 passed (251 assertions)
+  Duration: 3.51s
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

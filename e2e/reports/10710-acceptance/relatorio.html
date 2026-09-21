@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Critérios de Aceite — HU #10710</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  section.note { border:1px solid var(--line); border-left:4px solid #b06a00; border-radius:6px; padding:10px 14px; margin:10px 0; background:#fffdf7; font-size:13px; }
+  section.note h3 { margin:0 0 6px; font-size:13.5px; color:#8a5200; }
+  section.note p { margin:6px 0; }
+  section.note ul { margin:6px 0 6px 18px; padding:0; }
+  section.note pre { background:var(--bg); border:1px solid var(--line); border-radius:4px; padding:8px; overflow-x:auto; font-size:11px; white-space:pre-wrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Critérios de Aceite — HU #10710</h1>
+    <div class="sub">Consultar o histórico de atendimentos da família</div>
+    <div class="meta"><div><span>Gerado em:</span> 01/09/2026 22:21 · complementado em 04/09/2026 14:40</div><div><span>Épico:</span> Prontuário SUAS — fase F1 (Atendimento)</div><div><span>Branch:</span> feature/10709-atendimento (não pushada)</div><div><span>Commits:</span> api 817520f · client dd152a6 · meta 000cca2</div><div><span>Ambiente:</span> API Sail :80 · Client (Vite) :5174 · banco esuas com E2EProntuarioSeeder</div><div><span>Perfis:</span> Operacional c/ add-on LGPD (CRAS Centro) e Master — guard client</div><div><span>Ferramenta:</span> playwright-cli (Chromium) + Pest 4</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">10 critérios, mais 3 derivados na spec. 7 evidenciados no navegador dirigindo o Painel do Tenant, 3 de forma combinada e 3 pela suíte. Esta HU é somente leitura: nenhum atendimento é criado, corrigido ou cancelado por ela. Complemento de 04/09/2026: o detalhe do atendimento (CA03) e os filtros de período e tipo (CA05 e CA06), que antes tinham prova apenas de contrato e de componente, passaram a ser evidenciados na tela.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA01</td><td>Histórico em ordem cronológica</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA02</td><td>Lançamento retroativo aparece na posição cronológica</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA03</td><td>Abrir o atendimento mostra a descrição</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA04</td><td>Atendimento cancelado permanece visível</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA05</td><td>Filtrar por período</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA06</td><td>Filtrar por tipo</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA07</td><td>Atendimentos de unidades diferentes</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA08</td><td>Família sem atendimento registrado</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA09</td><td>Negativa por unidade declara o motivo</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA10</td><td>Isolamento entre municípios</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA01b</td><td>Paginação estável com vários atendimentos no mesmo dia</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA06b</td><td>Tipo inativado continua filtrável</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA11</td><td>A consulta não gera auditoria própria</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA01">
+      <h2>CA01 — Histórico em ordem cronológica <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que a família tem atendimentos registrados
+Quando eu abrir o histórico de atendimentos no prontuário
+Então vejo os atendimentos do mais recente para o mais antigo pela data do atendimento
+E cada linha apresenta data, tipo, pessoa atendida quando houver, responsável técnico e unidade</p>
+      <p class="steps"><strong>Como foi testado:</strong> Aba <b>Atendimentos</b> no prontuário da família <code>…f0001</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A tabela lista do mais recente ao mais antigo &lt;b&gt;pela data do atendimento&lt;/b&gt;.</li><li>Cada linha traz data, tipo, pessoa (ou “Sem pessoa identificada”), responsável e unidade.</li><li>É &lt;b&gt;tabela&lt;/b&gt;, não linha do tempo — o molde do histórico da composição familiar.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca01-ca02-ordem-cronologica.png" alt="CA01 evidência"/><figcaption>ca01-ca02-ordem-cronologica.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA02">
+      <h2>CA02 — Lançamento retroativo aparece na posição cronológica <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que um atendimento de 05/07/2026 foi lançado em 20/08/2026
+Quando eu consultar o histórico
+Então ele aparece entre os atendimentos de julho, não no topo da lista</p>
+      <p class="steps"><strong>Como foi testado:</strong> O atendimento de <b>20/07/2026</b> foi lançado hoje, <b>01/09/2026</b>, depois do de 01/09.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A ordem exibida é &lt;code&gt;01/09/2026&lt;/code&gt; e depois &lt;code&gt;20/07/2026&lt;/code&gt;: o retroativo aparece &lt;b&gt;abaixo&lt;/b&gt;, na posição cronológica.</li><li>A ordenação é por &lt;code&gt;attended_on&lt;/code&gt;, não por data de lançamento.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca01-ca02-ordem-cronologica.png" alt="CA02 evidência"/><figcaption>ca01-ca02-ordem-cronologica.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA03">
+      <h2>CA03 — Abrir o atendimento mostra a descrição <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que estou no histórico da família
+Quando eu abrir um atendimento
+Então vejo a descrição sumária registrada
+E o autor do registro, além do responsável técnico</p>
+      <p class="steps"><strong>Como foi testado:</strong> Complemento de 04/09/2026, dirigido no Painel do Tenant como <b>Operacional com add-on LGPD</b>: na aba <b>Atendimentos</b> do prontuário, abrir o atendimento de 01/09/2026 pelo botão de detalhes da linha. Complementado por teste de componente do painel expandido.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O painel expandido exibe o bloco &lt;b&gt;DESCRIÇÃO SUMÁRIA&lt;/b&gt; com o texto registrado: “Atendimento individualizado na unidade. Familia orientada sobre atualizacao cadastral e encaminhamento para o CRAS de referencia.”</li><li>Logo abaixo consta o &lt;b&gt;autor do registro&lt;/b&gt; e a data do lançamento: “Registrado por E2E Operador Prontuário em 01/09/2026”.</li><li>O &lt;b&gt;responsável técnico&lt;/b&gt; permanece visível na própria linha do histórico, ao lado da unidade — os três dados que o critério pede aparecem juntos.</li><li>Expandir não dispara requisição: a descrição já vem no payload da listagem. O corte de acesso foi decidido na abertura do prontuário; esconder atrás de um segundo endpoint não protegeria nada.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca03-detalhe-descricao-autor.png" alt="CA03 evidência"/><figcaption>ca03-detalhe-descricao-autor.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA04">
+      <h2>CA04 — Atendimento cancelado permanece visível <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que um atendimento da família foi cancelado
+Quando eu consultar o histórico
+Então ele aparece marcado como cancelado, com o motivo e o autor do cancelamento</p>
+      <p class="steps"><strong>Como foi testado:</strong> Histórico após o cancelamento do atendimento de 20/07/2026.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A linha continua na tabela, com marcação de &lt;b&gt;cancelado&lt;/b&gt;.</li><li>No banco, &lt;code&gt;deleted_at = NULL&lt;/code&gt; — o registro não foi apagado, apenas mudou de estado.</li><li>Some da apuração, não do histórico.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca04-cancelado-visivel.png" alt="CA04 evidência"/><figcaption>ca04-cancelado-visivel.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA05">
+      <h2>CA05 — Filtrar por período <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que a família tem atendimentos de 2025 e de 2026
+Quando eu filtrar pelo período de agosto de 2026
+Então vejo apenas os atendimentos daquele mês</p>
+      <p class="steps"><strong>Como foi testado:</strong> Complemento de 04/09/2026: no painel <b>Filtros</b> da aba Atendimentos, informar o período de 01/09/2026 a 30/09/2026 e observar a lista e o contador. Complementado pela suíte (<code>attended_on_from</code>/<code>to</code>) e por teste de componente.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Com o período de setembro aplicado, o contador do cabeçalho cai de &lt;b&gt;(2)&lt;/b&gt; para &lt;b&gt;(1)&lt;/b&gt; e resta apenas o atendimento de 01/09/2026 — o de 20/07/2026 sai da lista.</li><li>Ao limpar o período, a lista volta a &lt;b&gt;(2)&lt;/b&gt; — o filtro não é destrutivo.</li><li>O período é intervalo de datas, com dois campos de data — não seletor exercício+mês.</li><li>Período invertido é barrado na tela, sem disparar consulta inválida em laço, e o backend recusa (&lt;code&gt;it rejects an inverted period&lt;/code&gt;).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca05-filtro-periodo.png" alt="CA05 evidência"/><figcaption>ca05-filtro-periodo.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA06">
+      <h2>CA06 — Filtrar por tipo <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que quero saber quantas visitas domiciliares a família recebeu
+Quando eu filtrar pelo tipo "Visita Domiciliar"
+Então vejo apenas os atendimentos desse tipo</p>
+      <p class="steps"><strong>Como foi testado:</strong> Complemento de 04/09/2026: no painel <b>Filtros</b>, escolher o tipo <b>Visita domiciliar</b> e observar a lista e o contador. Complementado pela suíte e por teste de componente.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Com o tipo “Visita domiciliar” aplicado, o contador vai para &lt;b&gt;(1)&lt;/b&gt; e resta apenas o atendimento de 20/07/2026 desse tipo.</li><li>As opções do filtro são a união dos tipos ativos com os presentes no histórico — um tipo inativado depois continua filtrável (CA06b).</li><li>O filtro de responsável é derivado apenas do histórico carregado — limitação documentada no componente.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca06-filtro-tipo.png" alt="CA06 evidência"/><figcaption>ca06-filtro-tipo.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA07">
+      <h2>CA07 — Atendimentos de unidades diferentes <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que a família foi atendida pelo "CRAS Centro" e, em outro período, pelo "CREAS"
+Quando eu consultar o histórico
+Então vejo os atendimentos das duas unidades
+E cada linha identifica a unidade que realizou o atendimento</p>
+      <p class="steps"><strong>Como foi testado:</strong> Coberto pela suíte: a listagem <b>não</b> recorta por unidade do usuário.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O corte de acesso é &lt;b&gt;do prontuário&lt;/b&gt;, decidido uma vez na abertura — não por linha.</li><li>Filtrar por unidade dentro da lista produziria histórico mutilado, pior que negar o acesso inteiro.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA08">
+      <h2>CA08 — Família sem atendimento registrado <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o prontuário da família foi aberto e nenhum atendimento foi registrado
+Quando eu consultar o histórico
+Então a tela informa que ainda não há atendimentos registrados
+E oferece a ação de registrar o primeiro</p>
+      <p class="steps"><strong>Como foi testado:</strong> Aba Atendimentos antes de qualquer registro.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>&lt;i&gt;“Ainda não há atendimentos registrados”&lt;/i&gt; com a ação &lt;b&gt;Registrar o primeiro atendimento&lt;/b&gt;.</li><li>É estado distinto de “nenhum resultado para o filtro”, que oferece limpar o filtro.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca08-sem-atendimentos.png" alt="CA08 evidência"/><figcaption>ca08-sem-atendimentos.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA09">
+      <h2>CA09 — Negativa por unidade declara o motivo <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou Operacional do Tenant lotado apenas no "CRAS Centro"
+E que a família é referenciada no "CREAS"
+Quando eu tentar consultar o histórico dela
+Então o histórico não é apresentado
+E a tela informa que a família é referenciada em unidade onde não tenho lotação vigente, orientando procurar o gestor Master</p>
+      <p class="steps"><strong>Como foi testado:</strong> Acesso ao prontuário da família <code>…f0002</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A tela declara o motivo e orienta procurar o gestor Master.</li><li>&lt;b&gt;Não nomeia a unidade&lt;/b&gt; — confirmado por varredura: “CREAS” não aparece na página.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca09-negativa-por-unidade.png" alt="CA09 evidência"/><figcaption>ca09-negativa-por-unidade.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA10">
+      <h2>CA10 — Isolamento entre municípios <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que sou usuário do município A
+Quando eu consultar o histórico de atendimentos
+Então alcanço somente prontuários do município A</p>
+      <p class="steps"><strong>Como foi testado:</strong> Coberto por <code>AttendanceIsolationTest</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Prontuário de outra organização devolve &lt;b&gt;404&lt;/b&gt;, idêntico ao de uuid inexistente.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA01b">
+      <h2>CA01b — Paginação estável com vários atendimentos no mesmo dia <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que uma oficina gerou cinco atendimentos na mesma data
+Quando eu avançar para a segunda página
+Então nenhum atendimento se repete
+E nenhum é pulado</p>
+      <p class="steps"><strong>Como foi testado:</strong> Coberto pela suíte, com cinco linhas de mesma data servidas em três páginas.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A ordenação é &lt;code&gt;attended_on DESC, created_at DESC, id DESC&lt;/code&gt;.</li><li>Um teste-irmão prova que remover qualquer um dos desempates &lt;b&gt;quebra&lt;/b&gt; a ordem — verificado por reversão do predicado, não por leitura.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA06b">
+      <h2>CA06b — Tipo inativado continua filtrável <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que o tipo "Outros" foi inativado no Painel Global
+Quando eu filtrar o histórico por "Outros"
+Então os atendimentos anteriores continuam sendo exibidos</p>
+      <p class="steps"><strong>Como foi testado:</strong> Coberto pela suíte e por teste de componente.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A listagem &lt;b&gt;nunca&lt;/b&gt; filtra por &lt;code&gt;attendance_types.is_active&lt;/code&gt; — inativar um tipo não pode apagar o passado.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA11">
+      <h2>CA11 — A consulta não gera auditoria própria <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que abri o prontuário e naveguei pelo histórico, mudando filtros e páginas
+Quando eu consultar a trilha de auditoria
+Então consta UM registro de abertura de prontuário
+E nenhum registro por listagem, filtro ou paginação</p>
+      <p class="steps"><strong>Como foi testado:</strong> Varredura do <code>activity_log</code> após navegar pelo histórico, e teste que compara a contagem antes/depois de listar, filtrar e paginar.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Os 4 registros de &lt;code&gt;attendance&lt;/code&gt; na trilha vieram todos de &lt;b&gt;escrita&lt;/b&gt; (registrar e cancelar) — nenhum de leitura.</li><li>A abertura do prontuário já grava a trilha LGPD; auditar listagem inundaria o log e tornaria inútil o registro que a lei exige.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+  
+  <h2>Observações e ressalvas</h2>
+  <section class="note"><h3>Somente leitura, por desenho</h3><p>Esta HU não altera nada: registrar, corrigir e cancelar são da #10709. Os prints deste dossiê mostram a mesma aba, mas o que se evidencia aqui é a <b>apresentação</b> — ordem, marcação do cancelado, estados vazios e a negativa de acesso.</p></section><section class="note"><h3>O que os filtros conseguem e o que não conseguem</h3><p>As opções do filtro de <b>tipo</b> são a união dos tipos ativos com os presentes no histórico, o que preserva o tipo inativado (CA06b). Já as de <b>responsável</b> vêm apenas das linhas carregadas, porque o endpoint de opções só devolve responsáveis quando recebe uma unidade — limitação registrada no componente e levada ao PO, não escondida.</p></section><section class="note"><h3>Complemento de 04/09/2026 — três critérios saíram do apêndice para a tela</h3>Na geração original, CA03, CA05 e CA06 estavam apoiados em teste de componente e na suíte de backend. O teste de componente roda em outra ferramenta e não entra no apêndice deste dossiê, de modo que o leitor via a afirmação sem poder conferi-la. Os três foram então dirigidos na tela, com o ambiente já de pé: o detalhe do atendimento mostrando descrição e autor, e os dois filtros reduzindo o contador do cabeçalho de forma observável. Os filtros foram limpos ao final e nenhum dado do ambiente foi alterado — esta HU é somente leitura.</section>
+  
+  <h2>Anexo — Cobertura automatizada (Pest — filtro Attendance: 139 testes; SyncPermissions: 14; todos verdes)</h2>
+  <pre class="pest">
+   PASS  Tests\Unit\Models\AttendancePersonTest
+  ✓ it is tenant-scoped, soft-deletable, uuid-routed and audited         0.62s  
+  ✓ it audits ONLY ids — no name, no text (§6.2)                         0.02s  
+  ✓ it keeps person_id coherent with the family member (P-A) and blocks… 0.23s  
+
+   PASS  Tests\Unit\Models\AttendanceTest
+  ✓ it is tenant-scoped, soft-deletable, uuid-routed and audited         0.03s  
+  ✓ it casts attended_on as date and status as the AttendanceStatus enu… 0.04s  
+  ✓ it configures the activity log with ONLY the structured fields — ne… 0.03s  
+  ✓ it reports isCancelled by STATUS, with deleted_at untouched (RN09)   0.04s  
+
+   PASS  Tests\Unit\Models\AttendanceTypeTest
+  ✓ it has correct fillable, casts and defaults                          0.02s  
+  ✓ it uses soft deletes, HasUuid, LogsActivity and resolves by uuid     0.02s  
+  ✓ it is a GLOBAL lookup — never tenant-scoped (RN04/RN10)              0.03s  
+  ✓ it has no global scope of is_active — history and remittance never…  0.04s  
+  ✓ it keeps the remittance rule as data, cast to the enum (RN03/D03)    0.02s  
+  ✓ it accepts NULL as a legitimate remittance counter value (CA03)      0.02s  
+  ✓ it enforces unique code — even against soft-deleted rows (RN02)      0.02s  
+  ✓ it configures the activity log with the audited fields (RN07/§14)    0.02s  
+
+   PASS  Tests\Feature\Api\AttendanceTypeControllerTest
+  ✓ it lists attendance types exposing uuid and the remittance rule — n… 0.09s  
+  ✓ it shows the remittance counter with its label (CA02)                0.03s  
+  ✓ it shows NULL counter as an explicit "no specific counter" label (C… 0.03s  
+  ✓ it creates an attendance type with the code informed by the admin (… 0.05s  
+  ✓ it rejects a duplicate code (CA04)                                   0.04s  
+  ✓ it requires code and name — the code is never generated (CA04)       0.03s  
+  ✓ it rejects a remittance counter outside the enum                     0.03s  
+  ✓ it audits the change of the remittance rule with old and new values… 0.04s  
+  ✓ it exposes the audit trail with causer and pagination (CA09)         0.04s  
+  ✓ it soft deletes an attendance type                                   0.05s  
+  ✓ it bulk deactivates and bulk activates attendance types, logging th… 0.03s  
+  ✓ it filters actives for the new-entry select, and returns inactives…  0.03s  
+  ✓ it filters by remittance_counter                                     0.02s  
+  ✓ it blocks write without permission                                   0.03s  
+  ✓ it refuses to delete a type in use with 422, guiding deactivation (… 0.03s  
+  ✓ it still soft deletes a type NOT referenced by any consumer (CA05)   0.03s  
+  ✓ it refuses to delete a type referenced by a REAL attendance — the p… 0.04s  
+  ✓ it blocks the bulk destroy through the REAL production consumer too… 0.04s  
+  ✓ it ignores a registered consumer whose table does not exist yet (D0… 0.03s  
+  ✓ it bulk destroy is ATOMIC: one item in use blocks all and is identi… 0.03s  
+  ✓ it rejects soft-deleted uuids in every bulk action at validation ti… 0.04s  
+  ✓ it bulk destroys unused types, logging the bulk event with author (… 0.04s  
+  ✓ it gives the admin_operador read-only access — every write is 403 (… 1.54s  
+  ✓ it lets the ADMIN role exercise all eight abilities end to end       1.42s  
+  ✓ it rejects client-guard tokens on every write route with 401, creat… 0.04s  
+  ✓ it keeps the shared read alive for the client guard — the tenant se… 0.03s  
+
+   PASS  Tests\Feature\Api\Client\AttendanceControllerTest
+  ✓ it registers an individual attendance with person, responsible and…  0.14s  
+  ✓ it registers a family-level attendance with NO person — zero pivot…  0.08s  
+  ✓ it refuses a future date (CA03/RN04)                                 0.08s  
+  ✓ it accepts TODAY at 23h in the app timezone — the boundary never re… 0.09s  
+  ✓ it saves a retroactive attendance in a remitted month AND returns t… 0.09s  
+  ✓ it does NOT warn when the month remittance is pending or failed (CA… 0.08s  
+  ✓ it refuses a person from ANOTHER family and an UNLINKED member (CA0… 0.10s  
+  ✓ it refuses the SAME person twice in one attendance (§6.2)            0.08s  
+  ✓ it derives person_id from the family member and never accepts it fr… 0.08s  
+  ✓ it records the responsible professional apart from the author, and…  0.09s  
+  ✓ it refuses a responsible whose assignment only started AFTER the at… 0.09s  
+  ✓ it refuses a unit where the operational user has NO assignment on t… 0.08s  
+  ✓ it lets the MASTER register in any unit of the tenant, without assi… 0.08s  
+  ✓ it corrects the attendance type in place (CA09/RN08)                 0.09s  
+  ✓ it revalidates the WHOLE trio on edit: changing only the date inval… 0.09s  
+  ✓ it syncs people on edit per model: adds and removes without sync()…  0.12s  
+  ✓ it warns for BOTH the old and the new month when a remitted attenda… 0.11s  
+  ✓ it cancels with reason, preserving the row and leaving the counters… 0.11s  
+  ✓ it refuses to EDIT a cancelled attendance — cancelled is terminal (… 0.10s  
+  ✓ it requires the cancel reason (CA11/RN09)                            0.08s  
+  ✓ it warns about the generated remittance ALSO on cancellation (CA11b… 0.08s  
+  ✓ it refuses to register for a family WITHOUT a reference unit — 422…  0.08s  
+  ✓ it keeps social_unit_id as a SNAPSHOT: transferring the family does… 0.08s  
+  ✓ it registers ONE independent attendance per family in the batch (CA… 0.10s  
+  ✓ it writes NOTHING when ONE family of the batch is invalid — and ide… 0.08s  
+  ✓ it treats a family of ANOTHER tenant in the batch as not found — wi… 0.09s  
+  ✓ it rejects people in the batch — collective activity does not ident… 0.07s  
+  ✓ it serves units, responsibles, ACTIVE types and the month warning t… 0.09s  
+
+   PASS  Tests\Feature\Api\Client\AttendanceIndexTest
+  ✓ it lists attendances chronologically by attended_on, newest first,…  0.09s  
+  ✓ it breaks same-day ties by created_at DESC then id DESC — the order… 0.08s  
+  ✓ it paginates stably when a batch put five attendances on the same d… 0.09s  
+  ✓ it places a retroactive entry in its chronological position, not at… 0.07s  
+  ✓ it keeps the cancelled attendance visible, marked, with reason and…  0.08s  
+  ✓ it filters by period on the attendance date (CA05/RN04)              0.08s  
+  ✓ it rejects an inverted period (to before from)                       0.07s  
+  ✓ it filters by attendance type (CA06)                                 0.07s  
+  ✓ it keeps attendances of a deactivated type visible AND filterable (… 0.08s  
+  ✓ it filters by responsible professional (RN04)                        0.07s  
+  ✓ it filters by status when the user asks — never by default (RN03)    0.08s  
+  ✓ it shows attendances from EVERY unit, identified per line, even whe… 0.08s  
+  ✓ it refuses a sort parameter — chronological order is the instrument… 0.08s  
+  ✓ it denies the history with the same record cut, naming the reason b… 0.10s  
+  ✓ it treats a family from another tenant as nonexistent (CA10/RN09)    0.08s  
+  ✓ it writes ZERO activity_log rows for listing, filtering and paginat… 0.09s  
+  ✓ it runs a constant number of queries regardless of how many attenda… 0.11s  
+  ✓ it keeps the attended person on the line after the family member li… 0.08s  
+
+   PASS  Tests\Feature\Api\Client\AttendanceReportTest
+  ✓ it derives the four counters per unit and the total includes types…  0.09s  
+  ✓ it declares the unavailable counters in the payload — value null, a… 0.08s  
+  ✓ it excludes cancelled attendances from the report while they remain… 0.09s  
+  ✓ it counts a retroactive attendance in the month it happened, not th… 0.09s  
+  ✓ it reflects a type correction on the next query and stores nothing…  0.10s  
+  ✓ it reports attendances without an identified person separately, via… 0.08s  
+  ✓ it scopes the Operacional to units with an assignment in force TODA… 0.09s  
+  ✓ it shows the master every unit of the tenant, and a unit without mo… 0.07s  
+  ✓ it never leaks citizen data in the serialized payload — no name, no… 0.08s  
+  ✓ it keeps counting past attendances of a type inactivated in the Glo… 0.07s  
+  ✓ it narrows the report to a single unit when social_unit_uuid is giv… 0.07s  
+  ✓ it keeps unit_count at the Operacional full scope when filtering on… 0.09s  
+  ✓ it rejects with a named 422 a unit outside the user scope — never a… 0.08s  
+  ✓ it rejects an out-of-range reference month with the SIAP named mess… 0.09s  
+  ✓ it denies the Operacional without the manual grant — the restricted… 0.10s  
+  ✓ it denies a granted user without an ACTIVE professional bond in the… 0.10s  
+
+   PASS  Tests\Feature\Console\SyncPermissionsTest
+  ✓ it keeps attendance-types write abilities out of the client guard r… 1.47s  
+  ✓ it grants the Operacional Global read-only access to attendance typ… 1.47s  
+  ✓ it keeps attendance-reports.view out of the default CLIENT_OPERADOR… 1.47s  
+
+   PASS  Tests\Feature\Dashboard\AttendanceTest
+  ✓ it returns two contiguous 12-point series from source_registered_at… 0.12s  
+  ✓ it counts a family in different months across the two independent s… 0.06s  
+  ✓ it excludes families with a null date from the respective series (C… 0.06s  
+  ✓ it matches the Painel 2 monthly evolution point by point (RN07)      0.08s  
+  ✓ it recalculates for a neighborhood, covering only geocoded families… 0.07s  
+  ✓ it returns two 12-point zero series when the scope has no families…  0.05s  
+  ✓ it returns 422 for a neighborhood_uuid outside the tenant municipal… 0.05s  
+  ✓ it denies the panel to the base operator without the dedicated role  0.05s  
+  ✓ it grants the panel to the Master without any add-on role            0.05s  
+
+   PASS  Tests\Feature\Family\AttendanceAuditTest
+  ✓ it NEVER leaks the description nor the cancel reason into the activ… 0.09s  
+  ✓ it never echoes the description in validation messages nor in denia… 0.11s  
+  ✓ it audits people changes per model — created and deleted events wit… 0.10s  
+
+   PASS  Tests\Feature\Seeders\AttendanceTypeSeederTest
+  ✓ it seeds the eight attendance types of the instrument — codes 1..7…  0.03s  
+  ✓ it carries the remittance rule of RN03 as data — three counters, fi… 0.03s  
+  ✓ it is idempotent — running the seeder twice does not duplicate nor…  0.03s  
+
+   PASS  Tests\Feature\Services\AttendanceEligibilityServiceTest
+  ✓ it lists for the operational user only the units with an assignment… 0.06s  
+  ✓ it includes the unit whose assignment STARTS exactly on the date an… 0.05s  
+  ✓ it returns no unit for an operational user whose professional link…  0.04s  
+  ✓ it lets the Master select ALL non-deleted units of the tenant, with… 0.05s  
+  ✓ it answers canRegisterInUnit per unit and date for the operational…  0.05s  
+  ✓ it lists as selectable responsibles only professionals assigned to…  0.06s  
+  ✓ it orders selectable responsibles deterministically by the user nam… 0.05s  
+  ✓ it keeps an INACTIVE professional eligible as responsible for a ret… 0.04s  
+  ✓ it answers isResponsibleEligible on the [start, end) boundaries and… 0.05s  
+
+   PASS  Tests\Feature\TenantIsolation\AttendanceIsolationTest
+  ✓ it answers 404 for a family of ANOTHER tenant with the SAME body as… 0.09s  
+  ✓ it answers 404 when the attendance belongs to ANOTHER family — scop… 0.09s  
+  ✓ it answers 403 unit_not_assigned for a family of another unit — WIT… 0.09s  
+  ✓ it answers 403 no_active_assignment when the professional has no as… 0.08s  
+  ✓ it answers 403 for the operator WITHOUT the LGPD add-on — the class… 0.09s  
+  ✓ it scopes attendances by tenant through the BelongsToTenant global…  0.08s  
+
+   PASS  Tests\Feature\TenantIsolation\AttendanceReportIsolationTest
+  ✓ it shows the tenant A master only tenant A units and numbers (CA12/… 0.07s  
+  ✓ it rejects a tenant B unit used as filter with the same named 422 —… 0.07s  
+
+   PASS  Tests\Feature\TenantIsolation\DashboardAttendanceIsolationTest
+  ✓ it never counts families from another tenant in the attendance pane… 0.06s  
+
+  Tests:    139 passed (700 assertions)
+  Duration: 18.03s
+
+
+===== SyncPermissionsTest (CA15 — contrato da permissão) =====
+
+   PASS  Tests\Feature\Console\SyncPermissionsTest
+  ✓ it extracts the can: abilities declared by controllers from the rou… 0.63s  
+  ✓ it keeps full parity with the previous hardcoded permission set (no… 0.03s  
+  ✓ it seeds permissions for both guards and assigns them to roles       1.42s  
+  ✓ it runs permissions:sync idempotently without duplicating permissio… 2.45s  
+  ✓ it prunes orphan permissions not present in the registry             2.62s  
+  ✓ it does not write anything on --dry-run                              0.10s  
+  ✓ it does not assign RESTRICTED_PERMISSIONS to any role                1.34s  
+  ✓ it permissions:sync --coverage fails when an authenticated route ha… 1.36s  
+  ✓ it never mirrors any platform-versions ability into the client guar… 1.36s  
+  ✓ it never mirrors any cbo-access-profiles ability into the client gu… 1.34s  
+  ✓ it grants the Operacional Global read-only access to the CBO map (H… 1.40s  
+  ✓ it keeps attendance-types write abilities out of the client guard r… 1.48s  
+  ✓ it grants the Operacional Global read-only access to attendance typ… 1.31s  
+  ✓ it keeps attendance-reports.view out of the default CLIENT_OPERADOR… 1.37s  
+
+  Tests:    14 passed (119 assertions)
+  Duration: 18.83s
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

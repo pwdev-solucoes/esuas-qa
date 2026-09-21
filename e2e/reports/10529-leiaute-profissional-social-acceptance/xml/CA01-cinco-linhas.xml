@@ -1,0 +1,38 @@
+<!-- HU #10529 — CA01 — CRAS Centro (MDS 1234567890123) com 5 lotacoes vigentes em 08/2026 = 5 linhas, cada uma com CPF, Nome, NumeroMDS e Matricula. -->
+<!-- Remessa GERADA de verdade via POST /api/client/siap-remittances; XML extraido do zip. CPF e nome MASCARADOS no artefato (RN12/LGPD) — no arquivo real o CPF sai com 11 digitos, como o Pest prova (pest-10529.txt, CA01). Dados FABRICADOS. -->
+<?xml version="1.0"?>
+<SIAP>
+    <Codigo>004821</Codigo>
+    <Exercicio>2026</Exercicio>
+    <Mes>08</Mes>
+    <ProfissionalSocial>
+        <CPF>390.***.***-05</CPF>
+        <Nome>Maria S. L.</Nome>
+        <NumeroMDS>1234567890123</NumeroMDS>
+        <Matricula>1234567</Matricula>
+    </ProfissionalSocial>
+    <ProfissionalSocial>
+        <CPF>389.***.***-12</CPF>
+        <Nome>Joao P. N.</Nome>
+        <NumeroMDS>1234567890123</NumeroMDS>
+        <Matricula>2026001</Matricula>
+    </ProfissionalSocial>
+    <ProfissionalSocial>
+        <CPF>743.***.***-01</CPF>
+        <Nome>Ana C. B.</Nome>
+        <NumeroMDS>1234567890123</NumeroMDS>
+        <Matricula>2026002</Matricula>
+    </ProfissionalSocial>
+    <ProfissionalSocial>
+        <CPF>550.***.***-19</CPF>
+        <Nome>Carlos E. F.</Nome>
+        <NumeroMDS>1234567890123</NumeroMDS>
+        <Matricula>2026003</Matricula>
+    </ProfissionalSocial>
+    <ProfissionalSocial>
+        <CPF>697.***.***-20</CPF>
+        <Nome>Francisca A. C.</Nome>
+        <NumeroMDS>1234567890123</NumeroMDS>
+        <Matricula>2026004</Matricula>
+    </ProfissionalSocial>
+</SIAP>

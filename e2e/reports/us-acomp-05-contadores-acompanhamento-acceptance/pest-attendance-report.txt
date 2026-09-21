@@ -1,0 +1,55 @@
+
+   PASS  Tests\Feature\Api\Client\AttendanceReportReferralCrossTest
+  ✓ it never feeds the CadUnico counters from attendance type 4 — 9 att… 0.53s  
+
+   PASS  Tests\Feature\Api\Client\AttendanceReportTest
+  ✓ it derives the four counters per unit and the total includes types…  0.06s  
+  ✓ it declares exactly the one remaining unavailable counter — the F2…  0.06s  
+  ✓ it excludes cancelled attendances from the report while they remain… 0.07s  
+  ✓ it counts a retroactive attendance in the month it happened, not th… 0.06s  
+  ✓ it reflects a type correction on the next query and stores nothing…  0.06s  
+  ✓ it reports attendances without an identified person separately, via… 0.06s  
+  ✓ it scopes the Operacional to units with an assignment in force TODA… 0.06s  
+  ✓ it shows the master every unit of the tenant, and a unit without mo… 0.06s  
+  ✓ it never leaks citizen data in the serialized payload — no name, no… 0.06s  
+  ✓ it keeps counting past attendances of a type inactivated in the Glo… 0.05s  
+  ✓ it narrows the report to a single unit when social_unit_uuid is giv… 0.05s  
+  ✓ it keeps unit_count at the Operacional full scope when filtering on… 0.06s  
+  ✓ it rejects with a named 422 a unit outside the user scope — never a… 0.06s  
+  ✓ it rejects an out-of-range reference month with the SIAP named mess… 0.05s  
+  ✓ it denies the Operacional without the manual grant — the restricted… 0.05s  
+  ✓ it denies a granted user without an ACTIVE professional bond in the… 0.05s  
+  ✓ it lights the three referral counters with distinct families and pe… 0.06s  
+  ✓ it counts the same family ONCE with two inclusion referrals in the…  0.05s  
+  ✓ it counts two distinct people of the SAME family in the BPC counter… 0.06s  
+  ✓ it counts the family once in EACH counter — distinct per counter, n… 0.05s  
+  ✓ it drops a cancelled referral from the counters while it stays visi… 0.07s  
+  ✓ it keeps counting a referral whose outcome became not_attended — th… 0.06s  
+  ✓ it counts a retroactive referral in the month it was made, not the…  0.06s  
+  ✓ it keeps counting past referrals of a code inactivated in the Globa… 0.05s  
+  ✓ it keeps counting past referrals of a code SOFT-DELETED in the Glob… 0.06s  
+  ✓ it declares zero on the three referral counters for a unit without…  0.05s  
+  ✓ it never feeds the BPC counter from a referral row without a person… 0.05s  
+
+   PASS  Tests\Feature\Client\AttendanceReportFollowUpTest
+  ✓ it reproduces the canonical scenario of §9 in the HTTP payload — 3…  0.08s  
+  ✓ it lights up families_in_follow_up inside counters and removes it f… 0.05s  
+  ✓ it declares the four profiles that depend on F6/F7 — never omitted,… 0.06s  
+  ✓ it keeps the four unavailable profiles declared even for a unit wit… 0.05s  
+  ✓ it exposes stale_follow_ups as a quantity and the configured thresh… 0.06s  
+  ✓ it carries the threshold from config so the cut can move without a…  0.05s  
+  ✓ it shows the operator only the units of the current assignment, wit… 0.06s  
+  ✓ it never counts follow-ups of another organization in any of the ne… 0.06s  
+  ✓ it persists absolutely nothing — identical row counts before and af… 0.06s  
+  ✓ it never leaks any citizen data through the new follow-up fields (D… 0.06s  
+  ✓ it never counts a cancelled follow-up in the HTTP payload (CA11/RN1… 0.05s  
+  ✓ it keeps the new blocks consistent when the report is narrowed to a… 0.06s  
+
+   PASS  Tests\Feature\TenantIsolation\AttendanceReportIsolationTest
+  ✓ it shows the tenant A master only tenant A units and numbers (CA12/… 0.05s  
+  ✓ it rejects a tenant B unit used as filter with the same named 422 —… 0.04s  
+  ✓ it never counts tenant B referrals in the tenant A referral counter… 0.05s  
+
+  Tests:    43 passed (215 assertions)
+  Duration: 3.38s
+

@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — HU #9866 Alternador de Camadas de Infraestrutura (CRAS/CREAS)</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — HU #9866 Alternador de Camadas de Infraestrutura (CRAS/CREAS)</h1>
+    <div class="sub">Painel de Georreferenciamento (rota /georreferenciamento) · módulo client · Evidências end-to-end no app real</div>
+    <div class="meta"><div><span>Gerado em:</span> 10/07/2026</div><div><span>História:</span> HU #9866 — Alternador de Camadas de Infraestrutura Atual (CRAS/CREAS)</div><div><span>Critérios:</span> CA09 (1 critério)</div><div><span>Submódulos:</span> client 99e397d · api feature/geo-9862-google-satelite-zindex (+ seeder MaceioSocialUnitsSeeder)</div><div><span>Ambiente:</span> API Sail/PostgreSQL · client Vite :5175 (não-mock) → http://localhost/api</div><div><span>Organização (tenant):</span> Maceió Geo (massa geo) · 25 unidades CRAS/CREAS geocodificadas (seed) · 12 famílias</div><div><span>Perfil de acesso:</span> Master (CPF 27043020140) com geo-panel.view — RN10/RN21</div><div><span>Ferramenta:</span> playwright-cli (Chromium, viewport 1680×1050) + Pest + Vitest</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">O critério de aceite da HU #9866 sobre o alternador da camada de infraestrutura (CRAS/CREAS) foi verificado dirigindo o app real no navegador e reforçado pela suíte automatizada — ATENDIDO. Pré-requisito de dado: foi criado o seeder MaceioSocialUnitsSeeder que popula as 25 unidades oficiais de Maceió (20 CRAS + 5 CREAS, coordenadas WGS84 das páginas da Prefeitura) no tenant Maceió Geo, cada uma geocodificada (addresses_geometries POINT ativo, reusando o UpsertAddressGeometryAction). CA09: com o filtro de Extrema pobreza aplicado (manchas de calor no mapa), ao ativar o seletor da camada builtin "CRAS e CREAS" (Unidades de Atendimento), o sistema plota os 25 marcadores fixos nos prédios físicos dos CRAS/CREAS — permitindo confrontar visualmente onde o serviço está instalado com as manchas de adensamento de risco; ao desligar o seletor, os marcadores somem (alternador liga/desliga). O endpoint client/geo-panel/social-units retornou 200 com os 25 pontos. Cobertura automatizada: Pest "serves the tenant social units as anonymous points with type_code (RN09)" (53 testes/190 asserções) + Vitest useGeoPanel (camada de unidades, 24 testes).</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA09</td><td>Exibição das unidades existentes (alternador CRAS/CREAS)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA09">
+      <h2>CA09 — Exibição das unidades existentes (alternador CRAS/CREAS) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Dado que apliquei o filtro de extrema pobreza e visualizo as manchas de calor, Quando ativo o seletor de "Unidades de Atendimento", Então o sistema plota marcadores fixos indicando onde estão localizados os prédios físicos dos CRAS e CREAS atuais do município.</p>
+      <p class="steps"><strong>Como foi testado:</strong> Pré-requisito: rodado o seeder <code>MaceioSocialUnitsSeeder</code> (25 unidades — 20 CRAS + 5 CREAS — geocodificadas no tenant Maceió Geo). No painel, aplicado o filtro <b>Extrema pobreza</b> (manchas de calor) e, na barra <b>Camadas</b>, ativado o seletor <b>CRAS e CREAS</b> (Unidades de Atendimento); em seguida desativado para contraste.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Com a camada ligada, o sistema plota os 25 marcadores fixos (pinos) nos prédios físicos dos CRAS/CREAS espalhados por Maceió, sobre o mapa com as manchas de calor da extrema pobreza — confronto visual serviço x risco.</li><li>O seletor CRAS e CREAS aparece na barra de Camadas com switch ligado; a chamada client/geo-panel/social-units retorna 200 com os 25 pontos (uuid, name, type_code, lat, lng).</li><li>Ao desligar o seletor, os marcadores são removidos do mapa mantendo o heatmap (alternador liga/desliga — RN09).</li><li>Cobertura: Pest GeoPanelTest "serves the tenant social units as anonymous points with type_code" + Vitest useGeoPanel (camada de unidades) — ver Anexo.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca09-unidades-marcadores.png" alt="CA09 evidência"/><figcaption>ca09-unidades-marcadores.png</figcaption></figure><figure><img src="screenshots/ca09-seletor-camada.png" alt="CA09 evidência"/><figcaption>ca09-seletor-camada.png</figcaption></figure><figure><img src="screenshots/ca09-camada-desligada.png" alt="CA09 evidência"/><figcaption>ca09-camada-desligada.png</figcaption></figure></div>
+    </section>
+  
+  <h2>Anexo — Cobertura automatizada — Pest (social units como pontos anônimos RN09) + Vitest useGeoPanel (camada de unidades)</h2>
+  <pre class="pest">=== appendix: backend + frontend ===
+--- Pest: social units servidos como pontos anônimos (RN09) ---
+  ✓ it aggregates by sector, groups anonymous points and computes the b… 0.02s  
+  ✓ it serves the tenant social units as anonymous points with type_cod… 0.02s  
+  Tests:    53 passed (190 assertions)
+
+--- Vitest: useGeoPanel camada de unidades (pontos) ---
+ ✓ src/modules/geo-panel/composables/useGeoPanel.test.ts (24 tests) 7ms
+ Test Files  1 passed (1)
+      Tests  24 passed (24)
+   Duration  522ms (transform 49ms, setup 9ms, collect 58ms, tests 7ms, environment 259ms, prepare 47ms)
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

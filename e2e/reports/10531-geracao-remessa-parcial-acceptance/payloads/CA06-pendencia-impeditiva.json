@@ -1,0 +1,14 @@
+{
+    "_cenario": "CA06 — unidade sem NumeroMDS: 422, nenhum arquivo produzido, nenhuma linha em siap_remittances",
+    "response_422": {
+        "message": "The SIAP remittance cannot be generated: 1 social unit has an incomplete record for SIAP. Check the missing data in the pre-check screen.",
+        "errors": {
+            "social_units": [
+                "The SIAP remittance cannot be generated: 1 social unit has an incomplete record for SIAP. Check the missing data in the pre-check screen."
+            ]
+        }
+    },
+    "siap_remittances_count": 0,
+    "nenhum_job_despachado": true,
+    "nenhum_arquivo_no_storage": true
+}

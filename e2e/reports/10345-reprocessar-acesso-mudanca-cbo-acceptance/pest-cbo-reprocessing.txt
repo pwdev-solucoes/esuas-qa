@@ -1,0 +1,27 @@
+
+   PASS  Tests\Feature\Api\Client\CboAccessReprocessingTest
+  ✓ it CA01: revoga de imediato o papel derivado que nao pertence ao no… 0.56s  
+  ✓ it CA01: o profissional deixa de ter a permissao do papel revogado   0.04s  
+  ✓ it CA02: o que o novo CBO traria NAO e concedido, vira sugestao pen… 0.05s  
+  ✓ it CA02: o acesso so existe depois que o Master confirma             0.05s  
+  ✓ it CA02: confirmar papel FORA da sugestao vigente e recusado         0.04s  
+  ✓ it CA03: add-on LGPD derivado do mapa e revogado de imediato         0.04s  
+  ✓ it CA04: papel MANUAL e preservado e vira divergencia                0.05s  
+  ✓ it CA04/RN06: a divergencia some sozinha se o novo mapa passar a pr… 0.04s  
+  ✓ it CA05: alterar a propria ocupacao revoga e NAO concede nada        0.05s  
+  ✓ it CA06: novo CBO sem mapa revoga o derivado e nao sugere nada       0.04s  
+  ✓ it CA07: o posto base NUNCA e revogado pelo reprocessamento          0.04s  
+  ✓ it CA08: registra o reprocessamento com ocupacao anterior, nova, re… 0.04s  
+  ✓ it CA08: nenhuma PII em texto livre na trilha do reprocessamento     0.04s  
+  ✓ it RN13: profissional LEGADO (sem origem registrada) nao tem papel…  0.04s  
+  ✓ it RN09: dispensar a sugestao a oculta ate a ocupacao mudar de novo  0.06s  
+  ✓ it RN01: salvar sem mudar a ocupacao NAO dispara reprocessamento     0.03s  
+  ✓ it RN12/CA07 isolamento: access-review de outro tenant responde 404  0.03s  
+
+   PASS  Tests\Feature\Permissions\ProfessionalAccessReviewMasterOnlyTest
+  ✓ it keeps professionals.access-review master-only                     1.14s  
+  ✓ it keeps permission coverage green (no authenticated route without…  0.02s  
+
+  Tests:    19 passed (87 assertions)
+  Duration: 2.49s
+

@@ -1,0 +1,46 @@
+
+   PASS  Tests\Unit\Services\AddressLocalizationCheckerTest
+  ✓ it flags cep_missing when the CEP is empty (RN02)                    0.55s  
+  ✓ it flags cep_not_found when the CEP does not exist in postal_codes…  0.03s  
+  ✓ it flags cep_not_found when the CEP exists but is inactive           0.03s  
+  ✓ it flags no_match when the CEP exists in another city and the city…  0.03s  
+  ✓ it does not flag when the CEP matches the lot city                   0.03s  
+  ✓ it does not flag when the CEP exists and the lot city is unresolvab… 0.03s  
+  ✓ it upserts the open inconsistency instead of duplicating it (idempo… 0.03s  
+  ✓ it resolves the open inconsistency when a future import passes the…  0.03s  
+  ✓ it is a no-op on success when the family has no open inconsistency   0.03s  
+  ✓ it recovers from a concurrent unique violation via read-and-update…  0.03s  
+  ✓ it rethrows non-unique-violation query exceptions instead of retryi… 0.04s  
+
+   PASS  Tests\Feature\Api\Client\AddressInconsistencyPanelTest
+  ✓ it lists Código Familiar, RUF name and rejected address for open in… 0.08s  
+  ✓ it always masks CPF and NIS on screen (CA03/LGPD)                    0.04s  
+  ✓ it shows only open inconsistencies (resolved leave the panel — RN01… 0.04s  
+  ✓ it filters by failure_reason and searches by family code or RUF nam… 0.05s  
+  ✓ it denies access without the address-inconsistencies.index permissi… 0.03s  
+  ✓ it isolates the panel by tenant (CA-extra-D / RN07)                  0.04s  
+  ✓ it seeds the dedicated role with the restricted permission and gran… 0.03s  
+  ✓ it keeps the permission away from the base operador and preserves t… 0.94s  
+  ✓ it is a read-only resource: no write routes are registered (RN03)    0.02s  
+
+   PASS  Tests\Feature\Console\SyncPermissionsTest
+  ✓ it extracts the can: abilities declared by controllers from the rou… 0.02s  
+  ✓ it keeps full parity with the previous hardcoded permission set (no… 0.02s  
+  ✓ it seeds permissions for both guards and assigns them to roles       0.92s  
+  ✓ it runs permissions:sync idempotently without duplicating permissio… 1.62s  
+  ✓ it prunes orphan permissions not present in the registry             1.68s  
+  ✓ it does not write anything on --dry-run                              0.07s  
+  ✓ it does not assign RESTRICTED_PERMISSIONS to any role                0.94s  
+  ✓ it permissions:sync --coverage fails when an authenticated route ha… 0.84s  
+
+   PASS  Tests\Feature\Services\Cadunico\CadunicoSyncAddressInconsistencyTest
+  ✓ it flags the family as open inconsistency when the CEP is missing (… 0.06s  
+  ✓ it flags cep_not_found when the CEP does not exist in the DNE base…  0.06s  
+  ✓ it accumulates new failures over previous batches (CA02: 50 + 10 =…  0.35s  
+  ✓ it resolves the open inconsistency when a future import fixes the a… 0.06s  
+  ✓ it does not duplicate the open row when the same family fails again… 0.06s  
+  ✓ it never breaks the sync when the checker fails internally (regress… 0.06s  
+
+  Tests:    34 passed (125 assertions)
+  Duration: 9.31s
+
