@@ -286,7 +286,3 @@ Workflow em `.github/workflows/e2e.yml` do meta-repo roda em PRs que tocam `api/
 2. Rodar localmente: `npm run e2e:running`
 3. Specs devem passar no CI antes de merge
 4. Ver [`docs/contributing.md`](./docs/contributing.md)
-
-## 📄 Licença
-
-LGPL-3.0-or-later

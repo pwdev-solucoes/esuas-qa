@@ -36,7 +36,7 @@ services:
       - "127.0.0.1:8090:80"   # E2E usa :8090 (não :8080 como no dev)
     volumes:
       - ./repos/api:/var/www:ro
-      - ./repos/api/docker/staging/nginx/api.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./docker/staging/nginx/api.conf:/etc/nginx/conf.d/default.conf:ro
     depends_on:
       - app
     networks:

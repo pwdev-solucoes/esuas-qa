@@ -113,19 +113,6 @@ else
   log_warn "Pasta client/ já existe, pulando clone"
 fi
 
-# Copy docker/ from meta-repo (needed by docker-compose.qa.yml)
-log_info "Copiando docker/staging/ do meta-repo..."
-if [ ! -d "$SCRIPT_DIR/docker" ]; then
-  # Procura o meta-repo parent directory (esuas-meta-qa)
-  META_REPO_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
-  if [ -d "$META_REPO_DIR/docker/staging" ]; then
-    cp -r "$META_REPO_DIR/docker" "$SCRIPT_DIR/"
-    log_info "docker/ copiado de $META_REPO_DIR"
-  else
-    log_warn "Meta-repo docker/staging/ não encontrado em $META_REPO_DIR (ignorado para clones standalone)"
-  fi
-fi
-
 # Install dependencies
 log_info "Instalando dependências..."
 
