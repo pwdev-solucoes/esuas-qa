@@ -38,3 +38,8 @@ coverage/
 # Logs
 *.log
 logs/
+
+# Cloned repositories (setup.sh creates these locally, not versioned)
+repos/
+qa-results/
+docker/
