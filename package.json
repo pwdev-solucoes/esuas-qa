@@ -22,7 +22,9 @@
     "e2e:local": "npm run stack:up && npm run test:e2e && npm run stack:down",
     "e2e:running": "npm run test:e2e",
     "massa:insumos": "tsx massa-dados/scripts/gerar.ts",
-    "massa:insumos:verificar": "playwright test -c massa-dados/scripts"
+    "massa:insumos:verificar": "playwright test --project=massa-insumos --reporter=list",
+    "massa": "tsx massa-dados/bin/massa.ts",
+    "massa:verificar": "tsx massa-dados/bin/massa.ts --verificar"
   },
   "keywords": [
     "e2e",
