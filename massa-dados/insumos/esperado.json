@@ -1,0 +1,2715 @@
+{
+  "contadores": [
+    {
+      "contador": "total_attendances",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 21
+    },
+    {
+      "contador": "individualized_attendances",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 7
+    },
+    {
+      "contador": "home_visits",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 3
+    },
+    {
+      "contador": "non_continued_collective_participation",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 1
+    },
+    {
+      "contador": "cadunico_inclusion",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 2
+    },
+    {
+      "contador": "cadunico_update",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 1
+    },
+    {
+      "contador": "bpc_referrals",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "families_in_follow_up",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 4
+    },
+    {
+      "contador": "new_families",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 4
+    },
+    {
+      "contador": "families_in_groups",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 3
+    },
+    {
+      "contador": "children_0_6",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 1
+    },
+    {
+      "contador": "preadolescents_7_14",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 2
+    },
+    {
+      "contador": "adolescents_15_17",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "adults_18_59",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "elderly",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 1
+    },
+    {
+      "contador": "people_with_disability",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "food_assistance",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 2
+    },
+    {
+      "contador": "birth_assistance",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 1
+    },
+    {
+      "contador": "funeral_assistance",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "other_benefits",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "without_identified_person",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_extreme_poverty",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_bolsa_familia",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_child_labor",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_bpc",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_bf_noncompliance",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_school_dropout",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_teen_pregnancy",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_sheltering",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "scfv_notes.elderly_outside_range",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 1
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.eligible",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 31
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.incomplete",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 1
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.missing_fields.ValorRenda",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.missing_fields.Alfabetizado",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.missing_fields.Escolaridade",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 1
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.missing_fields.DoencaGrave",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.missing_fields.NomeMae",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.familia.eligible",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 21
+    },
+    {
+      "contador": "analytic_layouts.familia.incomplete",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.familia.missing_fields.TipoResidencia",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.familia.missing_fields.DomicilioAreaRisco",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.familia.missing_fields.DomicilioVulnerabilidade",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.QuantidadePalestras",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.QuantidadeReunioes",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.QuantidadeReunioesInternas",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 1
+    },
+    {
+      "contador": "capacitation.QuantidadeEventos",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.QuantidadeCursos",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.has_no_records",
+      "mes": "2026-06",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "total_attendances",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 18
+    },
+    {
+      "contador": "individualized_attendances",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 7
+    },
+    {
+      "contador": "home_visits",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 3
+    },
+    {
+      "contador": "non_continued_collective_participation",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 2
+    },
+    {
+      "contador": "cadunico_inclusion",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 1
+    },
+    {
+      "contador": "cadunico_update",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "bpc_referrals",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 1
+    },
+    {
+      "contador": "families_in_follow_up",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 2
+    },
+    {
+      "contador": "new_families",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 2
+    },
+    {
+      "contador": "families_in_groups",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 1
+    },
+    {
+      "contador": "children_0_6",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "preadolescents_7_14",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 1
+    },
+    {
+      "contador": "adolescents_15_17",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "adults_18_59",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "elderly",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "people_with_disability",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "food_assistance",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "birth_assistance",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "funeral_assistance",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "other_benefits",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 1
+    },
+    {
+      "contador": "without_identified_person",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_extreme_poverty",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_bolsa_familia",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 1
+    },
+    {
+      "contador": "new_families_profile.profile_child_labor",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_bpc",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_bf_noncompliance",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_school_dropout",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_teen_pregnancy",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_sheltering",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "scfv_notes.elderly_outside_range",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.eligible",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 34
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.incomplete",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.missing_fields.ValorRenda",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.missing_fields.Alfabetizado",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.missing_fields.Escolaridade",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.missing_fields.DoencaGrave",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.missing_fields.NomeMae",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.familia.eligible",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 18
+    },
+    {
+      "contador": "analytic_layouts.familia.incomplete",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 2
+    },
+    {
+      "contador": "analytic_layouts.familia.missing_fields.TipoResidencia",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 2
+    },
+    {
+      "contador": "analytic_layouts.familia.missing_fields.DomicilioAreaRisco",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 2
+    },
+    {
+      "contador": "analytic_layouts.familia.missing_fields.DomicilioVulnerabilidade",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 2
+    },
+    {
+      "contador": "capacitation.QuantidadePalestras",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.QuantidadeReunioes",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.QuantidadeReunioesInternas",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.QuantidadeEventos",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.QuantidadeCursos",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.has_no_records",
+      "mes": "2026-06",
+      "unidade": "U-CS",
+      "valor": 1
+    },
+    {
+      "contador": "total_attendances",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "individualized_attendances",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "home_visits",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "non_continued_collective_participation",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "cadunico_inclusion",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "cadunico_update",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "bpc_referrals",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "families_in_follow_up",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "new_families",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "families_in_groups",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "children_0_6",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "preadolescents_7_14",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "adolescents_15_17",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "adults_18_59",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "elderly",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "people_with_disability",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "food_assistance",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "birth_assistance",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "funeral_assistance",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "other_benefits",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "without_identified_person",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_extreme_poverty",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_bolsa_familia",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_child_labor",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_bpc",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_bf_noncompliance",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_school_dropout",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_teen_pregnancy",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_sheltering",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "scfv_notes.elderly_outside_range",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.eligible",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.incomplete",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.missing_fields.ValorRenda",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.missing_fields.Alfabetizado",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.missing_fields.Escolaridade",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.missing_fields.DoencaGrave",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.missing_fields.NomeMae",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.familia.eligible",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.familia.incomplete",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.familia.missing_fields.TipoResidencia",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.familia.missing_fields.DomicilioAreaRisco",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.familia.missing_fields.DomicilioVulnerabilidade",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.QuantidadePalestras",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.QuantidadeReunioes",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.QuantidadeReunioesInternas",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.QuantidadeEventos",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.QuantidadeCursos",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.has_no_records",
+      "mes": "2026-06",
+      "unidade": "U-CE",
+      "valor": 1
+    },
+    {
+      "contador": "total_attendances",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 25
+    },
+    {
+      "contador": "individualized_attendances",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 8
+    },
+    {
+      "contador": "home_visits",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 5
+    },
+    {
+      "contador": "non_continued_collective_participation",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 2
+    },
+    {
+      "contador": "cadunico_inclusion",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "cadunico_update",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 1
+    },
+    {
+      "contador": "bpc_referrals",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 1
+    },
+    {
+      "contador": "families_in_follow_up",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 8
+    },
+    {
+      "contador": "new_families",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 5
+    },
+    {
+      "contador": "families_in_groups",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 4
+    },
+    {
+      "contador": "children_0_6",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "preadolescents_7_14",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 3
+    },
+    {
+      "contador": "adolescents_15_17",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 1
+    },
+    {
+      "contador": "adults_18_59",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 1
+    },
+    {
+      "contador": "elderly",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 1
+    },
+    {
+      "contador": "people_with_disability",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "food_assistance",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "birth_assistance",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "funeral_assistance",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 1
+    },
+    {
+      "contador": "other_benefits",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 1
+    },
+    {
+      "contador": "without_identified_person",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_extreme_poverty",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 3
+    },
+    {
+      "contador": "new_families_profile.profile_bolsa_familia",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 4
+    },
+    {
+      "contador": "new_families_profile.profile_child_labor",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 1
+    },
+    {
+      "contador": "new_families_profile.profile_bpc",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 1
+    },
+    {
+      "contador": "new_families_profile.profile_bf_noncompliance",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_school_dropout",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 1
+    },
+    {
+      "contador": "new_families_profile.profile_teen_pregnancy",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_sheltering",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "scfv_notes.elderly_outside_range",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 1
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.eligible",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 42
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.incomplete",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 1
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.missing_fields.ValorRenda",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.missing_fields.Alfabetizado",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.missing_fields.Escolaridade",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 1
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.missing_fields.DoencaGrave",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.missing_fields.NomeMae",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.familia.eligible",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 25
+    },
+    {
+      "contador": "analytic_layouts.familia.incomplete",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.familia.missing_fields.TipoResidencia",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.familia.missing_fields.DomicilioAreaRisco",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.familia.missing_fields.DomicilioVulnerabilidade",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.QuantidadePalestras",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.QuantidadeReunioes",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.QuantidadeReunioesInternas",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.QuantidadeEventos",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.QuantidadeCursos",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.has_no_records",
+      "mes": "2026-07",
+      "unidade": "U-CN",
+      "valor": 1
+    },
+    {
+      "contador": "total_attendances",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 22
+    },
+    {
+      "contador": "individualized_attendances",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 6
+    },
+    {
+      "contador": "home_visits",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 4
+    },
+    {
+      "contador": "non_continued_collective_participation",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 3
+    },
+    {
+      "contador": "cadunico_inclusion",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "cadunico_update",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 2
+    },
+    {
+      "contador": "bpc_referrals",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "families_in_follow_up",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 3
+    },
+    {
+      "contador": "new_families",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 1
+    },
+    {
+      "contador": "families_in_groups",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 1
+    },
+    {
+      "contador": "children_0_6",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "preadolescents_7_14",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "adolescents_15_17",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "adults_18_59",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "elderly",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "people_with_disability",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "food_assistance",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 2
+    },
+    {
+      "contador": "birth_assistance",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "funeral_assistance",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "other_benefits",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "without_identified_person",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_extreme_poverty",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_bolsa_familia",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_child_labor",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_bpc",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_bf_noncompliance",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_school_dropout",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_teen_pregnancy",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_sheltering",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "scfv_notes.elderly_outside_range",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.eligible",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 40
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.incomplete",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.missing_fields.ValorRenda",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.missing_fields.Alfabetizado",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.missing_fields.Escolaridade",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.missing_fields.DoencaGrave",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.missing_fields.NomeMae",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.familia.eligible",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 22
+    },
+    {
+      "contador": "analytic_layouts.familia.incomplete",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 2
+    },
+    {
+      "contador": "analytic_layouts.familia.missing_fields.TipoResidencia",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 2
+    },
+    {
+      "contador": "analytic_layouts.familia.missing_fields.DomicilioAreaRisco",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 2
+    },
+    {
+      "contador": "analytic_layouts.familia.missing_fields.DomicilioVulnerabilidade",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 2
+    },
+    {
+      "contador": "capacitation.QuantidadePalestras",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 2
+    },
+    {
+      "contador": "capacitation.QuantidadeReunioes",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.QuantidadeReunioesInternas",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.QuantidadeEventos",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.QuantidadeCursos",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.has_no_records",
+      "mes": "2026-07",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "total_attendances",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 11
+    },
+    {
+      "contador": "individualized_attendances",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 3
+    },
+    {
+      "contador": "home_visits",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 3
+    },
+    {
+      "contador": "non_continued_collective_participation",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 1
+    },
+    {
+      "contador": "cadunico_inclusion",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "cadunico_update",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "bpc_referrals",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 1
+    },
+    {
+      "contador": "families_in_follow_up",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 3
+    },
+    {
+      "contador": "new_families",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 3
+    },
+    {
+      "contador": "families_in_groups",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "children_0_6",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "preadolescents_7_14",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "adolescents_15_17",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "adults_18_59",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "elderly",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "people_with_disability",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "food_assistance",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "birth_assistance",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "funeral_assistance",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "other_benefits",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "without_identified_person",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_extreme_poverty",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_bolsa_familia",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 1
+    },
+    {
+      "contador": "new_families_profile.profile_child_labor",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_bpc",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_bf_noncompliance",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_school_dropout",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_teen_pregnancy",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_sheltering",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 1
+    },
+    {
+      "contador": "scfv_notes.elderly_outside_range",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.eligible",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 20
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.incomplete",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.missing_fields.ValorRenda",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.missing_fields.Alfabetizado",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.missing_fields.Escolaridade",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.missing_fields.DoencaGrave",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.missing_fields.NomeMae",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.familia.eligible",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 11
+    },
+    {
+      "contador": "analytic_layouts.familia.incomplete",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.familia.missing_fields.TipoResidencia",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.familia.missing_fields.DomicilioAreaRisco",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.familia.missing_fields.DomicilioVulnerabilidade",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.QuantidadePalestras",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.QuantidadeReunioes",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.QuantidadeReunioesInternas",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.QuantidadeEventos",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.QuantidadeCursos",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 2
+    },
+    {
+      "contador": "capacitation.has_no_records",
+      "mes": "2026-07",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "total_attendances",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 22
+    },
+    {
+      "contador": "individualized_attendances",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 7
+    },
+    {
+      "contador": "home_visits",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 6
+    },
+    {
+      "contador": "non_continued_collective_participation",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 1
+    },
+    {
+      "contador": "cadunico_inclusion",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "cadunico_update",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 1
+    },
+    {
+      "contador": "bpc_referrals",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "families_in_follow_up",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 9
+    },
+    {
+      "contador": "new_families",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 1
+    },
+    {
+      "contador": "families_in_groups",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 4
+    },
+    {
+      "contador": "children_0_6",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 1
+    },
+    {
+      "contador": "preadolescents_7_14",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 3
+    },
+    {
+      "contador": "adolescents_15_17",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 1
+    },
+    {
+      "contador": "adults_18_59",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "elderly",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 1
+    },
+    {
+      "contador": "people_with_disability",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "food_assistance",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 1
+    },
+    {
+      "contador": "birth_assistance",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "funeral_assistance",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "other_benefits",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "without_identified_person",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_extreme_poverty",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_bolsa_familia",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 1
+    },
+    {
+      "contador": "new_families_profile.profile_child_labor",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_bpc",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_bf_noncompliance",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_school_dropout",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_teen_pregnancy",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_sheltering",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "scfv_notes.elderly_outside_range",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 1
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.eligible",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 40
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.incomplete",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 1
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.missing_fields.ValorRenda",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.missing_fields.Alfabetizado",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.missing_fields.Escolaridade",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 1
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.missing_fields.DoencaGrave",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.missing_fields.NomeMae",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.familia.eligible",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 22
+    },
+    {
+      "contador": "analytic_layouts.familia.incomplete",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.familia.missing_fields.TipoResidencia",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.familia.missing_fields.DomicilioAreaRisco",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.familia.missing_fields.DomicilioVulnerabilidade",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.QuantidadePalestras",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.QuantidadeReunioes",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.QuantidadeReunioesInternas",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.QuantidadeEventos",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.QuantidadeCursos",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.has_no_records",
+      "mes": "2026-08",
+      "unidade": "U-CN",
+      "valor": 1
+    },
+    {
+      "contador": "total_attendances",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 19
+    },
+    {
+      "contador": "individualized_attendances",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 6
+    },
+    {
+      "contador": "home_visits",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 3
+    },
+    {
+      "contador": "non_continued_collective_participation",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 3
+    },
+    {
+      "contador": "cadunico_inclusion",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 1
+    },
+    {
+      "contador": "cadunico_update",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "bpc_referrals",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "families_in_follow_up",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 4
+    },
+    {
+      "contador": "new_families",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 1
+    },
+    {
+      "contador": "families_in_groups",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 1
+    },
+    {
+      "contador": "children_0_6",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 1
+    },
+    {
+      "contador": "preadolescents_7_14",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "adolescents_15_17",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "adults_18_59",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "elderly",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "people_with_disability",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "food_assistance",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "birth_assistance",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "funeral_assistance",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "other_benefits",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 1
+    },
+    {
+      "contador": "without_identified_person",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_extreme_poverty",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_bolsa_familia",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_child_labor",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_bpc",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_bf_noncompliance",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_school_dropout",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_teen_pregnancy",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_sheltering",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "scfv_notes.elderly_outside_range",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.eligible",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 39
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.incomplete",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.missing_fields.ValorRenda",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.missing_fields.Alfabetizado",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.missing_fields.Escolaridade",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.missing_fields.DoencaGrave",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.missing_fields.NomeMae",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.familia.eligible",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 19
+    },
+    {
+      "contador": "analytic_layouts.familia.incomplete",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 2
+    },
+    {
+      "contador": "analytic_layouts.familia.missing_fields.TipoResidencia",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 2
+    },
+    {
+      "contador": "analytic_layouts.familia.missing_fields.DomicilioAreaRisco",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 2
+    },
+    {
+      "contador": "analytic_layouts.familia.missing_fields.DomicilioVulnerabilidade",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 2
+    },
+    {
+      "contador": "capacitation.QuantidadePalestras",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.QuantidadeReunioes",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.QuantidadeReunioesInternas",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.QuantidadeEventos",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.QuantidadeCursos",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.has_no_records",
+      "mes": "2026-08",
+      "unidade": "U-CS",
+      "valor": 1
+    },
+    {
+      "contador": "total_attendances",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 9
+    },
+    {
+      "contador": "individualized_attendances",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 3
+    },
+    {
+      "contador": "home_visits",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 2
+    },
+    {
+      "contador": "non_continued_collective_participation",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "cadunico_inclusion",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "cadunico_update",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 1
+    },
+    {
+      "contador": "bpc_referrals",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "families_in_follow_up",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 4
+    },
+    {
+      "contador": "new_families",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 1
+    },
+    {
+      "contador": "families_in_groups",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 1
+    },
+    {
+      "contador": "children_0_6",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "preadolescents_7_14",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "adolescents_15_17",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "adults_18_59",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "elderly",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "people_with_disability",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "food_assistance",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "birth_assistance",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "funeral_assistance",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "other_benefits",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "without_identified_person",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_extreme_poverty",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_bolsa_familia",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_child_labor",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_bpc",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_bf_noncompliance",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_school_dropout",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_teen_pregnancy",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "new_families_profile.profile_sheltering",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "scfv_notes.elderly_outside_range",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.eligible",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 17
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.incomplete",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.missing_fields.ValorRenda",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.missing_fields.Alfabetizado",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.missing_fields.Escolaridade",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.missing_fields.DoencaGrave",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.usuario_rede.missing_fields.NomeMae",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.familia.eligible",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 9
+    },
+    {
+      "contador": "analytic_layouts.familia.incomplete",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.familia.missing_fields.TipoResidencia",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.familia.missing_fields.DomicilioAreaRisco",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "analytic_layouts.familia.missing_fields.DomicilioVulnerabilidade",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.QuantidadePalestras",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.QuantidadeReunioes",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.QuantidadeReunioesInternas",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.QuantidadeEventos",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 0
+    },
+    {
+      "contador": "capacitation.QuantidadeCursos",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 2
+    },
+    {
+      "contador": "capacitation.has_no_records",
+      "mes": "2026-08",
+      "unidade": "U-CE",
+      "valor": 0
+    }
+  ],
+  "convencoes": [
+    "contador sem ponto = data.units[].counters.<contador>.value de GET /api/client/attendance-reports",
+    "contador com ponto = caminho de 1º nível da unidade (new_families_profile.*, scfv_notes.*, analytic_layouts.*); booleanos valem 1/0",
+    "analytic_layouts.*.missing_fields.<Campo>: a API omite campos com zero; ausente = 0",
+    "capacitation.<CampoSIAP> e capacitation.has_no_records vêm de GET /api/client/capacitation-tallies (has_no_records 1/0)",
+    "pendencias[].mes = null: situação atual (fila), independe do mês de referência (10994b RN05)",
+    "pendências com contagem zero não são listadas (10994b RN07)"
+  ],
+  "meses": [
+    "2026-06",
+    "2026-07",
+    "2026-08"
+  ],
+  "pendencias": [
+    {
+      "kind": "attended_person_without_cpf",
+      "mes": "2026-06",
+      "scope": "unit",
+      "unidade": "U-CN",
+      "valor": 1
+    },
+    {
+      "kind": "member_without_schooling",
+      "mes": "2026-06",
+      "scope": "unit",
+      "unidade": "U-CN",
+      "valor": 1
+    },
+    {
+      "kind": "attended_person_without_cpf",
+      "mes": "2026-06",
+      "scope": "unit",
+      "unidade": "U-CS",
+      "valor": 3
+    },
+    {
+      "kind": "attended_person_without_cpf",
+      "mes": "2026-07",
+      "scope": "unit",
+      "unidade": "U-CN",
+      "valor": 1
+    },
+    {
+      "kind": "member_without_schooling",
+      "mes": "2026-07",
+      "scope": "unit",
+      "unidade": "U-CN",
+      "valor": 1
+    },
+    {
+      "kind": "attended_person_without_cpf",
+      "mes": "2026-07",
+      "scope": "unit",
+      "unidade": "U-CS",
+      "valor": 3
+    },
+    {
+      "kind": "attended_person_without_cpf",
+      "mes": "2026-08",
+      "scope": "unit",
+      "unidade": "U-CN",
+      "valor": 1
+    },
+    {
+      "kind": "member_without_schooling",
+      "mes": "2026-08",
+      "scope": "unit",
+      "unidade": "U-CN",
+      "valor": 1
+    },
+    {
+      "kind": "attended_person_without_cpf",
+      "mes": "2026-08",
+      "scope": "unit",
+      "unidade": "U-CS",
+      "valor": 4
+    },
+    {
+      "kind": "attended_person_without_cpf",
+      "mes": "2026-08",
+      "scope": "unit",
+      "unidade": "U-CE",
+      "valor": 1
+    },
+    {
+      "kind": "family_without_reference_unit",
+      "mes": null,
+      "scope": "tenant",
+      "unidade": null,
+      "valor": 3
+    },
+    {
+      "kind": "entity_without_cneas",
+      "mes": null,
+      "scope": "tenant",
+      "unidade": null,
+      "valor": 1
+    },
+    {
+      "kind": "family_pending_specificity",
+      "mes": null,
+      "scope": "unit",
+      "unidade": "U-CN",
+      "valor": 2
+    },
+    {
+      "kind": "family_pending_specificity",
+      "mes": null,
+      "scope": "unit",
+      "unidade": "U-CS",
+      "valor": 2
+    }
+  ],
+  "unidades": [
+    "U-CN",
+    "U-CS",
+    "U-CE"
+  ],
+  "versao_elenco": "2026-09-29.1"
+}

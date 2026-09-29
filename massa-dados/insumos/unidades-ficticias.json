@@ -1,0 +1,66 @@
+{
+  "semente": "unidades-v1",
+  "unidades": [
+    {
+      "chave": "U-CN",
+      "codigo_mds": "2700300980001",
+      "coordenada": {
+        "bairro": "Massaranduba",
+        "latitude": -9.6997719,
+        "longitude": -36.6844353,
+        "setor": "270030005000530"
+      },
+      "endereco": {
+        "bairro": "Massaranduba",
+        "logradouro": null,
+        "municipio_ibge": "2700300",
+        "numero": "100",
+        "observacao": "Logradouro resolvido em E4 a partir do DNE importado em E1b (primeiro logradouro do bairro)."
+      },
+      "nome": "CRAS Demonstração Norte",
+      "tipo": "CRAS",
+      "tipo_codigo": "001"
+    },
+    {
+      "chave": "U-CS",
+      "codigo_mds": "2700300980002",
+      "coordenada": {
+        "bairro": "Batingas",
+        "latitude": -9.7917125,
+        "longitude": -36.6291972,
+        "setor": "270030005000124"
+      },
+      "endereco": {
+        "bairro": "Batingas",
+        "logradouro": null,
+        "municipio_ibge": "2700300",
+        "numero": "200",
+        "observacao": "Logradouro resolvido em E4 a partir do DNE importado em E1b (primeiro logradouro do bairro)."
+      },
+      "nome": "CRAS Demonstração Sul",
+      "tipo": "CRAS",
+      "tipo_codigo": "001"
+    },
+    {
+      "chave": "U-CE",
+      "codigo_mds": "2700300980003",
+      "coordenada": {
+        "bairro": "Centro",
+        "latitude": -9.7521485,
+        "longitude": -36.6619307,
+        "setor": "270030005000392"
+      },
+      "endereco": {
+        "bairro": "Centro",
+        "logradouro": null,
+        "municipio_ibge": "2700300",
+        "numero": "300",
+        "observacao": "Logradouro resolvido em E4 a partir do DNE importado em E1b (primeiro logradouro do bairro)."
+      },
+      "nome": "CREAS Demonstração",
+      "tipo": "CREAS",
+      "tipo_codigo": "002"
+    }
+  ],
+  "versao": "2026-09-29.1"
+}
