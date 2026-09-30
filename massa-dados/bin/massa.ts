@@ -10,7 +10,8 @@
  *   `playwright test --project=massa-dados <etapa>` uma etapa por vez, parando na primeira falha.
  */
 import { spawnSync } from 'node:child_process';
-import { existsSync, readdirSync, statSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { exigirNaoProducao, RecusaAmbiente } from '../lib/ambiente.ts';
@@ -28,6 +29,9 @@ import {
   type EstadoExecucao,
 } from '../lib/execucao.ts';
 import { executarPreflight, formatarPreflight } from '../lib/preflight.ts';
+import { lerEvidencias, VARIAVEL_RELATORIO } from '../lib/evidencia.ts';
+import { criarPastaExecucao, gerarRelatorio, PASTA_RELATORIOS, type ManifestExecucao, type ResultadoDeterminismo } from '../lib/relatorio.ts';
+import type { Snapshot } from '../lib/snapshot.ts';
 import { escalar } from '../lib/verificacoes-sql.ts';
 import { ApagamentoNaoConfirmado, confirmarApagamento, executarReset, FalhaReset, perguntarNoTerminal, textoAviso } from '../lib/reset.ts';
 
@@ -71,6 +75,82 @@ export interface DependenciasFluxo {
   /** Roda uma etapa; devolve o código de saída (padrão: `npx playwright test --project=massa-dados`). */
   rodarEtapa?: (arquivo: string, caminhoEstado: string, filtro?: string) => number;
   timeoutMs?: number;
+  /** Base das pastas de relatório (padrão `massa-dados/relatorios`). */
+  pastaRelatorios?: string;
+}
+
+function gitCurto(pasta: string): string | null {
+  if (!existsSync(pasta)) return null;
+  const r = spawnSync('git', ['-C', pasta, 'rev-parse', '--short', 'HEAD'], { encoding: 'utf8' });
+  if (r.status !== 0) return null;
+  const sujo = spawnSync('git', ['-C', pasta, 'status', '--porcelain', '--untracked-files=no'], { encoding: 'utf8' });
+  return `${r.stdout.trim()}${sujo.stdout.trim() ? '+alterações locais' : ''}`;
+}
+
+/** Monta o `manifest.json` da execução (sem segredos: só versões, flags, ambiente e sha dos insumos). */
+export function manifestExecucao(pasta: string, estado: EstadoExecucao, opcoes: OpcoesCli, codigo: number, raizMassa = resolve(RAIZ_QA, 'massa-dados')): ManifestExecucao {
+  const manifestInsumos = resolve(raizMassa, 'insumos', 'manifest.json');
+  const elenco = JSON.parse(readFileSync(resolve(raizMassa, 'insumos', 'elenco.json'), 'utf8')) as { versao: string };
+  const ambiente = [...estado.ambiente].reverse().find((a) => a.ok)?.environment ?? null;
+  const falhou = estado.etapas.some((e) => e.status === 'falha');
+  return {
+    execucao: estado.id,
+    pasta: pasta.replace(`${RAIZ_QA}/`, ''),
+    iniciada_em: estado.iniciadaEm,
+    concluida_em: new Date().toISOString(),
+    ambiente,
+    api: { base: estado.apiBase, versao: gitCurto(resolve(RAIZ_QA, '..', 'api')) },
+    qa: { versao: gitCurto(RAIZ_QA) },
+    elenco: { versao: elenco.versao },
+    insumos: { manifest_sha256: existsSync(manifestInsumos) ? createHash('sha256').update(readFileSync(manifestInsumos)).digest('hex') : null },
+    dne: estado.dne ? { sha256: estado.dne.sha256 ?? null } : null,
+    flags: {
+      evidencias: true,
+      'confirmar-apagamento': opcoes.confirmarApagamento,
+      confirmacao: estado.confirmacao ?? null,
+      ate: opcoes.ate,
+      'a-partir-de': opcoes.aPartirDe ?? null,
+    },
+    resultado: codigo === 0 && !falhou ? 'concluída' : 'interrompida',
+  };
+}
+
+/** Renderiza o relatório (páginas, índice e manifest) da pasta da execução. Devolve o caminho do índice. */
+export function finalizarRelatorio(pasta: string, estado: EstadoExecucao, opcoes: OpcoesCli, codigo: number, raizMassa = resolve(RAIZ_QA, 'massa-dados')): string {
+  const ler = <T>(p: string): T | null => (existsSync(p) ? (JSON.parse(readFileSync(p, 'utf8')) as T) : null);
+  gerarRelatorio(pasta, {
+    estado,
+    evidencias: lerEvidencias(pasta),
+    elenco: JSON.parse(readFileSync(resolve(raizMassa, 'insumos', 'elenco.json'), 'utf8')),
+    esperado: JSON.parse(readFileSync(resolve(raizMassa, 'insumos', 'esperado.json'), 'utf8')),
+    snapshot: ler<Snapshot>(resolve(pasta, 'snapshot.json')),
+    manifest: manifestExecucao(pasta, estado, opcoes, codigo, raizMassa),
+    determinismo: ler<ResultadoDeterminismo>(resolve(pasta, 'determinismo.json')),
+  });
+  return resolve(pasta, 'index.html');
+}
+
+/** Cria a pasta nova do relatório (`--evidencias`) e a expõe às etapas; sem evidências, garante que não há pasta ativa. */
+function prepararRelatorio(opcoes: OpcoesCli, deps: DependenciasFluxo, log: Logger): string | null {
+  if (!opcoes.evidencias) {
+    delete process.env[VARIAVEL_RELATORIO];
+    return null;
+  }
+  const pasta = criarPastaExecucao(deps.pastaRelatorios ?? PASTA_RELATORIOS);
+  process.env[VARIAVEL_RELATORIO] = pasta;
+  log(`✔ Relatório de evidências: ${pasta}`);
+  return pasta;
+}
+
+function fecharRelatorio(pasta: string | null, estado: EstadoExecucao, opcoes: OpcoesCli, codigo: number, log: Logger): number {
+  if (!pasta) return codigo;
+  try {
+    log(`Relatório: ${finalizarRelatorio(pasta, estado, opcoes, codigo)}`);
+    return codigo;
+  } catch (erro) {
+    log(`✖ Relatório não gerado: ${(erro as Error).message}`);
+    return codigo || 1;
+  }
 }
 
 function rodarEtapaPlaywright(arquivo: string, caminhoEstado: string, filtro?: string): number {
@@ -155,10 +235,11 @@ export async function executarFluxo(opcoes: OpcoesCli, deps: DependenciasFluxo =
   const caminhoEstado = deps.caminhoEstado ?? caminhoEstadoPadrao(estado.id);
   estado.preflight = { apto: preflight.apto, itens: preflight.itens, falhas: preflight.falhas, avisos: preflight.avisos, duracaoMs: preflight.duracaoMs };
   estado.ambiente.push({ momento: 'preflight', ok: true, environment: preflight.ambiente.environment, mensagem: preflight.ambiente.mensagem, em: new Date().toISOString() });
+  let pastaRelatorio: string | null = null;
   const encerrar = (codigo: number): number => {
     salvarEstado(caminhoEstado, estado);
     log(`Estado da execução: ${caminhoEstado}`);
-    return codigo;
+    return fecharRelatorio(pastaRelatorio, estado, opcoes, codigo, log);
   };
 
   // 2. Aviso de apagamento + confirmação (RN-T3) ------------------------------------------------
@@ -211,6 +292,7 @@ export async function executarFluxo(opcoes: OpcoesCli, deps: DependenciasFluxo =
     return encerrar(1);
   }
   salvarEstado(caminhoEstado, estado);
+  pastaRelatorio = prepararRelatorio(opcoes, deps, log);
 
   // 6. Etapas (Playwright), uma por vez, parando na primeira falha -------------------------------
   const rodar = deps.rodarEtapa ?? rodarEtapaPlaywright;
@@ -268,6 +350,8 @@ async function retomar(opcoes: OpcoesCli, aPartirDe: string, ate: string | null,
   estado.etapas = estado.etapas.filter((e) => ETAPAS.findIndex((x) => x.id === e.etapa) < inicio);
   estado.ate = ate;
   salvarEstado(caminho, estado);
+  const pastaRelatorio = prepararRelatorio(opcoes, deps, log);
+  const fechar = (codigo: number) => fecharRelatorio(pastaRelatorio, lerEstado(caminho).estado, opcoes, codigo, log);
   const rodar = deps.rodarEtapa ?? rodarEtapaPlaywright;
   for (const etapa of selecionadas) {
     log(`\n▶ ${etapa.id} — ${etapa.titulo}`);
@@ -278,12 +362,11 @@ async function retomar(opcoes: OpcoesCli, aPartirDe: string, ate: string | null,
       marcarNaoExecutadas(atual, ETAPAS.slice(ETAPAS.indexOf(etapa) + 1).map((e) => e.id));
       salvarEstado(caminho, atual);
       log(`✖ ${etapa.id} falhou; etapas seguintes não executadas. Estado: ${caminho}`);
-      return 1;
+      return fechar(1);
     }
   }
   log(`\n✔ Retomada concluída até ${selecionadas.at(-1)?.id ?? aPartirDe}. Estado: ${caminho}`);
-  void opcoes;
-  return 0;
+  return fechar(0);
 }
 
 async function principal(): Promise<void> {

@@ -11,6 +11,7 @@
  * gate LGPD `families.view-details`).
  */
 import { expect } from '@playwright/test';
+import { Evidencia } from '../lib/evidencia.ts';
 import { dados, etapa, statusDaFalha } from '../lib/papeis.ts';
 import { chaveOpcional, chaveRegistro, registrarTodos } from '../lib/registros.ts';
 import type { ClientePapel } from '../lib/http.ts';
@@ -71,4 +72,11 @@ etapa('E11', 'Encaminhamentos, desfechos e trânsito interno sem desfecho (CA09)
   // 11.4 — fila de encaminhamentos pendentes (P2, destino).
   const pendentes = (await p2.get<{ data: unknown[]; meta?: { total?: number } }>('/api/client/referrals/pending')).corpo;
   ctx.registro.passo({ passo: '11.4 referrals/pending (P2)', itens: pendentes.meta?.total ?? pendentes.data?.length ?? null });
+
+  const ev = new Evidencia('E11');
+  ev.contagem('F-ENC · código do encaminhamento (trânsito interno, do CREAS pela P4)', '14', String(codigo));
+  ev.contagem('F-ENC · destino = CRAS Sul', 'sim', destino === ctx.chaves.obter('UNIT_U-CS') ? 'sim' : 'não');
+  ev.contagem('F-ENC · desfecho', 'vazio', desfechoValor ?? 'vazio');
+  ev.contagem('CA09 · P2 abre F-ENC depois do encaminhamento (HTTP)', 200, depois);
+  ev.salvar();
 });

@@ -84,6 +84,7 @@ export const ETAPAS: ReadonlyArray<DefinicaoEtapa> = [
   { id: 'E17', arquivo: 'e17-apuracao.spec.ts', titulo: 'Apuração × esperado e pendências de cadastro' },
   { id: 'E18', arquivo: 'e18-remessa.spec.ts', titulo: 'Conferência prévia e remessa SIAP (sem envio)' },
   { id: 'E19', arquivo: 'e19-painel-geo.spec.ts', titulo: 'Painel georreferenciado (leitura, P6)' },
+  { id: 'E20', arquivo: 'e20-verificacao.spec.ts', titulo: 'Verificações finais (CA03, CA09, CA11, CA12, RN02b), snapshot e índice' },
 ];
 
 /** Etapas até `ate` (inclusive), na ordem fixa. Lança se `ate` não existir. */

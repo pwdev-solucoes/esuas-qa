@@ -10,7 +10,8 @@
  * A navegação no browser e as capturas ficam com o relatório de evidências (plano 06).
  */
 import { expect } from '@playwright/test';
-import { dados, etapa } from '../lib/papeis.ts';
+import { Evidencia } from '../lib/evidencia.ts';
+import { dados, etapa, senhaMassa } from '../lib/papeis.ts';
 import { consultar } from '../lib/verificacoes-sql.ts';
 
 /** Chaves proibidas em qualquer nível dos pontos (PII). */
@@ -76,4 +77,19 @@ etapa('E19', 'Painel georreferenciado (leitura, P6)', 'P6', async (ctx) => {
   const pii = [...new Set(chavesPii(pontos))];
   ctx.registro.passo({ passo: 'BR-014 pontos anônimos', pontos_verificados: pontos.length, chaves_pii: pii });
   expect(pii, 'nenhum dado pessoal nos pontos do mapa').toEqual([]);
+
+  const ev = new Evidencia('E19');
+  ev.contagem('Unidades da massa no mapa com coordenadas', 3, nossas.filter(Boolean).length);
+  ev.contagem('Setores censitários', 427, setores);
+  ev.contagem('Bairros', 41, bairros);
+  ev.contagem('Chaves de dado pessoal nos pontos', 0, pii.length);
+  await ev.print({
+    cfg: ctx.cfg,
+    cpf: ctx.elenco.profissionais.find((p) => p.chave === 'P6')!.cpf,
+    senha: senhaMassa(ctx.cfg),
+    rota: '/app/georreferenciamento',
+    nome: 'e19-01-painel-geo-p6',
+    legenda: 'Painel georreferenciado aberto por P6 (geo_panel_viewer): limites, setores e as 3 unidades da massa.',
+  });
+  ev.salvar();
 });

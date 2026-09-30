@@ -24,7 +24,8 @@
     "massa:insumos": "tsx massa-dados/scripts/gerar.ts",
     "massa:insumos:verificar": "playwright test --project=massa-insumos --reporter=list",
     "massa": "tsx massa-dados/bin/massa.ts",
-    "massa:verificar": "tsx massa-dados/bin/massa.ts --verificar"
+    "massa:verificar": "tsx massa-dados/bin/massa.ts --verificar",
+    "massa:comparar": "tsx massa-dados/scripts/comparar.ts"
   },
   "keywords": [
     "e2e",

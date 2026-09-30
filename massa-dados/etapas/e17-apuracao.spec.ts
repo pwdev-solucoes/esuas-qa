@@ -13,6 +13,7 @@
  * (pessoas atendidas sem CPF, conferidas também no banco) e 15.9 (capacitação).
  */
 import { expect } from '@playwright/test';
+import { Evidencia } from '../lib/evidencia.ts';
 import { lerEstado } from '../lib/execucao.ts';
 import {
   classificar,
@@ -27,7 +28,7 @@ import {
   type TallyUnidade,
   type UnidadeApuracao,
 } from '../lib/esperado.ts';
-import { dados, etapa, lerInsumo } from '../lib/papeis.ts';
+import { dados, etapa, lerInsumo, senhaMassa } from '../lib/papeis.ts';
 import { registrosDoElenco, type RegistroElenco } from '../lib/registros.ts';
 import { consultar } from '../lib/verificacoes-sql.ts';
 
@@ -213,6 +214,22 @@ etapa('E17', 'Apuração × esperado (3 meses × 3 unidades) e pendências de ca
     jul: v('2026-07', 'U-CE', 'capacitation.QuantidadeCursos'),
     ago: v('2026-08', 'U-CE', 'capacitation.QuantidadeCursos'),
   });
+
+  const ev = new Evidencia('E17');
+  ev.contagem('Contadores comparados (3 meses × 3 unidades)', esperado.contadores.length, apurado.size >= esperado.contadores.length ? esperado.contadores.length : apurado.size);
+  ev.contagem('Divergências sem explicação', 0, bloqueantes.length);
+  ev.contagem('Divergências explicadas por achado RN14', explicadas.length, explicadas.length);
+  ev.contagem('Pré-conferência tipo × mês × unidade: divergências', 0, preConferencia.length);
+  await ev.print({
+    cfg: ctx.cfg,
+    cpf: ctx.elenco.organizacao.master.cpf,
+    senha: senhaMassa(ctx.cfg),
+    rota: '/app/prestacao-contas/apuracao-atendimentos',
+    nome: 'e17-01-apuracao-master',
+    legenda: 'Apuração de Atendimentos vista pelo Master (todas as unidades), com a seção "Pendências de cadastro" (10994b).',
+    ca: 'CA07',
+  });
+  ev.salvar();
 
   if (falhas.length) throw new Error(`E17: ${falhas.length} falha(s):\n${falhas.join('\n')}`);
 });
