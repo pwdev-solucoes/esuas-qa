@@ -165,7 +165,7 @@ export async function executarFluxo(opcoes: OpcoesCli, deps: DependenciasFluxo =
   try {
     const dne = await obterDne({ url: cfg.dneUrl, sha256: cfg.dneSha256 || undefined, pastaCache: deps.pastaCache, fetchImpl: deps.fetchImpl });
     estado.dne = { ...dne, arquivo: dne.arquivo };
-    log(`✔ DNE: ${dne.bytes} bytes, sha256 ${dne.sha256}${dne.doCache ? ' (cache)' : ' (baixado)'}`);
+    log(`✔ DNE: ${dne.bytes} bytes, sha256 ${dne.sha256}${dne.local ? ' (arquivo local)' : dne.doCache ? ' (cache)' : ' (baixado)'}`);
   } catch (erro) {
     log(`✖ ${erro instanceof FalhaDne ? erro.message : `DNE: ${(erro as Error).message}`}`);
     return encerrar(1);

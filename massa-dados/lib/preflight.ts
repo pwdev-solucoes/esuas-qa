@@ -157,6 +157,21 @@ export async function executarPreflight(cfg: ConfigMassa, deps: DependenciasPref
   }
   if (!cfg.cacheClearCmd) {
     add('config', 'MASSA_CACHE_CLEAR_CMD', 'aviso', 'não definido: logins seguidos podem cair no rate-limit (429).');
+  } else {
+    // O cache clear roda DEPOIS do reset: um alvo errado só apareceria com a base já apagada.
+    const { binario, container } = containerDoComando(cfg.cacheClearCmd);
+    if (executor.programa('/bin/sh', ['-c', `command -v ${JSON.stringify(binario)}`]).codigo !== 0) {
+      add('config', 'MASSA_CACHE_CLEAR_CMD', 'falha', `binário "${binario}" do MASSA_CACHE_CLEAR_CMD não encontrado no PATH.`);
+    } else if (container && !cfg.containers.includes(container)) {
+      add(
+        'config',
+        'MASSA_CACHE_CLEAR_CMD',
+        'falha',
+        `o cache clear aponta para o container "${container}", que não está em MASSA_DOCKER_CONTAINERS. Ele roda depois do reset: corrija antes de apagar a base.`,
+      );
+    } else {
+      add('config', 'MASSA_CACHE_CLEAR_CMD', 'ok', `executável (${binario}${container ? ` → ${container}` : ''}); não executado no preflight`);
+    }
   }
 
   // 1. Insumos ---------------------------------------------------------------------------------

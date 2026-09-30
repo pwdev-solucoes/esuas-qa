@@ -6,7 +6,7 @@
  * Código de saída ≠ 0 em qualquer um aborta.
  */
 import { createInterface } from 'node:readline/promises';
-import { containerDoComando } from './preflight.ts';
+import { containerDoComando, PADRAO_FILA } from './preflight.ts';
 import { executorPadrao, sanitizar, type ConfigMassa, type Executor, type Logger } from './config.ts';
 
 export function textoAviso(apiBase: string, environment: string, resetCmd: string): string {
@@ -73,7 +73,7 @@ export function comandoQueueRestart(cfg: Pick<ConfigMassa, 'resetCmd' | 'queueRe
 }
 
 export interface PassoReset {
-  nome: 'reset' | 'queue:restart' | 'cache:clear';
+  nome: 'reset' | 'queue:restart' | 'worker:start' | 'cache:clear';
   comando: string;
   codigo: number;
   duracaoMs: number;
@@ -91,7 +91,25 @@ function resumir(texto: string, linhas = 6): string {
   return sanitizar(texto.trim().split(/\r?\n/).filter(Boolean).slice(-linhas).join(' | ')).slice(0, 600);
 }
 
-/** Executa reset → queue:restart → cache clear. Aborta (lança) no primeiro código ≠ 0. */
+/**
+ * Religa o container da fila depois do `queue:restart`. Na stack Sail o container do worker roda só
+ * `queue:work` e não tem política de restart: o sinal faz o processo sair e o container para, e aí
+ * DNE, geo-imports e e-mails nunca processam. Espera o container parar (até 20 s) e dá `docker start`
+ * (idempotente). Só se aplica quando o reset é `docker exec …` e há container de fila na lista.
+ */
+export function comandoReligarWorker(cfg: Pick<ConfigMassa, 'resetCmd' | 'containers'>): string | null {
+  const { binario, container } = containerDoComando(cfg.resetCmd);
+  const fila = cfg.containers.find((c) => PADRAO_FILA.test(c));
+  if (!container || !fila) return null;
+  const docker = JSON.stringify(binario);
+  const alvo = JSON.stringify(fila);
+  return (
+    `for i in $(seq 1 20); do [ "$(${docker} inspect -f '{{.State.Running}}' ${alvo})" = "false" ] && break; sleep 1; done; ` +
+    `${docker} start ${alvo} >/dev/null && sleep 2 && [ "$(${docker} inspect -f '{{.State.Running}}' ${alvo})" = "true" ]`
+  );
+}
+
+/** Executa reset → queue:restart → religar worker → cache clear. Aborta (lança) no primeiro código ≠ 0. */
 export function executarReset(cfg: ConfigMassa, deps: { executor?: Executor; log?: Logger } = {}): PassoReset[] {
   const executor = deps.executor ?? executorPadrao;
   const log = deps.log ?? (() => undefined);
@@ -104,6 +122,8 @@ export function executarReset(cfg: ConfigMassa, deps: { executor?: Executor; log
     ['reset', cfg.resetCmd],
     ['queue:restart', queueRestart],
   ];
+  const religar = comandoReligarWorker(cfg);
+  if (religar) plano.push(['worker:start', religar]);
   if (cfg.cacheClearCmd) plano.push(['cache:clear', cfg.cacheClearCmd]);
 
   const passos: PassoReset[] = [];

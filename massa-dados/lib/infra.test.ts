@@ -19,7 +19,7 @@ import { lerEstado } from './execucao.ts';
 import { ClientePapel } from './http.ts';
 import { definirSenha, extrairLinkRedefinicao, lerLink } from './mailpit.ts';
 import { containerDoComando, executarPreflight } from './preflight.ts';
-import { ApagamentoNaoConfirmado, comandoQueueRestart, confirmarApagamento, executarReset, FalhaReset } from './reset.ts';
+import { ApagamentoNaoConfirmado, comandoQueueRestart, comandoReligarWorker, confirmarApagamento, executarReset, FalhaReset } from './reset.ts';
 
 // ---------------------------------------------------------------------------------------------
 // Utilitários de stub
@@ -293,6 +293,7 @@ test.describe('INT-004 (AC-004) — a trava roda duas vezes', () => {
       expect(espiao.shells).toEqual([
         'docker exec esuas-api php artisan migrate:fresh --seed --force',
         'docker exec esuas-api php artisan queue:restart',
+        expect.stringContaining('start "esuas-queue"'),
         'docker exec esuas-api php artisan cache:clear',
       ]);
       expect(etapas).toEqual(['e00-preflight.spec.ts']);
@@ -300,6 +301,24 @@ test.describe('INT-004 (AC-004) — a trava roda duas vezes', () => {
       expect(estado.dne?.sha256).toBe(SHA_DNE);
       expect(estado.etapas.find((e) => e.etapa === 'E0')?.status).toBe('nao_executada');
       expect(stub.chamadas.filter((c) => c.caminho === '/api/environment')).toHaveLength(2);
+    } finally {
+      await stub.fechar();
+    }
+  });
+});
+
+test.describe('INT-001b (AC-001) — cache clear com alvo fora da lista bloqueia no preflight', () => {
+  test('MASSA_CACHE_CLEAR_CMD apontando para container fora de MASSA_DOCKER_CONTAINERS é ✖', async () => {
+    const stub = await subirStub(rotasSaudaveis(() => json(200, { environment: 'local' })));
+    try {
+      const cfg = { ...carregarConfigStub(stub.url), cacheClearCmd: 'docker exec outro-container php artisan cache:clear' };
+      const r = await executarPreflight(cfg, { executor: executorEspiao().executor, pastaCache: pastaTemp, timeoutMs: 1_000 });
+      const item = r.itens.find((i) => i.familia === 'config' && i.nome === 'MASSA_CACHE_CLEAR_CMD');
+      expect(item?.status).toBe('falha');
+      expect(item?.mensagem).toContain('outro-container');
+
+      const certo = await executarPreflight(carregarConfigStub(stub.url), { executor: executorEspiao().executor, pastaCache: pastaTemp, timeoutMs: 1_000 });
+      expect(certo.itens.find((i) => i.familia === 'config' && i.nome === 'MASSA_CACHE_CLEAR_CMD')?.status).toBe('ok');
     } finally {
       await stub.fechar();
     }
@@ -443,6 +462,21 @@ test.describe('INT-007 (AC-007) — reset externo', () => {
   });
   test('código ≠ 0 no cache clear também aborta', () => {
     expect(() => executarReset(base('true', 'false'), { executor: executorPadrao })).toThrow(/cache:clear/);
+  });
+  test('religar o worker: só com reset via docker exec e container de fila na lista', () => {
+    const containers = ['api-laravel.test-1', 'api-laravel.worker-1'];
+    const cmd = comandoReligarWorker({ resetCmd: 'docker exec api-laravel.test-1 php artisan migrate:fresh --seed --force', containers });
+    expect(cmd).toContain('start "api-laravel.worker-1"');
+    expect(cmd).toContain(`inspect -f '{{.State.Running}}' "api-laravel.worker-1"`);
+    expect(comandoReligarWorker({ resetCmd: './vendor/bin/sail artisan migrate:fresh --seed', containers })).toBeNull();
+    expect(comandoReligarWorker({ resetCmd: 'docker exec api-laravel.test-1 php artisan migrate:fresh', containers: ['api-laravel.test-1'] })).toBeNull();
+  });
+  test('reset via docker exec inclui o passo worker:start entre queue:restart e cache:clear', () => {
+    const cfg = { ...carregarConfigStub('http://127.0.0.1:1'), resetCmd: 'docker exec esuas-api php artisan migrate:fresh --seed --force' };
+    const executados: string[] = [];
+    const executor: Executor = { ...executorPadrao, shell: (c: string) => (executados.push(c), { codigo: 0, saida: '', erro: '' }) };
+    expect(executarReset(cfg, { executor }).map((p) => p.nome)).toEqual(['reset', 'queue:restart', 'worker:start', 'cache:clear']);
+    expect(executados[2]).toContain('start "esuas-queue"');
   });
   test('queue:restart derivado do comando de reset', () => {
     expect(comandoQueueRestart({ resetCmd: './vendor/bin/sail artisan migrate:fresh --seed', queueRestartCmd: '' })).toBe('./vendor/bin/sail artisan queue:restart');
