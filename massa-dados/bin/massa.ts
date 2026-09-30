@@ -67,6 +67,9 @@ export interface DependenciasFluxo {
 function rodarEtapaPlaywright(arquivo: string, caminhoEstado: string, filtro?: string): number {
   const argumentos = ['playwright', 'test', '--project=massa-dados', '--reporter=list', `massa-dados/etapas/${arquivo}`];
   if (filtro) argumentos.push(`--grep=${filtro}`);
+  // A E01b espera o DNE nacional (~15 min de processamento + sync): sem teto global e com folga por
+  // etapa (o timeout de cada job continua em `polling.ts`, MASSA_TIMEOUT_JOBS_MS).
+  argumentos.push('--global-timeout=0', `--timeout=${2 * 60 * 60_000}`);
   const r = spawnSync('npx', argumentos, {
     cwd: RAIZ_QA,
     stdio: 'inherit',
