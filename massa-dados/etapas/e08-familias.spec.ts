@@ -19,8 +19,6 @@ etapa('E08', 'Famílias, composição e prontuário', 'P1–P3', async (ctx) => 
   const especificidades = new Map<string, number>();
   for (const e of await listarTudo<{ id: number; code: string }>(p1, '/api/relationals/social-specificities')) especificidades.set(e.code, e.id);
   const ingressoId = await idDoLookup(p1, '/api/family-intake-forms', '01');
-  const programas = new Map<string, number>();
-  for (const pr of await listarTudo<{ id: number; code: string }>(p1, '/api/social-programs').catch(() => [])) programas.set(pr.code, pr.id);
 
   let criadas = 0;
   for (const f of ctx.elenco.familias) {
@@ -46,25 +44,25 @@ etapa('E08', 'Famílias, composição e prontuário', 'P1–P3', async (ctx) => 
     const base = `/api/client/families/${familia.uuid}`;
 
     // 8.2 composição
-    const membrosIds = new Map<string, number>();
     for (const p of ctx.elenco.pessoas.filter((x) => x.familia_chave === f.chave && x.chave !== f.responsavel)) {
       const kin = parentescos.get(p.parentesco);
       if (!kin) throw new Error(`Parentesco "${p.parentesco}" sem lookup.`);
-      const m = dados<{ id?: number; member_uuid?: string; uuid?: string }>(
-        (await op.post(`${base}/members`, { person_uuid: ctx.chaves.obter(`PES_${p.chave}`), kinship_type_id: kin })).corpo,
-      );
-      if (typeof m.id === 'number') membrosIds.set(p.chave, m.id);
+      await op.post(`${base}/members`, { person_uuid: ctx.chaves.obter(`PES_${p.chave}`), kinship_type_id: kin });
     }
     // 8.4 ingresso + programas sociais
     await op.post(`${base}/intake`, { intake_form_id: ingressoId, reason: 'Demanda espontânea (massa fictícia de demonstração).' });
-    for (const pr of f.programas_sociais) {
-      const programa = programas.get(pr.codigo);
-      const membro = membrosIds.get(pr.beneficiario);
-      if (!programa || membro === undefined) {
-        ctx.registro.aviso(`${f.chave}: programa "${pr.codigo}" não registrado (lookup ou id numérico do integrante indisponível na resposta).`);
-        continue;
-      }
-      await op.put(`${base}/social-programs`, { programs: [{ social_program_id: programa, family_member_id: membro }] });
+    if (f.programas_sociais.length) {
+      // O formulário expõe os programas disponíveis e o `family_member_id` de cada integrante.
+      const form = dados<{ available_programs: Array<{ id: number; code: string }>; members: Array<{ family_member_id: number; person_uuid: string }> }>(
+        (await op.get(`${base}/social-programs`)).corpo,
+      );
+      const programs = f.programas_sociais.map((pr) => {
+        const programa = form.available_programs.find((a) => a.code === pr.codigo);
+        const membro = form.members.find((m) => m.person_uuid === ctx.chaves.obter(`PES_${pr.beneficiario}`));
+        if (!programa || !membro) throw new Error(`${f.chave}: programa "${pr.codigo}" ou beneficiário ${pr.beneficiario} indisponível no formulário.`);
+        return { social_program_id: programa.id, family_member_id: membro.family_member_id };
+      });
+      await op.put(`${base}/social-programs`, { programs });
     }
     // 8.5 especificidade (confirmada só quando o elenco manda)
     if (f.especificidade_codigo) {

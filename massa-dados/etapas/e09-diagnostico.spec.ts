@@ -36,7 +36,7 @@ etapa('E09', 'Diagnóstico: condições habitacionais e do integrante', 'P1–P3
       });
       habitacoes += 1;
     }
-    const membros = dados<Array<{ member_uuid: string; person_uuid: string }>>((await op.get(`${base}/members`)).corpo);
+    const membros = dados<{ members: Array<{ member_uuid: string; person_uuid: string }> }>((await op.get(`${base}/members`)).corpo).members;
     for (const p of ctx.elenco.pessoas.filter((x) => x.familia_chave === f.chave)) {
       const pessoaUuid = estado.obter(`PES_${p.chave}`);
       const m = membros.find((x) => x.person_uuid === pessoaUuid);
