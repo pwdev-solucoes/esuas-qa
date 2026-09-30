@@ -293,8 +293,8 @@ test.describe('INT-004 (AC-004) — a trava roda duas vezes', () => {
       expect(espiao.shells).toEqual([
         'docker exec esuas-api php artisan migrate:fresh --seed --force',
         'docker exec esuas-api php artisan queue:restart',
-        expect.stringContaining('start "esuas-queue"'),
         'docker exec esuas-api php artisan cache:clear',
+        expect.stringContaining('start "esuas-queue"'),
       ]);
       expect(etapas).toEqual(['e00-preflight.spec.ts']);
       const { estado } = lerEstado(deps.caminhoEstado);
