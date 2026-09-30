@@ -79,6 +79,35 @@ export const SQL = {
   familiasComUnidadeDeOutroTenant: (cnpjDemo: string) =>
     `SELECT count(*) FROM families f JOIN tenants t ON t.id = f.tenant_id JOIN social_units su ON su.id = f.social_unit_id ` +
     `WHERE t.cnpj = ${cnpj(cnpjDemo)} AND su.tenant_id <> f.tenant_id`,
+  /** CA01: unidades da demo sem geometria ativa no endereço (esperado 0). */
+  unidadesSemGeometria: (cnpjDemo: string) =>
+    `SELECT count(*) FROM social_units su JOIN tenants t ON t.id = su.tenant_id WHERE t.cnpj = ${cnpj(cnpjDemo)} AND su.deleted_at IS NULL ` +
+    `AND NOT EXISTS (SELECT 1 FROM addresses_geometries g WHERE g.address_id = su.address_id AND g.is_active)`,
+  /** E8: famílias com prontuário por unidade de referência (nome da unidade | total). */
+  familiasPorUnidade: (cnpjDemo: string) =>
+    `SELECT su.name, count(*) FROM families f JOIN tenants t ON t.id = f.tenant_id JOIN social_units su ON su.id = f.social_unit_id ` +
+    `WHERE t.cnpj = ${cnpj(cnpjDemo)} AND f.deleted_at IS NULL GROUP BY su.name`,
+  /** E8: `referenced_at` (data) das famílias com unidade. */
+  datasDeReferencia: (cnpjDemo: string) =>
+    `SELECT to_char(f.referenced_at, 'YYYY-MM-DD') FROM families f JOIN tenants t ON t.id = f.tenant_id ` +
+    `WHERE t.cnpj = ${cnpj(cnpjDemo)} AND f.deleted_at IS NULL AND f.social_unit_id IS NOT NULL`,
+  /** E8: integrantes ativos (inclui o responsável) nas famílias da demo. */
+  totalDeIntegrantes: (cnpjDemo: string) =>
+    `SELECT count(*) FROM family_members fm JOIN families f ON f.id = fm.family_id JOIN tenants t ON t.id = f.tenant_id ` +
+    `WHERE t.cnpj = ${cnpj(cnpjDemo)} AND fm.deleted_at IS NULL AND f.deleted_at IS NULL`,
+  /** E8/RN10: famílias da demo sem especificidade CONFIRMADA. */
+  semEspecificidadeConfirmada: (cnpjDemo: string) =>
+    `SELECT count(*) FROM families f JOIN tenants t ON t.id = f.tenant_id WHERE t.cnpj = ${cnpj(cnpjDemo)} AND f.deleted_at IS NULL ` +
+    `AND NOT EXISTS (SELECT 1 FROM family_social_specificities s WHERE s.family_id = f.id AND s.deleted_at IS NULL AND s.confirmed_at IS NOT NULL)`,
+  /** E9/RN10: uuid das famílias da demo sem condições habitacionais. */
+  familiasSemHabitacao: (cnpjDemo: string) =>
+    `SELECT f.uuid FROM families f JOIN tenants t ON t.id = f.tenant_id WHERE t.cnpj = ${cnpj(cnpjDemo)} AND f.deleted_at IS NULL ` +
+    `AND NOT EXISTS (SELECT 1 FROM family_housing_conditions h WHERE h.family_id = f.id AND h.deleted_at IS NULL AND h.residence_type_id IS NOT NULL)`,
+  /** E9/RN10: uuid das PESSOAS integrantes sem escolaridade (sem linha de condições ou nível nulo). */
+  integrantesSemEscolaridade: (cnpjDemo: string) =>
+    `SELECT p.uuid FROM family_members fm JOIN persons p ON p.id = fm.person_id JOIN families f ON f.id = fm.family_id ` +
+    `JOIN tenants t ON t.id = f.tenant_id LEFT JOIN family_member_conditions c ON c.family_member_id = fm.id AND c.deleted_at IS NULL ` +
+    `WHERE t.cnpj = ${cnpj(cnpjDemo)} AND fm.deleted_at IS NULL AND c.schooling_level_id IS NULL`,
   /** CA12: lotações da demo em unidade de outro tenant (esperado 0). */
   lotacoesEmOutroTenant: (cnpjDemo: string) =>
     `SELECT count(*) FROM social_tenant_professional_assignments a JOIN tenant_professionals tp ON tp.id = a.tenant_professional_id ` +

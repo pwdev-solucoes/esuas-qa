@@ -11,7 +11,7 @@ import { resolve } from 'node:path';
 import { expect } from '@playwright/test';
 import { lerEstado } from '../lib/execucao.ts';
 import type { ClientePapel } from '../lib/http.ts';
-import { arquivo, CHAVE_TENANT, dados, enviarArquivo, etapa, PASTA_INSUMOS, type ContextoEtapa } from '../lib/papeis.ts';
+import { arquivo, CHAVE_TENANT, dados, enviarArquivo, etapa, PASTA_INSUMOS, statusDaFalha, type ContextoEtapa } from '../lib/papeis.ts';
 import { aguardar } from '../lib/polling.ts';
 
 interface Importacao {
@@ -26,8 +26,20 @@ interface Importacao {
 }
 
 /** Espera o processamento (status) e depois o sync (sync_status) de uma importação. */
-async function processarESincronizar(ctx: ContextoEtapa, admin: ClientePapel, recurso: string, id: number, rotulo: string): Promise<Importacao> {
-  const ler = async () => dados<Importacao>((await admin.get(`/api/${recurso}/${id}`)).corpo);
+async function processarESincronizar(ctx: ContextoEtapa, inicial: ClientePapel, recurso: string, id: number, rotulo: string): Promise<Importacao> {
+  let admin = inicial;
+  // Jobs longos (DNE nacional): se a sessão cair (401, ex.: outro login do mesmo usuário), entra de novo.
+  const ler = async (): Promise<Importacao> => {
+    try {
+      return dados<Importacao>((await admin.get(`/api/${recurso}/${id}`)).corpo);
+    } catch (erro) {
+      if (statusDaFalha(erro) !== 401) throw erro;
+      ctx.registro.aviso(`${rotulo}: sessão do Administrador expirou durante o polling; novo login.`);
+      await ctx.sessoes.sair('admin');
+      admin = await ctx.sessoes.entrar('admin');
+      return dados<Importacao>((await admin.get(`/api/${recurso}/${id}`)).corpo);
+    }
+  };
   const inicio = Date.now();
   const processado = await aguardar(`${rotulo}: processamento`, ler, (v) =>
     v.status === 'completed' ? 'pronto' : v.status === 'failed' ? { falha: String(v.error_message ?? 'status failed') } : 'aguardando',
@@ -44,7 +56,7 @@ async function processarESincronizar(ctx: ContextoEtapa, admin: ClientePapel, re
 }
 
 etapa('E01b', 'Importações geográficas', 'admin', async (ctx) => {
-  const admin = await ctx.sessoes.entrar('admin');
+  const adm = () => ctx.sessoes.entrar('admin');
   const { estado } = lerEstado(ctx.caminho);
   const dne = estado.dne;
   expect(dne?.arquivo, 'DNE não registrado pela E0').toBeTruthy();
@@ -52,9 +64,9 @@ etapa('E01b', 'Importações geográficas', 'admin', async (ctx) => {
   // 1b.1 — DNE ------------------------------------------------------------------------------
   ctx.chaveAtual = 'DNE';
   const competencia = new Date().toISOString().slice(0, 7);
-  const criado = dados<Importacao>((await enviarArquivo(admin, '/api/dne-imports', { file: arquivo(dne!.arquivo, 'application/zip'), competence: competencia })).corpo);
+  const criado = dados<Importacao>((await enviarArquivo(await adm(), '/api/dne-imports', { file: arquivo(dne!.arquivo, 'application/zip'), competence: competencia })).corpo);
   ctx.chaves.definir('DNE_IMPORT', String(criado.uuid ?? criado.id));
-  await processarESincronizar(ctx, admin, 'dne-imports', criado.id, 'DNE');
+  await processarESincronizar(ctx, await adm(), 'dne-imports', criado.id, 'DNE');
 
   // 1b.2–1b.4 — camadas IBGE (ordem: município antes de setor e bairro) ---------------------
   const camadas: Array<{ tipo: string; arquivo: string; chave: string }> = [
@@ -65,10 +77,10 @@ etapa('E01b', 'Importações geográficas', 'admin', async (ctx) => {
   for (const c of camadas) {
     ctx.chaveAtual = c.chave;
     const imp = dados<Importacao>(
-      (await enviarArquivo(admin, '/api/geo-layer-imports', { file: arquivo(resolve(PASTA_INSUMOS, c.arquivo), 'application/geo+json'), layer_type: c.tipo })).corpo,
+      (await enviarArquivo(await adm(), '/api/geo-layer-imports', { file: arquivo(resolve(PASTA_INSUMOS, c.arquivo), 'application/geo+json'), layer_type: c.tipo })).corpo,
     );
     ctx.chaves.definir(c.chave, String(imp.uuid ?? imp.id));
-    await processarESincronizar(ctx, admin, 'geo-layer-imports', imp.id, c.chave);
+    await processarESincronizar(ctx, await adm(), 'geo-layer-imports', imp.id, c.chave);
   }
 
   // 1b.5 — publicação direcionada à organização demo ----------------------------------------
@@ -76,7 +88,7 @@ etapa('E01b', 'Importações geográficas', 'admin', async (ctx) => {
   const tenantUuid = ctx.chaves.obter(CHAVE_TENANT);
   const camada = dados<{ id: number; uuid: string }>(
     (
-      await admin.post('/api/geo-layers', {
+      await (await adm()).post('/api/geo-layers', {
         name: 'Demonstração SigSUAS — famílias em extrema pobreza',
         description: 'Camada da massa fictícia (#10994), publicada só para a organização de demonstração.',
         representation: 'heatmap',
@@ -84,7 +96,7 @@ etapa('E01b', 'Importações geográficas', 'admin', async (ctx) => {
       })
     ).corpo,
   );
-  await admin.post(`/api/geo-layers/${camada.uuid ?? camada.id}/publish`, { audience: 'selected', tenant_uuids: [tenantUuid] });
+  await (await adm()).post(`/api/geo-layers/${camada.uuid ?? camada.id}/publish`, { audience: 'selected', tenant_uuids: [tenantUuid] });
   ctx.chaves.definir('GEO_CAMADA_DEMO', camada.uuid);
   ctx.chaveAtual = null;
 });
