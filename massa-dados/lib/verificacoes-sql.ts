@@ -63,9 +63,9 @@ export function escalar(cfg: ConfigMassa, sql: string, executor?: Executor): str
 const cnpj = (v: string) => `'${v.replace(/\D/g, '')}'`;
 
 export const SQL = {
-  /** CA11: CPFs das pessoas das famílias da demo (vazio = NULL); prefixo 98 e DV conferidos em TS. */
+  /** CA11: CPFs das pessoas das famílias da demo (`<null>` = NULL; psql -A imprime NULL vazio); prefixo e DV em TS. */
   cpfsDasFamilias: (cnpjDemo: string) =>
-    `SELECT p.cpf FROM persons p JOIN family_members fm ON fm.person_id = p.id AND fm.deleted_at IS NULL ` +
+    `SELECT coalesce(p.cpf, '<null>') FROM persons p JOIN family_members fm ON fm.person_id = p.id AND fm.deleted_at IS NULL ` +
     `JOIN families f ON f.id = fm.family_id JOIN tenants t ON t.id = f.tenant_id WHERE t.cnpj = ${cnpj(cnpjDemo)} ORDER BY p.id`,
   /** CA11: pessoas sem CPF gravadas como string vazia (esperado 0). */
   cpfVazio: (cnpjDemo: string) =>

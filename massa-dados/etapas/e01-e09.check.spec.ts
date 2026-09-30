@@ -36,7 +36,7 @@ const achados = (): string[] => estado.etapas.flatMap((e) => e.avisos.filter((a)
 const temAchado = (trecho: string) => achados().some((a) => a.includes(trecho));
 const obterOuNull = (k: string): string | null => estado.chaves[k] ?? null;
 
-test.describe.serial('E1–E9 — asserções pós-etapas', () => {
+test.describe('E1–E9 — asserções pós-etapas', () => {
   test.beforeAll(() => {
     estado = lerEstado(caminho).estado;
     chaves = new MapaChaves(caminho);
@@ -110,14 +110,17 @@ test.describe.serial('E1–E9 — asserções pós-etapas', () => {
     expect(Number(escalar(cfg, SQL.unidadesSemGeometria(elenco.organizacao.cnpj)))).toBe(0);
     for (const p of elenco.profissionais) {
       const uuid = chaves.obter(`PROF_${p.chave}`);
-      const lot = dados<Array<{ social_unit?: { uuid?: string }; start_date?: string; end_date?: string | null }>>((await master.get(`/api/client/professionals/${uuid}/units`)).corpo);
-      const ativas = lot.filter((l) => !l.end_date);
+      const lot = dados<Array<{ unit: { uuid: string }; period: { start_date: string; end_date: string | null }; is_active: boolean }>>(
+        (await master.get(`/api/client/professionals/${uuid}/units`)).corpo,
+      );
+      const ativas = lot.filter((l) => l.is_active && !l.period.end_date);
       expect(ativas.length, `${p.chave} lotações`).toBe(p.lotacoes.length);
       for (const l of p.lotacoes) {
-        expect(JSON.stringify(ativas), `${p.chave} em ${l.unidade}`).toContain(chaves.obter(`UNIT_${l.unidade}`));
-        expect(ativas.every((a) => String(a.start_date).startsWith(l.desde))).toBe(true);
+        const achada = ativas.find((a) => a.unit.uuid === chaves.obter(`UNIT_${l.unidade}`));
+        expect(achada?.period.start_date, `${p.chave} em ${l.unidade} desde ${l.desde}`).toBe(l.desde);
       }
-      const papeis = JSON.stringify(dados((await master.get(`/api/client/professionals/${uuid}/roles`)).corpo));
+      const atuais = dados<{ current_roles: Array<{ name: string }> }>((await master.get(`/api/client/professionals/${uuid}/roles`)).corpo).current_roles;
+      const papeis = JSON.stringify(atuais.map((r) => r.name));
       for (const addon of p.add_ons) expect(papeis, `${p.chave} com ${addon}`).toContain(`"${addon}"`);
       if (!p.add_ons.includes('family_viewer')) expect(papeis, `${p.chave} sem family_viewer`).not.toContain('"family_viewer"');
       for (const extra of p.permissoes_extras) {
@@ -146,7 +149,7 @@ test.describe.serial('E1–E9 — asserções pós-etapas', () => {
     const familiasCriadas = new Set(elenco.familias.filter((f) => obterOuNull(`FAM_${f.chave}`)).map((f) => f.chave));
     const pessoas = elenco.pessoas.filter((p) => familiasCriadas.has(p.familia_chave));
     const cpfs = consultar(cfg, SQL.cpfsDasFamilias(elenco.organizacao.cnpj)).map((l) => l[0]);
-    const preenchidos = cpfs.filter((c) => c !== '');
+    const preenchidos = cpfs.filter((c) => c !== '<null>');
     for (const c of preenchidos) {
       expect(c.startsWith('98'), c).toBe(true);
       expect(cpfValido(c), c).toBe(true);
