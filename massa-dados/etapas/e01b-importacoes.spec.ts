@@ -11,7 +11,7 @@ import { resolve } from 'node:path';
 import { expect } from '@playwright/test';
 import { lerEstado } from '../lib/execucao.ts';
 import type { ClientePapel } from '../lib/http.ts';
-import { arquivo, CHAVE_TENANT, dados, enviarArquivo, etapa, PASTA_INSUMOS, statusDaFalha, type ContextoEtapa } from '../lib/papeis.ts';
+import { arquivo, CHAVE_TENANT, dados, enviarArquivo, etapa, listarTudo, PASTA_INSUMOS, statusDaFalha, type ContextoEtapa } from '../lib/papeis.ts';
 import { aguardar } from '../lib/polling.ts';
 
 interface Importacao {
@@ -63,10 +63,19 @@ etapa('E01b', 'Importações geográficas', 'admin', async (ctx) => {
 
   // 1b.1 — DNE ------------------------------------------------------------------------------
   ctx.chaveAtual = 'DNE';
-  const competencia = new Date().toISOString().slice(0, 7);
-  const criado = dados<Importacao>((await enviarArquivo(await adm(), '/api/dne-imports', { file: arquivo(dne!.arquivo, 'application/zip'), competence: competencia })).corpo);
-  ctx.chaves.definir('DNE_IMPORT', String(criado.uuid ?? criado.id));
-  await processarESincronizar(ctx, await adm(), 'dne-imports', criado.id, 'DNE');
+  // Após o reset a base está vazia; um DNE já sincronizado só existe ao reexecutar a etapa sobre a
+  // mesma base (desenvolvimento) — nesse caso é reaproveitado em vez de recarregar ~1,5 mi de CEPs.
+  const existentes = await listarTudo<Importacao>(await adm(), '/api/dne-imports');
+  const pronto = existentes.find((d) => d.status === 'completed' && d.sync_status === 'synced');
+  if (pronto) {
+    ctx.registro.aviso('DNE já sincronizado nesta base: reaproveitado (reexecução da etapa sem reset).');
+    ctx.chaves.definir('DNE_IMPORT', String(pronto.uuid ?? pronto.id));
+  } else {
+    const competencia = new Date().toISOString().slice(0, 7);
+    const criado = dados<Importacao>((await enviarArquivo(await adm(), '/api/dne-imports', { file: arquivo(dne!.arquivo, 'application/zip'), competence: competencia })).corpo);
+    ctx.chaves.definir('DNE_IMPORT', String(criado.uuid ?? criado.id));
+    await processarESincronizar(ctx, await adm(), 'dne-imports', criado.id, 'DNE');
+  }
 
   // 1b.2–1b.4 — camadas IBGE (ordem: município antes de setor e bairro) ---------------------
   const camadas: Array<{ tipo: string; arquivo: string; chave: string }> = [

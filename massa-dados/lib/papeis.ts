@@ -255,7 +255,13 @@ export async function primeiroAcesso(ctx: ContextoEtapa, codigo: string, criadoE
   const u = ctx.sessoes.usuario(codigo);
   // O e-mail de reset disparado na criação precisa ter saído da fila ANTES do forgot-password:
   // senão o token dele sobrescreve o novo e o link lido fica inválido.
-  await buscarLinkRedefinicao(ctx.cfg.mailpitUrl, u.email, { desde: criadoEm, timeoutMs: 120_000 });
+  try {
+    await buscarLinkRedefinicao(ctx.cfg.mailpitUrl, u.email, { desde: criadoEm, timeoutMs: 120_000 });
+  } catch (erro) {
+    throw new Error(
+      `${(erro as Error).message} A API precisa entregar e-mail no Mailpit (mailer smtp → Mailpit); com o mailer "log" o link de senha só vai para o log e o primeiro acesso é impossível pelo fluxo real (RN-T7).`,
+    );
+  }
   await definirSenha(ctx.cfg, { email: u.email, guard: u.guard }, senhaMassa(ctx.cfg), { timeoutMs: 120_000 });
   ctx.registro.passo({ chave: codigo, passo: 'senha definida pelo link do Mailpit' });
   await ctx.sessoes.sair(codigo);
