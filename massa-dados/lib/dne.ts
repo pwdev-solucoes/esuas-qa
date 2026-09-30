@@ -3,13 +3,18 @@
  * confere `MASSA_DNE_SHA256` quando definido e reaproveita o cache quando o sha bate.
  * Sem sha esperado, reaproveita o último download da MESMA URL se o arquivo ainda confere com o
  * sha registrado em `ultimo.json`. O upload no sistema acontece em E1b (fora deste plano).
+ *
+ * `MASSA_DNE_URL` também aceita um ARQUIVO LOCAL: caminho absoluto, caminho relativo à raiz do
+ * `qa/` ou URL `file://`. Nesse caso nada é baixado nem copiado: o arquivo é usado onde está,
+ * depois de conferido (existe, tem tamanho > 0 e, se `MASSA_DNE_SHA256` estiver definido, o sha bate).
  */
 import { createHash } from 'node:crypto';
 import { createReadStream, createWriteStream, existsSync, mkdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { isAbsolute, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
-import { PASTA_CACHE } from './config.ts';
+import { PASTA_CACHE, RAIZ_QA } from './config.ts';
 
 export interface ResultadoDne {
   arquivo: string;
@@ -17,6 +22,8 @@ export interface ResultadoDne {
   bytes: number;
   doCache: boolean;
   url: string;
+  /** `true` quando `MASSA_DNE_URL` aponta para um arquivo local (nada foi baixado). */
+  local?: boolean;
 }
 
 export class FalhaDne extends Error {
@@ -36,6 +43,30 @@ export function sha256Arquivo(caminho: string): Promise<string> {
   });
 }
 
+/**
+ * Caminho absoluto do DNE quando `MASSA_DNE_URL` é local; `null` quando é URL http(s).
+ * Caminho relativo é resolvido a partir da raiz do `qa/` (não do diretório corrente).
+ */
+export function caminhoLocalDne(url: string, raiz: string = RAIZ_QA): string | null {
+  const valor = url.trim();
+  if (/^https?:\/\//i.test(valor)) return null;
+  if (/^file:\/\//i.test(valor)) return fileURLToPath(valor);
+  return isAbsolute(valor) ? valor : resolve(raiz, valor);
+}
+
+async function dneLocal(url: string, caminho: string, esperado: string): Promise<ResultadoDne> {
+  if (!existsSync(caminho) || !statSync(caminho).isFile()) {
+    throw new FalhaDne(`Arquivo do DNE não encontrado: ${caminho} (MASSA_DNE_URL).`);
+  }
+  const bytes = statSync(caminho).size;
+  if (bytes === 0) throw new FalhaDne(`Arquivo do DNE vazio: ${caminho} (MASSA_DNE_URL).`);
+  const sha = await sha256Arquivo(caminho);
+  if (esperado && sha !== esperado) {
+    throw new FalhaDne(`sha256 do DNE divergente: arquivo local ${sha}, esperado ${esperado} (MASSA_DNE_SHA256).`);
+  }
+  return { arquivo: caminho, sha256: sha, bytes, doCache: false, url, local: true };
+}
+
 export async function obterDne(o: {
   url: string;
   sha256?: string;
@@ -43,9 +74,12 @@ export async function obterDne(o: {
   fetchImpl?: typeof fetch;
   timeoutMs?: number;
 }): Promise<ResultadoDne> {
+  const esperado = (o.sha256 ?? '').toLowerCase();
+  const local = caminhoLocalDne(o.url);
+  if (local) return dneLocal(o.url, local, esperado);
+
   const pasta = resolve(o.pastaCache ?? PASTA_CACHE, 'dne');
   mkdirSync(pasta, { recursive: true });
-  const esperado = (o.sha256 ?? '').toLowerCase();
   const registro = resolve(pasta, 'ultimo.json');
 
   if (esperado) {

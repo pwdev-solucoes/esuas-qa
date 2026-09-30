@@ -5,7 +5,7 @@
  * real, exceto INT-009/INT-011, que só rodam com `MASSA_INT_REAL=1` e credenciais no ambiente.
  */
 import { createHash } from 'node:crypto';
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from 'node:http';
 import type { AddressInfo } from 'node:net';
 import { tmpdir } from 'node:os';
@@ -14,7 +14,7 @@ import { expect, test } from '@playwright/test';
 import { executarFluxo, lerArgumentos, type OpcoesCli } from '../bin/massa.ts';
 import { consultarAmbiente, exigirNaoProducao, MENSAGEM_PRODUCAO, RecusaAmbiente } from './ambiente.ts';
 import { carregarConfig, executorPadrao, sanitizar, type ConfigMassa, type Executor, type ResultadoComando } from './config.ts';
-import { FalhaDne, obterDne } from './dne.ts';
+import { caminhoLocalDne, FalhaDne, obterDne } from './dne.ts';
 import { lerEstado } from './execucao.ts';
 import { ClientePapel } from './http.ts';
 import { definirSenha, extrairLinkRedefinicao, lerLink } from './mailpit.ts';
@@ -470,6 +470,55 @@ test.describe('INT-008 (AC-008) — DNE em cache por sha256', () => {
       writeFileSync(join(pastaTemp, 'dne', `${SHA_DNE}.zip`), 'corrompido');
       const refeito = await obterDne({ url, sha256: SHA_DNE, pastaCache: pastaTemp });
       expect(refeito.doCache).toBe(false);
+    } finally {
+      await stub.fechar();
+    }
+  });
+});
+
+test.describe('INT-008b (AC-008) — DNE em arquivo local', () => {
+  test('caminhoLocalDne: http(s) é remoto; absoluto, relativo ao qa/ e file:// são locais', () => {
+    expect(caminhoLocalDne('https://exemplo.test/dne.zip')).toBeNull();
+    expect(caminhoLocalDne('HTTP://exemplo.test/dne.zip')).toBeNull();
+    expect(caminhoLocalDne('/tmp/dne.zip')).toBe('/tmp/dne.zip');
+    expect(caminhoLocalDne('docs/dne.zip', '/raiz/qa')).toBe('/raiz/qa/docs/dne.zip');
+    expect(caminhoLocalDne('file:///tmp/dne.zip')).toBe('/tmp/dne.zip');
+  });
+
+  test('usa o arquivo onde está, sem baixar nem copiar, e confere o sha quando definido', async () => {
+    const arquivo = join(pastaTemp, 'baseceps.zip');
+    writeFileSync(arquivo, DNE);
+    const cache = join(pastaTemp, 'cache');
+    let baixou = false;
+    const fetchImpl = (async () => {
+      baixou = true;
+      return new Response('x');
+    }) as typeof fetch;
+
+    const r = await obterDne({ url: arquivo, sha256: SHA_DNE, pastaCache: cache, fetchImpl });
+    expect(r).toMatchObject({ arquivo, sha256: SHA_DNE, bytes: DNE.length, doCache: false, local: true });
+    expect((await obterDne({ url: `file://${arquivo}`, pastaCache: cache, fetchImpl })).sha256).toBe(SHA_DNE);
+    expect(baixou).toBe(false);
+    expect(existsSync(cache)).toBe(false);
+
+    await expect(obterDne({ url: arquivo, sha256: 'c'.repeat(64), pastaCache: cache })).rejects.toThrow(/divergente/);
+    await expect(obterDne({ url: join(pastaTemp, 'nao-existe.zip'), pastaCache: cache })).rejects.toThrow(/não encontrado/);
+    writeFileSync(join(pastaTemp, 'vazio.zip'), '');
+    await expect(obterDne({ url: join(pastaTemp, 'vazio.zip'), pastaCache: cache })).rejects.toThrow(/vazio/);
+  });
+
+  test('preflight: arquivo local presente é ✔ sem HEAD; ausente é ✖ com instrução', async () => {
+    const stub = await subirStub(rotasSaudaveis(() => json(200, { environment: 'local' })));
+    try {
+      const arquivo = join(pastaTemp, 'baseceps.zip');
+      writeFileSync(arquivo, DNE);
+      const cfg = { ...carregarConfigStub(stub.url), dneUrl: arquivo };
+      const ok = await executarPreflight(cfg, { executor: executorEspiao().executor, pastaCache: pastaTemp, timeoutMs: 1_000 });
+      expect(ok.itens.find((i) => i.familia === 'dne' && i.nome === 'acesso')).toMatchObject({ status: 'ok' });
+      expect(stub.chamadas.some((c) => c.caminho === '/dne.zip')).toBe(false);
+
+      const falta = await executarPreflight({ ...cfg, dneUrl: join(pastaTemp, 'nao-existe.zip') }, { executor: executorEspiao().executor, pastaCache: pastaTemp, timeoutMs: 1_000 });
+      expect(falta.itens.find((i) => i.familia === 'dne' && i.nome === 'acesso')).toMatchObject({ status: 'falha' });
     } finally {
       await stub.fechar();
     }

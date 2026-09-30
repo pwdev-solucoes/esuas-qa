@@ -6,10 +6,11 @@
  * (`docker info|inspect|top`, `psql SELECT`). O `MASSA_RESET_CMD` nunca é executado aqui.
  */
 import { createHash } from 'node:crypto';
-import { createReadStream, existsSync, readFileSync, statfsSync } from 'node:fs';
+import { createReadStream, existsSync, readFileSync, statSync, statfsSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { resolve } from 'node:path';
 import { consultarAmbiente, type ResultadoAmbiente } from './ambiente.ts';
+import { caminhoLocalDne } from './dne.ts';
 import { PASTA_CACHE, RAIZ_MASSA, RAIZ_QA, executorPadrao, type ConfigMassa, type Executor } from './config.ts';
 import { cpfValido, cpfEmFaixaProibida } from '../scripts/lib/cpf.ts';
 import { featureQueContem, type FeatureCollection } from '../scripts/lib/geo.ts';
@@ -295,9 +296,16 @@ export async function executarPreflight(cfg: ConfigMassa, deps: DependenciasPref
     if (cache && existsSync(cache)) {
       emCache = (await sha256DeArquivo(cache)) === cfg.dneSha256;
     }
-    const r = await requisitar(cfg.dneUrl, 'HEAD');
-    if ('erro' in r || r.status !== 200) {
-      const motivo = 'erro' in r ? r.erro : `HTTP ${r.status}`;
+    const local = caminhoLocalDne(cfg.dneUrl, raizQa);
+    const r = local ? null : await requisitar(cfg.dneUrl, 'HEAD');
+    if (local) {
+      // Arquivo local: só confere presença e tamanho; o sha (se definido) é conferido em E0.
+      const tamanho = existsSync(local) && statSync(local).isFile() ? statSync(local).size : -1;
+      if (tamanho < 0) add('dne', 'acesso', 'falha', `arquivo do DNE não encontrado: ${local}. Confira MASSA_DNE_URL (caminho absoluto, relativo ao qa/ ou file://).`);
+      else if (tamanho === 0) add('dne', 'acesso', 'falha', `arquivo do DNE vazio: ${local}.`);
+      else add('dne', 'acesso', 'ok', `arquivo local ${local} (${humano(tamanho)}); nada será baixado`);
+    } else if (!r || 'erro' in r || r.status !== 200) {
+      const motivo = !r ? 'sem resposta' : 'erro' in r ? r.erro : `HTTP ${r.status}`;
       add('dne', 'acesso', emCache ? 'aviso' : 'falha', `HEAD ${cfg.dneUrl} falhou (${motivo}).${emCache ? ' O cache local confere e será usado.' : ' Confira a URL.'}`);
     } else {
       const tamanho = Number(r.headers.get('content-length') ?? '0');

@@ -47,3 +47,5 @@ qa-results/
 massa-dados/relatorios/
 massa-dados/.cache/
 massa-dados/.env
+# ZIP do DNE usado localmente pela massa (grande demais para versionar)
+docs/*.zip

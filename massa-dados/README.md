@@ -56,7 +56,7 @@ código ≠ 0 antes do aviso, do reset e do download. ⚠ não bloqueia.
 |---|---|---|
 | Configuração | `massa-dados/.env` com `API_BASE`, `ADMIN_URL`, `CLIENT_URL`, `MAILPIT_URL`, `E2E_ADMIN_CPF`, `E2E_ADMIN_PASSWORD`, `MASSA_RESET_CMD`, `MASSA_DOCKER_CONTAINERS`, `MASSA_DNE_URL`; binário do reset no PATH e container-alvo na lista | `cp massa-dados/.env.example massa-dados/.env` e preencha |
 | Insumos | arquivos do `manifest.json` presentes, sha256, JSON/GeoJSON válidos, 102 municípios, elenco ≥ 55 famílias, CPFs base 98, 2 CRAS + 1 CREAS, pontos dentro dos setores, esperado 3 meses × 3 unidades | `npm run massa:insumos` ou restaure do git |
-| DNE | `MASSA_DNE_URL` responde `HEAD` 200 com tamanho; formato do `MASSA_DNE_SHA256`; disco ≥ 3× o ZIP (⚠); cache em `.cache/dne/` | corrija a URL / libere espaço |
+| DNE | `MASSA_DNE_URL` (URL http(s) ou arquivo local) responde `HEAD` 200 com tamanho, ou o arquivo local existe e não está vazio; formato do `MASSA_DNE_SHA256`; disco ≥ 3× o ZIP (⚠); cache em `.cache/dne/` | corrija a URL / libere espaço |
 | Docker | daemon; containers `running`/`healthy`; **worker de fila com `queue:work`** (CA-T1); `SELECT postgis_version()`; MinIO | `docker start <container>` |
 | Serviços | `GET {API_BASE}/up`; **`GET {API_BASE}/api/environment` ∈ {local, testing, staging}**; admin e client respondendo (portas Sanctum-stateful 5173/5174/5175); Mailpit `/api/v1/info` | suba a API / `npm run dev` / Mailpit |
 | Ferramental | Node ≥ `.nvmrc`; `node_modules`; Playwright na faixa do `package.json` (⚠); chromium instalado (⚠) | `nvm use`, `npm ci`, `npx playwright install chromium` |
