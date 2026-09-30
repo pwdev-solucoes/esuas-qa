@@ -60,12 +60,14 @@ export interface DependenciasFluxo {
   raizMassa?: string;
   caminhoEstado?: string;
   /** Roda uma etapa; devolve o código de saída (padrão: `npx playwright test --project=massa-dados`). */
-  rodarEtapa?: (arquivo: string, caminhoEstado: string) => number;
+  rodarEtapa?: (arquivo: string, caminhoEstado: string, filtro?: string) => number;
   timeoutMs?: number;
 }
 
-function rodarEtapaPlaywright(arquivo: string, caminhoEstado: string): number {
-  const r = spawnSync('npx', ['playwright', 'test', '--project=massa-dados', '--reporter=list', `massa-dados/etapas/${arquivo}`], {
+function rodarEtapaPlaywright(arquivo: string, caminhoEstado: string, filtro?: string): number {
+  const argumentos = ['playwright', 'test', '--project=massa-dados', '--reporter=list', `massa-dados/etapas/${arquivo}`];
+  if (filtro) argumentos.push(`--grep=${filtro}`);
+  const r = spawnSync('npx', argumentos, {
     cwd: RAIZ_QA,
     stdio: 'inherit',
     env: { ...process.env, [VARIAVEL_ESTADO]: caminhoEstado },
@@ -177,7 +179,7 @@ export async function executarFluxo(opcoes: OpcoesCli, deps: DependenciasFluxo =
   const selecionadas = etapasAte(ate);
   for (const [i, etapa] of selecionadas.entries()) {
     log(`\n▶ ${etapa.id} — ${etapa.titulo}`);
-    const codigo = rodar(etapa.arquivo, caminhoEstado);
+    const codigo = rodar(etapa.arquivo, caminhoEstado, etapa.filtro);
     if (codigo !== 0) {
       const atual = lerEstado(caminhoEstado).estado;
       if (!atual.etapas.some((e) => e.etapa === etapa.id)) {

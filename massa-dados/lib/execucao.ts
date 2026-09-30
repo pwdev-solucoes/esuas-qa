@@ -47,10 +47,33 @@ export interface EstadoExecucao {
   chaves: Record<string, string>;
 }
 
-/** Ordem fixa das etapas (arquivo em `massa-dados/etapas/`). Planos 04–06 acrescentam E1…E20. */
-export const ETAPAS: ReadonlyArray<{ id: string; arquivo: string; titulo: string }> = [
+/**
+ * Ordem fixa das etapas (arquivo em `massa-dados/etapas/`). Planos 04–06 acrescentam E1…E20.
+ * `filtro` seleciona uma parte de um arquivo (`playwright --grep`): E1 é dividida em E01 (1.1–1.5) e
+ * E01c (1.6–1.9) em volta da E01b, e o Operacional de cadastro (6.0 = E06a) vem antes das unidades (BR-002).
+ */
+export interface DefinicaoEtapa {
+  id: string;
+  arquivo: string;
+  titulo: string;
+  filtro?: string;
+}
+
+export const ETAPAS: ReadonlyArray<DefinicaoEtapa> = [
   { id: 'E00', arquivo: 'e00-preflight.spec.ts', titulo: 'Preflight' },
   { id: 'E0', arquivo: 'e00-fundacoes.spec.ts', titulo: 'Fundações: aviso, trava, reset, DNE' },
+  { id: 'E01', arquivo: 'e01-setup-global.spec.ts', titulo: 'Setup global: conferências e organização (1.1–1.5)', filtro: 'E01 — ' },
+  { id: 'E01b', arquivo: 'e01b-importacoes.spec.ts', titulo: 'Importações geográficas: DNE, municípios, setores, bairros' },
+  { id: 'E01c', arquivo: 'e01-setup-global.spec.ts', titulo: 'Setup global: endereço, CARDUG, Master, responsável (1.6–1.9)', filtro: 'E01c — ' },
+  { id: 'E02', arquivo: 'e02-entrada-tenant.spec.ts', titulo: 'Entrada no tenant: senha, login, aceite legal' },
+  { id: 'E03', arquivo: 'e03-configuracao.spec.ts', titulo: 'Configuração da organização pelo Master' },
+  { id: 'E06a', arquivo: 'e06-profissionais.spec.ts', titulo: 'Operacional de cadastro P0 (6.0)', filtro: 'E06a — ' },
+  { id: 'E04', arquivo: 'e04-unidades.spec.ts', titulo: 'Unidades: 2 CRAS + 1 CREAS' },
+  { id: 'E05', arquivo: 'e05-entidades.spec.ts', titulo: 'Entidades socioassistenciais' },
+  { id: 'E06', arquivo: 'e06-profissionais.spec.ts', titulo: 'Equipe P1–P7: perfis, add-ons, lotação, primeiro acesso (6.1–6.4)', filtro: 'E06 — ' },
+  { id: 'E07', arquivo: 'e07-pessoas.spec.ts', titulo: 'Pessoas (faixa 98 e sem CPF)' },
+  { id: 'E08', arquivo: 'e08-familias.spec.ts', titulo: 'Famílias, composição e prontuário' },
+  { id: 'E09', arquivo: 'e09-diagnostico.spec.ts', titulo: 'Diagnóstico: condições habitacionais e do integrante' },
 ];
 
 /** Etapas até `ate` (inclusive), na ordem fixa. Lança se `ate` não existir. */
