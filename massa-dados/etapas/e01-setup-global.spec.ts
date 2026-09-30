@@ -88,7 +88,7 @@ etapa('E01c', 'Setup global: endereço, CARDUG, Master e responsável', 'admin',
 
   // 1.6 — endereço oficial em Arapiraca, logradouro do DNE importado na E01b
   ctx.chaveAtual = 'ORG';
-  const endereco = await resolverEnderecoDne(admin, { ibge: org.ibge, uf: org.uf, bairro: 'Centro', numero: '1000' });
+  const endereco = await resolverEnderecoDne(admin, { ibge: org.ibge, uf: org.uf, municipio: org.municipio, bairro: 'Centro', numero: '1000' });
   await admin.put(`/api/tenants/${tenantUuid}/official-address`, {
     ...endereco.payload,
     complement: 'Sede da Secretaria (fictícia)',

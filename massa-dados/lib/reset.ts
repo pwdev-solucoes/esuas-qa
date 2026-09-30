@@ -109,7 +109,7 @@ export function comandoReligarWorker(cfg: Pick<ConfigMassa, 'resetCmd' | 'contai
   );
 }
 
-/** Executa reset → queue:restart → religar worker → cache clear. Aborta (lança) no primeiro código ≠ 0. */
+/** Executa reset → queue:restart → cache clear → religar worker. Aborta (lança) no primeiro código ≠ 0. */
 export function executarReset(cfg: ConfigMassa, deps: { executor?: Executor; log?: Logger } = {}): PassoReset[] {
   const executor = deps.executor ?? executorPadrao;
   const log = deps.log ?? (() => undefined);
@@ -122,9 +122,12 @@ export function executarReset(cfg: ConfigMassa, deps: { executor?: Executor; log
     ['reset', cfg.resetCmd],
     ['queue:restart', queueRestart],
   ];
+  // O cache clear vem ANTES de religar o worker: `queue:work` compara a chave de restart do cache com a
+  // do início e sai se ela mudar — limpar o cache depois de religar derrubava o worker de novo (#10994,
+  // achado da execução real do plano 04).
+  if (cfg.cacheClearCmd) plano.push(['cache:clear', cfg.cacheClearCmd]);
   const religar = comandoReligarWorker(cfg);
   if (religar) plano.push(['worker:start', religar]);
-  if (cfg.cacheClearCmd) plano.push(['cache:clear', cfg.cacheClearCmd]);
 
   const passos: PassoReset[] = [];
   for (const [nome, comando] of plano) {

@@ -14,7 +14,7 @@ import { randomBytes } from 'node:crypto';
 import { chmodSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { basename, resolve } from 'node:path';
 import { test, type APIRequestContext, type APIResponse } from '@playwright/test';
-import { carregarConfig, logPadrao, PASTA_CACHE, RAIZ_MASSA, registrarSegredos, type ConfigMassa } from './config.ts';
+import { carregarConfig, executorPadrao, logPadrao, PASTA_CACHE, RAIZ_MASSA, registrarSegredos, type ConfigMassa } from './config.ts';
 import { lerEstado, MapaChaves, RegistroEtapa, registrarEtapa } from './execucao.ts';
 import { ClientePapel, FalhaHttp, papelAdministrador, type Guard, type Papel, type PassoHttp } from './http.ts';
 import { buscarLinkRedefinicao, definirSenha } from './mailpit.ts';
@@ -284,13 +284,117 @@ export async function listarTudo<T = Record<string, unknown>>(cliente: ClientePa
 }
 
 export interface EnderecoDne {
-  payload: Record<string, unknown>;
+  /** Campos do bloco de endereço (StoreAddressRequest / official-address). */
+  payload: {
+    street_type: string;
+    street: string;
+    number: string;
+    territorial_unit: string;
+    territorial_unit_type: string;
+    city_id: number;
+    territorial_unit_id: number;
+    street_id: number;
+  };
+  /** Descrição curta da origem no DNE (sem PII: logradouros são públicos). */
   origem: string;
 }
 
-/** Endereço com logradouro do DNE (TODO: definido após explorar a carga). */
-export async function resolverEnderecoDne(_cliente: ClientePapel, _o: { ibge: string; uf: string; bairro: string; numero: string }): Promise<EnderecoDne> {
-  throw new Error('resolverEnderecoDne: não implementado');
+const cacheEnderecos = new Map<string, EnderecoDne>();
+
+/**
+ * Endereço com logradouro REAL do DNE importado na E01b: UF → município (IBGE) → bairro (unidade
+ * territorial) → primeiro logradouro do bairro em ordem alfabética (determinístico). Só GET em
+ * `/api/relationals/*` (valem para os guards manager e client).
+ */
+export async function resolverEnderecoDne(
+  cliente: ClientePapel,
+  o: { ibge: string; uf: string; municipio: string; bairro: string; numero: string },
+): Promise<EnderecoDne> {
+  const chave = `${o.ibge}|${o.bairro}`;
+  const emCache = cacheEnderecos.get(chave);
+  if (emCache) return { ...emCache, payload: { ...emCache.payload, number: o.numero } };
+  const q = encodeURIComponent;
+  const estados = dados<Array<{ id: number; uf: string }>>((await cliente.get(`/api/relationals/states?filter[search]=${q(o.uf === 'AL' ? 'Alagoas' : o.uf)}`)).corpo);
+  const estado = estados.find((e) => e.uf === o.uf);
+  if (!estado) throw new Error(`UF ${o.uf} não encontrada em relationals/states.`);
+  const cidades = dados<Array<{ id: number; ibge_code: string }>>(
+    (await cliente.get(`/api/relationals/cities?filter[state_id]=${estado.id}&filter[search]=${q(o.municipio)}`)).corpo,
+  );
+  const cidade = cidades.find((c) => c.ibge_code === o.ibge);
+  if (!cidade) throw new Error(`Município IBGE ${o.ibge} não encontrado.`);
+  const unidades = dados<Array<{ id: number; name: string; type: string | null }>>(
+    (await cliente.get(`/api/relationals/territorial-units?filter[city_id]=${cidade.id}&filter[search]=${q(o.bairro)}`)).corpo,
+  );
+  const norm = (t: string) => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+  const unidade = unidades.find((u) => norm(u.name) === norm(o.bairro)) ?? unidades[0];
+  if (!unidade) throw new Error(`Bairro "${o.bairro}" (${o.ibge}) sem unidade territorial no DNE — a E01b importou o DNE?`);
+  const ruas = dados<Array<{ id: number; name: string; street_type: string | null }>>(
+    (await cliente.get(`/api/relationals/streets?filter[territorial_unit_id]=${unidade.id}`)).corpo,
+  );
+  const rua = [...ruas].sort((a, b) => a.name.localeCompare(b.name, 'pt-BR') || a.id - b.id)[0];
+  if (!rua) throw new Error(`Bairro "${unidade.name}" sem logradouro no DNE.`);
+  const r: EnderecoDne = {
+    payload: {
+      street_type: rua.street_type ?? 'Rua',
+      street: rua.name,
+      number: o.numero,
+      territorial_unit: unidade.name,
+      territorial_unit_type: unidade.type ?? 'Bairro',
+      city_id: cidade.id,
+      territorial_unit_id: unidade.id,
+      street_id: rua.id,
+    },
+    origem: `DNE: ${rua.street_type ?? ''} ${rua.name} / ${unidade.name}`.trim(),
+  };
+  cacheEnderecos.set(chave, r);
+  return r;
+}
+
+
+/** Status HTTP de uma `FalhaHttp` (ou `null` para outros erros). */
+export function statusDaFalha(erro: unknown): number | null {
+  return erro instanceof FalhaHttp ? erro.passo.status : null;
+}
+
+/**
+ * Repete `fn` em 429 (rate-limit de rotas com throttle, ex.: cadastro de pessoa), limpando o cache de
+ * rate-limit com `MASSA_CACHE_CLEAR_CMD` entre as tentativas. Outros erros sobem na hora.
+ */
+export async function comRetentativa429<T>(ctx: ContextoEtapa, fn: () => Promise<T>, tentativas = 4): Promise<T> {
+  for (let i = 1; ; i += 1) {
+    try {
+      return await fn();
+    } catch (erro) {
+      if (statusDaFalha(erro) !== 429 || i >= tentativas) throw erro;
+      ctx.log(`  ⚠ 429: limpando o cache de rate-limit (tentativa ${i + 1}/${tentativas})`);
+      if (ctx.cfg.cacheClearCmd) executorPadrao.shell(ctx.cfg.cacheClearCmd);
+      else await new Promise((ok) => setTimeout(ok, 60_000));
+    }
+  }
+}
+
+/** Resolve id de lookup pelo `code` (ou `name`) numa listagem `relationals`/índice. */
+export async function idDoLookup(cliente: ClientePapel, uri: string, valor: string, campo: 'code' | 'name' = 'code'): Promise<number> {
+  const itens = await listarTudo<Record<string, unknown>>(cliente, uri);
+  const achado = itens.find((i) => String(i[campo]) === valor);
+  if (!achado) throw new Error(`Lookup ${uri}: ${campo}="${valor}" não encontrado.`);
+  return Number(achado.id);
+}
+
+/** Uuid de lookup pelo `code` (lookups do diagnóstico expõem só uuid). */
+export async function uuidDoLookup(cliente: ClientePapel, uri: string, codigo: string): Promise<string> {
+  const itens = await listarTudo<{ uuid: string; code: string }>(cliente, uri);
+  const achado = itens.find((i) => String(i.code) === codigo);
+  if (!achado) throw new Error(`Lookup ${uri}: code="${codigo}" não encontrado.`);
+  return achado.uuid;
+}
+
+/** Id do CBO pelo código (`2516-05`). */
+export async function idDoCbo(cliente: ClientePapel, codigo: string): Promise<number> {
+  const { corpo } = await cliente.get<{ data: Array<{ id: number; code: string }> }>(`/api/relationals/cbos?filter[search]=${encodeURIComponent(codigo)}`);
+  const achado = (corpo.data ?? []).find((c) => c.code === codigo);
+  if (achado) return achado.id;
+  return idDoLookup(cliente, '/api/relationals/cbos', codigo);
 }
 
 // ---------------------------------------------------------------------------------------------

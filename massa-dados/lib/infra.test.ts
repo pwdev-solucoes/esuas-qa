@@ -471,12 +471,12 @@ test.describe('INT-007 (AC-007) — reset externo', () => {
     expect(comandoReligarWorker({ resetCmd: './vendor/bin/sail artisan migrate:fresh --seed', containers })).toBeNull();
     expect(comandoReligarWorker({ resetCmd: 'docker exec api-laravel.test-1 php artisan migrate:fresh', containers: ['api-laravel.test-1'] })).toBeNull();
   });
-  test('reset via docker exec inclui o passo worker:start entre queue:restart e cache:clear', () => {
+  test('reset via docker exec: cache:clear antes do worker:start (senão o worker sai de novo)', () => {
     const cfg = { ...carregarConfigStub('http://127.0.0.1:1'), resetCmd: 'docker exec esuas-api php artisan migrate:fresh --seed --force' };
     const executados: string[] = [];
     const executor: Executor = { ...executorPadrao, shell: (c: string) => (executados.push(c), { codigo: 0, saida: '', erro: '' }) };
-    expect(executarReset(cfg, { executor }).map((p) => p.nome)).toEqual(['reset', 'queue:restart', 'worker:start', 'cache:clear']);
-    expect(executados[2]).toContain('start "esuas-queue"');
+    expect(executarReset(cfg, { executor }).map((p) => p.nome)).toEqual(['reset', 'queue:restart', 'cache:clear', 'worker:start']);
+    expect(executados[3]).toContain('start "esuas-queue"');
   });
   test('queue:restart derivado do comando de reset', () => {
     expect(comandoQueueRestart({ resetCmd: './vendor/bin/sail artisan migrate:fresh --seed', queueRestartCmd: '' })).toBe('./vendor/bin/sail artisan queue:restart');
