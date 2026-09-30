@@ -98,3 +98,11 @@ após cache clear em 429), `mailpit` (link de redefinição + `definirSenha`), `
 etapa e mapa chave de negócio → uuid).
 
 Variáveis do executor: ver `.env.example` (copiar para `massa-dados/.env`, gitignored).
+
+### Retomada em desenvolvimento (`--a-partir-de`)
+
+`npm run massa -- --sem-evidencias --a-partir-de=E10 --ate=E19` retoma a execução salva mais recente
+(`.cache/execucoes/`) a partir da etapa indicada, **sem reset e sem DNE**. Só é aceita quando a execução
+salva tem todas as etapas anteriores `ok`, a mesma `API_BASE` e a organização ainda existe no banco; o
+preflight e a trava de produção continuam. As etapas E10–E16 pulam registros já criados (`REG_<chave>` no
+estado). Serve só para iterar: a prova é sempre a execução completa a partir do reset.

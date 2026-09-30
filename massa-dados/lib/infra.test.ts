@@ -11,7 +11,7 @@ import type { AddressInfo } from 'node:net';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { expect, test } from '@playwright/test';
-import { executarFluxo, lerArgumentos, type OpcoesCli } from '../bin/massa.ts';
+import { executarFluxo, lerArgumentos, validarRetomada, type OpcoesCli } from '../bin/massa.ts';
 import { consultarAmbiente, exigirNaoProducao, MENSAGEM_PRODUCAO, RecusaAmbiente } from './ambiente.ts';
 import { carregarConfig, executorPadrao, sanitizar, type ConfigMassa, type Executor, type ResultadoComando } from './config.ts';
 import { caminhoLocalDne, FalhaDne, obterDne } from './dne.ts';
@@ -703,3 +703,17 @@ test('lerArgumentos: flags válidas e opção desconhecida', () => {
   expect(() => lerArgumentos(['--forcar'])).toThrow(/Opção desconhecida/);
 });
 
+
+test('validarRetomada (--a-partir-de, dev): só com etapas anteriores ok, mesma API e organização gravada', () => {
+  const ok = (id: string) => ({ etapa: id, status: 'ok' as const, duracao: 0, papel: null, passos: [], avisos: [] });
+  const ids = ['E00', 'E0', 'E01', 'E01b', 'E01c', 'E02', 'E03', 'E06a', 'E04', 'E05', 'E06', 'E07', 'E08', 'E09'];
+  const estado = { id: 'x', iniciadaEm: '', evidencias: false, ate: 'E09', apiBase: 'http://api', ambiente: [], etapas: ids.map(ok), chaves: { TENANT: 'u' } };
+  expect(lerArgumentos(['--sem-evidencias', '--a-partir-de=E10']).aPartirDe).toBe('E10');
+  expect(validarRetomada(estado, 'E10', 'http://api')).toBeNull();
+  expect(validarRetomada(estado, 'E10', 'http://outra')).toMatch(/outra API/);
+  expect(validarRetomada(estado, 'E01', 'http://api')).toMatch(/só depois das importações/);
+  expect(validarRetomada(estado, 'E99', 'http://api')).toMatch(/desconhecida/);
+  expect(validarRetomada(null, 'E10', 'http://api')).toMatch(/nenhuma execução/);
+  expect(validarRetomada({ ...estado, etapas: estado.etapas.filter((e) => e.etapa !== 'E08') }, 'E10', 'http://api')).toMatch(/E08/);
+  expect(validarRetomada({ ...estado, chaves: {} }, 'E10', 'http://api')).toMatch(/TENANT/);
+});

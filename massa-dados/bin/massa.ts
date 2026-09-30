@@ -10,10 +10,11 @@
  *   `playwright test --project=massa-dados <etapa>` uma etapa por vez, parando na primeira falha.
  */
 import { spawnSync } from 'node:child_process';
+import { existsSync, readdirSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { exigirNaoProducao, RecusaAmbiente } from '../lib/ambiente.ts';
-import { carregarConfig, executorPadrao, logPadrao, RAIZ_QA, type ConfigMassa, type Executor, type Logger } from '../lib/config.ts';
+import { carregarConfig, executorPadrao, logPadrao, PASTA_CACHE, RAIZ_QA, type ConfigMassa, type Executor, type Logger } from '../lib/config.ts';
 import { FalhaDne, obterDne } from '../lib/dne.ts';
 import {
   caminhoEstadoPadrao,
@@ -27,6 +28,7 @@ import {
   type EstadoExecucao,
 } from '../lib/execucao.ts';
 import { executarPreflight, formatarPreflight } from '../lib/preflight.ts';
+import { escalar } from '../lib/verificacoes-sql.ts';
 import { ApagamentoNaoConfirmado, confirmarApagamento, executarReset, FalhaReset, perguntarNoTerminal, textoAviso } from '../lib/reset.ts';
 
 export interface OpcoesCli {
@@ -34,6 +36,12 @@ export interface OpcoesCli {
   evidencias: boolean | null;
   confirmarApagamento: boolean;
   ate: string | null;
+  /**
+   * SÓ DESENVOLVIMENTO: retoma a execução salva mais recente a partir desta etapa, SEM reset nem DNE.
+   * Exige que o estado salvo tenha todas as etapas anteriores `ok`, a mesma API e a organização ainda no
+   * banco; preflight e trava de produção continuam. A prova final é sempre a execução completa.
+   */
+  aPartirDe?: string;
 }
 
 export function lerArgumentos(argv: string[]): OpcoesCli {
@@ -44,7 +52,8 @@ export function lerArgumentos(argv: string[]): OpcoesCli {
     else if (arg === '--sem-evidencias') o.evidencias = false;
     else if (arg === '--confirmar-apagamento') o.confirmarApagamento = true;
     else if (arg.startsWith('--ate=')) o.ate = arg.slice('--ate='.length).trim() || null;
-    else throw new Error(`Opção desconhecida: ${arg}. Use --evidencias | --sem-evidencias, --confirmar-apagamento, --ate=Exx, --verificar.`);
+    else if (arg.startsWith('--a-partir-de=')) o.aPartirDe = arg.slice('--a-partir-de='.length).trim() || undefined;
+    else throw new Error(`Opção desconhecida: ${arg}. Use --evidencias | --sem-evidencias, --confirmar-apagamento, --ate=Exx, --a-partir-de=Exx (dev), --verificar.`);
   }
   return o;
 }
@@ -76,6 +85,30 @@ function rodarEtapaPlaywright(arquivo: string, caminhoEstado: string, filtro?: s
     env: { ...process.env, [VARIAVEL_ESTADO]: caminhoEstado },
   });
   return typeof r.status === 'number' ? r.status : 1;
+}
+
+/**
+ * Confere se o estado salvo permite retomar a partir de `aPartirDe` (dev): etapa conhecida e depois do
+ * reset/DNE, mesma API, todas as etapas anteriores `ok` e a organização gravada. Devolve o motivo da
+ * recusa ou `null`.
+ */
+export function validarRetomada(estado: EstadoExecucao | null, aPartirDe: string, apiBase: string): string | null {
+  const i = ETAPAS.findIndex((e) => e.id.toUpperCase() === aPartirDe.toUpperCase());
+  if (i < 0) return `--a-partir-de=${aPartirDe}: etapa desconhecida.`;
+  if (i <= ETAPAS.findIndex((e) => e.id === 'E01b')) return `--a-partir-de=${aPartirDe}: só depois das importações (E01c em diante); antes disso rode a massa completa.`;
+  if (!estado) return 'nenhuma execução salva para retomar.';
+  if (estado.apiBase !== apiBase) return `a execução salva é de outra API (${estado.apiBase}).`;
+  const faltando = ETAPAS.slice(0, i).filter((e) => estado.etapas.find((x) => x.etapa === e.id)?.status !== 'ok').map((e) => e.id);
+  if (faltando.length) return `etapas anteriores não concluídas na execução salva: ${faltando.join(', ')}.`;
+  if (!estado.chaves.TENANT) return 'a execução salva não registrou a organização (TENANT).';
+  return null;
+}
+
+function ultimaExecucaoSalva(pastaCache?: string): { caminho: string; estado: EstadoExecucao } | null {
+  const pasta = resolve(pastaCache ?? PASTA_CACHE, 'execucoes');
+  if (!existsSync(pasta)) return null;
+  const arquivos = readdirSync(pasta).filter((f) => f.endsWith('.json')).map((f) => resolve(pasta, f)).sort((a, b) => statSync(b).mtimeMs - statSync(a).mtimeMs);
+  return arquivos[0] ? lerEstado(arquivos[0]) : null;
 }
 
 /** Executa o fluxo e devolve o código de saída do processo (0 = sucesso). */
@@ -115,6 +148,8 @@ export async function executarFluxo(opcoes: OpcoesCli, deps: DependenciasFluxo =
   log(formatarPreflight(preflight));
   if (opcoes.verificar) return preflight.apto ? 0 : 1;
   if (!preflight.apto || !preflight.ambiente?.ok) return 1;
+
+  if (opcoes.aPartirDe) return retomar(opcoes, opcoes.aPartirDe, ate, cfg, deps, log);
 
   const estado: EstadoExecucao = novaExecucao({ evidencias: Boolean(opcoes.evidencias), ate, apiBase: cfg.apiBase });
   const caminhoEstado = deps.caminhoEstado ?? caminhoEstadoPadrao(estado.id);
@@ -199,6 +234,56 @@ export async function executarFluxo(opcoes: OpcoesCli, deps: DependenciasFluxo =
   Object.assign(estado, final);
   log(`\n✔ Massa concluída até ${selecionadas.at(-1)?.id}.`);
   return encerrar(0);
+}
+
+/** Retomada de desenvolvimento: sem aviso, sem reset e sem DNE; 2ª trava de produção e banco conferidos. */
+async function retomar(opcoes: OpcoesCli, aPartirDe: string, ate: string | null, cfg: ConfigMassa, deps: DependenciasFluxo, log: Logger): Promise<number> {
+  const salva = deps.caminhoEstado ? lerEstado(deps.caminhoEstado) : ultimaExecucaoSalva(deps.pastaCache);
+  const motivo = validarRetomada(salva?.estado ?? null, aPartirDe, cfg.apiBase);
+  if (motivo || !salva) {
+    log(`✖ Retomada recusada: ${motivo}`);
+    return 1;
+  }
+  const { caminho, estado } = salva;
+  try {
+    const environment = await exigirNaoProducao(cfg.apiBase, { fetchImpl: deps.fetchImpl, timeoutMs: deps.timeoutMs });
+    estado.ambiente.push({ momento: 'antes_do_reset', ok: true, environment, mensagem: `retomada a partir de ${aPartirDe}: /api/environment = "${environment}" (sem reset)`, em: new Date().toISOString() });
+  } catch (erro) {
+    log(`✖ ${(erro as Error).message}`);
+    return 1;
+  }
+  const tenant = estado.chaves.TENANT;
+  if (!/^[0-9a-f-]{36}$/i.test(tenant)) {
+    log('✖ Retomada recusada: uuid da organização inválido no estado salvo.');
+    return 1;
+  }
+  const noBanco = escalar(cfg, `SELECT count(*) FROM tenants WHERE uuid = '${tenant}'`, deps.executor ?? executorPadrao);
+  if (noBanco !== '1') {
+    log('✖ Retomada recusada: a organização da execução salva não está mais no banco (houve reset?). Rode a massa completa.');
+    return 1;
+  }
+  log(`⚠ RETOMADA (dev): ${caminho} a partir de ${aPartirDe}, sem reset e sem DNE. A prova final é a execução completa.`);
+  const inicio = ETAPAS.findIndex((e) => e.id.toUpperCase() === aPartirDe.toUpperCase());
+  const selecionadas = etapasAte(ate).slice(inicio);
+  estado.etapas = estado.etapas.filter((e) => ETAPAS.findIndex((x) => x.id === e.etapa) < inicio);
+  estado.ate = ate;
+  salvarEstado(caminho, estado);
+  const rodar = deps.rodarEtapa ?? rodarEtapaPlaywright;
+  for (const etapa of selecionadas) {
+    log(`\n▶ ${etapa.id} — ${etapa.titulo}`);
+    const codigo = rodar(etapa.arquivo, caminho, etapa.filtro);
+    if (codigo !== 0) {
+      const atual = lerEstado(caminho).estado;
+      if (!atual.etapas.some((e) => e.etapa === etapa.id)) atual.etapas.push({ etapa: etapa.id, status: 'falha', duracao: 0, papel: null, passos: [], avisos: [`playwright saiu com código ${codigo}`] });
+      marcarNaoExecutadas(atual, ETAPAS.slice(ETAPAS.indexOf(etapa) + 1).map((e) => e.id));
+      salvarEstado(caminho, atual);
+      log(`✖ ${etapa.id} falhou; etapas seguintes não executadas. Estado: ${caminho}`);
+      return 1;
+    }
+  }
+  log(`\n✔ Retomada concluída até ${selecionadas.at(-1)?.id ?? aPartirDe}. Estado: ${caminho}`);
+  void opcoes;
+  return 0;
 }
 
 async function principal(): Promise<void> {
