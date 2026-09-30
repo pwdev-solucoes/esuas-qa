@@ -74,6 +74,16 @@ export const ETAPAS: ReadonlyArray<DefinicaoEtapa> = [
   { id: 'E07', arquivo: 'e07-pessoas.spec.ts', titulo: 'Pessoas (faixa 98 e sem CPF)' },
   { id: 'E08', arquivo: 'e08-familias.spec.ts', titulo: 'Famílias, composição e prontuário' },
   { id: 'E09', arquivo: 'e09-diagnostico.spec.ts', titulo: 'Diagnóstico: condições habitacionais e do integrante' },
+  { id: 'E10', arquivo: 'e10-atendimentos.spec.ts', titulo: 'Atendimentos (pessoas sem CPF) e zero declarado' },
+  { id: 'E11', arquivo: 'e11-encaminhamentos.spec.ts', titulo: 'Encaminhamentos, desfechos e trânsito interno (CA09)' },
+  { id: 'E12', arquivo: 'e12-acompanhamento.spec.ts', titulo: 'Acompanhamento PAIF/PAEFI e desligamentos' },
+  { id: 'E13', arquivo: 'e13-participacoes.spec.ts', titulo: 'Participações: SCFV, F-IDOSO, F-GRUPO' },
+  { id: 'E14', arquivo: 'e14-beneficios.spec.ts', titulo: 'Benefícios eventuais' },
+  { id: 'E15', arquivo: 'e15-acolhimento.spec.ts', titulo: 'Acolhimento único (RN12)' },
+  { id: 'E16', arquivo: 'e16-capacitacao.spec.ts', titulo: 'Capacitação CAP-1..3' },
+  { id: 'E17', arquivo: 'e17-apuracao.spec.ts', titulo: 'Apuração × esperado e pendências de cadastro' },
+  { id: 'E18', arquivo: 'e18-remessa.spec.ts', titulo: 'Conferência prévia e remessa SIAP (sem envio)' },
+  { id: 'E19', arquivo: 'e19-painel-geo.spec.ts', titulo: 'Painel georreferenciado (leitura, P6)' },
 ];
 
 /** Etapas até `ate` (inclusive), na ordem fixa. Lança se `ate` não existir. */
