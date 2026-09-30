@@ -13,11 +13,11 @@
 import { randomBytes } from 'node:crypto';
 import { chmodSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { basename, resolve } from 'node:path';
-import { test, type APIRequestContext, type APIResponse } from '@playwright/test';
+import { request as playwrightRequest, test, type APIRequestContext, type APIResponse } from '@playwright/test';
 import { carregarConfig, executorPadrao, logPadrao, PASTA_CACHE, RAIZ_MASSA, registrarSegredos, type ConfigMassa } from './config.ts';
 import { lerEstado, MapaChaves, RegistroEtapa, registrarEtapa } from './execucao.ts';
 import { ClientePapel, FalhaHttp, papelAdministrador, type Guard, type Papel, type PassoHttp } from './http.ts';
-import { buscarLinkRedefinicao, definirSenha } from './mailpit.ts';
+import { buscarLinkRedefinicao, definirSenha, lerLink } from './mailpit.ts';
 
 // ---------------------------------------------------------------------------------------------
 // Insumos
@@ -247,22 +247,67 @@ export async function aceitarPendentes(cliente: ClientePapel): Promise<Array<{ d
   return corpo.data.map((d) => ({ document_id: d.document_id, title: d.title, version_number: d.version_number }));
 }
 
+/** POST reset-password com o token/e-mail do link recebido; `false` se a API recusar (token vencido). */
+export async function redefinirPeloLink(cfg: ConfigMassa, guard: Guard, link: string, senha: string): Promise<boolean> {
+  registrarSegredos([senha]);
+  const { token, email } = lerLink(link);
+  registrarSegredos([token]);
+  const origem = guard === 'manager' ? cfg.adminUrl : cfg.clientUrl;
+  const ctx = await playwrightRequest.newContext({
+    extraHTTPHeaders: { Accept: 'application/json', Origin: origem, Referer: `${origem}/auth/reset-password`, 'X-Requested-With': 'XMLHttpRequest' },
+  });
+  try {
+    await ctx.get(`${cfg.apiBase}/sanctum/csrf-cookie`);
+    for (let tentativa = 1; ; tentativa += 1) {
+      const c = (await ctx.storageState()).cookies.find((k) => k.name === 'XSRF-TOKEN');
+      const r = await ctx.post(`${cfg.apiBase}/api/${guard}/auth/reset-password`, {
+        data: { token, email, password: senha, password_confirmation: senha },
+        headers: c ? { 'X-XSRF-TOKEN': decodeURIComponent(c.value) } : {},
+      });
+      logPadrao(`  [mailpit] POST /api/${guard}/auth/reset-password (link do e-mail) → ${r.status()}`);
+      // Throttle por IP: limpa o cache de rate-limit e repete (o token segue válido).
+      if (r.status() === 429 && cfg.cacheClearCmd && tentativa < 4) {
+        executorPadrao.shell(cfg.cacheClearCmd);
+        continue;
+      }
+      return r.ok();
+    }
+  } finally {
+    await ctx.dispose();
+  }
+}
+
 /**
- * Primeiro acesso de um usuário criado pela API (A6/RN-T7): espera o e-mail de redefinição disparado
- * na criação, redefine a senha pelo fluxo real (forgot → Mailpit → reset) e faz login + aceite legal.
+ * Primeiro acesso de um usuário criado pela API (A6/RN-T7): lê no Mailpit o e-mail de redefinição
+ * disparado na criação, define a senha pelo link (fallback: forgot → Mailpit → reset) e faz login + aceite legal.
  */
 export async function primeiroAcesso(ctx: ContextoEtapa, codigo: string, criadoEm: Date): Promise<ClientePapel> {
   const u = ctx.sessoes.usuario(codigo);
-  // O e-mail de reset disparado na criação precisa ter saído da fila ANTES do forgot-password:
-  // senão o token dele sobrescreve o novo e o link lido fica inválido.
+  // Caminho do usuário real (A6): a criação dispara boas-vindas + redefinição; a senha é definida pelo
+  // link DESSE e-mail. Pedir outro link logo em seguida cai no throttle do broker de senha (1/min por
+  // usuário, respondido como sucesso), então o forgot-password só entra se o link da criação falhar.
+  let link: string;
   try {
-    await buscarLinkRedefinicao(ctx.cfg.mailpitUrl, u.email, { desde: criadoEm, timeoutMs: 120_000 });
+    link = await buscarLinkRedefinicao(ctx.cfg.mailpitUrl, u.email, { desde: criadoEm, timeoutMs: 120_000 });
   } catch (erro) {
     throw new Error(
       `${(erro as Error).message} A API precisa entregar e-mail no Mailpit (mailer smtp → Mailpit); com o mailer "log" o link de senha só vai para o log e o primeiro acesso é impossível pelo fluxo real (RN-T7).`,
     );
   }
-  await definirSenha(ctx.cfg, { email: u.email, guard: u.guard }, senhaMassa(ctx.cfg), { timeoutMs: 120_000 });
+  if (!(await redefinirPeloLink(ctx.cfg, u.guard, link, senhaMassa(ctx.cfg)))) {
+    ctx.registro.aviso(`${codigo}: link do e-mail de criação recusado; pedindo novo link (forgot-password).`);
+    for (let tentativa = 1; ; tentativa += 1) {
+      try {
+        await definirSenha(ctx.cfg, { email: u.email, guard: u.guard }, senhaMassa(ctx.cfg), { timeoutMs: 120_000 });
+        break;
+      } catch (erro) {
+        if (!/HTTP 429/.test((erro as Error).message) || tentativa >= 4) throw erro;
+        ctx.log(`  ⚠ ${codigo}: 429 na redefinição de senha; limpando o cache de rate-limit (tentativa ${tentativa + 1}/4)`);
+        if (ctx.cfg.cacheClearCmd) executorPadrao.shell(ctx.cfg.cacheClearCmd);
+        else await new Promise((ok) => setTimeout(ok, 60_000));
+      }
+    }
+  }
   ctx.registro.passo({ chave: codigo, passo: 'senha definida pelo link do Mailpit' });
   await ctx.sessoes.sair(codigo);
   const cliente = await ctx.sessoes.entrar(codigo);
