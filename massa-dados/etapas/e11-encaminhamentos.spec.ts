@@ -7,8 +7,8 @@
  *   desfecho (fica `awaiting_return`; o acesso pelo encaminhamento é vivo e sumiria com um desfecho);
  * - 11.4 fila `referrals/pending`.
  * Prova do CA09: P2 (lotada só no CRAS Sul) NÃO abre o prontuário de F-ENC antes do encaminhamento e
- * ABRE depois; P5 (sem `family_viewer`) não abre prontuário nenhum (403/404: a API não revela a
- * existência do prontuário a quem não tem acesso).
+ * ABRE depois; P5 (sem `family_viewer`) não abre prontuário nenhum (403; a rota canônica do prontuário é `families/{uuid}/details`,
+ * gate LGPD `families.view-details`).
  */
 import { expect } from '@playwright/test';
 import { dados, etapa, statusDaFalha } from '../lib/papeis.ts';
@@ -16,12 +16,12 @@ import { chaveOpcional, chaveRegistro, registrarTodos } from '../lib/registros.t
 import type { ClientePapel } from '../lib/http.ts';
 
 const CHAVE_F_ENC = 'ENC-2026-07-0004';
-/** Acesso negado ao prontuário: a API responde 404 (não revela a existência) ou 403. */
-const NEGADO = [403, 404];
+/** Acesso negado ao prontuário (`GET families/{uuid}/details`). */
+const NEGADO = [403];
 
 async function statusAbrir(cliente: ClientePapel, familiaUuid: string): Promise<number> {
   try {
-    return (await cliente.get(`/api/client/families/${familiaUuid}`)).status;
+    return (await cliente.get(`/api/client/families/${familiaUuid}/details`)).status;
   } catch (erro) {
     const s = statusDaFalha(erro);
     if (s === null) throw erro;
