@@ -11,6 +11,7 @@
  */
 import { expect } from '@playwright/test';
 import { Evidencia } from '../lib/evidencia.ts';
+import { lerEstado } from '../lib/execucao.ts';
 import { dados, etapa, senhaMassa } from '../lib/papeis.ts';
 import { consultar } from '../lib/verificacoes-sql.ts';
 
@@ -60,11 +61,18 @@ etapa('E19', 'Painel georreferenciado (leitura, P6)', 'P6', async (ctx) => {
   }
   const camadaDemo = dados<{ total: number; points: unknown[]; by_sector: unknown[] }>((await p6.get(`/api/client/geo-panel/layers/${ctx.chaves.obter('GEO_CAMADA_DEMO')}/data`)).corpo);
   ctx.registro.passo({ passo: '19.2 heatmap da camada da demo', total: camadaDemo.total, setores: camadaDemo.by_sector.length });
-  if (camadaDemo.total === 0) {
+  if (camadaDemo.total === 0 && lerEstado(ctx.caminho).estado.modo !== 'seed') {
     ctx.achado('E19: a camada de heatmap da demo ("famílias em extrema pobreza") fica vazia — o critério usa families.per_capita_income, que só a importação CadÚnico grava (mesma causa das divergências de perfil na E17).');
   }
   pontos.push(...camadaDemo.points);
-  if (total === 0) {
+  // Modo seed (plano 10): o endereço + geometria das famílias e a renda per capita vêm do seed — pontos
+  // de família no mapa são OBRIGATÓRIOS; heatmap vazio é divergência (não achado RN14).
+  const modoSeed = lerEstado(ctx.caminho).estado.modo === 'seed';
+  if (modoSeed) {
+    ctx.registro.passo({ passo: '19.2 modo seed: pontos de família exigidos', total, heatmap: camadaDemo.total });
+    if (camadaDemo.total === 0) ctx.registro.aviso('DIVERGÊNCIA (modo seed): a camada de heatmap da demo ficou vazia mesmo com a renda per capita gravada pelo seed.');
+    expect(total, 'modo seed: pontos de família no painel (endereço + geometria gravados pelo seed)').toBeGreaterThan(0);
+  } else if (total === 0) {
     // Os pontos vêm de families.address_id (+ geometria). O client não tem endpoint que grave o endereço da
     // família (só a importação CadÚnico): comprovado no banco, a ausência vira achado RN14, não falha.
     const cnpj = ctx.elenco.organizacao.cnpj.replace(/\D/g, '');
@@ -83,6 +91,7 @@ etapa('E19', 'Painel georreferenciado (leitura, P6)', 'P6', async (ctx) => {
   ev.contagem('Setores censitários', 427, setores);
   ev.contagem('Bairros', 41, bairros);
   ev.contagem('Chaves de dado pessoal nos pontos', 0, pii.length);
+  if (modoSeed) ev.contagem('Pontos de família no painel (modo seed)', null, total);
   await ev.print({
     cfg: ctx.cfg,
     cpf: ctx.elenco.profissionais.find((p) => p.chave === 'P6')!.cpf,

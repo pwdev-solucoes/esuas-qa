@@ -9,6 +9,8 @@
  *      Divergência sem explicação = falha. Divergência explicada por achado RN14 COMPROVADO (o produto
  *      recusou o cenário na E05/E08, ou não aceita o dado pela API — conferido no banco agora) fica
  *      listada como "✖ explicada" e vira achado; o esperado nunca é ajustado para passar.
+ * Modo `seed` (plano 10, `massa:conferir`): os cenários só via seed estão presentes, então nenhuma
+ * explicação RN14 é aceita — qualquer divergência é ✖.
  * Asserções nominais: CA06 (F-IDOSO, F-GRUPO, perfis), CA08 (F-DUPLA), RN09 (zero declarado), CA10
  * (pessoas atendidas sem CPF, conferidas também no banco) e 15.9 (capacitação).
  */
@@ -19,8 +21,10 @@ import {
   classificar,
   compararContadores,
   compararPendencias,
+  explicacoesDoModo,
   extrairApurado,
   formatarDivergencias,
+  modoConferencia,
   type Divergencia,
   type Esperado,
   type Explicacao,
@@ -137,11 +141,14 @@ etapa('E17', 'Apuração × esperado (3 meses × 3 unidades) e pendências de ca
       return `${PERFIS_SO_CADUNICO[perfil]} só é gravado pela importação CadÚnico (${perfil === 'profile_child_labor' ? 'nenhum endpoint do client grava trabalho infantil do integrante' : 'StoreFamilyRequest/intake proíbem renda e PBF'}) — no banco, 0 famílias/integrantes da demo com o dado`;
     },
   ];
-  const { explicadas, bloqueantes } = classificar(divergencias, explicacoes);
+  // Modo seed (plano 10): os cenários só via seed estão na base — nenhuma explicação RN14 vale.
+  const modo = modoConferencia(lerEstado(ctx.caminho).estado);
+  const { explicadas, bloqueantes } = classificar(divergencias, explicacoesDoModo(modo, explicacoes));
   for (const texto of new Set(explicadas.map((d) => d.explicacao as string))) ctx.achado(`E17: ${texto}; divergências explicadas: ${explicadas.filter((d) => d.explicacao === texto).map((d) => `${d.mes} ${d.unidade ?? 'organização'} ${d.contador}`).join(', ')}`);
-  ctx.log(`  E17 — ${esperado.contadores.length} contadores × 3 meses; explicadas (RN14):\n${formatarDivergencias(explicadas)}\n  não explicadas:\n${formatarDivergencias(bloqueantes)}`);
+  ctx.log(`  E17 (modo ${modo}) — ${esperado.contadores.length} contadores × 3 meses; explicadas (RN14):\n${formatarDivergencias(explicadas)}\n  não explicadas:\n${formatarDivergencias(bloqueantes)}`);
   ctx.registro.passo({
     passo: '17.3 esperado × apurado',
+    modo,
     contadores_comparados: esperado.contadores.length,
     pendencias_esperadas: esperado.pendencias.length,
     divergencias_explicadas: explicadas,

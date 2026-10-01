@@ -23,8 +23,10 @@
     "e2e:running": "npm run test:e2e",
     "massa:insumos": "tsx massa-dados/scripts/gerar.ts",
     "massa:insumos:verificar": "playwright test --project=massa-insumos --reporter=list",
+    "massa:insumos:exportar-api": "tsx massa-dados/scripts/exportar-api.ts",
     "massa": "tsx massa-dados/bin/massa.ts",
     "massa:verificar": "tsx massa-dados/bin/massa.ts --verificar",
+    "massa:conferir": "tsx massa-dados/bin/conferir.ts",
     "massa:comparar": "tsx massa-dados/scripts/comparar.ts"
   },
   "keywords": [

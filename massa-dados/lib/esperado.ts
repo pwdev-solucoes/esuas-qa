@@ -173,6 +173,22 @@ export function classificar(divergencias: Divergencia[], explicacoes: Explicacao
   return { explicadas, bloqueantes };
 }
 
+/**
+ * Modo de conferência (plano 10). `api`: execução pela API, as explicações RN14 comprovadas valem.
+ * `seed`: base populada por `massa-demo:popular`, os cenários só via seed estão presentes — nenhuma
+ * explicação é aceita e qualquer divergência é ✖ (bloqueante).
+ */
+export type ModoConferencia = 'api' | 'seed';
+
+export function modoConferencia(estado: { modo?: string }): ModoConferencia {
+  return estado.modo === 'seed' ? 'seed' : 'api';
+}
+
+/** Explicações aplicáveis no modo: no modo `seed`, nenhuma. */
+export function explicacoesDoModo(modo: ModoConferencia, explicacoes: Explicacao[]): Explicacao[] {
+  return modo === 'seed' ? [] : explicacoes;
+}
+
 /** Tabela de texto (mês × unidade × contador) para o log e o estado. */
 export function formatarDivergencias(ds: DivergenciaClassificada[]): string {
   if (!ds.length) return '(nenhuma)';

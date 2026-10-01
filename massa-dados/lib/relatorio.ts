@@ -12,7 +12,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { RAIZ_MASSA, sanitizar } from './config.ts';
 import type { EvidenciaEtapa } from './evidencia.ts';
-import { ETAPAS, type DefinicaoEtapa, type EstadoEtapa, type EstadoExecucao } from './execucao.ts';
+import { ETAPAS, type DefinicaoEtapa, type EstadoEtapa, type EstadoExecucao, type OrigemEtapa } from './execucao.ts';
 import type { Esperado } from './esperado.ts';
 import type { Snapshot } from './snapshot.ts';
 
@@ -318,6 +318,20 @@ export function blocoDeterminismoHtml(d: ResultadoDeterminismo): string {
   return blocoDeterminismo(d);
 }
 
+/** Rótulo da origem de uma etapa no índice (plano 10). */
+export const ROTULO_ORIGEM: Record<OrigemEtapa, string> = { api: 'API', manual: 'manual', seed: 'seed', conferencia: 'conferência' };
+
+/** Modalidade da execução: a gravada no estado (híbrida) ou a padrão (tudo pela API). */
+export function modalidadeExecucao(estado: EstadoExecucao): string {
+  return estado.modalidade ?? 'API: E1–E20 pelo executor da massa';
+}
+
+/** Origem exibida para a etapa (sem etapa registrada: a origem padrão da modalidade). */
+export function origemEtapa(estado: EstadoExecucao, e: EstadoEtapa | undefined): string {
+  if (e?.origem) return ROTULO_ORIGEM[e.origem];
+  return estado.modo === 'seed' ? ROTULO_ORIGEM.conferencia : ROTULO_ORIGEM.api;
+}
+
 function explicadasDaE17(estado: EstadoExecucao): Array<{ mes: string | null; unidade: string | null; contador: string; explicacao?: string }> {
   const e17 = estado.etapas.find((e) => e.etapa === 'E17');
   const p = e17?.passos.find((x) => x.passo === '17.3 esperado × apurado');
@@ -335,6 +349,7 @@ export function renderizarIndice(tpl: string, d: DadosRelatorio): string {
     <div><b>Ambiente (/api/environment)</b>${h(manifest.ambiente ?? '—')}</div>
     <div><b>API</b>${h(manifest.api.base)} · ${h(manifest.api.versao ?? 'versão desconhecida')}</div>
     <div><b>qa</b>${h(manifest.qa.versao ?? '—')}</div>
+    <div><b>Modalidade</b>${h(modalidadeExecucao(estado))}</div>
     <div><b>Elenco (semente)</b>${h(elenco.versao)}</div>
     <div><b>Meses de referência</b>${h(esperado.meses.join(' · '))}</div>
     <div><b>Flags</b>${h(Object.entries(manifest.flags).filter(([, v]) => v !== null && v !== undefined && v !== false).map(([k, v]) => (v === true ? k : `${k}=${v}`)).join(' ') || '—')}</div>
@@ -342,13 +357,16 @@ export function renderizarIndice(tpl: string, d: DadosRelatorio): string {
   </div>`;
 
   const etapas = tabela(
-    ['#', 'Etapa', 'Papel', 'Status', 'Duração', 'Evidência'],
+    ['#', 'Etapa', 'Origem', 'Papel', 'Status', 'Duração', 'Evidência'],
     ETAPAS.map((def) => {
       const e = estado.etapas.find((x) => x.etapa === def.id);
       const st = statusEtapa(e);
-      return [td(def.id), td(def.titulo), td(e?.papel ?? '—'), tdHtml(selo(st.tipo, st.texto)), td(duracao(e?.duracao ?? 0), 'num'), tdHtml(`<a href="${arquivoEtapa(def.id)}">abrir</a>`)];
+      return [td(def.id), td(def.titulo), td(origemEtapa(estado, e)), td(e?.papel ?? '—'), tdHtml(selo(st.tipo, st.texto)), td(duracao(e?.duracao ?? 0), 'num'), tdHtml(`<a href="${arquivoEtapa(def.id)}">abrir</a>`)];
     }),
   );
+  const somenteViaSeed = estado.somenteViaSeed?.length
+    ? `<h3>Cenários só via seed (esperados presentes nesta conferência)</h3><ul class="lista">${estado.somenteViaSeed.map((x) => `<li>${h(x)}</li>`).join('')}</ul>`
+    : '';
 
   const cas = tabela(
     ['CA', 'Critério', 'Resultado', 'Observação', 'Onde'],
@@ -390,7 +408,8 @@ export function renderizarIndice(tpl: string, d: DadosRelatorio): string {
       ['Família', 'Cenário', 'Unidade', 'O que exibe'],
       elenco.familias.filter((f) => f.cenario && f.cenario !== 'fundo').map((f) => [td(f.chave), td(f.cenario), td(f.unidade_referencia ?? '—'), td(f.exibe)]),
     ) +
-    `<h3>Cenários que parecem erro</h3>${tabela(['Cenário', 'Explicação da regra'], CENARIOS_QUE_PARECEM_ERRO.map(([c, e]) => [td(c), td(e)]))}`;
+    `<h3>Cenários que parecem erro</h3>${tabela(['Cenário', 'Explicação da regra'], CENARIOS_QUE_PARECEM_ERRO.map(([c, e]) => [td(c), td(e)]))}` +
+    somenteViaSeed;
 
   // Pendências propositais × apurado (snapshot)
   const apuradoPend = (kind: string, unidade: string | null, mes: string | null): number | null => {
@@ -461,7 +480,7 @@ export function renderizarIndice(tpl: string, d: DadosRelatorio): string {
     execucao_id: estado.id,
     organizacao: org.razao_social,
     meta,
-    etapas,
+    etapas: `<p><b>Modalidade:</b> ${h(modalidadeExecucao(estado))}</p>${etapas}`,
     cas,
     determinismo: blocoDeterminismo(d.determinismo),
     composicao,

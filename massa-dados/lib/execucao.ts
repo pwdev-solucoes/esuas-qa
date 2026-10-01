@@ -14,6 +14,13 @@ import type { ResultadoDne } from './dne.ts';
 
 export type StatusEtapa = 'ok' | 'falha' | 'nao_executada';
 
+/**
+ * De onde veio o resultado da etapa: `api` (executor pela API), `manual` (passo feito na tela, E1–E3 da
+ * validação híbrida), `seed` (`massa-demo:popular` no `api/`) ou `conferencia` (`massa:conferir`).
+ * Ausente = `api` (estados anteriores ao plano 10).
+ */
+export type OrigemEtapa = 'api' | 'manual' | 'seed' | 'conferencia';
+
 export interface EstadoEtapa {
   etapa: string;
   status: StatusEtapa;
@@ -21,6 +28,7 @@ export interface EstadoEtapa {
   papel: string | null;
   passos: Array<Record<string, unknown>>;
   avisos: string[];
+  origem?: OrigemEtapa;
 }
 
 export interface ChecagemAmbiente {
@@ -45,6 +53,15 @@ export interface EstadoExecucao {
   etapas: EstadoEtapa[];
   /** chave de negócio → uuid (ex.: `U-CN` → uuid da unidade). */
   chaves: Record<string, string>;
+  /**
+   * Modo de conferência (plano 10): `seed` = base populada por `massa-demo:popular`, os cenários só via
+   * seed são ESPERADOS presentes e as explicações RN14 da E17 deixam de valer. Ausente = `api`.
+   */
+  modo?: 'api' | 'seed';
+  /** Texto da modalidade exibido no índice (ex.: `híbrida: manual E1–E3 · seed E4–E16 · conferência E17–E20`). */
+  modalidade?: string;
+  /** Cenários que só existem pela via seed (listados no índice). */
+  somenteViaSeed?: string[];
 }
 
 /**
@@ -149,6 +166,8 @@ export class RegistroEtapa {
 /** Grava (ou substitui) o resultado de uma etapa no arquivo de estado. */
 export function registrarEtapa(caminho: string, resultado: EstadoEtapa): void {
   const { estado } = lerEstado(caminho);
+  // Na conferência híbrida (plano 10) as etapas que rodam agora são da conferência.
+  if (estado.modo === 'seed' && !resultado.origem) resultado = { ...resultado, origem: 'conferencia' };
   estado.etapas = [...estado.etapas.filter((e) => e.etapa !== resultado.etapa), resultado];
   salvarEstado(caminho, estado);
 }
@@ -177,4 +196,99 @@ export class MapaChaves {
     if (!uuid) throw new Error(`Chave de negócio "${chave}" ainda não resolvida (etapa anterior não a registrou).`);
     return uuid;
   }
+}
+
+// ---------------------------------------------------------------------------------------------
+// Validação híbrida (plano 10): estado sintético a partir das chaves exportadas pelo seed
+// ---------------------------------------------------------------------------------------------
+
+export const MODALIDADE_HIBRIDA = 'híbrida: manual E1–E3 · seed E4–E16 · conferência E17–E20';
+
+/** Etapas que a conferência roda de fato (só leitura de negócio, salvo a remessa sem envio da E18). */
+export const ETAPAS_CONFERENCIA: ReadonlyArray<string> = ['E17', 'E18', 'E19', 'E20'];
+
+/**
+ * Cenários que só a via seed consegue gravar (a API recusa ou não tem endpoint). Mesma lista do
+ * `SOMENTE_VIA_SEED` do `api/database/seeders/MassaDemo` (entidades + famílias).
+ */
+export const CENARIOS_SOMENTE_VIA_SEED: ReadonlyArray<string> = [
+  'ENT-2 sem CNEAS (a API exige cneas_number no cadastro)',
+  'F-SEM-REF-1..3 sem unidade de referência (o cadastro manual exige social_unit_id)',
+  'families.receives_pbf/per_capita_income e family_members.child_labor dos perfis do 15.7 (campos do CadÚnico)',
+  'endereço da família no DNE + geometria (coordenadas-familias.json, source massa-demo)',
+];
+
+/** Origem de cada etapa na modalidade híbrida (preflight e E17–E20 rodam na conferência). */
+export function origemHibrida(id: string): OrigemEtapa {
+  if (id === 'E00' || ETAPAS_CONFERENCIA.includes(id)) return 'conferencia';
+  if (['E0', 'E01', 'E01b', 'E01c', 'E02', 'E03'].includes(id)) return 'manual';
+  return 'seed';
+}
+
+/** Conteúdo do arquivo de chaves do seed (`storage/app/massa-demo/chaves.json`). */
+export interface ArquivoChavesSeed {
+  origem: 'seed';
+  versao_elenco: string | null;
+  chaves: Record<string, string>;
+}
+
+/**
+ * Lê o arquivo de chaves com tolerância de formato (§6 do plano 10): `{origem, versao_elenco, chaves}`
+ * (formato do `MassaDemoChaves::exportar`) ou um mapa plano. Recusa origem diferente de `seed` e
+ * valores que não sejam texto.
+ */
+export function lerArquivoChaves(conteudo: string): ArquivoChavesSeed {
+  let bruto: unknown;
+  try {
+    bruto = JSON.parse(conteudo);
+  } catch {
+    throw new Error('arquivo de chaves não é JSON válido.');
+  }
+  if (!bruto || typeof bruto !== 'object' || Array.isArray(bruto)) throw new Error('arquivo de chaves deve ser um objeto JSON.');
+  const obj = bruto as Record<string, unknown>;
+  const temEnvelope = 'chaves' in obj && obj.chaves && typeof obj.chaves === 'object' && !Array.isArray(obj.chaves);
+  if (temEnvelope && obj.origem !== undefined && obj.origem !== 'seed') throw new Error(`arquivo de chaves com origem "${String(obj.origem)}" (esperado "seed").`);
+  const mapa = (temEnvelope ? obj.chaves : obj) as Record<string, unknown>;
+  const chaves: Record<string, string> = {};
+  for (const [k, v] of Object.entries(mapa)) {
+    if (!temEnvelope && (k === 'origem' || k === 'versao_elenco')) continue;
+    if (typeof v !== 'string' && typeof v !== 'number') throw new Error(`chave "${k}" com valor inválido no arquivo de chaves.`);
+    chaves[k] = String(v);
+  }
+  if (!Object.keys(chaves).length) throw new Error('arquivo de chaves vazio.');
+  return { origem: 'seed', versao_elenco: typeof obj.versao_elenco === 'string' ? obj.versao_elenco : null, chaves };
+}
+
+/**
+ * Estado sintético da conferência híbrida: E00–E16 marcadas `ok` com a origem (manual/seed) e um passo
+ * que diz de onde vieram; E17–E20 ficam para a conferência. Nenhuma checagem de ambiente é inventada:
+ * o CLI acrescenta as reais (preflight e 2ª trava).
+ */
+export function estadoDeChaves(o: {
+  arquivo: ArquivoChavesSeed;
+  arquivoNome: string;
+  apiBase: string;
+  evidencias: boolean;
+  agora?: Date;
+  /** Avisos por etapa (ex.: exceção documentada da permissão avulsa do P7 na E06). */
+  avisos?: Record<string, string[]>;
+}): EstadoExecucao {
+  const estado = novaExecucao({ evidencias: o.evidencias, ate: null, apiBase: o.apiBase, agora: o.agora });
+  estado.id = `conferencia-${estado.id}`;
+  estado.modo = 'seed';
+  estado.modalidade = MODALIDADE_HIBRIDA;
+  estado.somenteViaSeed = [...CENARIOS_SOMENTE_VIA_SEED];
+  estado.chaves = { ...o.arquivo.chaves };
+  const descricao: Record<OrigemEtapa, string> = {
+    manual: 'passo manual da validação híbrida (na tela, antes do seed); conferido aqui pelas chaves no banco',
+    seed: `massa-demo:popular (api) — chaves de ${o.arquivoNome}${o.arquivo.versao_elenco ? `, elenco ${o.arquivo.versao_elenco}` : ''}`,
+    conferencia: 'massa:conferir',
+    api: 'executor pela API',
+  };
+  for (const def of ETAPAS) {
+    const origem = origemHibrida(def.id);
+    if (origem === 'conferencia') continue;
+    estado.etapas.push({ etapa: def.id, status: 'ok', duracao: 0, papel: null, passos: [{ passo: `origem: ${origem}`, detalhe: descricao[origem] }], avisos: [...(o.avisos?.[def.id] ?? [])], origem });
+  }
+  return estado;
 }

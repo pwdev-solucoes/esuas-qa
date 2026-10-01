@@ -157,6 +157,59 @@ apuração `mês|unidade|contador` e pendências — e sai **0** ("idênticas") 
 `caminho · chave: A=… · B=…` (2 = uso/arquivo inválido). Aceita a pasta da execução ou o `snapshot.json`.
 Quando B é uma pasta de relatório, grava `determinismo.json` e atualiza a seção Determinismo do índice de B.
 
+## Validação híbrida: conferência da massa populada por seed (plano 10)
+
+Modalidade **híbrida: manual E1–E3 · seed E4–E16 · conferência E17–E20**. Uma pessoa faz o setup global,
+a entrada no tenant e a configuração (E1–E3) na tela; o `api/` grava E4–E16 com
+`php artisan massa-demo:popular` (cenários só via seed incluídos); o `qa` confere.
+
+```bash
+# 1. (prova automatizada) o passo manual E1–E3 é simulado pela própria massa:
+npm run massa -- --sem-evidencias --confirmar-apagamento --ate=E03
+# 2. seed E4–E16 (a senha da massa vai por MASSA_DEMO_SENHA, sem impressão) e exporta as chaves:
+docker exec -e MASSA_DEMO_SENHA api-laravel.test-1 php artisan massa-demo:popular --force --exportar-chaves=storage/app/massa-demo/chaves.json
+docker cp api-laravel.test-1:/var/www/html/storage/app/massa-demo/chaves.json /tmp/chaves-massa-demo.json
+# 3. conferência E17–E20 (+ relatório)
+npm run massa:conferir -- --chaves=/tmp/chaves-massa-demo.json --evidencias
+# 4. API × seed: só os cenários só via seed podem divergir
+npm run massa:comparar -- --modo=api-x-seed massa-dados/relatorios/<execução pela API> massa-dados/relatorios/<conferência>
+```
+
+O `massa:conferir`:
+
+- roda o preflight e a trava de produção (as mesmas do `npm run massa`), **nunca** faz reset, cache clear,
+  DNE nem escrita de negócio por conta própria (só `GET /api/environment` e `SELECT` em transação só leitura);
+- lê o arquivo de chaves (`{origem: "seed", versao_elenco, chaves}`; também aceita mapa plano), recusa
+  elenco de outra versão, chaves ausentes e chaves que não existem no banco da organização; a camada da demo
+  (`GEO_CAMADA_DEMO`, criada no passo manual) é resolvida no banco pelo nome;
+- monta um estado sintético (E00–E16 com a origem `manual`/`seed`, modo `seed`) e roda só E17–E20 pelo
+  Playwright com `MASSA_VIA_CLI` (guarda do plano 07). A E18 gera a remessa SIAP **sem envio**, como na
+  execução pela API (e, se houver, corrige CEP/matrícula pendentes — veja os achados da E18).
+
+**Modo `seed`:** os cenários só via seed (ENT-2 sem CNEAS, F-SEM-REF-1..3, perfis do 15.7 e endereço/ponto
+das famílias) são esperados presentes. As explicações RN14 da E17 não valem — qualquer divergência é ✖ — e a
+E19 exige pontos de família no painel. Exceção documentada, igual nos dois modos: a permissão avulsa
+`attendance-reports.view` do P7 não tem rota no app (achado RN14 na E06, CA01 parcial).
+
+O índice mostra a modalidade, a coluna **Origem** por etapa (manual / seed / conferência / API) e a lista
+dos cenários só via seed. O `massa:comparar --modo=api-x-seed` separa as divergências **esperadas** (cenários
+só via seed; para apuração e pendência, só quando o lado seed bate com o `esperado.json`) das **inesperadas**;
+só as inesperadas dão código 1. O resultado vai para `comparacao-api-x-seed.json` na pasta da conferência
+(a seção Determinismo/CA04 não é tocada — ela compara execuções do mesmo modo).
+
+### Insumos no `api/` (`massa:insumos:exportar-api`)
+
+Os insumos vivem nos dois repositórios: o `qa` gera, o seeder do `api/` lê a cópia em
+`api/database/data/massa-demo/`. O exportador é a única via de atualização dessa cópia:
+
+```bash
+npm run massa:insumos:exportar-api -- --verificar   # só compara (código 1 se a cópia divergir)
+npm run massa:insumos:exportar-api                  # confere o sha256 contra insumos/manifest.json e grava o que mudou
+```
+
+Copia `elenco`, `unidades-ficticias`, `entidades-ficticias`, `coordenadas-familias` e `esperado` e gera o
+`manifest.json` da cópia (subconjunto do manifest do `qa`). Nada é commitado: depois de gravar, commite no `api/`.
+
 ## Segurança
 
 - **Traces, vídeos e screenshots automáticos do Playwright são PROIBIDOS no project `massa-dados`**
