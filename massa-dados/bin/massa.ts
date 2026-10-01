@@ -33,6 +33,7 @@ import { lerEvidencias, VARIAVEL_RELATORIO } from '../lib/evidencia.ts';
 import { criarPastaExecucao, gerarRelatorio, PASTA_RELATORIOS, type ManifestExecucao, type ResultadoDeterminismo } from '../lib/relatorio.ts';
 import type { Snapshot } from '../lib/snapshot.ts';
 import { escalar } from '../lib/verificacoes-sql.ts';
+import { VARIAVEL_VIA_CLI } from '../lib/papeis.ts';
 import { ApagamentoNaoConfirmado, confirmarApagamento, executarReset, FalhaReset, perguntarNoTerminal, textoAviso } from '../lib/reset.ts';
 
 export interface OpcoesCli {
@@ -159,10 +160,13 @@ function rodarEtapaPlaywright(arquivo: string, caminhoEstado: string, filtro?: s
   // A E01b espera o DNE nacional (~15 min de processamento + sync): sem teto global e com folga por
   // etapa (o timeout de cada job continua em `polling.ts`, MASSA_TIMEOUT_JOBS_MS).
   argumentos.push('--global-timeout=0', `--timeout=${2 * 60 * 60_000}`);
+  // `MASSA_VIA_CLI` = id da execução: sem ele o project `massa-dados` nem é registrado e a moldura
+  // `etapa()` recusa antes de qualquer escrita (CR-002, CR-004). Vale também para a retomada.
+  const { estado } = lerEstado(caminhoEstado);
   const r = spawnSync('npx', argumentos, {
     cwd: RAIZ_QA,
     stdio: 'inherit',
-    env: { ...process.env, [VARIAVEL_ESTADO]: caminhoEstado },
+    env: { ...process.env, [VARIAVEL_ESTADO]: caminhoEstado, [VARIAVEL_VIA_CLI]: estado.id },
   });
   return typeof r.status === 'number' ? r.status : 1;
 }
@@ -181,6 +185,20 @@ export function validarRetomada(estado: EstadoExecucao | null, aPartirDe: string
   const faltando = ETAPAS.slice(0, i).filter((e) => estado.etapas.find((x) => x.etapa === e.id)?.status !== 'ok').map((e) => e.id);
   if (faltando.length) return `etapas anteriores não concluídas na execução salva: ${faltando.join(', ')}.`;
   if (!estado.chaves.TENANT) return 'a execução salva não registrou a organização (TENANT).';
+  return null;
+}
+
+/**
+ * Recusa um intervalo de retomada vazio (CR-007): `--ate` anterior a `--a-partir-de`. Devolve o motivo
+ * ou `null` (etapas desconhecidas são tratadas por `etapasAte`/`validarRetomada`).
+ */
+export function validarIntervaloRetomada(aPartirDe: string, ate: string | null): string | null {
+  if (!ate) return null;
+  const indice = (id: string) => ETAPAS.findIndex((e) => e.id.toUpperCase() === id.toUpperCase());
+  const i = indice(aPartirDe);
+  const f = indice(ate);
+  if (i < 0 || f < 0) return null;
+  if (f < i) return `--ate=${ate} vem antes de --a-partir-de=${aPartirDe}: nenhuma etapa seria executada.`;
   return null;
 }
 
@@ -205,6 +223,11 @@ export async function executarFluxo(opcoes: OpcoesCli, deps: DependenciasFluxo =
       ate = opcoes.ate ? (etapasAte(opcoes.ate).at(-1)?.id ?? null) : null;
     } catch (erro) {
       log(`✖ ${(erro as Error).message}`);
+      return 2;
+    }
+    const intervalo = opcoes.aPartirDe ? validarIntervaloRetomada(opcoes.aPartirDe, ate) : null;
+    if (intervalo) {
+      log(`✖ Retomada recusada: ${intervalo}`);
       return 2;
     }
     if (opcoes.evidencias === null) {

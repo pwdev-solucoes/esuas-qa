@@ -9,8 +9,8 @@
 import { PADRAO_BANCO } from './preflight.ts';
 import { executorPadrao, type ConfigMassa, type Executor } from './config.ts';
 
-/** Palavras que tornam a instrução não-leitura (checagem defensiva, além do READ ONLY). */
-const PROIBIDAS = /\b(insert|update|delete|merge|drop|alter|create|truncate|grant|revoke|copy|call|do|vacuum|reindex|refresh|lock|set|reset)\b/i;
+/** Palavras que tornam a instrução não-leitura (checagem defensiva, além do READ ONLY); inclui `pg_*backend` (CR-008). */
+const PROIBIDAS = /\b(insert|update|delete|merge|drop|alter|create|truncate|grant|revoke|copy|call|do|vacuum|reindex|refresh|lock|set|reset|pg_\w*backend)\b/i;
 
 export class ConsultaRecusada extends Error {
   constructor(motivo: string) {
@@ -69,7 +69,7 @@ export const SQL = {
     `JOIN families f ON f.id = fm.family_id JOIN tenants t ON t.id = f.tenant_id WHERE t.cnpj = ${cnpj(cnpjDemo)} ORDER BY p.id`,
   /** CA11: pessoas sem CPF gravadas como string vazia (esperado 0). */
   cpfVazio: (cnpjDemo: string) =>
-    `SELECT count(*) FROM persons p JOIN family_members fm ON fm.person_id = p.id JOIN families f ON f.id = fm.family_id ` +
+    `SELECT count(*) FROM persons p JOIN family_members fm ON fm.person_id = p.id AND fm.deleted_at IS NULL JOIN families f ON f.id = fm.family_id ` +
     `JOIN tenants t ON t.id = f.tenant_id WHERE t.cnpj = ${cnpj(cnpjDemo)} AND p.cpf = ''`,
   /** RN02b: e-mails de usuários vinculados à demo fora de @demo.sigsuas.local (esperado 0). */
   emailsForaDoDominio: (cnpjDemo: string) =>

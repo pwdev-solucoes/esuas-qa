@@ -21,6 +21,12 @@ import { IBGE_ARAPIRACA, UNIDADES, VERSAO_INSUMOS } from './unidades.ts';
 export type Mes = '2026-06' | '2026-07' | '2026-08';
 export const MESES: readonly Mes[] = ['2026-06', '2026-07', '2026-08'];
 export const LOTACOES_DESDE = '2026-05-01';
+/**
+ * Competência (`AAAA-MM`) enviada na importação do DNE da E01b (CR-003, RN-T4: nada relativo a "hoje").
+ * É o mês do arquivo DNE usado pela massa (`qa/docs/baseceps.dat.zip`, base de junho/2026). Trocar o
+ * arquivo do DNE exige atualizar este valor e regenerar os insumos (`npm run massa:insumos`).
+ */
+export const DNE_COMPETENCIA = '2026-06';
 export const DOMINIO_EMAIL = 'demo.sigsuas.local';
 
 export type Sexo = '001' | '002'; // SexCode: 001 feminino, 002 masculino
@@ -103,6 +109,8 @@ export interface Elenco {
   versao: string;
   meses_referencia: Mes[];
   lotacoes_desde: string;
+  /** Competência fixa do DNE importado na E01b (CR-003). */
+  dne: { competencia: string };
   organizacao: {
     razao_social: string;
     cnpj: string;
@@ -498,6 +506,7 @@ export function montarElenco(lista: ListaNomes): Elenco {
     versao: VERSAO_INSUMOS,
     meses_referencia: [...MESES],
     lotacoes_desde: LOTACOES_DESDE,
+    dne: { competencia: DNE_COMPETENCIA },
     organizacao: {
       razao_social: 'Município Demonstração SigSUAS',
       cnpj: cnpjMassa(1),

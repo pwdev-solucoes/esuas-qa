@@ -5,21 +5,25 @@
  * real, exceto INT-009/INT-011, que só rodam com `MASSA_INT_REAL=1` e credenciais no ambiente.
  */
 import { createHash } from 'node:crypto';
-import { existsSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from 'node:http';
 import type { AddressInfo } from 'node:net';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import { expect, test } from '@playwright/test';
-import { executarFluxo, lerArgumentos, validarRetomada, type OpcoesCli } from '../bin/massa.ts';
+import { executarFluxo, lerArgumentos, validarIntervaloRetomada, validarRetomada, type OpcoesCli } from '../bin/massa.ts';
 import { consultarAmbiente, exigirNaoProducao, MENSAGEM_PRODUCAO, RecusaAmbiente } from './ambiente.ts';
 import { carregarConfig, executorPadrao, sanitizar, type ConfigMassa, type Executor, type ResultadoComando } from './config.ts';
 import { caminhoLocalDne, FalhaDne, obterDne } from './dne.ts';
-import { lerEstado } from './execucao.ts';
+import { lerEstado, novaExecucao, salvarEstado, type EstadoExecucao } from './execucao.ts';
 import { ClientePapel } from './http.ts';
 import { definirSenha, extrairLinkRedefinicao, lerLink } from './mailpit.ts';
 import { containerDoComando, executarPreflight } from './preflight.ts';
-import { ApagamentoNaoConfirmado, comandoQueueRestart, comandoReligarWorker, confirmarApagamento, executarReset, FalhaReset } from './reset.ts';
+import { ApagamentoNaoConfirmado, aspasShell, comandoQueueRestart, comandoReligarWorker, confirmarApagamento, executarReset, FalhaRateLimit, FalhaReset, limparRateLimit } from './reset.ts';
+import { EtapaRecusada, executarEtapa, motivoRecusaEtapa } from './papeis.ts';
+import { SQL, validarSomenteLeitura } from './verificacoes-sql.ts';
+import { DNE_COMPETENCIA } from '../scripts/elenco.ts';
+import configPlaywright, { PROJECT_MASSA_DADOS } from '../../playwright.config.ts';
 
 // ---------------------------------------------------------------------------------------------
 // Utilitários de stub
@@ -294,7 +298,7 @@ test.describe('INT-004 (AC-004) — a trava roda duas vezes', () => {
         'docker exec esuas-api php artisan migrate:fresh --seed --force',
         'docker exec esuas-api php artisan queue:restart',
         'docker exec esuas-api php artisan cache:clear',
-        expect.stringContaining('start "esuas-queue"'),
+        expect.stringContaining("start 'esuas-queue'"),
       ]);
       expect(etapas).toEqual(['e00-preflight.spec.ts']);
       const { estado } = lerEstado(deps.caminhoEstado);
@@ -466,8 +470,8 @@ test.describe('INT-007 (AC-007) — reset externo', () => {
   test('religar o worker: só com reset via docker exec e container de fila na lista', () => {
     const containers = ['api-laravel.test-1', 'api-laravel.worker-1'];
     const cmd = comandoReligarWorker({ resetCmd: 'docker exec api-laravel.test-1 php artisan migrate:fresh --seed --force', containers });
-    expect(cmd).toContain('start "api-laravel.worker-1"');
-    expect(cmd).toContain(`inspect -f '{{.State.Running}}' "api-laravel.worker-1"`);
+    expect(cmd).toContain(`start 'api-laravel.worker-1'`);
+    expect(cmd).toContain(`inspect -f '{{.State.Running}}' 'api-laravel.worker-1'`);
     expect(comandoReligarWorker({ resetCmd: './vendor/bin/sail artisan migrate:fresh --seed', containers })).toBeNull();
     expect(comandoReligarWorker({ resetCmd: 'docker exec api-laravel.test-1 php artisan migrate:fresh', containers: ['api-laravel.test-1'] })).toBeNull();
   });
@@ -476,7 +480,7 @@ test.describe('INT-007 (AC-007) — reset externo', () => {
     const executados: string[] = [];
     const executor: Executor = { ...executorPadrao, shell: (c: string) => (executados.push(c), { codigo: 0, saida: '', erro: '' }) };
     expect(executarReset(cfg, { executor }).map((p) => p.nome)).toEqual(['reset', 'queue:restart', 'cache:clear', 'worker:start']);
-    expect(executados[3]).toContain('start "esuas-queue"');
+    expect(executados[3]).toContain(`start 'esuas-queue'`);
   });
   test('queue:restart derivado do comando de reset', () => {
     expect(comandoQueueRestart({ resetCmd: './vendor/bin/sail artisan migrate:fresh --seed', queueRestartCmd: '' })).toBe('./vendor/bin/sail artisan queue:restart');
@@ -716,4 +720,219 @@ test('validarRetomada (--a-partir-de, dev): só com etapas anteriores ok, mesma 
   expect(validarRetomada(null, 'E10', 'http://api')).toMatch(/nenhuma execução/);
   expect(validarRetomada({ ...estado, etapas: estado.etapas.filter((e) => e.etapa !== 'E08') }, 'E10', 'http://api')).toMatch(/E08/);
   expect(validarRetomada({ ...estado, chaves: {} }, 'E10', 'http://api')).toMatch(/TENANT/);
+});
+
+// ---------------------------------------------------------------------------------------------
+// Plano 07 — correções da revisão de código (CR-001…CR-008)
+// ---------------------------------------------------------------------------------------------
+
+test.describe('Plano 07 UNIT-001 (AC-001, AC-005) — project massa-dados sem trace e só com execução marcada', () => {
+  test('CR-001: trace, vídeo e screenshot desligados no project massa-dados', () => {
+    expect(PROJECT_MASSA_DADOS.name).toBe('massa-dados');
+    expect(PROJECT_MASSA_DADOS.use.trace).toBe('off');
+    expect(PROJECT_MASSA_DADOS.use.video).toBe('off');
+    expect(PROJECT_MASSA_DADOS.use.screenshot).toBe('off');
+    const fonte = readFileSync(resolve(import.meta.dirname, '..', '..', 'playwright.config.ts'), 'utf8');
+    const bloco = fonte.slice(fonte.indexOf('export const PROJECT_MASSA_DADOS'), fonte.indexOf('} as const;'));
+    expect(bloco).not.toMatch(/retain-on-failure|on-first-retry|only-on-failure|trace:\s*'on'/);
+  });
+  test('CR-004: sem MASSA_VIA_CLI/MASSA_EXECUCAO_ARQUIVO o project massa-dados não é registrado', () => {
+    test.skip(Boolean(process.env.MASSA_VIA_CLI || process.env.MASSA_EXECUCAO_ARQUIVO), 'execução marcada no ambiente');
+    const nomes = (configPlaywright.projects ?? []).map((p) => p.name);
+    expect(nomes).toContain('massa-insumos');
+    expect(nomes).not.toContain('massa-dados');
+  });
+});
+
+test.describe('Plano 07 INT-001 (AC-002) — etapa() recusa fora do CLI antes de qualquer escrita (CR-002)', () => {
+  function prepararEstado(stubUrl: string, mexer: (e: EstadoExecucao) => void = () => undefined): { caminho: string; estado: EstadoExecucao } {
+    const estado = novaExecucao({ evidencias: false, ate: null, apiBase: stubUrl, agora: new Date('2026-10-01T00:00:00Z') });
+    estado.ambiente.push({ momento: 'preflight', ok: true, environment: 'local', mensagem: '', em: '' });
+    estado.ambiente.push({ momento: 'antes_do_reset', ok: true, environment: 'local', mensagem: '', em: '' });
+    mexer(estado);
+    const caminho = join(pastaTemp, 'estado.json');
+    salvarEstado(caminho, estado);
+    return { caminho, estado };
+  }
+  const corpoQueEscreve = (url: string) => async () => {
+    await fetch(`${url}/api/escrita`, { method: 'POST', body: '{}' });
+  };
+
+  test('3 variantes de recusa: sem marcação (ou de outra execução), apiBase divergente, sem 2ª trava ok', async () => {
+    const stub = await subirStub({ 'POST /api/escrita': json(201, {}) });
+    try {
+      const cfg = carregarConfigStub(stub.url);
+      const variantes: Array<[string, (e: EstadoExecucao) => void, (e: EstadoExecucao) => string | undefined, RegExp]> = [
+        ['sem MASSA_VIA_CLI', () => undefined, () => undefined, /fora do CLI/],
+        ['MASSA_VIA_CLI de outra execução', () => undefined, () => 'outra-execucao', /não corresponde/],
+        ['apiBase divergente', (e) => (e.apiBase = 'http://outra-api'), (e) => e.id, /outra API/],
+        ['sem antes_do_reset ok', (e) => (e.ambiente = e.ambiente.filter((a) => a.momento === 'preflight')), (e) => e.id, /2ª checagem/],
+        ['última antes_do_reset falhou', (e) => e.ambiente.push({ momento: 'antes_do_reset', ok: false, mensagem: 'production', em: '' }), (e) => e.id, /2ª checagem/],
+      ];
+      for (const [nome, mexer, marca, msg] of variantes) {
+        const { caminho, estado } = prepararEstado(stub.url, mexer);
+        const antes = readFileSync(caminho, 'utf8');
+        const erro = await executarEtapa('E04', 'P0', corpoQueEscreve(stub.url), { caminho, cfg, viaCli: marca(estado) }).catch((e: unknown) => e);
+        expect(erro, nome).toBeInstanceOf(EtapaRecusada);
+        expect((erro as Error).message, nome).toMatch(msg);
+        expect((erro as Error).message, nome).toContain('npm run massa');
+        expect(readFileSync(caminho, 'utf8'), `${nome}: estado intocado`).toBe(antes);
+      }
+      expect(stub.chamadas.map((c) => c.metodo)).toEqual([]);
+    } finally {
+      await stub.fechar();
+    }
+  });
+
+  test('marcada pelo CLI, mesma API e 2ª trava ok → o corpo roda e a etapa fica ok', async () => {
+    const stub = await subirStub({ 'POST /api/escrita': json(201, {}) });
+    try {
+      const { caminho, estado } = prepararEstado(stub.url);
+      await executarEtapa('E04', 'P0', corpoQueEscreve(stub.url), { caminho, cfg: carregarConfigStub(stub.url), viaCli: estado.id });
+      expect(stub.chamadas.map((c) => `${c.metodo} ${c.caminho}`)).toEqual(['POST /api/escrita']);
+      expect(lerEstado(caminho).estado.etapas.map((e) => [e.etapa, e.status])).toEqual([['E04', 'ok']]);
+      expect(motivoRecusaEtapa(estado, stub.url, estado.id)).toBeNull();
+    } finally {
+      await stub.fechar();
+    }
+  });
+
+  test('o CLI passa MASSA_VIA_CLI = id da execução ao Playwright (completo e retomada)', () => {
+    const fonte = readFileSync(resolve(import.meta.dirname, '..', 'bin', 'massa.ts'), 'utf8');
+    expect(fonte).toMatch(/\[VARIAVEL_VIA_CLI\]: estado\.id/);
+  });
+});
+
+test.describe('Plano 07 INT-002 (AC-006) — limparRateLimit confere o código e religa o worker (CR-005)', () => {
+  const cfgBase = () => ({ ...carregarConfigStub('http://127.0.0.1:1'), resetCmd: 'docker exec esuas-api php artisan migrate:fresh --seed --force' });
+
+  test('cache clear ok + container de fila → religa o worker (espera curta, nomes entre aspas simples)', () => {
+    const espiao = executorEspiao();
+    expect(limparRateLimit(cfgBase(), { executor: espiao.executor })).toBe(true);
+    expect(espiao.shells).toHaveLength(2);
+    expect(espiao.shells[0]).toBe('docker exec esuas-api php artisan cache:clear');
+    expect(espiao.shells[1]).toContain(`'docker' start 'esuas-queue'`);
+    expect(espiao.shells[1]).toContain('seq 1 6)');
+  });
+  test('cache clear com código ≠ 0 → FalhaRateLimit, sem religar', () => {
+    const shells: string[] = [];
+    const executor: Executor = { ...executorPadrao, shell: (c) => (shells.push(c), { codigo: 3, saida: '', erro: 'boom' }) };
+    expect(() => limparRateLimit(cfgBase(), { executor })).toThrow(FalhaRateLimit);
+    expect(shells).toHaveLength(1);
+  });
+  test('falha ao religar o worker também lança', () => {
+    let n = 0;
+    const executor: Executor = { ...executorPadrao, shell: () => ({ codigo: n++ === 0 ? 0 : 1, saida: '', erro: '' }) };
+    expect(() => limparRateLimit(cfgBase(), { executor })).toThrow(/worker:start/);
+  });
+  test('sem container de fila: só o clear; sem MASSA_CACHE_CLEAR_CMD: false e nada roda', () => {
+    const espiao = executorEspiao();
+    expect(limparRateLimit({ ...cfgBase(), containers: ['esuas-api', 'esuas-pgsql'] }, { executor: espiao.executor })).toBe(true);
+    expect(espiao.shells).toHaveLength(1);
+    const vazio = executorEspiao();
+    expect(limparRateLimit({ ...cfgBase(), cacheClearCmd: '' }, { executor: vazio.executor })).toBe(false);
+    expect(vazio.shells).toHaveLength(0);
+  });
+  test('nenhuma chamada solta ao cache clear em lib/ (só no helper e no reset)', () => {
+    for (const arq of ['http.ts', 'papeis.ts', 'evidencia.ts', 'mailpit.ts']) {
+      expect(readFileSync(resolve(import.meta.dirname, arq), 'utf8'), arq).not.toMatch(/\.shell\([^)]*cacheClearCmd/);
+    }
+  });
+});
+
+test.describe('Plano 07 INT-003 (AC-007) — nomes da configuração validados antes do shell (CR-006)', () => {
+  test('aspasShell neutraliza $(…), crase, ; e aspa simples', () => {
+    expect(aspasShell("a'b")).toBe(`'a'\\''b'`);
+    const perigoso = "x$(echo INJ);`echo INJ2`'; echo INJ3";
+    const r = executorPadrao.programa('/bin/sh', ['-c', `printf %s ${aspasShell(perigoso)}`]);
+    expect(r.codigo).toBe(0);
+    expect(r.saida).toBe(perigoso);
+  });
+  for (const ruim of ['esuas-queue;id', 'esuas-$(id)-queue', 'esuas-`id`-queue', 'esuas queue']) {
+    test(`container "${ruim}" → ✖ no preflight e comandoReligarWorker recusa`, async () => {
+      const stub = await subirStub(rotasSaudaveis(() => json(200, { environment: 'local' })));
+      try {
+        const espiao = executorEspiao();
+        const cfg = { ...carregarConfigStub(stub.url), containers: ['esuas-api', 'esuas-pgsql', ruim, 'esuas-minio', 'esuas-mailpit'] };
+        const r = await executarPreflight(cfg, { executor: espiao.executor, pastaCache: pastaTemp, timeoutMs: 1_000 });
+        expect(r.apto).toBe(false);
+        const item = r.itens.find((i) => i.nome === 'MASSA_DOCKER_CONTAINERS');
+        expect(item?.status).toBe('falha');
+        expect(item?.mensagem).toMatch(/nome de container inválido/);
+        expect(() => comandoReligarWorker({ resetCmd: cfg.resetCmd, containers: [ruim] })).toThrow(/nome inseguro/);
+      } finally {
+        await stub.fechar();
+      }
+    });
+  }
+  test('binário do reset/cache clear com $( → ✖, sem interpolar no /bin/sh', async () => {
+    const stub = await subirStub(rotasSaudaveis(() => json(200, { environment: 'local' })));
+    try {
+      const espiao = executorEspiao();
+      const cfg = { ...carregarConfigStub(stub.url), resetCmd: 'docker$(id) exec esuas-api php artisan migrate:fresh', cacheClearCmd: 'dock`id`er exec esuas-api php artisan cache:clear' };
+      const r = await executarPreflight(cfg, { executor: espiao.executor, pastaCache: pastaTemp, timeoutMs: 1_000 });
+      expect(r.apto).toBe(false);
+      expect(r.itens.find((i) => i.nome === 'MASSA_RESET_CMD')?.mensagem).toMatch(/caracteres inválidos/);
+      expect(r.itens.find((i) => i.nome === 'MASSA_CACHE_CLEAR_CMD')?.mensagem).toMatch(/caracteres inválidos/);
+      expect(espiao.programas.filter((p) => p.startsWith('/bin/sh') && /\$\(|`/.test(p))).toEqual([]);
+      expect(espiao.shells).toEqual([]);
+    } finally {
+      await stub.fechar();
+    }
+  });
+  test('command -v recebe o binário como $1 posicional (sem interpolação)', async () => {
+    const stub = await subirStub(rotasSaudaveis(() => json(200, { environment: 'local' })));
+    try {
+      const espiao = executorEspiao();
+      await executarPreflight(carregarConfigStub(stub.url), { executor: espiao.executor, pastaCache: pastaTemp, timeoutMs: 1_000 });
+      const sh = espiao.programas.filter((p) => p.startsWith('/bin/sh'));
+      expect(sh.length).toBeGreaterThan(0);
+      for (const p of sh) expect(p).toBe('/bin/sh -c command -v "$1" sh docker');
+    } finally {
+      await stub.fechar();
+    }
+  });
+});
+
+test.describe('Plano 07 INT-004 (AC-008) — retomada com --ate antes de --a-partir-de é recusada (CR-007)', () => {
+  test('validarIntervaloRetomada', () => {
+    expect(validarIntervaloRetomada('E12', 'E10')).toMatch(/vem antes/);
+    expect(validarIntervaloRetomada('E10', 'E10')).toBeNull();
+    expect(validarIntervaloRetomada('E10', 'E19')).toBeNull();
+    expect(validarIntervaloRetomada('E10', null)).toBeNull();
+  });
+  test('--a-partir-de=E12 --ate=E10 sai com código ≠ 0 antes de qualquer etapa e do preflight', async () => {
+    const stub = await subirStub(rotasSaudaveis(() => json(200, { environment: 'local' })));
+    try {
+      const espiao = executorEspiao();
+      const etapas: string[] = [];
+      const { deps, logs } = depsFluxo(stub, espiao, { rodarEtapa: (a: string) => (etapas.push(a), 0) });
+      const codigo = await executarFluxo({ ...OPCOES_EXECUCAO, aPartirDe: 'E12', ate: 'E10' }, deps);
+      expect(codigo).not.toBe(0);
+      expect(etapas).toEqual([]);
+      expect(stub.chamadas).toEqual([]);
+      expect(espiao.shells).toEqual([]);
+      expect(logs.join('\n')).toMatch(/Retomada recusada: --ate=E10 vem antes de --a-partir-de=E12/);
+    } finally {
+      await stub.fechar();
+    }
+  });
+});
+
+test.describe('Plano 07 UNIT-002 (AC-009, AC-004) — SQL somente leitura e competência fixa do DNE (CR-008, CR-003)', () => {
+  test('pg_terminate_backend/pg_cancel_backend recusados; cpfVazio ignora integrantes removidos', () => {
+    expect(() => validarSomenteLeitura('SELECT pg_terminate_backend(123)')).toThrow(/pg_terminate_backend/);
+    expect(() => validarSomenteLeitura('SELECT pg_cancel_backend(pid) FROM pg_stat_activity')).toThrow(/pg_cancel_backend/);
+    expect(validarSomenteLeitura("SELECT 'pg_terminate_backend'")).toBe("SELECT 'pg_terminate_backend'");
+    expect(SQL.cpfVazio('12.345.678/0001-90')).toContain('fm.deleted_at IS NULL');
+    expect(() => validarSomenteLeitura(SQL.cpfVazio('12345678000190'))).not.toThrow();
+  });
+  test('dne.competencia fixa (AAAA-MM) no elenco.json; E01b não usa o mês corrente', () => {
+    const elenco = JSON.parse(readFileSync(resolve(import.meta.dirname, '..', 'insumos', 'elenco.json'), 'utf8')) as { dne?: { competencia?: string } };
+    expect(elenco.dne?.competencia).toBe(DNE_COMPETENCIA);
+    expect(DNE_COMPETENCIA).toMatch(/^\d{4}-(0[1-9]|1[0-2])$/);
+    const e01b = readFileSync(resolve(import.meta.dirname, '..', 'etapas', 'e01b-importacoes.spec.ts'), 'utf8');
+    expect(e01b).toContain('ctx.elenco.dne.competencia');
+    expect(e01b).not.toMatch(/new Date\(\)\.toISOString\(\)/);
+  });
 });

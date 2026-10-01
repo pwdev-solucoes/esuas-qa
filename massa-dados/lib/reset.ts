@@ -6,7 +6,7 @@
  * Código de saída ≠ 0 em qualquer um aborta.
  */
 import { createInterface } from 'node:readline/promises';
-import { containerDoComando, PADRAO_FILA } from './preflight.ts';
+import { containerDoComando, NOME_SEGURO, PADRAO_FILA } from './preflight.ts';
 import { executorPadrao, sanitizar, type ConfigMassa, type Executor, type Logger } from './config.ts';
 
 export function textoAviso(apiBase: string, environment: string, resetCmd: string): string {
@@ -92,21 +92,66 @@ function resumir(texto: string, linhas = 6): string {
 }
 
 /**
+ * Quoting de shell POSIX com aspas simples (CR-006): `'…'` neutraliza `$(…)`, crases e `;`; a aspa
+ * simples interna vira `'\''`. Nunca monte comando de shell com aspas duplas.
+ */
+export function aspasShell(valor: string): string {
+  return `'${valor.replace(/'/g, `'\\''`)}'`;
+}
+
+/**
  * Religa o container da fila depois do `queue:restart`. Na stack Sail o container do worker roda só
  * `queue:work` e não tem política de restart: o sinal faz o processo sair e o container para, e aí
- * DNE, geo-imports e e-mails nunca processam. Espera o container parar (até 20 s) e dá `docker start`
- * (idempotente). Só se aplica quando o reset é `docker exec …` e há container de fila na lista.
+ * DNE, geo-imports e e-mails nunca processam. Espera o container parar (até `esperaS` s) e dá
+ * `docker start` (idempotente). Só se aplica quando o reset é `docker exec …` e há container de fila na lista.
  */
-export function comandoReligarWorker(cfg: Pick<ConfigMassa, 'resetCmd' | 'containers'>): string | null {
+export function comandoReligarWorker(cfg: Pick<ConfigMassa, 'resetCmd' | 'containers'>, esperaS = 20): string | null {
   const { binario, container } = containerDoComando(cfg.resetCmd);
   const fila = cfg.containers.find((c) => PADRAO_FILA.test(c));
   if (!container || !fila) return null;
-  const docker = JSON.stringify(binario);
-  const alvo = JSON.stringify(fila);
+  if (!NOME_SEGURO.test(binario) || !NOME_SEGURO.test(fila)) {
+    throw new Error(`nome inseguro para shell em MASSA_RESET_CMD/MASSA_DOCKER_CONTAINERS (esperado ${NOME_SEGURO}); rode \`npm run massa:verificar\`.`);
+  }
+  const docker = aspasShell(binario);
+  const alvo = aspasShell(fila);
+  const espera = Math.max(1, Math.trunc(esperaS));
   return (
-    `for i in $(seq 1 20); do [ "$(${docker} inspect -f '{{.State.Running}}' ${alvo})" = "false" ] && break; sleep 1; done; ` +
+    `for i in $(seq 1 ${espera}); do [ "$(${docker} inspect -f '{{.State.Running}}' ${alvo})" = "false" ] && break; sleep 1; done; ` +
     `${docker} start ${alvo} >/dev/null && sleep 2 && [ "$(${docker} inspect -f '{{.State.Running}}' ${alvo})" = "true" ]`
   );
+}
+
+export class FalhaRateLimit extends Error {
+  constructor(passo: 'cache:clear' | 'worker:start', codigo: number, resumo: string) {
+    super(`Limpeza do rate-limit: "${passo}" terminou com código ${codigo}${resumo ? `: ${resumo}` : ''}. Confira MASSA_CACHE_CLEAR_CMD e o container da fila (\`npm run massa:verificar\`).`);
+    this.name = 'FalhaRateLimit';
+  }
+}
+
+/** Espera (s) pelo worker parar depois de um cache clear no meio da execução (o restart é detectado em segundos). */
+export const ESPERA_WORKER_RATE_LIMIT_S = 6;
+
+/**
+ * Limpa o rate-limit no meio da execução (CR-005): roda `MASSA_CACHE_CLEAR_CMD`, confere o código e, se
+ * houver container de fila, religa o worker — o `cache:clear` muda a chave `illuminate:queue:restart`
+ * quando ela não é nula (ex.: retomada sem reset) e o `queue:work` sai. Devolve `false` quando não há
+ * `MASSA_CACHE_CLEAR_CMD` (o chamador espera a janela do throttle). Lança `FalhaRateLimit`.
+ */
+export function limparRateLimit(
+  cfg: Pick<ConfigMassa, 'cacheClearCmd' | 'resetCmd' | 'containers'>,
+  deps: { executor?: Executor; log?: Logger; esperaWorkerS?: number } = {},
+): boolean {
+  if (!cfg.cacheClearCmd) return false;
+  const executor = deps.executor ?? executorPadrao;
+  const limpeza = executor.shell(cfg.cacheClearCmd);
+  if (limpeza.codigo !== 0) throw new FalhaRateLimit('cache:clear', limpeza.codigo, resumir(`${limpeza.saida}\n${limpeza.erro}`));
+  const religar = comandoReligarWorker(cfg, deps.esperaWorkerS ?? ESPERA_WORKER_RATE_LIMIT_S);
+  if (religar) {
+    const r = executor.shell(religar);
+    if (r.codigo !== 0) throw new FalhaRateLimit('worker:start', r.codigo, resumir(`${r.saida}\n${r.erro}`));
+  }
+  deps.log?.('  ✔ rate-limit limpo (cache clear' + (religar ? ' + worker religado)' : ')'));
+  return true;
 }
 
 /** Executa reset → queue:restart → cache clear → religar worker. Aborta (lança) no primeiro código ≠ 0. */

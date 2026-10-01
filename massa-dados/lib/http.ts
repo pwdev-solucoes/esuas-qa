@@ -4,11 +4,12 @@
  * Um `APIRequestContext` isolado por usuário, fluxo Sanctum stateful 100% cookie:
  *   GET /sanctum/csrf-cookie → `X-XSRF-TOKEN` + `Origin` do front do guard →
  *   POST /api/{manager|client}/auth/login { cpf, password }.
- * Ao receber 429 no login, roda `MASSA_CACHE_CLEAR_CMD` uma vez e tenta de novo.
+ * Ao receber 429 no login, limpa o rate-limit (`limparRateLimit`: cache clear + worker religado) uma vez e tenta de novo.
  * O log só registra papel, método, URI e status — nunca senha, token, cookie ou XSRF.
  */
 import { request as playwrightRequest, type APIRequestContext, type APIResponse } from '@playwright/test';
-import { executorPadrao, logPadrao, registrarSegredos, sanitizar, type ConfigMassa, type Executor, type Logger } from './config.ts';
+import { logPadrao, registrarSegredos, sanitizar, type ConfigMassa, type Executor, type Logger } from './config.ts';
+import { limparRateLimit } from './reset.ts';
 
 export type Guard = 'manager' | 'client';
 
@@ -91,10 +92,9 @@ export class ClientePapel {
     const uri = `/api/${this.papel.guard}/auth/login`;
     const corpo = { cpf: this.papel.cpf, password: this.papel.senha };
     let r = await this.enviar('POST', uri, corpo);
-    if (r.status() === 429 && cfg.cacheClearCmd) {
-      this.o.log(`  ⚠ ${this.papel.nome}: 429 no login, rodando MASSA_CACHE_CLEAR_CMD e tentando de novo`);
-      (this.o.executor ?? executorPadrao).shell(cfg.cacheClearCmd);
-      r = await this.enviar('POST', uri, corpo);
+    if (r.status() === 429) {
+      this.o.log(`  ⚠ ${this.papel.nome}: 429 no login, limpando o rate-limit e tentando de novo`);
+      if (limparRateLimit(cfg, { executor: this.o.executor, log: this.o.log })) r = await this.enviar('POST', uri, corpo);
     }
     if (!r.ok()) throw new FalhaHttp(this.ultimo('POST', uri, r.status()), await r.text());
   }

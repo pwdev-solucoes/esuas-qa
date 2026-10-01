@@ -1,17 +1,17 @@
 /**
  * Asserções pós-etapas E1–E9 (#10994 · AC-001…AC-011 do plano 04).
  *
- * Roda depois de `npm run massa -- --ate=E09`, lendo o estado da execução mais recente (ou o de
- * `MASSA_EXECUCAO_ARQUIVO`): só GET na API e SELECT no banco (`verificacoes-sql.ts`). Não grava nada.
+ * Roda depois de `npm run massa -- --ate=E09`, com `MASSA_EXECUCAO_ARQUIVO` apontando o estado (o project
+ * `massa-dados` só é registrado com essa variável ou com `MASSA_VIA_CLI`; sem ela, cai na execução mais recente): só GET na API e SELECT no banco (`verificacoes-sql.ts`). Não grava nada.
  * Cenário do elenco que a API recusou (achado RN14 registrado pela etapa) vira anotação, não falha;
  * sem o achado registrado, a ausência é falha.
  */
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { expect, test } from '@playwright/test';
-import { carregarConfig, PASTA_CACHE } from '../lib/config.ts';
+import { carregarConfig, PASTA_CACHE, type ConfigMassa } from '../lib/config.ts';
 import { lerEstado, MapaChaves, VARIAVEL_ESTADO, type EstadoExecucao } from '../lib/execucao.ts';
-import { dados, lerElenco, listarTudo, senhaMassa, Sessoes } from '../lib/papeis.ts';
+import { dados, lerElenco, listarTudo, senhaMassa, Sessoes, type Elenco } from '../lib/papeis.ts';
 import { cpfValido } from '../scripts/lib/cpf.ts';
 import { consultar, escalar, SQL } from '../lib/verificacoes-sql.ts';
 
@@ -25,10 +25,10 @@ function caminhoEstado(): string {
   return recente;
 }
 
-const caminho = caminhoEstado();
-const cfg = carregarConfig();
-const elenco = lerElenco();
-
+// Nada de I/O no carregamento do módulo (CR-004): estado, config e elenco só no `beforeAll`.
+let caminho: string;
+let cfg: ConfigMassa;
+let elenco: Elenco;
 let estado: EstadoExecucao;
 let chaves: MapaChaves;
 let sessoes: Sessoes;
@@ -38,6 +38,9 @@ const obterOuNull = (k: string): string | null => estado.chaves[k] ?? null;
 
 test.describe('E1–E9 — asserções pós-etapas', () => {
   test.beforeAll(() => {
+    caminho = caminhoEstado();
+    cfg = carregarConfig();
+    elenco = lerElenco();
     estado = lerEstado(caminho).estado;
     chaves = new MapaChaves(caminho);
     sessoes = new Sessoes(cfg, elenco, chaves, () => undefined);

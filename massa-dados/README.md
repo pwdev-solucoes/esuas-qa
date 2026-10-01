@@ -89,9 +89,16 @@ Sequência de `npm run massa` (Node puro até o reset; nenhuma fixture do Playwr
    allowlist, timeout, HTTP ≠ 200, JSON inválido ou chave ausente → "Geração recusada: … Nenhum
    registro foi criado." e código ≠ 0.
 4. **Reset**: `MASSA_RESET_CMD` → `queue:restart` → `MASSA_CACHE_CLEAR_CMD`; código ≠ 0 aborta.
-5. **DNE**: baixa para `.cache/dne/<sha>.zip`, confere `MASSA_DNE_SHA256`, reaproveita o cache.
+5. **DNE**: baixa para `.cache/dne/<sha>.zip`, confere `MASSA_DNE_SHA256`, reaproveita o cache. A
+   competência enviada na importação (E01b) é fixa e versionada: `dne.competencia` do `elenco.json`
+   (`DNE_COMPETENCIA` em `scripts/elenco.ts`, hoje `2026-06`, o mês do `qa/docs/baseceps.dat.zip`).
+   Nunca o mês corrente (RN-T4). Trocou o arquivo do DNE? Atualize a constante e rode `npm run massa:insumos`.
 6. **Etapas** (`playwright test --project=massa-dados`), uma por vez; falha numa etapa marca as
-   seguintes como `nao_executada`. `--ate=Exx` nunca pula preflight nem reset.
+   seguintes como `nao_executada`. `--ate=Exx` nunca pula preflight nem reset. O CLI marca a execução
+   com `MASSA_VIA_CLI=<id da execução>`; **as etapas só rodam pelo CLI**: a moldura `etapa()` recusa,
+   antes de qualquer requisição, quando a marca falta ou é de outra execução, quando a `API_BASE` difere
+   da do estado ou quando o estado não tem a 2ª checagem de `/api/environment` ok. Sem `MASSA_VIA_CLI`
+   (ou `MASSA_EXECUCAO_ARQUIVO`) o project `massa-dados` nem é registrado: `npm test` não coleta as etapas.
 
 7. **E20**: verificações finais (CA03, CA09, CA11, CA12, RN02b), `snapshot.json` e prévia do índice.
 8. Com `--evidencias`, o CLI gera o relatório final (também quando uma etapa falha).
@@ -152,6 +159,17 @@ Quando B é uma pasta de relatório, grava `determinismo.json` e atualiza a seç
 
 ## Segurança
 
+- **Traces, vídeos e screenshots automáticos do Playwright são PROIBIDOS no project `massa-dados`**
+  (`trace: 'off'`, `video: 'off'`, `screenshot: 'off'`). O trace grava todo `APIRequestContext` do teste
+  — corpo do login (CPF e senha), tokens de redefinição, cookie e XSRF — em texto puro, sem passar pelo
+  `sanitizar()`. Os passos sanitizados ficam no estado e no relatório. Há teste (`lib/infra.test.ts`)
+  que falha se alguém religar.
+- Nomes de container (`MASSA_DOCKER_CONTAINERS`) e o binário/container de `MASSA_RESET_CMD` e
+  `MASSA_CACHE_CLEAR_CMD` precisam casar com `^[\w./-]+$`; o preflight dá ✖ antes de qualquer shell.
+  Interpolação em `/bin/sh -c` só com aspas simples (`aspasShell`).
+- 429 no meio da execução passa por `limparRateLimit` (`lib/reset.ts`): cache clear com código conferido
+  e worker da fila religado (o `cache:clear` pode mudar a chave de restart do `queue:work`).
+
 - Relatórios, snapshot e estado passam por `sanitizar()` (senha, token, cookie, XSRF, Bearer, segredos
   registrados) e `verificarSemSegredos()` antes de ir para o disco; nenhum `.env` é lido pelos relatórios.
 - Nomes e CPFs são fictícios (RN01) e podem aparecer; relatórios servem para compartilhamento interno.
@@ -172,3 +190,7 @@ salva tem todas as etapas anteriores `ok`, a mesma `API_BASE` e a organização 
 preflight e a trava de produção continuam. As etapas E10–E16 pulam registros já criados (`REG_<chave>` no
 estado). Serve só para iterar: a prova é sempre a execução completa a partir do reset. Com `--evidencias`
 a retomada também cria uma pasta nova de relatório (o índice mostra `a-partir-de` nas flags).
+`--ate` anterior a `--a-partir-de` é recusado (código 2) antes de qualquer etapa.
+
+As asserções pós-etapas `etapas/e01-e09.check.spec.ts` (só leitura) rodam apontando o estado:
+`MASSA_EXECUCAO_ARQUIVO=massa-dados/.cache/execucoes/<id>.json npx playwright test --project=massa-dados e01-e09.check`.

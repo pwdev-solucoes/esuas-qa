@@ -71,7 +71,9 @@ etapa('E01b', 'Importações geográficas', 'admin', async (ctx) => {
     ctx.registro.aviso('DNE já sincronizado nesta base: reaproveitado (reexecução da etapa sem reset).');
     ctx.chaves.definir('DNE_IMPORT', String(pronto.uuid ?? pronto.id));
   } else {
-    const competencia = new Date().toISOString().slice(0, 7);
+    // Competência fixa e versionada no insumo (CR-003, RN-T4), nunca o mês corrente.
+    const competencia = ctx.elenco.dne.competencia;
+    expect(competencia, 'elenco.json sem dne.competencia (AAAA-MM): rode `npm run massa:insumos`').toMatch(/^\d{4}-(0[1-9]|1[0-2])$/);
     const criado = dados<Importacao>((await enviarArquivo(await adm(), '/api/dne-imports', { file: arquivo(dne!.arquivo, 'application/zip'), competence: competencia })).corpo);
     ctx.chaves.definir('DNE_IMPORT', String(criado.uuid ?? criado.id));
     await processarESincronizar(ctx, await adm(), 'dne-imports', criado.id, 'DNE');

@@ -13,7 +13,8 @@
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { chromium, type Page } from '@playwright/test';
-import { executorPadrao, registrarSegredos, sanitizar, type ConfigMassa } from './config.ts';
+import { registrarSegredos, sanitizar, type ConfigMassa } from './config.ts';
+import { limparRateLimit } from './reset.ts';
 
 /** Tempo máximo para uma tela do client carregar no print (cobre o 1º acesso ao Vite frio). */
 const TIMEOUT_TELA_MS = 120_000;
@@ -160,7 +161,7 @@ export class Evidencia {
           break;
         } catch (erro) {
           if (tentativa >= 3) throw erro;
-          if (o.cfg.cacheClearCmd) executorPadrao.shell(o.cfg.cacheClearCmd);
+          limparRateLimit(o.cfg);
         }
       }
       if (/select-tenant/.test(pagina.url())) {

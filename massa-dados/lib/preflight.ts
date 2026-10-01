@@ -48,6 +48,17 @@ export interface DependenciasPreflight {
 export const PADRAO_FILA = /queue|worker|fila/i;
 export const PADRAO_BANCO = /pgsql|postgres|postgis|(^|[-_])db([-_]|$)/i;
 export const PADRAO_MINIO = /minio|s3/i;
+/**
+ * Nome seguro para container ou binário vindo da configuração (CR-006): só letras, dígitos, `_`, `.`,
+ * `/` e `-`. Bloqueia `$(…)`, crase, `;`, espaço e aspas antes de qualquer comando de shell.
+ */
+export const NOME_SEGURO = /^[\w./-]+$/;
+
+/** `command -v` sem interpolar o nome no script (vai como `$1` posicional). */
+function binarioNoPath(executor: Executor, binario: string): boolean {
+  return executor.programa('/bin/sh', ['-c', 'command -v "$1"', 'sh', binario]).codigo === 0;
+}
+
 /** Portas em que o front é Sanctum-stateful (memória do projeto). */
 export const PORTAS_STATEFUL = ['5173', '5174', '5175'];
 
@@ -137,12 +148,22 @@ export async function executarPreflight(cfg: ConfigMassa, deps: DependenciasPref
       `faltam ${cfg.faltando.join(', ')} em ${cfg.origem}. Copie massa-dados/.env.example para massa-dados/.env e preencha.`,
     );
   }
+  const containersInseguros = cfg.containers.filter((c) => !NOME_SEGURO.test(c));
+  if (containersInseguros.length) {
+    add(
+      'config',
+      'MASSA_DOCKER_CONTAINERS',
+      'falha',
+      `nome de container inválido: ${containersInseguros.map((c) => `"${c}"`).join(', ')}. Use só letras, dígitos, "_", ".", "/" e "-" (sem espaço, ";", "$(" ou crase).`,
+    );
+  }
   let containerReset: string | null = null;
   if (cfg.resetCmd) {
     const { binario, container } = containerDoComando(cfg.resetCmd);
     containerReset = container;
-    const existe = executor.programa('/bin/sh', ['-c', `command -v ${JSON.stringify(binario)}`]).codigo === 0;
-    if (!existe) {
+    if (!NOME_SEGURO.test(binario) || (container !== null && !NOME_SEGURO.test(container))) {
+      add('config', 'MASSA_RESET_CMD', 'falha', 'binário ou container do MASSA_RESET_CMD com caracteres inválidos. Use só letras, dígitos, "_", ".", "/" e "-" (sem espaço, ";", "$(" ou crase).');
+    } else if (!binarioNoPath(executor, binario)) {
       add('config', 'MASSA_RESET_CMD', 'falha', `binário "${binario}" do MASSA_RESET_CMD não encontrado no PATH.`);
     } else if (container && !cfg.containers.includes(container)) {
       add(
@@ -160,7 +181,9 @@ export async function executarPreflight(cfg: ConfigMassa, deps: DependenciasPref
   } else {
     // O cache clear roda DEPOIS do reset: um alvo errado só apareceria com a base já apagada.
     const { binario, container } = containerDoComando(cfg.cacheClearCmd);
-    if (executor.programa('/bin/sh', ['-c', `command -v ${JSON.stringify(binario)}`]).codigo !== 0) {
+    if (!NOME_SEGURO.test(binario) || (container !== null && !NOME_SEGURO.test(container))) {
+      add('config', 'MASSA_CACHE_CLEAR_CMD', 'falha', 'binário ou container do MASSA_CACHE_CLEAR_CMD com caracteres inválidos. Use só letras, dígitos, "_", ".", "/" e "-" (sem espaço, ";", "$(" ou crase).');
+    } else if (!binarioNoPath(executor, binario)) {
       add('config', 'MASSA_CACHE_CLEAR_CMD', 'falha', `binário "${binario}" do MASSA_CACHE_CLEAR_CMD não encontrado no PATH.`);
     } else if (container && !cfg.containers.includes(container)) {
       add(

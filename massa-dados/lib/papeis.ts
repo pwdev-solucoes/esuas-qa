@@ -14,10 +14,11 @@ import { randomBytes } from 'node:crypto';
 import { chmodSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { basename, resolve } from 'node:path';
 import { request as playwrightRequest, test, type APIRequestContext, type APIResponse } from '@playwright/test';
-import { carregarConfig, executorPadrao, logPadrao, PASTA_CACHE, RAIZ_MASSA, registrarSegredos, type ConfigMassa } from './config.ts';
-import { lerEstado, MapaChaves, RegistroEtapa, registrarEtapa } from './execucao.ts';
+import { carregarConfig, logPadrao, PASTA_CACHE, RAIZ_MASSA, registrarSegredos, type ConfigMassa } from './config.ts';
+import { lerEstado, MapaChaves, RegistroEtapa, registrarEtapa, type EstadoExecucao } from './execucao.ts';
 import { ClientePapel, FalhaHttp, papelAdministrador, type Guard, type Papel, type PassoHttp } from './http.ts';
 import { buscarLinkRedefinicao, definirSenha, lerLink } from './mailpit.ts';
+import { limparRateLimit } from './reset.ts';
 
 // ---------------------------------------------------------------------------------------------
 // Insumos
@@ -74,6 +75,8 @@ export interface FamiliaElenco {
 export interface Elenco {
   versao: string;
   lotacoes_desde: string;
+  /** Competência fixa (`AAAA-MM`) do DNE importado na E01b (CR-003). */
+  dne: { competencia: string };
   organizacao: {
     razao_social: string;
     cnpj: string;
@@ -266,10 +269,7 @@ export async function redefinirPeloLink(cfg: ConfigMassa, guard: Guard, link: st
       });
       logPadrao(`  [mailpit] POST /api/${guard}/auth/reset-password (link do e-mail) → ${r.status()}`);
       // Throttle por IP: limpa o cache de rate-limit e repete (o token segue válido).
-      if (r.status() === 429 && cfg.cacheClearCmd && tentativa < 4) {
-        executorPadrao.shell(cfg.cacheClearCmd);
-        continue;
-      }
+      if (r.status() === 429 && tentativa < 4 && limparRateLimit(cfg, { log: logPadrao })) continue;
       return r.ok();
     }
   } finally {
@@ -303,8 +303,7 @@ export async function primeiroAcesso(ctx: ContextoEtapa, codigo: string, criadoE
       } catch (erro) {
         if (!/HTTP 429/.test((erro as Error).message) || tentativa >= 4) throw erro;
         ctx.log(`  ⚠ ${codigo}: 429 na redefinição de senha; limpando o cache de rate-limit (tentativa ${tentativa + 1}/4)`);
-        if (ctx.cfg.cacheClearCmd) executorPadrao.shell(ctx.cfg.cacheClearCmd);
-        else await new Promise((ok) => setTimeout(ok, 60_000));
+        if (!limparRateLimit(ctx.cfg, { log: ctx.log })) await new Promise((ok) => setTimeout(ok, 60_000));
       }
     }
   }
@@ -409,7 +408,7 @@ export function statusDaFalha(erro: unknown): number | null {
 
 /**
  * Repete `fn` em 429 (rate-limit de rotas com throttle, ex.: cadastro de pessoa), limpando o cache de
- * rate-limit com `MASSA_CACHE_CLEAR_CMD` entre as tentativas. Outros erros sobem na hora.
+ * rate-limit (`limparRateLimit`: cache clear + worker religado) entre as tentativas. Outros erros sobem na hora.
  */
 export async function comRetentativa429<T>(ctx: ContextoEtapa, fn: () => Promise<T>, tentativas = 4): Promise<T> {
   for (let i = 1; ; i += 1) {
@@ -418,8 +417,7 @@ export async function comRetentativa429<T>(ctx: ContextoEtapa, fn: () => Promise
     } catch (erro) {
       if (statusDaFalha(erro) !== 429 || i >= tentativas) throw erro;
       ctx.log(`  ⚠ 429: limpando o cache de rate-limit (tentativa ${i + 1}/${tentativas})`);
-      if (ctx.cfg.cacheClearCmd) executorPadrao.shell(ctx.cfg.cacheClearCmd);
-      else await new Promise((ok) => setTimeout(ok, 60_000));
+      if (!limparRateLimit(ctx.cfg, { log: ctx.log })) await new Promise((ok) => setTimeout(ok, 60_000));
     }
   }
 }
@@ -466,47 +464,88 @@ export interface ContextoEtapa {
   chaveAtual: string | null;
 }
 
+/** Variável com que o CLI marca a execução (`MASSA_VIA_CLI=<id da execução>`) ao chamar o Playwright. */
+export const VARIAVEL_VIA_CLI = 'MASSA_VIA_CLI';
+
+/**
+ * Defesa em profundidade da trava de produção (CR-002, RN-T1): uma etapa só escreve quando foi chamada
+ * pelo CLI desta execução (`MASSA_VIA_CLI` = `estado.id`), contra a MESMA API do estado e com a 2ª
+ * checagem de `/api/environment` (`antes_do_reset`) registrada como ok. Devolve o motivo da recusa ou `null`.
+ */
+export function motivoRecusaEtapa(estado: EstadoExecucao, apiBase: string, viaCli: string | undefined = process.env[VARIAVEL_VIA_CLI]): string | null {
+  const rodeCli = 'Rode pelo `npm run massa` (preflight, trava de produção e reset antes das etapas).';
+  if (!viaCli) return `etapa chamada fora do CLI (${VARIAVEL_VIA_CLI} ausente). ${rodeCli}`;
+  if (viaCli !== estado.id) return `${VARIAVEL_VIA_CLI} não corresponde à execução do estado (${estado.id}). ${rodeCli}`;
+  if (estado.apiBase !== apiBase) return `o estado é de outra API (${estado.apiBase}); a configuração aponta ${apiBase}. ${rodeCli}`;
+  const checagem = [...(estado.ambiente ?? [])].reverse().find((a) => a.momento === 'antes_do_reset');
+  if (!checagem?.ok) return `o estado não registra a 2ª checagem de /api/environment (antes_do_reset) com sucesso. ${rodeCli}`;
+  return null;
+}
+
+export class EtapaRecusada extends Error {
+  constructor(id: string, motivo: string) {
+    super(`${id} recusada antes de qualquer requisição: ${motivo}`);
+    this.name = 'EtapaRecusada';
+  }
+}
+
+/**
+ * Executa o corpo da etapa `id` (moldura de `etapa()`, exportada para os testes). A guarda
+ * `motivoRecusaEtapa` roda ANTES de qualquer login ou requisição; recusada, nada é gravado no estado.
+ */
+export async function executarEtapa(
+  id: string,
+  papel: string,
+  corpo: (ctx: ContextoEtapa) => Promise<void>,
+  o: { caminho?: string; cfg?: ConfigMassa; viaCli?: string } = {},
+): Promise<void> {
+  const { caminho, estado } = lerEstado(o.caminho);
+  const cfg = o.cfg ?? carregarConfig();
+  const motivo = motivoRecusaEtapa(estado, cfg.apiBase, 'viaCli' in o ? o.viaCli : process.env[VARIAVEL_VIA_CLI]);
+  if (motivo) throw new EtapaRecusada(id, motivo);
+  const registro = new RegistroEtapa(id, papel);
+  const chaves = new MapaChaves(caminho);
+  const elenco = lerElenco();
+  const ctx = {} as ContextoEtapa;
+  const sessoes = new Sessoes(cfg, elenco, chaves, (p) => registro.passo({ ...p, ...(ctx.chaveAtual ? { chave: ctx.chaveAtual } : {}) }));
+  Object.assign(ctx, {
+    cfg,
+    caminho,
+    elenco,
+    chaves,
+    registro,
+    sessoes,
+    log: logPadrao,
+    chaveAtual: null,
+    achado: (texto: string) => {
+      registro.aviso(`ACHADO RN14: ${texto}`);
+      logPadrao(`  ⚠ ACHADO RN14: ${texto}`);
+    },
+  } satisfies ContextoEtapa);
+  try {
+    if ((process.env.MASSA_FALHAR_EM ?? '').toUpperCase() === id.toUpperCase()) {
+      throw new Error(`falha injetada em ${id} (MASSA_FALHAR_EM)`);
+    }
+    await corpo(ctx);
+    registrarEtapa(caminho, registro.concluir('ok'));
+  } catch (erro) {
+    registro.aviso(`falha: ${(erro as Error).message}`);
+    registrarEtapa(caminho, registro.concluir('falha'));
+    throw erro;
+  } finally {
+    await sessoes.encerrar();
+  }
+}
+
 /**
  * Declara a etapa `id` como um teste serial. `corpo` recebe o contexto; qualquer exceção marca a
- * etapa como `falha` no estado (o CLI interrompe as seguintes).
+ * etapa como `falha` no estado (o CLI interrompe as seguintes). Fora do CLI a etapa é recusada antes
+ * de qualquer escrita (CR-002).
  */
 export function etapa(id: string, titulo: string, papel: string, corpo: (ctx: ContextoEtapa) => Promise<void>): void {
   test.describe.serial(`${id} — ${titulo}`, () => {
     test(`${id}: ${titulo}`, async () => {
-      const { caminho } = lerEstado();
-      const cfg = carregarConfig();
-      const registro = new RegistroEtapa(id, papel);
-      const chaves = new MapaChaves(caminho);
-      const elenco = lerElenco();
-      const ctx = {} as ContextoEtapa;
-      const sessoes = new Sessoes(cfg, elenco, chaves, (p) => registro.passo({ ...p, ...(ctx.chaveAtual ? { chave: ctx.chaveAtual } : {}) }));
-      Object.assign(ctx, {
-        cfg,
-        caminho,
-        elenco,
-        chaves,
-        registro,
-        sessoes,
-        log: logPadrao,
-        chaveAtual: null,
-        achado: (texto: string) => {
-          registro.aviso(`ACHADO RN14: ${texto}`);
-          logPadrao(`  ⚠ ACHADO RN14: ${texto}`);
-        },
-      } satisfies ContextoEtapa);
-      try {
-        if ((process.env.MASSA_FALHAR_EM ?? '').toUpperCase() === id.toUpperCase()) {
-          throw new Error(`falha injetada em ${id} (MASSA_FALHAR_EM)`);
-        }
-        await corpo(ctx);
-        registrarEtapa(caminho, registro.concluir('ok'));
-      } catch (erro) {
-        registro.aviso(`falha: ${(erro as Error).message}`);
-        registrarEtapa(caminho, registro.concluir('falha'));
-        throw erro;
-      } finally {
-        await sessoes.encerrar();
-      }
+      await executarEtapa(id, papel, corpo);
     });
   });
 }
