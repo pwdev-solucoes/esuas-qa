@@ -147,16 +147,24 @@ export interface ResultadoDeterminismo {
   em: string;
 }
 
+/** Resultado do CA04 (determinismo); usado na matriz e na atualização do índice pelo `massa:comparar`. */
+export function resultadoCa04(determinismo?: ResultadoDeterminismo | null): { tipo: SeloStatus; texto: string; motivo: string } {
+  if (!determinismo) return { tipo: 'warn', texto: 'AGUARDA COMPARAÇÃO', motivo: 'snapshot gravado; rode massa:comparar com outra execução' };
+  return determinismo.identico
+    ? { tipo: 'ok', texto: 'ATENDIDO', motivo: `idêntico a ${determinismo.a}` }
+    : { tipo: 'fail', texto: 'DIVERGENTE', motivo: `${determinismo.divergencias} divergência(s) contra ${determinismo.a}` };
+}
+
+/** Células de status e motivo da linha CA04, delimitadas para o `massa:comparar` reescrevê-las. */
+function celulasCa04(r: { tipo: SeloStatus; texto: string; motivo: string }): string {
+  return `<!--ca04-->${selo(r.tipo, r.texto)}</td><td>${h(r.motivo)}<!--/ca04-->`;
+}
+
 export function avaliarCa(ca: DefinicaoCa, estado: EstadoExecucao, determinismo?: ResultadoDeterminismo | null): { tipo: SeloStatus; texto: string; motivo: string } {
   const etapas = ca.etapas.map((id) => estado.etapas.find((e) => e.etapa === id));
   if (etapas.some((e) => e?.status === 'falha')) return { tipo: 'fail', texto: 'FALHOU', motivo: `etapa com falha: ${ca.etapas.filter((_, i) => etapas[i]?.status === 'falha').join(', ')}` };
   if (etapas.some((e) => !e || e.status === 'nao_executada')) return { tipo: 'skip', texto: 'NÃO EXECUTADA', motivo: `etapas não executadas: ${ca.etapas.filter((_, i) => !etapas[i] || etapas[i]?.status === 'nao_executada').join(', ')}` };
-  if (ca.id === 'CA04') {
-    if (!determinismo) return { tipo: 'warn', texto: 'AGUARDA COMPARAÇÃO', motivo: 'snapshot gravado; rode massa:comparar com outra execução' };
-    return determinismo.identico
-      ? { tipo: 'ok', texto: 'ATENDIDO', motivo: `idêntico a ${determinismo.a}` }
-      : { tipo: 'fail', texto: 'DIVERGENTE', motivo: `${determinismo.divergencias} divergência(s) contra ${determinismo.a}` };
-  }
+  if (ca.id === 'CA04') return resultadoCa04(determinismo);
   const achados = ca.parcial ? etapas.flatMap((e) => (e?.avisos ?? []).filter((a) => ehAchado(a) && ca.parcial!.test(a))) : [];
   if (achados.length) return { tipo: 'warn', texto: 'PARCIAL (RN14)', motivo: `${achados.length} achado(s) RN14 — ver Achados` };
   return { tipo: 'ok', texto: 'ATENDIDO', motivo: ca.nota ?? '' };
@@ -346,6 +354,9 @@ export function renderizarIndice(tpl: string, d: DadosRelatorio): string {
     ['CA', 'Critério', 'Resultado', 'Observação', 'Onde'],
     CAS.map((ca) => {
       const r = avaliarCa(ca, estado, d.determinismo);
+      if (ca.id === 'CA04' && r.texto !== 'FALHOU' && r.texto !== 'NÃO EXECUTADA') {
+        return [td(ca.id), td(ca.titulo), tdHtml(celulasCa04(r)), tdHtml(ca.etapas.slice(-3).map((id) => `<a href="${arquivoEtapa(id)}">${h(id)}</a>`).join(' · '))];
+      }
       return [td(ca.id), td(ca.titulo), tdHtml(selo(r.tipo, r.texto)), td(r.motivo || ca.nota || ''), tdHtml(ca.etapas.slice(-3).map((id) => `<a href="${arquivoEtapa(id)}">${h(id)}</a>`).join(' · '))];
     }),
   );
@@ -522,5 +533,7 @@ export function gerarRelatorio(pasta: string, entrada: DadosRelatorio, templates
 /** Substitui o bloco de determinismo de um `index.html` já gerado (usado por `massa:comparar`). */
 export function atualizarDeterminismo(indexHtml: string, d: ResultadoDeterminismo): string {
   const novo = `<!--determinismo-->${blocoDeterminismo(d)}<!--/determinismo-->`;
-  return indexHtml.replace(/<!--determinismo-->[\s\S]*?<!--\/determinismo-->/, novo);
+  return indexHtml
+    .replace(/<!--determinismo-->[\s\S]*?<!--\/determinismo-->/, novo)
+    .replace(/<!--ca04-->[\s\S]*?<!--\/ca04-->/, celulasCa04(resultadoCa04(d)));
 }

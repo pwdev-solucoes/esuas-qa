@@ -12,7 +12,7 @@
  * Asserções nominais: CA06 (F-IDOSO, F-GRUPO, perfis), CA08 (F-DUPLA), RN09 (zero declarado), CA10
  * (pessoas atendidas sem CPF, conferidas também no banco) e 15.9 (capacitação).
  */
-import { expect } from '@playwright/test';
+import { expect, type Page } from '@playwright/test';
 import { Evidencia } from '../lib/evidencia.ts';
 import { lerEstado } from '../lib/execucao.ts';
 import {
@@ -220,14 +220,35 @@ etapa('E17', 'Apuração × esperado (3 meses × 3 unidades) e pendências de ca
   ev.contagem('Divergências sem explicação', 0, bloqueantes.length);
   ev.contagem('Divergências explicadas por achado RN14', explicadas.length, explicadas.length);
   ev.contagem('Pré-conferência tipo × mês × unidade: divergências', 0, preConferencia.length);
+  // O mês de referência não vai na URL: a tela abre no mês corrente. Escolhe 07/2026 no seletor.
+  const escolherJulho2026 = async (pagina: Page): Promise<void> => {
+    await pagina.locator('#siap-exercise').click();
+    await pagina.getByRole('option', { name: '2026', exact: true }).click();
+    await pagina.locator('#siap-month').click();
+    await pagina.getByRole('option', { name: /Julho/ }).click();
+    await pagina.getByTestId('registration-pendencies').waitFor({ timeout: 60_000 });
+    await pagina.waitForLoadState('networkidle', { timeout: 60_000 }).catch(() => undefined);
+  };
   await ev.print({
     cfg: ctx.cfg,
     cpf: ctx.elenco.organizacao.master.cpf,
     senha: senhaMassa(ctx.cfg),
     rota: '/app/prestacao-contas/apuracao-atendimentos',
     nome: 'e17-01-apuracao-master',
-    legenda: 'Apuração de Atendimentos vista pelo Master (todas as unidades), com a seção "Pendências de cadastro" (10994b).',
+    legenda: 'Apuração de Atendimentos de 07/2026 vista pelo Master (todas as unidades): contadores por unidade.',
+    ca: 'CA05',
+    antes: escolherJulho2026,
+  });
+  await ev.print({
+    cfg: ctx.cfg,
+    cpf: ctx.elenco.organizacao.master.cpf,
+    senha: senhaMassa(ctx.cfg),
+    rota: '/app/prestacao-contas/apuracao-atendimentos',
+    nome: 'e17-02-pendencias-cadastro',
+    legenda: 'Seção "Pendências de cadastro" da apuração de 07/2026, vista pelo Master sem filtro de unidade (10994b).',
     ca: 'CA07',
+    antes: escolherJulho2026,
+    elemento: 'registration-pendencies',
   });
   ev.salvar();
 

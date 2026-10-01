@@ -19,7 +19,9 @@ import {
   criarPastaExecucao,
   escaparHtml,
   gerarRelatorio,
+  lerTemplates,
   nomePastaExecucao,
+  renderizarIndice,
   verificarSemSegredos,
   type DadosRelatorio,
   type ElencoRelatorio,
@@ -207,5 +209,17 @@ test.describe('UNIT-006 — interrupção: índice gerado com ✖ e "não execut
     const html = atualizarDeterminismo('<p><!--determinismo-->velho<!--/determinismo--></p>', { a: 'exec-A', b: 'exec-B', identico: true, divergencias: 0, em: 'agora' });
     expect(html).toContain('IDÊNTICO');
     expect(html).not.toContain('velho');
+  });
+
+  test('massa:comparar também atualiza a linha CA04 da matriz do índice', () => {
+    const e = estado(ETAPAS.map((d) => ok(d.id)));
+    const indice = renderizarIndice(lerTemplates().indice, { ...dadosRelatorio(e), determinismo: null });
+    expect(indice).toContain('AGUARDA COMPARAÇÃO');
+    const ok1 = atualizarDeterminismo(indice, { a: 'exec-A', b: 'exec-B', identico: true, divergencias: 0, em: 'agora' });
+    expect(ok1).not.toContain('AGUARDA COMPARAÇÃO');
+    expect(ok1).toContain('idêntico a exec-A');
+    const div = atualizarDeterminismo(indice, { a: 'exec-A', b: 'exec-B', identico: false, divergencias: 3, em: 'agora' });
+    expect(div).toContain('DIVERGENTE');
+    expect(div).toContain('3 divergência(s) contra exec-A');
   });
 });

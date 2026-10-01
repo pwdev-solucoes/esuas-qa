@@ -12,9 +12,11 @@
  */
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { chromium } from '@playwright/test';
+import { chromium, type Page } from '@playwright/test';
 import { executorPadrao, registrarSegredos, sanitizar, type ConfigMassa } from './config.ts';
 
+/** Tempo máximo para uma tela do client carregar no print (cobre o 1º acesso ao Vite frio). */
+const TIMEOUT_TELA_MS = 120_000;
 export const VARIAVEL_RELATORIO = 'MASSA_RELATORIO_DIR';
 
 export interface PrintEvidencia {
@@ -90,6 +92,13 @@ export interface OpcoesPrint {
   ca?: string;
   /** Texto que precisa aparecer na tela antes do print (opcional). */
   esperarTexto?: string | RegExp;
+  /** Interação na tela antes do print (ex.: escolher o mês de referência, que não vai na URL). */
+  antes?: (pagina: Page) => Promise<void>;
+  /**
+   * `data-testid` de um elemento a capturar sozinho (rola até ele). O layout do client rola num
+   * contêiner interno, então `fullPage` não alcança seções abaixo da dobra.
+   */
+  elemento?: string;
 }
 
 export class Evidencia {
@@ -139,7 +148,10 @@ export class Evidencia {
       const pagina = await navegador.newPage({ viewport: { width: 1440, height: 900 }, locale: 'pt-BR' });
       // Login pela tela; em throttle (429) limpa o cache de rate-limit e tenta de novo, como o `http.ts`.
       for (let tentativa = 1; ; tentativa += 1) {
-        await pagina.goto(`${o.cfg.clientUrl}/auth/login`, { waitUntil: 'networkidle' });
+        // 1º acesso ao Vite de dev compila os módulos sob demanda e pode passar de 15 s: espera o
+        // campo do formulário em vez de `networkidle` com o timeout padrão.
+        await pagina.goto(`${o.cfg.clientUrl}/auth/login`, { waitUntil: 'domcontentloaded', timeout: TIMEOUT_TELA_MS });
+        await pagina.locator('#cpf').waitFor({ state: 'visible', timeout: TIMEOUT_TELA_MS });
         await pagina.locator('#cpf').fill(o.cpf);
         await pagina.locator('#password').fill(o.senha);
         await pagina.locator('button[type="submit"]').click();
@@ -155,10 +167,18 @@ export class Evidencia {
         await pagina.getByRole('button').filter({ hasText: /Demonstração SigSUAS/i }).first().click();
         await pagina.waitForURL(/\/app/, { timeout: 60_000 });
       }
-      await pagina.goto(`${o.cfg.clientUrl}${o.rota}`, { waitUntil: 'networkidle' });
-      if (o.esperarTexto) await pagina.getByText(o.esperarTexto).first().waitFor({ timeout: 30_000 });
+      await pagina.goto(`${o.cfg.clientUrl}${o.rota}`, { waitUntil: 'domcontentloaded', timeout: TIMEOUT_TELA_MS });
+      await pagina.waitForLoadState('networkidle', { timeout: TIMEOUT_TELA_MS }).catch(() => undefined);
+      if (o.antes) await o.antes(pagina);
+      if (o.esperarTexto) await pagina.getByText(o.esperarTexto).first().waitFor({ timeout: TIMEOUT_TELA_MS });
       await pagina.waitForTimeout(800);
-      await pagina.screenshot({ path: resolve(this.pasta, arquivo), fullPage: false });
+      if (o.elemento) {
+        const alvo = pagina.getByTestId(o.elemento);
+        await alvo.scrollIntoViewIfNeeded({ timeout: TIMEOUT_TELA_MS });
+        await alvo.screenshot({ path: resolve(this.pasta, arquivo) });
+      } else {
+        await pagina.screenshot({ path: resolve(this.pasta, arquivo), fullPage: false });
+      }
       const p: PrintEvidencia = { arquivo, legenda: sanitizar(o.legenda), ancora: nome, ...(o.ca ? { ca: o.ca } : {}) };
       this.dados.prints = [...this.dados.prints.filter((x) => x.arquivo !== arquivo), p];
       return p;
