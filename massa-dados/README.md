@@ -157,6 +157,19 @@ apuração `mês|unidade|contador` e pendências — e sai **0** ("idênticas") 
 `caminho · chave: A=… · B=…` (2 = uso/arquivo inválido). Aceita a pasta da execução ou o `snapshot.json`.
 Quando B é uma pasta de relatório, grava `determinismo.json` e atualiza a seção Determinismo do índice de B.
 
+## Modalidade híbrida (roteiro para quem valida)
+
+Desde 2026-10-01 a #10994 pode ser validada de forma **híbrida**: manual E1/E1b/E2–E3 na tela, seed E4–E16 por
+`php artisan massa-demo:popular` no `api/` e conferência E17–E19 na tela (com `massa:conferir` e
+`massa:comparar --modo=api-x-seed` opcionais). A RN14 continua valendo para o modo API; o modo seed é uma
+alternativa de povoamento com cenários **só via seed** (ENT-2 sem CNEAS, F-SEM-REF-1..3, perfis do 15.7,
+endereço/ponto da família). Documentos, no meta-repo `esuas-all`:
+
+- roteiro passo a passo, com os números esperados de 07/2026 por unidade e as 5 pendências:
+  `.planning/roadmap-massa-dados/11-roteiro-validacao-hibrida.md`;
+- roadmap E00–E20 com os três modos (API, manual, seed) e a referência de cada massa:
+  `.planning/roadmap-massa-dados/10-modalidade-hibrida.md`.
+
 ## Validação híbrida: conferência da massa populada por seed (plano 10)
 
 Modalidade **híbrida: manual E1–E3 · seed E4–E16 · conferência E17–E20**. Uma pessoa faz o setup global,
