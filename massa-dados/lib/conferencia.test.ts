@@ -9,10 +9,11 @@ import { createServer, type IncomingMessage, type Server, type ServerResponse } 
 import type { AddressInfo } from 'node:net';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { expect, test } from '@playwright/test';
 import { chavesExigidas, executarConferencia, lerArgumentosConferir, NOME_CAMADA_DEMO } from '../bin/conferir.ts';
 import { carregarConfig, sanitizar, type ConfigMassa, type Executor, type ResultadoComando } from './config.ts';
-import { classificar, explicacoesDoModo, modoConferencia, type Divergencia, type Explicacao } from './esperado.ts';
+import { avaliarBloqueantesSeed, classificar, explicacoesDoModo, modoConferencia, type Divergencia, type Explicacao } from './esperado.ts';
 import {
   CENARIOS_SOMENTE_VIA_SEED,
   estadoDeChaves,
@@ -373,6 +374,21 @@ test.describe('UNIT-002 (AC-004) — modo seed na E17', () => {
     expect(seed.bloqueantes).toEqual([{ ...div, explicacao: null }]);
   });
 
+  test('E18 modo seed: só a NumeroCNEAS da ENT-2 com can_generate=false passa (sem POST); bloqueante extra falha', () => {
+    const ent2 = '4e21044e-7be1-51f2-951a-699c8fc1320a';
+    const cneas = { kind: 'record_incomplete', field_name: 'NumeroCNEAS', subject_type: 'social_entity', subject_uuid: ent2 };
+    expect(avaliarBloqueantesSeed([cneas], ent2, false)).toEqual([]);
+    expect(avaliarBloqueantesSeed([cneas, { kind: 'record_incomplete', field_name: 'CEP', subject_type: 'social_unit', subject_uuid: 'u' }], ent2, false).join()).toMatch(/além da ENT-2: record_incomplete\/CEP\/social_unit/);
+    expect(avaliarBloqueantesSeed([{ ...cneas, subject_uuid: 'outra-entidade' }], ent2, false).join()).toMatch(/não está entre as bloqueantes/);
+    expect(avaliarBloqueantesSeed([], ent2, true)).toHaveLength(2);
+    expect(avaliarBloqueantesSeed([cneas], ent2, true).join()).toMatch(/can_generate = true/);
+    // a E18 do modo seed retorna antes do POST de siap-remittances (só a geração do modo API o faz)
+    const fonte = readFileSync(resolve(fileURLToPath(new URL('.', import.meta.url)), '..', 'etapas', 'e18-remessa.spec.ts'), 'utf8');
+    const ramoSeed = fonte.slice(fonte.indexOf('if (modoSeed) {\n    const motivos'), fonte.indexOf('// 18.3 — geração'));
+    expect(ramoSeed).toContain('return;');
+    expect(ramoSeed).not.toMatch(/master\.post|siap-remittances`/);
+  });
+
   test('modo vem do estado (ausente = api)', () => {
     expect(modoConferencia({})).toBe('api');
     expect(modoConferencia({ modo: 'api' })).toBe('api');
@@ -452,6 +468,7 @@ test.describe('massa:comparar --modo=api-x-seed (AC-006)', () => {
       { caminho: 'apuracao', chave: chavePerfil, a: 0, b: valorPerfil },
       { caminho: 'pendencias', chave: '2026-07|family_without_reference_unit|tenant|-', a: null, b: { count: 3 } },
       { caminho: 'pendencias.count', chave: '2026-07|entity_without_cneas|tenant|-', a: 0, b: 1 },
+      { caminho: 'tabelas.remessas', chave: 'SIAP_REMESSA', a: { status: 'completed' }, b: null },
       // inesperadas
       { caminho: 'apuracao', chave: chavePerfil, a: 0, b: valorPerfil + 1 },
       { caminho: 'apuracao', chave: '2026-07|U-CN|total_attendances', a: 10, b: 11 },
@@ -460,7 +477,7 @@ test.describe('massa:comparar --modo=api-x-seed (AC-006)', () => {
       { caminho: 'pendencias', chave: '2026-07|family_without_reference_unit|tenant|-', a: null, b: { count: 2 } },
     ];
     const { esperadas, inesperadas } = classificarApiXSeed(ds, ins);
-    expect(esperadas.map((e) => e.cenario)).toEqual([CENARIO_ENT2, CENARIO_SEM_REF, CENARIO_SEM_REF, CENARIO_SEM_REF, CENARIO_PERFIS, CENARIO_SEM_REF, CENARIO_ENT2]);
+    expect(esperadas.map((e) => e.cenario)).toEqual([CENARIO_ENT2, CENARIO_SEM_REF, CENARIO_SEM_REF, CENARIO_SEM_REF, CENARIO_PERFIS, CENARIO_SEM_REF, CENARIO_ENT2, CENARIO_ENT2]);
     expect(inesperadas).toHaveLength(5);
   });
 

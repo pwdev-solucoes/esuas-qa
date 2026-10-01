@@ -147,6 +147,8 @@ const PENDENCIA_SO_SEED: Record<string, string> = { entity_without_cneas: CENARI
  */
 export function cenarioSoViaSeed(d: DivergenciaSnapshot, ins: InsumosClassificacao): string | null {
   if (d.caminho === 'tabelas.entidades' && d.chave === 'ENT_ENT-2' && d.a === null) return CENARIO_ENT2;
+  // Modo seed: a NumeroCNEAS da ENT-2 bloqueia a remessa — sem remessa (SIAP_REMESSA) no lado seed.
+  if (/remess|siap/i.test(`${d.caminho} ${d.chave}`) && d.b === null) return CENARIO_ENT2;
   if (d.caminho === 'tabelas.familias' && d.chave.startsWith('FAM_F-SEM-REF-') && d.a === null) return CENARIO_SEM_REF;
   if (d.caminho === 'tabelas.integrantes' && d.chave.startsWith('FAM_F-SEM-REF-') && d.a === null) return CENARIO_SEM_REF;
   if (d.caminho === 'tabelas.pessoas' && ins.pessoasSemRef.has(d.chave) && d.a === null) return CENARIO_SEM_REF;

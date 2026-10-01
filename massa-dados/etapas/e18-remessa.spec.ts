@@ -12,6 +12,10 @@
  * 18.2 nova conferência → `can_generate`.
  * 18.3/18.4 geração (fila) e download do arquivo (nome e tamanho). Os leiautes 15.6–15.11 são
  *      `HeaderOnlyLayout`: os números se conferem na apuração (E17).
+ * Modo `seed` (plano 10, `massa:conferir`; advice opção A): a ENT-2 sem CNEAS EXISTE e sua NumeroCNEAS é
+ *      bloqueante. 18.1 exige essa pendência (pela chave ENT_ENT-2), 18.1b corrige CEP/matrícula como no
+ *      modo API, 18.2 exige que ela seja a ÚNICA bloqueante com `can_generate=false`, e 18.3/18.4 NÃO
+ *      geram nem baixam a remessa (achado para o PO: pendência proposital × CNEAS bloqueante).
  * ⛔ A remessa gerada NÃO sai daqui para o TCE-AL: esta etapa não tem nenhuma chamada nesse sentido.
  */
 import { expect, type APIRequestContext } from '@playwright/test';
@@ -19,6 +23,7 @@ import type { ClientePapel } from '../lib/http.ts';
 import { dados, etapa } from '../lib/papeis.ts';
 import { aguardar } from '../lib/polling.ts';
 import { lerEstado } from '../lib/execucao.ts';
+import { avaliarBloqueantesSeed } from '../lib/esperado.ts';
 import { consultar } from '../lib/verificacoes-sql.ts';
 
 const EXERCICIO = 2026;
@@ -70,6 +75,9 @@ etapa('E18', 'Conferência prévia e remessa SIAP (sem transmissão ao TCE-AL)',
 
   // Esperado: NumeroCNEAS de ENT-2.
   const cneas = todas.filter((p) => p.field_name === 'NumeroCNEAS');
+  const modoSeed = lerEstado(ctx.caminho).estado.modo === 'seed';
+  const ent2 = modoSeed ? ctx.chaves.obter('ENT_ENT-2') : null;
+  if (modoSeed && !cneas.some((p) => p.subject_uuid === ent2)) throw new Error('E18 (modo seed): a conferência prévia não apontou NumeroCNEAS da ENT-2 (pendência proposital do CA07).');
   const ent2Recusada = lerEstado(ctx.caminho).estado.etapas.some((e) => e.etapa === 'E05' && e.avisos.some((a) => a.startsWith('ACHADO RN14') && a.includes('ENT-2')));
   if (cneas.length) ctx.registro.passo({ passo: '18.1 NumeroCNEAS apontado', itens: cneas.map(resumo) });
   else if (ent2Recusada) ctx.achado('E18: a conferência prévia não aponta NumeroCNEAS porque ENT-2 (sem CNEAS) foi recusada pela API na E05 — a pendência proposital não existe na massa.');
@@ -79,7 +87,7 @@ etapa('E18', 'Conferência prévia e remessa SIAP (sem transmissão ao TCE-AL)',
   const corrigiveis = (p: Pendencia) =>
     p.kind === 'record_incomplete' &&
     ((p.field_name === 'CEP' && (p.subject_type === 'social_unit' || p.subject_type === 'social_entity')) || p.field_name === 'Matricula');
-  const inesperadas = bloqueantes.filter((p) => !corrigiveis(p) && p.field_name !== 'NumeroCNEAS');
+  const inesperadas = bloqueantes.filter((p) => !corrigiveis(p) && (modoSeed ? !(p.field_name === 'NumeroCNEAS' && p.subject_uuid === ent2) : p.field_name !== 'NumeroCNEAS'));
   expect(inesperadas.map(resumo), 'nenhuma pendência bloqueante inesperada na conferência prévia').toEqual([]);
 
   const corrigidos: string[] = [];
@@ -110,6 +118,20 @@ etapa('E18', 'Conferência prévia e remessa SIAP (sem transmissão ao TCE-AL)',
   // 18.2 — nova conferência.
   const depois = await preCheck(master);
   ctx.registro.passo({ passo: '18.2 conferência prévia após correções', can_generate: depois.blocking.can_generate, bloqueantes: depois.blocking.pendencies.map(resumo), resumo: depois.summary });
+  if (modoSeed) {
+    const motivos = avaliarBloqueantesSeed(depois.blocking.pendencies, ent2!, depois.blocking.can_generate);
+    if (motivos.length) throw new Error(`E18 (modo seed): ${motivos.join('; ')}`);
+    ctx.registro.passo({
+      passo: '18.3/18.4 remessa não gerável no modo seed: pendência proposital CNEAS da ENT-2 é bloqueante (CA07 × RN-T8)',
+      can_generate: false,
+      bloqueante_unica: 'record_incomplete/NumeroCNEAS/social_entity (ENT_ENT-2)',
+      gerada: false,
+    });
+    ctx.achado(
+      'E18 (modo seed): a pendência proposital do CA07 (ENT-2 sem CNEAS) é BLOQUEANTE na conferência prévia — com ela presente a remessa SIAP não pode ser gerada (can_generate=false). Decisão do PO: pendência proposital × CNEAS bloqueante. A remessa gerada e não enviada fica provada pela execução pela API.',
+    );
+    return;
+  }
   expect(depois.blocking.pendencies.map(resumo), 'sem pendência bloqueante após as correções').toEqual([]);
   expect(depois.blocking.can_generate).toBe(true);
 

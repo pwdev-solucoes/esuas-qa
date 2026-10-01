@@ -189,6 +189,30 @@ export function explicacoesDoModo(modo: ModoConferencia, explicacoes: Explicacao
   return modo === 'seed' ? [] : explicacoes;
 }
 
+/** Pendência da conferência prévia da remessa (subconjunto usado na E18). */
+export interface PendenciaRemessa {
+  kind: string;
+  field_name: string | null;
+  subject_type: string | null;
+  subject_uuid: string | null;
+}
+
+/**
+ * E18 no modo `seed` (plano 10, advice opção A): depois das correções de cadastro, a ÚNICA bloqueante
+ * aceita é `record_incomplete/NumeroCNEAS/social_entity` da ENT-2 (conferida pela chave de negócio) e
+ * `can_generate` tem de ser false — a pendência proposital do CA07 impede gerar a remessa. Devolve os
+ * motivos de falha (vazio = conforme).
+ */
+export function avaliarBloqueantesSeed(bloqueantes: PendenciaRemessa[], ent2Uuid: string, canGenerate: boolean): string[] {
+  const ehEnt2 = (p: PendenciaRemessa) => p.kind === 'record_incomplete' && p.field_name === 'NumeroCNEAS' && p.subject_type === 'social_entity' && p.subject_uuid === ent2Uuid;
+  const motivos: string[] = [];
+  if (!bloqueantes.some(ehEnt2)) motivos.push('a NumeroCNEAS da ENT-2 (pendência proposital do CA07) não está entre as bloqueantes');
+  const outras = bloqueantes.filter((p) => !ehEnt2(p));
+  if (outras.length) motivos.push(`bloqueante(s) além da ENT-2: ${outras.map((p) => `${p.kind}/${p.field_name ?? '-'}/${p.subject_type ?? '-'}`).join(', ')}`);
+  if (canGenerate) motivos.push('can_generate = true com a pendência proposital presente');
+  return motivos;
+}
+
 /** Tabela de texto (mês × unidade × contador) para o log e o estado. */
 export function formatarDivergencias(ds: DivergenciaClassificada[]): string {
   if (!ds.length) return '(nenhuma)';
