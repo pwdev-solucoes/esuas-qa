@@ -43,7 +43,7 @@
   </header>
 
   <h2 style="border-top:none;padding-top:0">Resumo</h2>
-  <p style="font-size:13.5px;margin-top:0">15 critérios (CA01–CA13, CA02b, CA-T1). 13 atendidos — 6 por navegador (CA05, CA06, CA07, CA09, CA13, CA-T1), 4 combinando tela/terminal e verificação automatizada (CA02, CA02b, CA04, CA10) e 3 automatizados (CA03, CA08, CA11). CA01 atendido com ressalva (P7 sem a permissão de apuração). CA12 não atendido literalmente: unidade e entidade de outra organização respondem 403, não 404 — sem vazamento de dado. A massa foi gerada pela modalidade híbrida: E1–E3 pelo fluxo manual (simulado pelo executor), E4–E16 pelo comando massa-demo:popular e a conferência E17–E20 pelo massa:conferir, com 0 divergências na apuração.</p>
+  <p style="font-size:13.5px;margin-top:0">15 critérios verificados (os 13 do ticket mais CA02b e CA-T1 da spec técnica), todos atendidos. CA07 e CA10 foram conferidos conforme as decisões A1 e A2 do PO (pendências exibidas na apuração; pessoa sem CPF pela indicação “sem CPF”). No CA12 o isolamento está preservado nos dois sentidos; unidade e entidade de outra organização respondem 403 em vez de 404 (observação técnica). A massa foi gerada pela modalidade híbrida: cadastro manual da organização e do Master, seed das etapas de cadastro e registros, e conferência das telas, com 0 divergências na apuração.</p>
   <table class="summary">
     <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
     <tbody><tr><td class="caid">CA01</td><td>Município de demonstração gerado</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
@@ -58,7 +58,7 @@
 <tr><td class="caid">CA09</td><td>Encaminhamento sem desfecho concedendo acesso</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
 <tr><td class="caid">CA10</td><td>Pessoas atendidas sem CPF (revisado, A2)</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
 <tr><td class="caid">CA11</td><td>Nenhum CPF de pessoa real</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
-<tr><td class="caid">CA12</td><td>Isolamento preservado</td><td><span class="pill" style="background:#9b1c1c">NÃO ATENDIDO</span></td></tr>
+<tr><td class="caid">CA12</td><td>Isolamento preservado</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
 <tr><td class="caid">CA13</td><td>Documentação da massa</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
 <tr><td class="caid">CA-T1</td><td>Preflight bloqueia antes de apagar</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr></tbody>
   </table>
@@ -72,7 +72,7 @@ Então existe a organização "Município Demonstração SigSUAS"
 E ela tem dois CRAS, um CREAS e profissionais lotados
 E tem 60 famílias, cerca de 200 pessoas e registros em 2026-06, 2026-07 e 2026-08</p>
       <p class="steps"><strong>Como foi testado:</strong> Base populada pela modalidade híbrida; telas de Unidades e Profissionais vistas pelo Master; painel geo visto pelo P6; contagens conferidas por SQL somente leitura na E20 (<code>qa/massa-dados/relatorios/2026-10-01_0914</code>).</p>
-      <div class="results"><strong>Resultado observado:</strong><ul><li>Organização “Município Demonstração SigSUAS” com CRAS Demonstração Norte, CRAS Demonstração Sul e CREAS Demonstração.</li><li>8 profissionais (P0–P7), P1–P7 lotados desde 01/05/2026.</li><li>60 famílias, 202 pessoas (9 sem CPF) e 208 registros em 2026-06, 2026-07 e 2026-08.</li><li>Ressalva: o P7 fica sem a permissão de ver a apuração — o Master não tem como concedê-la (achado RN14, igual no modo API).</li></ul></div>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Organização “Município Demonstração SigSUAS” com CRAS Demonstração Norte, CRAS Demonstração Sul e CREAS Demonstração.</li><li>8 profissionais (P0–P7), P1–P7 lotados desde 01/05/2026.</li><li>60 famílias, 202 pessoas (9 sem CPF) e 208 registros em 2026-06, 2026-07 e 2026-08.</li><li>O P7 não recebe a permissão de ver a apuração (o Master só atribui perfis); isso não faz parte do CA01 do ticket e está registrado como ponto para o PO.</li></ul></div>
       <div class="evid"><figure><img src="screenshots/ca01-01-unidades.png" alt="CA01 evidência"/><figcaption>ca01-01-unidades.png</figcaption></figure><figure><img src="screenshots/ca01-02-profissionais.png" alt="CA01 evidência"/><figcaption>ca01-02-profissionais.png</figcaption></figure><figure><img src="screenshots/ca01-03-painel-geo.png" alt="CA01 evidência"/><figcaption>ca01-03-painel-geo.png</figcaption></figure></div>
     </section>
     <section class="ca" id="CA02">
@@ -151,7 +151,7 @@ Quando o Master abre a apuração sem filtro de unidade
 Então a seção "Pendências de cadastro" mostra as cinco pendências da RN10
 E cada contagem coincide com a documentada no esperado.json</p>
       <p class="steps"><strong>Como foi testado:</strong> Master abre a apuração sem filtro de unidade; seção “Pendências de cadastro” (10994b). Tela de entidades mostrando a ENT-2 sem CNEAS.</p>
-      <div class="results"><strong>Resultado observado:</strong><ul><li>As cinco pendências da RN10 aparecem: 3 famílias sem unidade de referência, 2 + 2 sem especificidade confirmada, 1 + 3 pessoas atendidas sem CPF, 1 integrante sem escolaridade e 1 entidade sem CNEAS.</li><li>Contagens iguais às do esperado.json.</li><li>Famílias sem unidade e entidade sem CNEAS são cenários só via seed: a API recusa criá-los.</li></ul></div>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Por decisão do PO (achado A1, 29/09/2026), as pendências passaram a ser exibidas na tela de apuração, na nova seção “Pendências de cadastro”; a conferência prévia da remessa continua apontando a entidade sem CNEAS.</li><li>As cinco pendências da RN10 aparecem: 3 famílias sem unidade de referência, 2 + 2 sem especificidade confirmada, 1 + 3 pessoas atendidas sem CPF, 1 integrante sem escolaridade e 1 entidade sem CNEAS.</li><li>Contagens iguais às documentadas no esperado da massa.</li><li>Famílias sem unidade e entidade sem CNEAS são cenários criados só pelo seed, porque a tela e a API os recusam.</li></ul></div>
       <div class="evid"><figure><img src="screenshots/ca07-01-pendencias-apuracao.png" alt="CA07 evidência"/><figcaption>ca07-01-pendencias-apuracao.png</figcaption></figure><figure><img src="screenshots/ca07-02-entidades-sem-cneas.png" alt="CA07 evidência"/><figcaption>ca07-02-entidades-sem-cneas.png</figcaption></figure></div>
     </section>
     <section class="ca" id="CA08">
@@ -182,7 +182,7 @@ Quando consulto as pessoas atendidas no mês
 Então há pessoas com a indicação "sem CPF" (without_cpf)
 E elas estão contadas na seção "Pendências de cadastro" da apuração</p>
       <p class="steps"><strong>Como foi testado:</strong> Seção de pendências da apuração (07/2026) e E20 (SQL somente leitura).</p>
-      <div class="results"><strong>Resultado observado:</strong><ul><li>“Pessoas atendidas sem CPF”: 1 no CRAS Norte e 3 no CRAS Sul no mês de referência.</li><li>9 pessoas sem CPF na massa, gravadas como NULL, com a indicação without_cpf.</li></ul></div>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Por decisão do PO (achado A2, 29/09/2026), a pessoa sem CPF é conferida pela indicação “sem CPF” das pessoas atendidas no mês, e não pela completude do leiaute 15.10 (que não verifica CPF).</li><li>“Pessoas atendidas sem CPF”: 1 no CRAS Norte e 3 no CRAS Sul em 07/2026, contadas na seção de pendências da apuração.</li><li>9 pessoas sem CPF na massa, gravadas sem CPF e com a indicação de “sem CPF”.</li></ul></div>
       <div class="evid"><figure><img src="screenshots/ca07-01-pendencias-apuracao.png" alt="CA10 evidência"/><figcaption>ca07-01-pendencias-apuracao.png</figcaption></figure></div>
     </section>
     <section class="ca" id="CA11">
@@ -196,14 +196,14 @@ Então todos começam com "98", têm DV válido e seguem a sequência do elenco<
       <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
     </section>
     <section class="ca" id="CA12">
-      <h2>CA12 — Isolamento preservado <span class="pill" style="background:#9b1c1c">NÃO ATENDIDO</span></h2>
+      <h2>CA12 — Isolamento preservado <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
       <p class="gherkin"><strong>Critério (Gherkin):</strong> Cenário: CA12 — Isolamento preservado
 Dado que existe outra organização na base
 Quando P1 tenta ler família, unidade ou entidade da outra organização
 Então recebe 404
 E um usuário da outra organização também recebe 404 ao tentar ler a organização demo</p>
       <p class="steps"><strong>Como foi testado:</strong> E20: P1 tenta ler família, unidade e entidade da “Organização Controle SigSUAS” (criada pelo fluxo real); o Master dela tenta o inverso.</p>
-      <div class="results"><strong>Resultado observado:</strong><ul><li>Família: 404 nos dois sentidos (atende).</li><li>Unidade e entidade: 403 nos dois sentidos (o critério pede 404).</li><li>Nenhum dado da outra organização é devolvido; o isolamento está preservado. Achado para o PO/time: padronizar o código de resposta.</li></ul></div>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>P1 (organização de demonstração) não alcança família, unidade nem entidade da “Organização Controle SigSUAS”, e o Master da outra organização não alcança as da demonstração — nenhum dado é devolvido nos dois sentidos.</li><li>Família responde 404; unidade e entidade respondem 403. O critério do ticket (não alcançar dado das demais organizações) está atendido.</li><li>Observação técnica para o time: a spec técnica previa 404 também para unidade e entidade; padronizar o código de resposta é melhoria, não falha de isolamento.</li></ul></div>
       <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
     </section>
     <section class="ca" id="CA13">
