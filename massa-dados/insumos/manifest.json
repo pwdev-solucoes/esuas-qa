@@ -1,0 +1,59 @@
+{
+  "arquivos": [
+    {
+      "caminho": "coordenadas-familias.json",
+      "contagem": 60,
+      "sha256": "6dda173038a127f865eec23e42b71f5c5e517b30e6a15940773beb95ea9aaad2",
+      "unidade_contagem": "familias"
+    },
+    {
+      "caminho": "elenco.json",
+      "contagem": 60,
+      "sha256": "dcc8f3573606e8afd4f81eb5aed42a92e99c966d9bebaeb99ed80f5d374fbb7f",
+      "unidade_contagem": "familias"
+    },
+    {
+      "caminho": "entidades-ficticias.json",
+      "contagem": 2,
+      "sha256": "65829a846bec9475599d50005d739a2fe7c80934db67165bbc8d45c35df097d4",
+      "unidade_contagem": "entidades"
+    },
+    {
+      "caminho": "esperado.json",
+      "contagem": 432,
+      "sha256": "8692b97caf4413b75e2b82602e1b30592b23beff604a964bbba23c109d38df9c",
+      "unidade_contagem": "contadores"
+    },
+    {
+      "caminho": "geo/bairros-arapiraca.geojson",
+      "contagem": 41,
+      "sha256": "10b9b4ce0d023a9530ad93d9e2b7992babe039d49df8944196fb5e6f46ade1b3",
+      "unidade_contagem": "features"
+    },
+    {
+      "caminho": "geo/municipios-al.geojson",
+      "contagem": 102,
+      "sha256": "56bdbce97f2564500f95d7777fa821f4e41134cb4492513f96d844488d9fae40",
+      "unidade_contagem": "features"
+    },
+    {
+      "caminho": "geo/setores-arapiraca.geojson",
+      "contagem": 427,
+      "sha256": "029b79773583150f25f748138fbbaa2528fb73e00e9a8538698d6c70d4f344af",
+      "unidade_contagem": "features"
+    },
+    {
+      "caminho": "nomes-ficticios.json",
+      "contagem": 99,
+      "sha256": "59037424af90badaa8ce89675d3820bcd6b9dcbfbc05089a11c17d76cf76f4b5",
+      "unidade_contagem": "nomes"
+    },
+    {
+      "caminho": "unidades-ficticias.json",
+      "contagem": 3,
+      "sha256": "77c05c6844f70f8d34b71f6ed9a29e9ef05b8149f445b3674facfdd1c8d7f4fb",
+      "unidade_contagem": "unidades"
+    }
+  ],
+  "versao_elenco": "2026-09-29.1"
+}

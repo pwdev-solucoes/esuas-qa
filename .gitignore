@@ -42,3 +42,10 @@ logs/
 # Cloned repositories (setup.sh creates these locally, not versioned)
 repos/
 qa-results/
+
+# Massa de dados (#10994): saídas por execução, cache (DNE, snapshot) e segredos locais
+massa-dados/relatorios/
+massa-dados/.cache/
+massa-dados/.env
+# ZIP do DNE usado localmente pela massa (grande demais para versionar)
+docs/*.zip

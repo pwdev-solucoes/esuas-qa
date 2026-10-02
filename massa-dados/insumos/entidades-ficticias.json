@@ -1,0 +1,21 @@
+{
+  "entidades": [
+    {
+      "chave": "ENT-1",
+      "cneas": "9800000000001",
+      "cnpj": "98000000000277",
+      "exibe": "caso completo",
+      "municipio_ibge": "2700300",
+      "nome": "Associação Demonstração Amparo"
+    },
+    {
+      "chave": "ENT-2",
+      "cneas": null,
+      "cnpj": "98000000000358",
+      "exibe": "pendência entity_without_cneas (conferência prévia e \"Pendências de cadastro\")",
+      "municipio_ibge": "2700300",
+      "nome": "Instituto Demonstração Acolher"
+    }
+  ],
+  "versao": "2026-09-29.1"
+}
