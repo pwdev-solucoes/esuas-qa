@@ -1,0 +1,60 @@
+
+   PASS  Tests\Unit\Seeders\MassaDemoGuardTest
+  ✓ it recusa produção mesmo confirmada with ('production')              0.01s  
+  ✓ it recusa produção mesmo confirmada with ('prod')
+  ✓ it recusa produção mesmo confirmada with ('PRODUCTION')
+  ✓ it recusa produção mesmo confirmada with (' Prod ')
+  ✓ it recusa produção mesmo confirmada with ('')
+  ✓ it recusa produção mesmo confirmada with (' ')
+  ✓ it recusa fora de produção sem confirmação with ('local')
+  ✓ it recusa fora de produção sem confirmação with ('testing')
+  ✓ it recusa fora de produção sem confirmação with ('staging')
+  ✓ it recusa fora de produção sem confirmação with ('development')
+  ✓ it libera fora de produção quando confirmada with ('local')
+  ✓ it libera fora de produção quando confirmada with ('testing')
+  ✓ it libera fora de produção quando confirmada with ('staging')
+  ✓ it libera fora de produção quando confirmada with ('development')
+
+   PASS  Tests\Unit\Support\EnvironmentNameTest
+  ✓ it normaliza o ambiente como produção por falha segura with dataset… 0.01s  
+  ✓ it normaliza o ambiente como produção por falha segura with dataset "só espaços"
+  ✓ it normaliza o ambiente como produção por falha segura with dataset "prod"
+  ✓ it normaliza o ambiente como produção por falha segura with dataset "PROD"
+  ✓ it normaliza o ambiente como produção por falha segura with dataset "production"
+  ✓ it normaliza o ambiente como produção por falha segura with dataset "Production com espaços"
+  ✓ it normaliza os demais ambientes sem trocá-los with dataset "local"
+  ✓ it normaliza os demais ambientes sem trocá-los with dataset "LOCAL com espaços"
+  ✓ it normaliza os demais ambientes sem trocá-los with dataset "staging"
+  ✓ it normaliza os demais ambientes sem trocá-los with dataset "testing"
+
+   PASS  Tests\Feature\EnvironmentEndpointTest
+  ✓ it responde 200 sem autenticação e sem header de tenant              0.38s  
+  ✓ it devolve apenas a chave environment                                0.01s  
+  ✓ it trata prod, vazio e production como production with dataset "pro… 0.01s  
+  ✓ it trata prod, vazio e production como production with dataset "vaz… 0.01s  
+  ✓ it trata prod, vazio e production como production with dataset "pro… 0.01s  
+  ✓ it normaliza os demais ambientes                                     0.01s  
+  ✓ it não tem auth nem middlewares de tenant e tem throttle:60,1        0.02s  
+
+   PASS  Tests\Feature\Seeders\LocalDevSeederTest
+  ✓ it refuses any environment without explicit confirmation             0.01s  
+  ✓ it allows a non-production environment once confirmed                0.01s  
+
+   PASS  Tests\Feature\Seeders\MassaDemoSeederTest
+  ✓ it recusa produção mesmo com --force, sem escrever nada              2.07s  
+  ✓ it recusa sem --force nem MASSA_DEMO_SEED, sem escrever nada         1.97s  
+  ✓ it recusa sem o pré-requisito manual e aponta o passo do roteiro wi… 2.41s  
+  ✓ it recusa sem o pré-requisito manual e aponta o passo do roteiro wi… 2.12s  
+  ✓ it recusa sem o pré-requisito manual e aponta o passo do roteiro wi… 2.03s  
+  ✓ it recusa sem o pré-requisito manual e aponta o passo do roteiro wi… 2.15s  
+  ✓ it recusa insumo com sha256 divergente do manifest                   2.12s  
+  ✓ it popula E4–E16 com a composição do elenco, os cenários só via see… 3.55s  
+  ✓ it é idempotente e determinística: 2ª execução não muda nada e uuid… 5.47s  
+  ✓ it recusa --etapas=E10-E16 sem as anteriores e, com elas, roda só o… 3.78s  
+  ✓ it não está no DatabaseSeeder                                        0.01s  
+  ✓ it o pré-requisito resolve o endereço pelo DNE do bairro             2.01s  
+  ✓ it P0–P7 aceitam os documentos legais vigentes da organização (gate… 3.87s  
+
+  Tests:    46 passed (154 assertions)
+  Duration: 34.57s
+

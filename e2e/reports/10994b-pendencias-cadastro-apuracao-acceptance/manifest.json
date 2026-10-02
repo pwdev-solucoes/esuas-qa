@@ -1,0 +1,157 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — Pendências de cadastro na apuração (10994b)",
+    "subtitle": "US-QUAL-02b · Painel do Tenant · Apuração de Atendimentos · massa híbrida da #10994",
+    "rows": [
+      [
+        "Gerado em",
+        "01/10/2026"
+      ],
+      [
+        "Branch",
+        "feature/roadmap-massa-dados (api 4ce4317 + 242ae4f · client 7e91507)"
+      ],
+      [
+        "Spec",
+        ".planning/specs/10994b-pendencias-cadastro-apuracao.md"
+      ],
+      [
+        "Ambiente",
+        "Stack Sail local · API http://localhost · client :5174"
+      ],
+      [
+        "Organização",
+        "Município Demonstração SigSUAS (massa híbrida, conferência 2026-10-01_0914)"
+      ],
+      [
+        "Ferramenta",
+        "Playwright (Chromium) + Pest + Vitest"
+      ]
+    ]
+  },
+  "summary": "9 critérios. 3 por navegador (CA01, CA02, CA09), 1 combinado (CA04) e 5 automatizados (CA03, CA05–CA08), todos atendidos. As contagens da tela vêm da massa fictícia de 07/2026 e coincidem com o esperado.json; os critérios de visibilidade do Operacional, pessoa distinta, ausência de dado pessoal, estado vazio e isolamento estão cobertos pela suíte.",
+  "cas": [
+    {
+      "id": "CA01",
+      "title": "Master vê as cinco pendências sem filtro de unidade",
+      "status": "nav",
+      "gherkin": "Cenário: CA01 — Master vê as cinco pendências sem filtro de unidade\nDado 3 famílias sem unidade de referência, 4 sem especificidade confirmada,\n2 pessoas atendidas em julho sem CPF, 1 integrante atendido sem escolaridade\ne 1 entidade sem CNEAS\nQuando o Master abre a apuração de 07/2026 sem filtro de unidade\nEntão a seção \"Pendências de cadastro\" mostra as cinco pendências com essas contagens\nE cada uma tem um atalho para a tela onde se resolve",
+      "steps_html": "Master da organização demo abre <code>/app/prestacao-contas/apuracao-atendimentos</code>, escolhe 2026 / 07 — Julho, sem filtro de unidade.",
+      "results": [
+        "A seção “Pendências de cadastro” mostra os cinco tipos: 3 famílias sem unidade de referência; 2 + 2 famílias sem especificidade confirmada (CRAS Norte e Sul); 1 + 3 pessoas atendidas sem CPF; 1 integrante sem escolaridade; 1 entidade sem CNEAS.",
+        "Cada item tem o atalho “Resolver”; os de situação atual levam o selo correspondente.",
+        "Os números da spec eram ilustrativos; os da tela batem com o esperado.json da massa."
+      ],
+      "images": [
+        "screenshots/ca01-02-pendencias-sem-filtro.png",
+        "screenshots/ca01-01-apuracao-julho-master.png"
+      ]
+    },
+    {
+      "id": "CA02",
+      "title": "Filtro de unidade oculta as pendências da organização",
+      "status": "nav",
+      "gherkin": "Cenário: CA02 — Filtro de unidade oculta as pendências da organização\nQuando o Master filtra a apuração pelo CRAS Norte\nEntão aparecem apenas as pendências da unidade CRAS Norte\nE \"famílias sem unidade de referência\" e \"entidades sem CNEAS\" não aparecem",
+      "steps_html": "Mesma tela, filtro de unidade “CRAS Demonstração Norte”.",
+      "results": [
+        "Só as pendências do CRAS Norte aparecem (2 sem especificidade, 1 sem CPF, 1 sem escolaridade).",
+        "Famílias sem unidade de referência e entidades sem CNEAS não aparecem."
+      ],
+      "images": [
+        "screenshots/ca02-01-filtro-cras-norte.png"
+      ]
+    },
+    {
+      "id": "CA03",
+      "title": "Operacional vê só as suas unidades",
+      "status": "auto",
+      "gherkin": "Cenário: CA03 — Operacional vê só as suas unidades\nDado o Operacional com attendance-reports.view, lotado apenas no CRAS Sul\nQuando ele abre a apuração de 07/2026\nEntão vê apenas as pendências de unidade do CRAS Sul\nE não vê as pendências da organização",
+      "steps_html": "Pest (<code>AttendanceReportRegistrationPendenciesTest</code>): Operacional com <code>attendance-reports.view</code> lotado só no CRAS Sul. Na massa, o P7 não tem essa permissão (o Master não consegue concedê-la), por isso o critério não foi exercitado na tela.",
+      "results": [
+        "Vê apenas as pendências de unidade do CRAS Sul e nenhuma pendência da organização."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA04",
+      "title": "Mesma contagem da fila",
+      "status": "parc",
+      "gherkin": "Cenário: CA04 — Mesma contagem da fila\nQuando comparo a contagem de \"famílias sem unidade de referência\" na apuração\nEntão ela é igual ao total da fila \"Famílias sem unidade\"\nE o mesmo vale para \"famílias sem especificidade\" e a fila \"Especificidade pendente\"",
+      "steps_html": "Atalho “Resolver” de famílias sem especificidade levou à fila “Especificidade Pendente”; comparação com a soma da apuração. Pest compara as contagens com as filas.",
+      "results": [
+        "Fila: 4 famílias sem especificidade social; apuração: 2 (CRAS Norte) + 2 (CRAS Sul) = 4.",
+        "Ressalva (revisão de código, CR-001): uma família sem unidade e sem especificidade aparece na fila, mas na apuração conta só como “sem unidade de referência”. Na massa isso não ocorre; a regra aguarda decisão do PO."
+      ],
+      "images": [
+        "screenshots/ca04-01-fila-especificidade.png"
+      ]
+    },
+    {
+      "id": "CA05",
+      "title": "Pessoa sem CPF conta uma vez por unidade e mês",
+      "status": "auto",
+      "gherkin": "Cenário: CA05 — Pessoa sem CPF conta uma vez por unidade e mês\nDado uma pessoa sem CPF atendida 3 vezes no CRAS Norte em julho\nEntão \"pessoas atendidas sem CPF\" do CRAS Norte em 07/2026 conta 1",
+      "steps_html": "Pest: pessoa sem CPF atendida 3 vezes no CRAS Norte em julho.",
+      "results": [
+        "Conta 1 (pessoas distintas por unidade e mês); atendimentos cancelados não contam."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA06",
+      "title": "Nenhum dado pessoal na resposta",
+      "status": "auto",
+      "gherkin": "Cenário: CA06 — Nenhum dado pessoal na resposta\nQuando inspeciono a resposta de GET /api/client/attendance-reports\nEntão registration_pendencies traz apenas kind, count, scope, social_unit_uuid e target_route",
+      "steps_html": "Pest: chaves do bloco <code>registration_pendencies</code>.",
+      "results": [
+        "Cada item traz apenas kind, count, scope, social_unit_uuid e target_route — nenhum nome, CPF ou uuid de família ou pessoa."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA07",
+      "title": "Estado vazio",
+      "status": "auto",
+      "gherkin": "Cenário: CA07 — Estado vazio\nDado uma organização sem nenhuma pendência de cadastro\nQuando abro a apuração\nEntão a seção mostra \"Nenhuma pendência de cadastro neste recorte\"",
+      "steps_html": "Pest (organização sem pendências) + Vitest do <code>RegistrationPendenciesPanel</code>.",
+      "results": [
+        "A API devolve a lista vazia e o painel mostra “Nenhuma pendência de cadastro neste recorte”."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA08",
+      "title": "Isolamento",
+      "status": "auto",
+      "gherkin": "Cenário: CA08 — Isolamento\nDado outra organização com 5 famílias sem unidade de referência\nQuando o Master da primeira organização abre a apuração\nEntão essas 5 famílias não entram na contagem",
+      "steps_html": "Pest (<code>RegistrationPendenciesIsolationTest</code>): outra organização com 5 famílias sem unidade de referência.",
+      "results": [
+        "Essas famílias não entram na contagem da primeira organização."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA09",
+      "title": "Atalho respeita o acesso do destino",
+      "status": "nav",
+      "gherkin": "Cenário: CA09 — Atalho respeita o acesso do destino\nDado o Master na seção de pendências\nQuando clica no atalho de \"famílias sem especificidade\"\nEntão é levado à fila \"Especificidade pendente\" já existente",
+      "steps_html": "Na seção, clique em “Resolver” de “Famílias sem especificidade confirmada”.",
+      "results": [
+        "O Master é levado à fila “Especificidade Pendente” (/app/cadastros/familias-especificidade-pendente), que já existia, com as 4 famílias."
+      ],
+      "images": [
+        "screenshots/ca09-01-atalho-fila-especificidade.png"
+      ]
+    }
+  ],
+  "notes": [
+    {
+      "title": "Massa de evidência",
+      "html": "<p>As telas foram capturadas sobre a massa fictícia da #10994 populada pela modalidade híbrida (seed), que é a única forma de existirem as pendências de organização (família sem unidade e entidade sem CNEAS), recusadas pela API.</p>"
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Pest --filter=\"RegistrationPendenc|SocialEntityCneasRule\" + Vitest RegistrationPendenciesPanel)",
+    "file": "pest-10994b.txt"
+  }
+}

@@ -1,0 +1,458 @@
+{
+  "schema_version": 1,
+  "id": "E2E-001",
+  "title": "Pendências de cadastro na apuração de atendimentos",
+  "description": "HU derivada 10994b: a apuração 07/2026 mostra a seção 'Pendências de cadastro' com contagem e atalho por kind; com filtro de unidade (Master) e como Operacional, os itens da organização somem; organização sem pendências mostra o estado vazio. Só contagens — nenhum dado pessoal.",
+  "feature_slug": "10994b-pendencias-cadastro-apuracao",
+  "ac_refs": [
+    "AC-009",
+    "AC-013",
+    "AC-014"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "apuracao",
+    "lgpd",
+    "massa-dados"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/login",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "users": [
+      {
+        "role": "master",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_MASTER_CPF",
+          "password": "E2E_CLIENT_MASTER_PASSWORD"
+        }
+      },
+      {
+        "role": "operador",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_OPERADOR_CPF",
+          "password": "E2E_CLIENT_OPERADOR_PASSWORD"
+        }
+      },
+      {
+        "role": "master_sem_pendencias",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_EMPTY_MASTER_CPF",
+          "password": "E2E_CLIENT_EMPTY_MASTER_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Organização de demonstração da #10994 carregada (massa E1–E17) com pendências de cadastro em 07/2026",
+      "Operacional com attendance-reports.view concedida, lotado em uma única unidade (E2E_CLIENT_UNIT_NAME)",
+      "Uma segunda organização sem nenhuma pendência de cadastro, com Master próprio (E2E_CLIENT_EMPTY_MASTER_*)"
+    ]
+  },
+  "data": {
+    "month_label": "Julho"
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "Master sem filtro vê a seção de pendências com atalhos (CA01)",
+      "as_user": "master",
+      "steps": [
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "login + gate LGPD"
+        },
+        {
+          "action": "goto",
+          "value": "/app/prestacao-contas/apuracao-atendimentos"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "#siap-month"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "${data.month_label}"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1000
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "registration-pendencies"
+          }
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "text",
+            "value": "Pendências de cadastro"
+          }
+        },
+        {
+          "expect": "hidden",
+          "target": {
+            "by": "testid",
+            "value": "registration-pendencies-empty"
+          }
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"registration-pendency-link-\"]"
+          },
+          "note": "ao menos um atalho para a tela de correção"
+        }
+      ]
+    },
+    {
+      "name": "shortcut",
+      "title": "Atalho de famílias sem especificidade leva à fila 'Especificidade pendente' (CA09)",
+      "as_user": "master",
+      "steps": [
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500
+        },
+        {
+          "action": "goto",
+          "value": "/app/prestacao-contas/apuracao-atendimentos"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "#siap-month"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "${data.month_label}"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1000
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"registration-pendency-link-family_pending_specificity-\"]"
+          }
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "url",
+          "value": "/app/cadastros/familias-especificidade-pendente"
+        }
+      ]
+    },
+    {
+      "name": "unit_filter",
+      "title": "Master filtrando uma unidade não vê pendências da organização (CA02)",
+      "as_user": "master",
+      "steps": [
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500
+        },
+        {
+          "action": "goto",
+          "value": "/app/prestacao-contas/apuracao-atendimentos"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "#siap-month"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "${data.month_label}"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "#attendance-report-unit"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "${env:E2E_CLIENT_UNIT_NAME}"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1000
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "registration-pendencies"
+          }
+        },
+        {
+          "expect": "hidden",
+          "target": {
+            "by": "testid",
+            "value": "registration-pendency-family_without_reference_unit-tenant"
+          }
+        },
+        {
+          "expect": "hidden",
+          "target": {
+            "by": "testid",
+            "value": "registration-pendency-entity_without_cneas-tenant"
+          }
+        }
+      ]
+    },
+    {
+      "name": "forbidden",
+      "title": "Operacional lotado em uma unidade vê só as pendências da unidade, nunca as da organização (CA03)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500
+        },
+        {
+          "action": "goto",
+          "value": "/app/prestacao-contas/apuracao-atendimentos"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "#siap-month"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "${data.month_label}"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1000
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "registration-pendencies"
+          }
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "css",
+            "value": "[data-testid$=\"-tenant\"][data-testid^=\"registration-pendency-\"]"
+          },
+          "value": 0
+        }
+      ]
+    },
+    {
+      "name": "empty_state",
+      "title": "Organização sem pendências mostra o estado vazio (CA07)",
+      "as_user": "master_sem_pendencias",
+      "steps": [
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_EMPTY_MASTER_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_EMPTY_MASTER_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500
+        },
+        {
+          "action": "goto",
+          "value": "/app/prestacao-contas/apuracao-atendimentos"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "#siap-month"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "${data.month_label}"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1000
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "registration-pendencies-empty"
+          },
+          "value": "Nenhuma pendência de cadastro neste recorte"
+        }
+      ]
+    }
+  ],
+  "not_applicable": {
+    "validation_error": "Sem formulário novo: a seção é somente leitura; a validação do período/unidade é a existente (422 nomeado) e não muda nesta HU."
+  }
+}

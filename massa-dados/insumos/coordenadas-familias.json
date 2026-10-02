@@ -1,0 +1,426 @@
+{
+  "familias": {
+    "F-ACOLH": {
+      "bairro": "Batingas",
+      "latitude": -9.8060112,
+      "longitude": -36.6187022,
+      "setor": "270030005000155",
+      "tenant_ibge": "2700300"
+    },
+    "F-BENEF-2X": {
+      "bairro": "Verdes Campos",
+      "latitude": -9.7842521,
+      "longitude": -36.6532851,
+      "setor": "270030005000248",
+      "tenant_ibge": "2700300"
+    },
+    "F-DUPLA": {
+      "bairro": "Capiatã",
+      "latitude": -9.7405607,
+      "longitude": -36.660713,
+      "setor": "270030005000008",
+      "tenant_ibge": "2700300"
+    },
+    "F-ENC": {
+      "bairro": "Massaranduba",
+      "latitude": -9.7010641,
+      "longitude": -36.6713419,
+      "setor": "270030005000132",
+      "tenant_ibge": "2700300"
+    },
+    "F-ESCOL": {
+      "bairro": "Capiatã",
+      "latitude": -9.7406763,
+      "longitude": -36.6592288,
+      "setor": "270030005000008",
+      "tenant_ibge": "2700300"
+    },
+    "F-GRUPO": {
+      "bairro": "Guaribas",
+      "latitude": -9.7818972,
+      "longitude": -36.6589191,
+      "setor": "270030005000055",
+      "tenant_ibge": "2700300"
+    },
+    "F-HAB-1": {
+      "bairro": "Zélia Barbosa Rocha",
+      "latitude": -9.7529747,
+      "longitude": -36.6732086,
+      "setor": "270030005000196",
+      "tenant_ibge": "2700300"
+    },
+    "F-HAB-2": {
+      "bairro": "Canafístula",
+      "latitude": -9.7647965,
+      "longitude": -36.6278184,
+      "setor": "270030005000524",
+      "tenant_ibge": "2700300"
+    },
+    "F-IDOSO": {
+      "bairro": "Senador Nilo Coelho",
+      "latitude": -9.7221489,
+      "longitude": -36.6999973,
+      "setor": "270030005000338",
+      "tenant_ibge": "2700300"
+    },
+    "F-PERFIS-1": {
+      "bairro": "Eldorado",
+      "latitude": -9.7425571,
+      "longitude": -36.6674895,
+      "setor": "270030005000100",
+      "tenant_ibge": "2700300"
+    },
+    "F-PERFIS-2": {
+      "bairro": "Jardim Esperança",
+      "latitude": -9.726234,
+      "longitude": -36.6830437,
+      "setor": "270030005000110",
+      "tenant_ibge": "2700300"
+    },
+    "F-PERFIS-3": {
+      "bairro": "Senador Teotônio Vilela",
+      "latitude": -9.7443769,
+      "longitude": -36.6590063,
+      "setor": "270030005000018",
+      "tenant_ibge": "2700300"
+    },
+    "F-PERFIS-4": {
+      "bairro": "Alto do Cruzeiro",
+      "latitude": -9.7484013,
+      "longitude": -36.6496002,
+      "setor": "270030005000025",
+      "tenant_ibge": "2700300"
+    },
+    "F-READM": {
+      "bairro": "Santa Edwiges",
+      "latitude": -9.7361595,
+      "longitude": -36.6578307,
+      "setor": "270030005000010",
+      "tenant_ibge": "2700300"
+    },
+    "F-SEM-CPF": {
+      "bairro": "Batingas",
+      "latitude": -9.8195353,
+      "longitude": -36.6319148,
+      "setor": "270030005000418",
+      "tenant_ibge": "2700300"
+    },
+    "F-SEM-ESP-1": {
+      "bairro": "Baixão",
+      "latitude": -9.7454619,
+      "longitude": -36.6718405,
+      "setor": "270030005000098",
+      "tenant_ibge": "2700300"
+    },
+    "F-SEM-ESP-2": {
+      "bairro": "Jardim Esperança",
+      "latitude": -9.7287283,
+      "longitude": -36.6792821,
+      "setor": "270030005000108",
+      "tenant_ibge": "2700300"
+    },
+    "F-SEM-ESP-3": {
+      "bairro": "Cacimbas",
+      "latitude": -9.7582724,
+      "longitude": -36.6659315,
+      "setor": "270030005000080",
+      "tenant_ibge": "2700300"
+    },
+    "F-SEM-ESP-4": {
+      "bairro": "Jardim Tropical",
+      "latitude": -9.7604184,
+      "longitude": -36.6411552,
+      "setor": "270030005000046",
+      "tenant_ibge": "2700300"
+    },
+    "F-SEM-REF-1": {
+      "bairro": "Santa Esmeralda",
+      "latitude": -9.7353057,
+      "longitude": -36.6518049,
+      "setor": "270030005000027",
+      "tenant_ibge": "2700300"
+    },
+    "F-SEM-REF-2": {
+      "bairro": "Massaranduba",
+      "latitude": -9.7001761,
+      "longitude": -36.6602007,
+      "setor": "270030005000132",
+      "tenant_ibge": "2700300"
+    },
+    "F-SEM-REF-3": {
+      "bairro": "Massaranduba",
+      "latitude": -9.7143444,
+      "longitude": -36.6696049,
+      "setor": "270030005000289",
+      "tenant_ibge": "2700300"
+    },
+    "FAM-001": {
+      "bairro": "Deputado Nezinho",
+      "latitude": -9.7275134,
+      "longitude": -36.6244779,
+      "setor": "270030005000538",
+      "tenant_ibge": "2700300"
+    },
+    "FAM-002": {
+      "bairro": "Senador Arnon de Melo",
+      "latitude": -9.7045667,
+      "longitude": -36.6519641,
+      "setor": "270030005000325",
+      "tenant_ibge": "2700300"
+    },
+    "FAM-003": {
+      "bairro": "Baixão",
+      "latitude": -9.7466412,
+      "longitude": -36.671196,
+      "setor": "270030005000098",
+      "tenant_ibge": "2700300"
+    },
+    "FAM-004": {
+      "bairro": "Jardim de Maria",
+      "latitude": -9.7358701,
+      "longitude": -36.6544452,
+      "setor": "270030005000119",
+      "tenant_ibge": "2700300"
+    },
+    "FAM-005": {
+      "bairro": "Brasiliana",
+      "latitude": -9.7344713,
+      "longitude": -36.6611855,
+      "setor": "270030005000111",
+      "tenant_ibge": "2700300"
+    },
+    "FAM-006": {
+      "bairro": "Planalto",
+      "latitude": -9.7196766,
+      "longitude": -36.6702062,
+      "setor": "270030005000203",
+      "tenant_ibge": "2700300"
+    },
+    "FAM-007": {
+      "bairro": "Eldorado",
+      "latitude": -9.7412742,
+      "longitude": -36.6680956,
+      "setor": "270030005000256",
+      "tenant_ibge": "2700300"
+    },
+    "FAM-008": {
+      "bairro": "Santa Esmeralda",
+      "latitude": -9.7400802,
+      "longitude": -36.645058,
+      "setor": "270030005000028",
+      "tenant_ibge": "2700300"
+    },
+    "FAM-009": {
+      "bairro": "Bom Sucesso",
+      "latitude": -9.7188767,
+      "longitude": -36.6867608,
+      "setor": "270030005000271",
+      "tenant_ibge": "2700300"
+    },
+    "FAM-010": {
+      "bairro": "Senador Teotônio Vilela",
+      "latitude": -9.7457599,
+      "longitude": -36.6586682,
+      "setor": "270030005000019",
+      "tenant_ibge": "2700300"
+    },
+    "FAM-011": {
+      "bairro": "Novo Horizonte",
+      "latitude": -9.7449166,
+      "longitude": -36.6485625,
+      "setor": "270030005000267",
+      "tenant_ibge": "2700300"
+    },
+    "FAM-012": {
+      "bairro": "Jardim Esperança",
+      "latitude": -9.7261477,
+      "longitude": -36.6745311,
+      "setor": "270030005000199",
+      "tenant_ibge": "2700300"
+    },
+    "FAM-013": {
+      "bairro": "Baixa Grande",
+      "latitude": -9.7317438,
+      "longitude": -36.6720701,
+      "setor": "270030005000254",
+      "tenant_ibge": "2700300"
+    },
+    "FAM-014": {
+      "bairro": "Alto do Cruzeiro",
+      "latitude": -9.745851,
+      "longitude": -36.655252,
+      "setor": "270030005000026",
+      "tenant_ibge": "2700300"
+    },
+    "FAM-015": {
+      "bairro": "João Paulo II",
+      "latitude": -9.7731216,
+      "longitude": -36.6642163,
+      "setor": "270030005000493",
+      "tenant_ibge": "2700300"
+    },
+    "FAM-016": {
+      "bairro": "Manoel Teles",
+      "latitude": -9.7560817,
+      "longitude": -36.6703172,
+      "setor": "270030005000195",
+      "tenant_ibge": "2700300"
+    },
+    "FAM-017": {
+      "bairro": "Nova Esperança",
+      "latitude": -9.7719502,
+      "longitude": -36.6417963,
+      "setor": "270030005000273",
+      "tenant_ibge": "2700300"
+    },
+    "FAM-018": {
+      "bairro": "João Paulo II",
+      "latitude": -9.7748764,
+      "longitude": -36.6652674,
+      "setor": "270030005000214",
+      "tenant_ibge": "2700300"
+    },
+    "FAM-019": {
+      "bairro": "Brasília",
+      "latitude": -9.7542098,
+      "longitude": -36.6495683,
+      "setor": "270030005000039",
+      "tenant_ibge": "2700300"
+    },
+    "FAM-020": {
+      "bairro": "Brasília",
+      "latitude": -9.7550269,
+      "longitude": -36.6517238,
+      "setor": "270030005000040",
+      "tenant_ibge": "2700300"
+    },
+    "FAM-021": {
+      "bairro": "Jardim Tropical",
+      "latitude": -9.7586995,
+      "longitude": -36.6471355,
+      "setor": "270030005000046",
+      "tenant_ibge": "2700300"
+    },
+    "FAM-022": {
+      "bairro": "Centro",
+      "latitude": -9.7539289,
+      "longitude": -36.6654008,
+      "setor": "270030005000004",
+      "tenant_ibge": "2700300"
+    },
+    "FAM-023": {
+      "bairro": "Ouro Preto",
+      "latitude": -9.7593863,
+      "longitude": -36.6536228,
+      "setor": "270030005000062",
+      "tenant_ibge": "2700300"
+    },
+    "FAM-024": {
+      "bairro": "Boa Vista",
+      "latitude": -9.7923746,
+      "longitude": -36.6511104,
+      "setor": "270030005000473",
+      "tenant_ibge": "2700300"
+    },
+    "FAM-025": {
+      "bairro": "Zélia Barbosa Rocha",
+      "latitude": -9.7663261,
+      "longitude": -36.7002117,
+      "setor": "270030005000458",
+      "tenant_ibge": "2700300"
+    },
+    "FAM-026": {
+      "bairro": "Verdes Campos",
+      "latitude": -9.7751325,
+      "longitude": -36.6492011,
+      "setor": "270030005000054",
+      "tenant_ibge": "2700300"
+    },
+    "FAM-027": {
+      "bairro": "Canafístula",
+      "latitude": -9.7545936,
+      "longitude": -36.6229621,
+      "setor": "270030005000442",
+      "tenant_ibge": "2700300"
+    },
+    "FAM-028": {
+      "bairro": "Nova Esperança",
+      "latitude": -9.7740397,
+      "longitude": -36.6408421,
+      "setor": "270030005000273",
+      "tenant_ibge": "2700300"
+    },
+    "FAM-029": {
+      "bairro": "Boa Vista",
+      "latitude": -9.7912083,
+      "longitude": -36.6293898,
+      "setor": "270030005000276",
+      "tenant_ibge": "2700300"
+    },
+    "FAM-030": {
+      "bairro": "Baixa Grande",
+      "latitude": -9.7371702,
+      "longitude": -36.6720843,
+      "setor": "270030005000198",
+      "tenant_ibge": "2700300"
+    },
+    "FAM-031": {
+      "bairro": "Primavera",
+      "latitude": -9.7677184,
+      "longitude": -36.6602809,
+      "setor": "270030005000072",
+      "tenant_ibge": "2700300"
+    },
+    "FAM-032": {
+      "bairro": "Massaranduba",
+      "latitude": -9.7065781,
+      "longitude": -36.6614766,
+      "setor": "270030005000132",
+      "tenant_ibge": "2700300"
+    },
+    "FAM-033": {
+      "bairro": "Nova Esperança",
+      "latitude": -9.7722909,
+      "longitude": -36.6430504,
+      "setor": "270030005000273",
+      "tenant_ibge": "2700300"
+    },
+    "FAM-034": {
+      "bairro": "Alto do Cruzeiro",
+      "latitude": -9.7465984,
+      "longitude": -36.6591178,
+      "setor": "270030005000022",
+      "tenant_ibge": "2700300"
+    },
+    "FAM-035": {
+      "bairro": "Olho D'Água dos Cazuzinhas",
+      "latitude": -9.7661496,
+      "longitude": -36.6767318,
+      "setor": "270030005000215",
+      "tenant_ibge": "2700300"
+    },
+    "FAM-036": {
+      "bairro": "Zélia Barbosa Rocha",
+      "latitude": -9.7580208,
+      "longitude": -36.686532,
+      "setor": "270030005000458",
+      "tenant_ibge": "2700300"
+    },
+    "FAM-037": {
+      "bairro": "Boa Vista",
+      "latitude": -9.7976267,
+      "longitude": -36.6551338,
+      "setor": "270030005000473",
+      "tenant_ibge": "2700300"
+    },
+    "FAM-038": {
+      "bairro": "Alazão",
+      "latitude": -9.8087128,
+      "longitude": -36.6402851,
+      "setor": "270030005000419",
+      "tenant_ibge": "2700300"
+    }
+  },
+  "semente": "coordenadas-familias-v1",
+  "versao": "2026-09-29.1"
+}

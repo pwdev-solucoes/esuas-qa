@@ -1,0 +1,37 @@
+
+   PASS  Tests\Unit\Services\SocialEntityCneasRuleTest
+  ✓ it reproduces the NumeroCNEAS rule of the SIAP remittance (RN10) wi… 0.02s  
+  ✓ it reproduces the NumeroCNEAS rule of the SIAP remittance (RN10) with dataset "vazio"
+  ✓ it reproduces the NumeroCNEAS rule of the SIAP remittance (RN10) with dataset "só espaços"
+  ✓ it reproduces the NumeroCNEAS rule of the SIAP remittance (RN10) with dataset "não numérico"
+  ✓ it reproduces the NumeroCNEAS rule of the SIAP remittance (RN10) with dataset "com pontuação"
+  ✓ it reproduces the NumeroCNEAS rule of the SIAP remittance (RN10) with dataset "mais de 13 dígitos"
+  ✓ it reproduces the NumeroCNEAS rule of the SIAP remittance (RN10) with dataset "exatamente 13 dígitos"
+  ✓ it reproduces the NumeroCNEAS rule of the SIAP remittance (RN10) with dataset "menos de 13 dígitos"
+  ✓ it reproduces the NumeroCNEAS rule of the SIAP remittance (RN10) with dataset "inteiro"
+  ✓ it reproduces the NumeroCNEAS rule of the SIAP remittance (RN10) with dataset "com espaços nas bordas"
+
+   PASS  Tests\Feature\Attendance\AttendanceReportRegistrationPendenciesTest
+  ✓ it gives the Master without unit filter the five kinds with the sce… 0.58s  
+  ✓ it shows only the filtered unit items and no organization items whe… 0.09s  
+  ✓ it shows the Operacional only the unit items of the units he is ass… 0.17s  
+  ✓ it counts exactly what the two queues list (CA04 — single criterion… 0.19s  
+  ✓ it counts a person without CPF attended three times in the month on… 0.08s  
+  ✓ it returns only kind, count, scope, social_unit_uuid and target_rou… 0.11s  
+  ✓ it returns an empty list for an organization without registration p… 0.06s  
+  ✓ it runs at most one aggregated query per kind regardless of the num… 0.08s  
+
+   PASS  Tests\Feature\TenantIsolation\RegistrationPendenciesIsolationTest
+  ✓ it never counts another organization registration pendencies (CA08/… 0.07s  
+
+  Tests:    19 passed (112 assertions)
+  Duration: 1.97s
+
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/modules/attendance-reports/components/RegistrationPendenciesPanel.test.ts (7 tests) 60ms
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  16:03:09
+   Duration  602ms (transform 49ms, setup 8ms, collect 101ms, tests 60ms, environment 237ms, prepare 37ms)
+

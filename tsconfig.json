@@ -32,6 +32,6 @@
       "@helpers/*": ["e2e/helpers/*"]
     }
   },
-  "include": ["e2e/**/*.ts", "tests/**/*.ts"],
+  "include": ["e2e/**/*.ts", "tests/**/*.ts", "massa-dados/**/*.ts"],
   "exclude": ["node_modules", "test-results", "playwright-report"]
 }
