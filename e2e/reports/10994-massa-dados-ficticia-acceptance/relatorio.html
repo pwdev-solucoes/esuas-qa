@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — Massa de dados fictícia (#10994)</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  section.note { border:1px solid var(--line); border-left:4px solid #b06a00; border-radius:6px; padding:10px 14px; margin:10px 0; background:#fffdf7; font-size:13px; }
+  section.note h3 { margin:0 0 6px; font-size:13.5px; color:#8a5200; }
+  section.note p { margin:6px 0; }
+  section.note ul { margin:6px 0 6px 18px; padding:0; }
+  section.note pre { background:var(--bg); border:1px solid var(--line); border-radius:4px; padding:8px; overflow-x:auto; font-size:11px; white-space:pre-wrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — Massa de dados fictícia (#10994)</h1>
+    <div class="sub">US-QUAL-02 · Modalidade híbrida (manual E1–E3 · seed E4–E16 · conferência E17–E20) · execuções reais</div>
+    <div class="meta"><div><span>Gerado em:</span> 01/10/2026</div><div><span>Branch:</span> feature/roadmap-massa-dados (api 242ae4f · client 7e91507 · qa 7416d7c)</div><div><span>Spec:</span> .planning/specs/10994-massa-dados-ficticia.md</div><div><span>Ambiente:</span> Stack Sail local · API http://localhost · client :5174 · admin :5175 · Mailpit</div><div><span>Organização:</span> Município Demonstração SigSUAS (base Arapiraca/AL 2700300) · CNPJ 98.000.000/0001-96</div><div><span>Evidência de base:</span> Conferência híbrida 2026-10-01_0914 (seed) · execução por API 2026-10-01_0148 · referência 2026-09-30_0958</div><div><span>Ferramenta:</span> Executor qa/massa-dados (Playwright) + Playwright (capturas) + Pest</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">15 critérios (CA01–CA13, CA02b, CA-T1). 13 atendidos — 6 por navegador (CA05, CA06, CA07, CA09, CA13, CA-T1), 4 combinando tela/terminal e verificação automatizada (CA02, CA02b, CA04, CA10) e 3 automatizados (CA03, CA08, CA11). CA01 atendido com ressalva (P7 sem a permissão de apuração). CA12 não atendido literalmente: unidade e entidade de outra organização respondem 403, não 404 — sem vazamento de dado. A massa foi gerada pela modalidade híbrida: E1–E3 pelo fluxo manual (simulado pelo executor), E4–E16 pelo comando massa-demo:popular e a conferência E17–E20 pelo massa:conferir, com 0 divergências na apuração.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA01</td><td>Município de demonstração gerado</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA02</td><td>Geração bloqueada em produção</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA02b</td><td>Falha ao identificar o ambiente</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA03</td><td>Não existe caminho pelo sistema</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA04</td><td>Mesma semente, mesmo resultado</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA05</td><td>Números conferíveis à mão</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA06</td><td>Casos que parecem erro estão presentes</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA07</td><td>Pendências propositais presentes (revisado, A1; depende da 10994b)</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA08</td><td>Família acompanhada por duas unidades</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA09</td><td>Encaminhamento sem desfecho concedendo acesso</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA10</td><td>Pessoas atendidas sem CPF (revisado, A2)</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA11</td><td>Nenhum CPF de pessoa real</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA12</td><td>Isolamento preservado</td><td><span class="pill" style="background:#9b1c1c">NÃO ATENDIDO</span></td></tr>
+<tr><td class="caid">CA13</td><td>Documentação da massa</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA-T1</td><td>Preflight bloqueia antes de apagar</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA01">
+      <h2>CA01 — Município de demonstração gerado <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Cenário: CA01 — Município de demonstração gerado
+Dado que executei "npm run massa" contra um ambiente de homologação
+Quando a execução concluir sem erro
+Então existe a organização "Município Demonstração SigSUAS"
+E ela tem dois CRAS, um CREAS e profissionais lotados
+E tem 60 famílias, cerca de 200 pessoas e registros em 2026-06, 2026-07 e 2026-08</p>
+      <p class="steps"><strong>Como foi testado:</strong> Base populada pela modalidade híbrida; telas de Unidades e Profissionais vistas pelo Master; painel geo visto pelo P6; contagens conferidas por SQL somente leitura na E20 (<code>qa/massa-dados/relatorios/2026-10-01_0914</code>).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Organização “Município Demonstração SigSUAS” com CRAS Demonstração Norte, CRAS Demonstração Sul e CREAS Demonstração.</li><li>8 profissionais (P0–P7), P1–P7 lotados desde 01/05/2026.</li><li>60 famílias, 202 pessoas (9 sem CPF) e 208 registros em 2026-06, 2026-07 e 2026-08.</li><li>Ressalva: o P7 fica sem a permissão de ver a apuração — o Master não tem como concedê-la (achado RN14, igual no modo API).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca01-01-unidades.png" alt="CA01 evidência"/><figcaption>ca01-01-unidades.png</figcaption></figure><figure><img src="screenshots/ca01-02-profissionais.png" alt="CA01 evidência"/><figcaption>ca01-02-profissionais.png</figcaption></figure><figure><img src="screenshots/ca01-03-painel-geo.png" alt="CA01 evidência"/><figcaption>ca01-03-painel-geo.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA02">
+      <h2>CA02 — Geração bloqueada em produção <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Cenário: CA02 — Geração bloqueada em produção
+Dado que "GET /api/environment" responde {"environment":"production"}
+Quando executo "npm run massa"
+Então a execução é recusada antes do reset e antes de qualquer requisição de escrita
+E a mensagem informa que o ambiente se identifica como produção
+E a contagem de registros da base é a mesma de antes</p>
+      <p class="steps"><strong>Como foi testado:</strong> Uma cópia da API real foi servida com <code>APP_ENV=production</code> e o executor foi apontado para ela (<code>API_BASE</code>). Contagem de <code>tenants</code> antes e depois por SQL. Pest cobre a normalização (<code>EnvironmentEndpointTest</code>).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>GET /api/environment respondeu {"environment":"production"}.</li><li>Execução recusada no preflight, antes do aviso e do reset, com a mensagem “o ambiente-alvo se identifica como production”; código de saída 1.</li><li>Tenants: 4 antes e 4 depois — nenhum registro criado.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca02-01-producao-recusada.png" alt="CA02 evidência"/><figcaption>ca02-01-producao-recusada.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA02b">
+      <h2>CA02b — Falha ao identificar o ambiente <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Cenário: CA02b — Falha ao identificar o ambiente
+Dado que "GET /api/environment" não responde ou responde com erro
+Quando executo "npm run massa"
+Então a execução é recusada, pela mesma regra da produção</p>
+      <p class="steps"><strong>Como foi testado:</strong> Executor apontado para a API fora do ar. A suíte <code>infra.test.ts</code> cobre também resposta 500, JSON inválido, chave ausente e valor fora da lista permitida.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Recusa pela mesma regra: “não foi possível identificar o ambiente-alvo (erro de rede)”; código 1; nada apagado nem escrito.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca02b-01-api-fora-do-ar.png" alt="CA02b evidência"/><figcaption>ca02b-01-api-fora-do-ar.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA03">
+      <h2>CA03 — Não existe caminho pelo sistema <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Cenário: CA03 — Não existe caminho pelo sistema
+Dado que sou Master ou Administrador
+Quando percorro os menus e as rotas do admin e do client
+Então não existe ação, tela ou permissão de gerar massa
+E a única rota nova é "GET /api/environment", que só informa o ambiente</p>
+      <p class="steps"><strong>Como foi testado:</strong> Varredura da E20: rotas da API (<code>route:list</code>), literais de menu e rota do admin e do client, e permissões.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>0 rotas, 0 itens de menu/rota e 0 permissões com termo de gerar massa.</li><li>Mudanças no produto ligadas à massa: GET /api/environment (só informa) e o bloco “Pendências de cadastro” da apuração (10994b, só leitura). O seed é comando Artisan, sem rota, tela nem permissão.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA04">
+      <h2>CA04 — Mesma semente, mesmo resultado <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Cenário: CA04 — Mesma semente, mesmo resultado
+Dado duas execuções com "--evidencias" em bases recriadas
+Quando executo "npm run massa:comparar" com as duas pastas
+Então os dois snapshot.json são idênticos por chave de negócio
+E os números da apuração são idênticos</p>
+      <p class="steps"><strong>Como foi testado:</strong> <code>npm run massa:comparar</code> entre duas execuções completas pela API em bases recriadas, e entre a execução pela API e a conferência do seed (<code>--modo=api-x-seed</code>).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>API × API (2026-09-30_0958 × 2026-10-01_0148): idênticas por chave de negócio — 15 tabelas e 372 valores da apuração.</li><li>API × seed: código 0; 30 divergências, todas dos cenários só via seed; nenhuma inesperada.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca04-01-comparar.png" alt="CA04 evidência"/><figcaption>ca04-01-comparar.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA05">
+      <h2>CA05 — Números conferíveis à mão <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Cenário: CA05 — Números conferíveis à mão
+Dado que a massa foi gerada
+Quando consulto a apuração de 2026-07 do "CRAS Demonstração Norte"
+Então cada contador coincide com o esperado.json
+E a etapa-17 do relatório mostra esperado × apurado sem divergência</p>
+      <p class="steps"><strong>Como foi testado:</strong> Master abre a Apuração de Atendimentos de 07/2026 (todas as unidades). A E17 compara cada contador com o <code>esperado.json</code> nos 3 meses × 3 unidades (<code>qa/massa-dados/relatorios/2026-10-01_0914</code>).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Tela com os contadores de 07/2026 por unidade (CRAS Norte 25 atendimentos, CRAS Sul 22, CREAS 11).</li><li>E17: 0 divergências (inclusive sem nenhuma justificativa RN14) na conferência do seed.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca05-01-apuracao-julho.png" alt="CA05 evidência"/><figcaption>ca05-01-apuracao-julho.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA06">
+      <h2>CA06 — Casos que parecem erro estão presentes <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Cenário: CA06 — Casos que parecem erro estão presentes
+Dado que a massa foi gerada
+Quando consulto a apuração
+Então a família F-IDOSO gera "elderly_outside_range" sem incrementar faixa etária
+E a família F-GRUPO conta em "families_in_groups" com zero nas quatro faixas
+E uma unidade tem a soma dos perfis maior que o total de novas famílias
+E cada caso está descrito em elenco.md</p>
+      <p class="steps"><strong>Como foi testado:</strong> Apuração de 07/2026, seção do SCFV (leiaute 15.8) e perfis das novas famílias (15.7); asserções nominais da E17.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Aviso na tela: há participantes com 60 anos ou mais em SCFV que não é de idosos (F-IDOSO), fora de todas as faixas.</li><li>F-GRUPO conta em “famílias participando de grupos” com zero nas quatro faixas.</li><li>CRAS Norte, 07/2026: soma dos perfis 10 &gt; 5 novas famílias (no modo seed; no modo API a soma fica em 2, porque os dados de perfil só entram por CadÚnico ou seed).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca06-01-apuracao-scfv.png" alt="CA06 evidência"/><figcaption>ca06-01-apuracao-scfv.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA07">
+      <h2>CA07 — Pendências propositais presentes (revisado, A1; depende da 10994b) <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Cenário: CA07 — Pendências propositais presentes (revisado, A1; depende da 10994b)
+Dado que a massa foi gerada
+Quando o Master abre a apuração sem filtro de unidade
+Então a seção "Pendências de cadastro" mostra as cinco pendências da RN10
+E cada contagem coincide com a documentada no esperado.json</p>
+      <p class="steps"><strong>Como foi testado:</strong> Master abre a apuração sem filtro de unidade; seção “Pendências de cadastro” (10994b). Tela de entidades mostrando a ENT-2 sem CNEAS.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>As cinco pendências da RN10 aparecem: 3 famílias sem unidade de referência, 2 + 2 sem especificidade confirmada, 1 + 3 pessoas atendidas sem CPF, 1 integrante sem escolaridade e 1 entidade sem CNEAS.</li><li>Contagens iguais às do esperado.json.</li><li>Famílias sem unidade e entidade sem CNEAS são cenários só via seed: a API recusa criá-los.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca07-01-pendencias-apuracao.png" alt="CA07 evidência"/><figcaption>ca07-01-pendencias-apuracao.png</figcaption></figure><figure><img src="screenshots/ca07-02-entidades-sem-cneas.png" alt="CA07 evidência"/><figcaption>ca07-02-entidades-sem-cneas.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA08">
+      <h2>CA08 — Família acompanhada por duas unidades <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Cenário: CA08 — Família acompanhada por duas unidades
+Dado que F-DUPLA está em PAIF no CRAS Norte e em PAEFI no CREAS
+Quando consulto a apuração das duas unidades no mesmo mês
+Então F-DUPLA é contada em cada uma</p>
+      <p class="steps"><strong>Como foi testado:</strong> E17: F-DUPLA (PAIF no CRAS Norte e PAEFI no CREAS, P4 com as duas lotações) conferida nos contadores de acompanhamento das duas unidades no mesmo mês.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>F-DUPLA contada em cada uma das duas unidades; nenhuma divergência na E17.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA09">
+      <h2>CA09 — Encaminhamento sem desfecho concedendo acesso <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Cenário: CA09 — Encaminhamento sem desfecho concedendo acesso
+Dado que F-ENC tem encaminhamento de trânsito interno para o CRAS Sul, sem desfecho
+Quando entro como P2, lotado só no CRAS Sul
+Então consigo abrir o prontuário de F-ENC</p>
+      <p class="steps"><strong>Como foi testado:</strong> P2 (lotado só no CRAS Sul) entra e abre o prontuário de F-ENC; E20 confere o HTTP e o desfecho vazio.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Prontuário aberto (HTTP 200).</li><li>O encaminhamento de trânsito interno (código 14, do CREAS para o CRAS Sul) segue sem desfecho.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca09-01-p2-abre-f-enc.png" alt="CA09 evidência"/><figcaption>ca09-01-p2-abre-f-enc.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA10">
+      <h2>CA10 — Pessoas atendidas sem CPF (revisado, A2) <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Cenário: CA10 — Pessoas atendidas sem CPF (revisado, A2)
+Dado que a massa foi gerada
+Quando consulto as pessoas atendidas no mês
+Então há pessoas com a indicação "sem CPF" (without_cpf)
+E elas estão contadas na seção "Pendências de cadastro" da apuração</p>
+      <p class="steps"><strong>Como foi testado:</strong> Seção de pendências da apuração (07/2026) e E20 (SQL somente leitura).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>“Pessoas atendidas sem CPF”: 1 no CRAS Norte e 3 no CRAS Sul no mês de referência.</li><li>9 pessoas sem CPF na massa, gravadas como NULL, com a indicação without_cpf.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca07-01-pendencias-apuracao.png" alt="CA10 evidência"/><figcaption>ca07-01-pendencias-apuracao.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA11">
+      <h2>CA11 — Nenhum CPF de pessoa real <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Cenário: CA11 — Nenhum CPF de pessoa real
+Dado que a massa foi gerada
+Quando verifico os CPFs de pessoas e usuários da organização demo
+Então todos começam com "98", têm DV válido e seguem a sequência do elenco</p>
+      <p class="steps"><strong>Como foi testado:</strong> E20: CPFs de pessoas e usuários da organização demo conferidos por SQL somente leitura.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>193 CPFs de pessoas e 9 de usuários conferidos: todos na base 98, com DV válido e iguais ao elenco.</li><li>0 CPFs fora da faixa; 9 pessoas sem CPF (NULL).</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA12">
+      <h2>CA12 — Isolamento preservado <span class="pill" style="background:#9b1c1c">NÃO ATENDIDO</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Cenário: CA12 — Isolamento preservado
+Dado que existe outra organização na base
+Quando P1 tenta ler família, unidade ou entidade da outra organização
+Então recebe 404
+E um usuário da outra organização também recebe 404 ao tentar ler a organização demo</p>
+      <p class="steps"><strong>Como foi testado:</strong> E20: P1 tenta ler família, unidade e entidade da “Organização Controle SigSUAS” (criada pelo fluxo real); o Master dela tenta o inverso.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Família: 404 nos dois sentidos (atende).</li><li>Unidade e entidade: 403 nos dois sentidos (o critério pede 404).</li><li>Nenhum dado da outra organização é devolvido; o isolamento está preservado. Achado para o PO/time: padronizar o código de resposta.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA13">
+      <h2>CA13 — Documentação da massa <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Cenário: CA13 — Documentação da massa
+Dado que a massa foi gerada com "--evidencias"
+Quando abro o index.html da execução
+Então vejo composição, cenários, pendências propositais e números esperados por mês e unidade</p>
+      <p class="steps"><strong>Como foi testado:</strong> Índice do relatório de evidências gerado pela conferência híbrida (<code>qa/massa-dados/relatorios/2026-10-01_0914</code>/index.html).</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O índice mostra a modalidade, a origem de cada etapa, a matriz dos CAs, esperado × apurado, os cenários só via seed e os achados.</li><li>Documentação da massa: elenco.md, esperado.json, roadmap 10-modalidade-hibrida.md e roteiro 11-roteiro-validacao-hibrida.md.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca13-01-indice-relatorio.png" alt="CA13 evidência"/><figcaption>ca13-01-indice-relatorio.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA-T1">
+      <h2>CA-T1 — Preflight bloqueia antes de apagar <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Cenário: CA-T1 — Preflight bloqueia antes de apagar
+Dado que o worker de fila está parado
+Quando executo "npm run massa"
+Então o preflight aponta o worker com ✖ e a instrução para corrigir
+E a execução termina antes do aviso de apagamento, sem reset</p>
+      <p class="steps"><strong>Como foi testado:</strong> <code>docker stop api-laravel.worker-1</code> e <code>npm run massa</code>; depois o worker é religado. Para comparação, o preflight APTO com a stack completa.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Preflight aponta o worker parado com ✖ e a instrução “rode docker start api-laravel.worker-1”.</li><li>Execução termina antes do aviso de apagamento, sem reset (código 1).</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/cat1-02-worker-parado.png" alt="CA-T1 evidência"/><figcaption>cat1-02-worker-parado.png</figcaption></figure><figure><img src="screenshots/cat1-01-preflight-apto.png" alt="CA-T1 evidência"/><figcaption>cat1-01-preflight-apto.png</figcaption></figure></div>
+    </section>
+  
+  <h2>Observações e ressalvas</h2>
+  <section class="note"><h3>Modalidade híbrida e cenários só via seed</h3><p>O ticket foi validado pela nova modalidade híbrida: cadastro manual (organização, Master, DNE e camadas, primeiro acesso), seed das etapas E4–E16 (<code>php artisan massa-demo:popular</code>) e conferência. Quatro cenários só existem por seed porque a API os recusa: entidade sem CNEAS, famílias sem unidade de referência, dados de perfil do 15.7 (PBF, renda, trabalho infantil) e endereço da família. Roteiro: <code>.planning/roadmap-massa-dados/11-roteiro-validacao-hibrida.md</code>.</p></section><section class="note"><h3>Remessa SIAP no modo seed</h3><p>A entidade sem CNEAS (pendência proposital do CA07) é bloqueante na conferência prévia: no modo seed a remessa não é gerada (a E18 confere esse bloqueio). No modo API a remessa é gerada e não enviada ao TCE-AL. Decisão pendente do PO: se a pendência proposital pode impedir a remessa na demonstração.</p></section><section class="note"><h3>Contadores omitidos pela API</h3><p>A E17 compara 432 contadores esperados com 372 valores presentes na resposta. Os 60 restantes são contadores <code>missing_fields.*</code> que a API omite quando valem zero; o comparador os trata como zero. Resultado: 0 divergências.</p></section><section class="note"><h3>Achados para o PO</h3><ul><li>P7 sem permissão de apuração (o Master só atribui papéis).</li><li>CA12: 403 em vez de 404 para unidade e entidade de outra organização.</li><li>Família sem unidade de referência e entidade sem CNEAS não podem ser criadas pela tela/API.</li><li>Endereço da família não é gravável pela API do client (painel geo sem pontos no modo API).</li></ul></section>
+  
+  <h2>Anexo — Cobertura automatizada (Pest, --filter="Environment|MassaDemo")</h2>
+  <pre class="pest">
+   PASS  Tests\Unit\Seeders\MassaDemoGuardTest
+  ✓ it recusa produção mesmo confirmada with ('production')              0.01s  
+  ✓ it recusa produção mesmo confirmada with ('prod')
+  ✓ it recusa produção mesmo confirmada with ('PRODUCTION')
+  ✓ it recusa produção mesmo confirmada with (' Prod ')
+  ✓ it recusa produção mesmo confirmada with ('')
+  ✓ it recusa produção mesmo confirmada with (' ')
+  ✓ it recusa fora de produção sem confirmação with ('local')
+  ✓ it recusa fora de produção sem confirmação with ('testing')
+  ✓ it recusa fora de produção sem confirmação with ('staging')
+  ✓ it recusa fora de produção sem confirmação with ('development')
+  ✓ it libera fora de produção quando confirmada with ('local')
+  ✓ it libera fora de produção quando confirmada with ('testing')
+  ✓ it libera fora de produção quando confirmada with ('staging')
+  ✓ it libera fora de produção quando confirmada with ('development')
+
+   PASS  Tests\Unit\Support\EnvironmentNameTest
+  ✓ it normaliza o ambiente como produção por falha segura with dataset… 0.01s  
+  ✓ it normaliza o ambiente como produção por falha segura with dataset "só espaços"
+  ✓ it normaliza o ambiente como produção por falha segura with dataset "prod"
+  ✓ it normaliza o ambiente como produção por falha segura with dataset "PROD"
+  ✓ it normaliza o ambiente como produção por falha segura with dataset "production"
+  ✓ it normaliza o ambiente como produção por falha segura with dataset "Production com espaços"
+  ✓ it normaliza os demais ambientes sem trocá-los with dataset "local"
+  ✓ it normaliza os demais ambientes sem trocá-los with dataset "LOCAL com espaços"
+  ✓ it normaliza os demais ambientes sem trocá-los with dataset "staging"
+  ✓ it normaliza os demais ambientes sem trocá-los with dataset "testing"
+
+   PASS  Tests\Feature\EnvironmentEndpointTest
+  ✓ it responde 200 sem autenticação e sem header de tenant              0.38s  
+  ✓ it devolve apenas a chave environment                                0.01s  
+  ✓ it trata prod, vazio e production como production with dataset "pro… 0.01s  
+  ✓ it trata prod, vazio e production como production with dataset "vaz… 0.01s  
+  ✓ it trata prod, vazio e production como production with dataset "pro… 0.01s  
+  ✓ it normaliza os demais ambientes                                     0.01s  
+  ✓ it não tem auth nem middlewares de tenant e tem throttle:60,1        0.02s  
+
+   PASS  Tests\Feature\Seeders\LocalDevSeederTest
+  ✓ it refuses any environment without explicit confirmation             0.01s  
+  ✓ it allows a non-production environment once confirmed                0.01s  
+
+   PASS  Tests\Feature\Seeders\MassaDemoSeederTest
+  ✓ it recusa produção mesmo com --force, sem escrever nada              2.07s  
+  ✓ it recusa sem --force nem MASSA_DEMO_SEED, sem escrever nada         1.97s  
+  ✓ it recusa sem o pré-requisito manual e aponta o passo do roteiro wi… 2.41s  
+  ✓ it recusa sem o pré-requisito manual e aponta o passo do roteiro wi… 2.12s  
+  ✓ it recusa sem o pré-requisito manual e aponta o passo do roteiro wi… 2.03s  
+  ✓ it recusa sem o pré-requisito manual e aponta o passo do roteiro wi… 2.15s  
+  ✓ it recusa insumo com sha256 divergente do manifest                   2.12s  
+  ✓ it popula E4–E16 com a composição do elenco, os cenários só via see… 3.55s  
+  ✓ it é idempotente e determinística: 2ª execução não muda nada e uuid… 5.47s  
+  ✓ it recusa --etapas=E10-E16 sem as anteriores e, com elas, roda só o… 3.78s  
+  ✓ it não está no DatabaseSeeder                                        0.01s  
+  ✓ it o pré-requisito resolve o endereço pelo DNE do bairro             2.01s  
+  ✓ it P0–P7 aceitam os documentos legais vigentes da organização (gate… 3.87s  
+
+  Tests:    46 passed (154 assertions)
+  Duration: 34.57s
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

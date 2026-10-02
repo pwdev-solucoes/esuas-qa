@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório de Critérios de Aceite — Pendências de cadastro na apuração (10994b)</title>
+<style>
+  :root { --ink:#1a2430; --muted:#5b6b7b; --line:#dde5ec; --bg:#f5f8fa; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink); margin:0; background:#fff; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:32px 28px 56px; }
+  header.cover { border-bottom:3px solid #0b5cad; padding-bottom:18px; margin-bottom:24px; }
+  header.cover h1 { margin:0 0 6px; font-size:25px; }
+  header.cover .sub { color:var(--muted); font-size:14px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; margin-top:14px; font-size:13px; }
+  .meta div span { color:var(--muted); }
+  h2 { font-size:18px; margin:26px 0 8px; border-top:1px solid var(--line); padding-top:18px; }
+  .pill { color:#fff; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; vertical-align:middle; white-space:nowrap; }
+  section.note { border:1px solid var(--line); border-left:4px solid #b06a00; border-radius:6px; padding:10px 14px; margin:10px 0; background:#fffdf7; font-size:13px; }
+  section.note h3 { margin:0 0 6px; font-size:13.5px; color:#8a5200; }
+  section.note p { margin:6px 0; }
+  section.note ul { margin:6px 0 6px 18px; padding:0; }
+  section.note pre { background:var(--bg); border:1px solid var(--line); border-radius:4px; padding:8px; overflow-x:auto; font-size:11px; white-space:pre-wrap; }
+  table.summary { width:100%; border-collapse:collapse; margin:10px 0 8px; font-size:13.5px; }
+  table.summary th, table.summary td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.summary th { background:var(--bg); font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  td.caid { font-weight:700; white-space:nowrap; }
+  section.ca p { margin:6px 0; font-size:13.5px; }
+  .gherkin { background:var(--bg); border-left:3px solid #0b5cad; padding:8px 12px; border-radius:4px; }
+  .results ul { margin:4px 0 0; padding-left:20px; }
+  .results li { margin:3px 0; font-size:13.5px; }
+  .evid { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:14px; }
+  figure { margin:0 auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; width:90%; max-width:100%; background:#fff; box-shadow:0 1px 4px rgba(16,32,48,.08); }
+  figure img { width:100%; display:block; }
+  figcaption { font-size:12px; color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .noimg { color:var(--muted); font-style:italic; }
+  pre.pest { background:#0f1b27; color:#d7e3ee; padding:16px; border-radius:8px; overflow:auto; font-size:11.5px; line-height:1.45; white-space:pre-wrap; }
+  footer { margin-top:36px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+  @media print { section.ca { break-inside:avoid; } figure { width:96%; break-inside:avoid; } }
+</style></head>
+<body><div class="wrap">
+  <header class="cover">
+    <h1>Relatório de Critérios de Aceite — Pendências de cadastro na apuração (10994b)</h1>
+    <div class="sub">US-QUAL-02b · Painel do Tenant · Apuração de Atendimentos · massa híbrida da #10994</div>
+    <div class="meta"><div><span>Gerado em:</span> 01/10/2026</div><div><span>Branch:</span> feature/roadmap-massa-dados (api 4ce4317 + 242ae4f · client 7e91507)</div><div><span>Spec:</span> .planning/specs/10994b-pendencias-cadastro-apuracao.md</div><div><span>Ambiente:</span> Stack Sail local · API http://localhost · client :5174</div><div><span>Organização:</span> Município Demonstração SigSUAS (massa híbrida, conferência 2026-10-01_0914)</div><div><span>Ferramenta:</span> Playwright (Chromium) + Pest + Vitest</div></div>
+  </header>
+
+  <h2 style="border-top:none;padding-top:0">Resumo</h2>
+  <p style="font-size:13.5px;margin-top:0">9 critérios. 3 por navegador (CA01, CA02, CA09), 1 combinado (CA04) e 5 automatizados (CA03, CA05–CA08), todos atendidos. As contagens da tela vêm da massa fictícia de 07/2026 e coincidem com o esperado.json; os critérios de visibilidade do Operacional, pessoa distinta, ausência de dado pessoal, estado vazio e isolamento estão cobertos pela suíte.</p>
+  <table class="summary">
+    <thead><tr><th>CA</th><th>Critério</th><th>Status</th></tr></thead>
+    <tbody><tr><td class="caid">CA01</td><td>Master vê as cinco pendências sem filtro de unidade</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA02</td><td>Filtro de unidade oculta as pendências da organização</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr>
+<tr><td class="caid">CA03</td><td>Operacional vê só as suas unidades</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA04</td><td>Mesma contagem da fila</td><td><span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></td></tr>
+<tr><td class="caid">CA05</td><td>Pessoa sem CPF conta uma vez por unidade e mês</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA06</td><td>Nenhum dado pessoal na resposta</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA07</td><td>Estado vazio</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA08</td><td>Isolamento</td><td><span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></td></tr>
+<tr><td class="caid">CA09</td><td>Atalho respeita o acesso do destino</td><td><span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></td></tr></tbody>
+  </table>
+  
+    <section class="ca" id="CA01">
+      <h2>CA01 — Master vê as cinco pendências sem filtro de unidade <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Cenário: CA01 — Master vê as cinco pendências sem filtro de unidade
+Dado 3 famílias sem unidade de referência, 4 sem especificidade confirmada,
+2 pessoas atendidas em julho sem CPF, 1 integrante atendido sem escolaridade
+e 1 entidade sem CNEAS
+Quando o Master abre a apuração de 07/2026 sem filtro de unidade
+Então a seção "Pendências de cadastro" mostra as cinco pendências com essas contagens
+E cada uma tem um atalho para a tela onde se resolve</p>
+      <p class="steps"><strong>Como foi testado:</strong> Master da organização demo abre <code>/app/prestacao-contas/apuracao-atendimentos</code>, escolhe 2026 / 07 — Julho, sem filtro de unidade.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A seção “Pendências de cadastro” mostra os cinco tipos: 3 famílias sem unidade de referência; 2 + 2 famílias sem especificidade confirmada (CRAS Norte e Sul); 1 + 3 pessoas atendidas sem CPF; 1 integrante sem escolaridade; 1 entidade sem CNEAS.</li><li>Cada item tem o atalho “Resolver”; os de situação atual levam o selo correspondente.</li><li>Os números da spec eram ilustrativos; os da tela batem com o esperado.json da massa.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca01-02-pendencias-sem-filtro.png" alt="CA01 evidência"/><figcaption>ca01-02-pendencias-sem-filtro.png</figcaption></figure><figure><img src="screenshots/ca01-01-apuracao-julho-master.png" alt="CA01 evidência"/><figcaption>ca01-01-apuracao-julho-master.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA02">
+      <h2>CA02 — Filtro de unidade oculta as pendências da organização <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Cenário: CA02 — Filtro de unidade oculta as pendências da organização
+Quando o Master filtra a apuração pelo CRAS Norte
+Então aparecem apenas as pendências da unidade CRAS Norte
+E "famílias sem unidade de referência" e "entidades sem CNEAS" não aparecem</p>
+      <p class="steps"><strong>Como foi testado:</strong> Mesma tela, filtro de unidade “CRAS Demonstração Norte”.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Só as pendências do CRAS Norte aparecem (2 sem especificidade, 1 sem CPF, 1 sem escolaridade).</li><li>Famílias sem unidade de referência e entidades sem CNEAS não aparecem.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca02-01-filtro-cras-norte.png" alt="CA02 evidência"/><figcaption>ca02-01-filtro-cras-norte.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA03">
+      <h2>CA03 — Operacional vê só as suas unidades <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Cenário: CA03 — Operacional vê só as suas unidades
+Dado o Operacional com attendance-reports.view, lotado apenas no CRAS Sul
+Quando ele abre a apuração de 07/2026
+Então vê apenas as pendências de unidade do CRAS Sul
+E não vê as pendências da organização</p>
+      <p class="steps"><strong>Como foi testado:</strong> Pest (<code>AttendanceReportRegistrationPendenciesTest</code>): Operacional com <code>attendance-reports.view</code> lotado só no CRAS Sul. Na massa, o P7 não tem essa permissão (o Master não consegue concedê-la), por isso o critério não foi exercitado na tela.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Vê apenas as pendências de unidade do CRAS Sul e nenhuma pendência da organização.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA04">
+      <h2>CA04 — Mesma contagem da fila <span class="pill" style="background:#8a6d00">ATENDIDO · navegador + automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Cenário: CA04 — Mesma contagem da fila
+Quando comparo a contagem de "famílias sem unidade de referência" na apuração
+Então ela é igual ao total da fila "Famílias sem unidade"
+E o mesmo vale para "famílias sem especificidade" e a fila "Especificidade pendente"</p>
+      <p class="steps"><strong>Como foi testado:</strong> Atalho “Resolver” de famílias sem especificidade levou à fila “Especificidade Pendente”; comparação com a soma da apuração. Pest compara as contagens com as filas.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Fila: 4 famílias sem especificidade social; apuração: 2 (CRAS Norte) + 2 (CRAS Sul) = 4.</li><li>Ressalva (revisão de código, CR-001): uma família sem unidade e sem especificidade aparece na fila, mas na apuração conta só como “sem unidade de referência”. Na massa isso não ocorre; a regra aguarda decisão do PO.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca04-01-fila-especificidade.png" alt="CA04 evidência"/><figcaption>ca04-01-fila-especificidade.png</figcaption></figure></div>
+    </section>
+    <section class="ca" id="CA05">
+      <h2>CA05 — Pessoa sem CPF conta uma vez por unidade e mês <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Cenário: CA05 — Pessoa sem CPF conta uma vez por unidade e mês
+Dado uma pessoa sem CPF atendida 3 vezes no CRAS Norte em julho
+Então "pessoas atendidas sem CPF" do CRAS Norte em 07/2026 conta 1</p>
+      <p class="steps"><strong>Como foi testado:</strong> Pest: pessoa sem CPF atendida 3 vezes no CRAS Norte em julho.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Conta 1 (pessoas distintas por unidade e mês); atendimentos cancelados não contam.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA06">
+      <h2>CA06 — Nenhum dado pessoal na resposta <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Cenário: CA06 — Nenhum dado pessoal na resposta
+Quando inspeciono a resposta de GET /api/client/attendance-reports
+Então registration_pendencies traz apenas kind, count, scope, social_unit_uuid e target_route</p>
+      <p class="steps"><strong>Como foi testado:</strong> Pest: chaves do bloco <code>registration_pendencies</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Cada item traz apenas kind, count, scope, social_unit_uuid e target_route — nenhum nome, CPF ou uuid de família ou pessoa.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA07">
+      <h2>CA07 — Estado vazio <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Cenário: CA07 — Estado vazio
+Dado uma organização sem nenhuma pendência de cadastro
+Quando abro a apuração
+Então a seção mostra "Nenhuma pendência de cadastro neste recorte"</p>
+      <p class="steps"><strong>Como foi testado:</strong> Pest (organização sem pendências) + Vitest do <code>RegistrationPendenciesPanel</code>.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>A API devolve a lista vazia e o painel mostra “Nenhuma pendência de cadastro neste recorte”.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA08">
+      <h2>CA08 — Isolamento <span class="pill" style="background:#0b5cad">ATENDIDO · automatizado</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Cenário: CA08 — Isolamento
+Dado outra organização com 5 famílias sem unidade de referência
+Quando o Master da primeira organização abre a apuração
+Então essas 5 famílias não entram na contagem</p>
+      <p class="steps"><strong>Como foi testado:</strong> Pest (<code>RegistrationPendenciesIsolationTest</code>): outra organização com 5 famílias sem unidade de referência.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>Essas famílias não entram na contagem da primeira organização.</li></ul></div>
+      <div class="evid"><p class="noimg">Evidência por cobertura automatizada — ver Anexo.</p></div>
+    </section>
+    <section class="ca" id="CA09">
+      <h2>CA09 — Atalho respeita o acesso do destino <span class="pill" style="background:#1d7a46">ATENDIDO · navegador</span></h2>
+      <p class="gherkin"><strong>Critério (Gherkin):</strong> Cenário: CA09 — Atalho respeita o acesso do destino
+Dado o Master na seção de pendências
+Quando clica no atalho de "famílias sem especificidade"
+Então é levado à fila "Especificidade pendente" já existente</p>
+      <p class="steps"><strong>Como foi testado:</strong> Na seção, clique em “Resolver” de “Famílias sem especificidade confirmada”.</p>
+      <div class="results"><strong>Resultado observado:</strong><ul><li>O Master é levado à fila “Especificidade Pendente” (/app/cadastros/familias-especificidade-pendente), que já existia, com as 4 famílias.</li></ul></div>
+      <div class="evid"><figure><img src="screenshots/ca09-01-atalho-fila-especificidade.png" alt="CA09 evidência"/><figcaption>ca09-01-atalho-fila-especificidade.png</figcaption></figure></div>
+    </section>
+  
+  <h2>Observações e ressalvas</h2>
+  <section class="note"><h3>Massa de evidência</h3><p>As telas foram capturadas sobre a massa fictícia da #10994 populada pela modalidade híbrida (seed), que é a única forma de existirem as pendências de organização (família sem unidade e entidade sem CNEAS), recusadas pela API.</p></section>
+  
+  <h2>Anexo — Cobertura automatizada (Pest --filter="RegistrationPendenc|SocialEntityCneasRule" + Vitest RegistrationPendenciesPanel)</h2>
+  <pre class="pest">
+   PASS  Tests\Unit\Services\SocialEntityCneasRuleTest
+  ✓ it reproduces the NumeroCNEAS rule of the SIAP remittance (RN10) wi… 0.02s  
+  ✓ it reproduces the NumeroCNEAS rule of the SIAP remittance (RN10) with dataset "vazio"
+  ✓ it reproduces the NumeroCNEAS rule of the SIAP remittance (RN10) with dataset "só espaços"
+  ✓ it reproduces the NumeroCNEAS rule of the SIAP remittance (RN10) with dataset "não numérico"
+  ✓ it reproduces the NumeroCNEAS rule of the SIAP remittance (RN10) with dataset "com pontuação"
+  ✓ it reproduces the NumeroCNEAS rule of the SIAP remittance (RN10) with dataset "mais de 13 dígitos"
+  ✓ it reproduces the NumeroCNEAS rule of the SIAP remittance (RN10) with dataset "exatamente 13 dígitos"
+  ✓ it reproduces the NumeroCNEAS rule of the SIAP remittance (RN10) with dataset "menos de 13 dígitos"
+  ✓ it reproduces the NumeroCNEAS rule of the SIAP remittance (RN10) with dataset "inteiro"
+  ✓ it reproduces the NumeroCNEAS rule of the SIAP remittance (RN10) with dataset "com espaços nas bordas"
+
+   PASS  Tests\Feature\Attendance\AttendanceReportRegistrationPendenciesTest
+  ✓ it gives the Master without unit filter the five kinds with the sce… 0.58s  
+  ✓ it shows only the filtered unit items and no organization items whe… 0.09s  
+  ✓ it shows the Operacional only the unit items of the units he is ass… 0.17s  
+  ✓ it counts exactly what the two queues list (CA04 — single criterion… 0.19s  
+  ✓ it counts a person without CPF attended three times in the month on… 0.08s  
+  ✓ it returns only kind, count, scope, social_unit_uuid and target_rou… 0.11s  
+  ✓ it returns an empty list for an organization without registration p… 0.06s  
+  ✓ it runs at most one aggregated query per kind regardless of the num… 0.08s  
+
+   PASS  Tests\Feature\TenantIsolation\RegistrationPendenciesIsolationTest
+  ✓ it never counts another organization registration pendencies (CA08/… 0.07s  
+
+  Tests:    19 passed (112 assertions)
+  Duration: 1.97s
+
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/modules/attendance-reports/components/RegistrationPendenciesPanel.test.ts (7 tests) 60ms
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  16:03:09
+   Duration  602ms (transform 49ms, setup 8ms, collect 101ms, tests 60ms, environment 237ms, prepare 37ms)
+
+</pre>
+  <footer>Relatório gerado pela skill <code>acceptance-evidence-report</code> (playwright-cli + Pest). Evidências em <code>screenshots/</code>.</footer>
+</div></body></html>

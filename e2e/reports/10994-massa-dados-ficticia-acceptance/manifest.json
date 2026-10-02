@@ -1,0 +1,271 @@
+{
+  "meta": {
+    "title": "Relatório de Critérios de Aceite — Massa de dados fictícia (#10994)",
+    "subtitle": "US-QUAL-02 · Modalidade híbrida (manual E1–E3 · seed E4–E16 · conferência E17–E20) · execuções reais",
+    "rows": [
+      [
+        "Gerado em",
+        "01/10/2026"
+      ],
+      [
+        "Branch",
+        "feature/roadmap-massa-dados (api 242ae4f · client 7e91507 · qa 7416d7c)"
+      ],
+      [
+        "Spec",
+        ".planning/specs/10994-massa-dados-ficticia.md"
+      ],
+      [
+        "Ambiente",
+        "Stack Sail local · API http://localhost · client :5174 · admin :5175 · Mailpit"
+      ],
+      [
+        "Organização",
+        "Município Demonstração SigSUAS (base Arapiraca/AL 2700300) · CNPJ 98.000.000/0001-96"
+      ],
+      [
+        "Evidência de base",
+        "Conferência híbrida 2026-10-01_0914 (seed) · execução por API 2026-10-01_0148 · referência 2026-09-30_0958"
+      ],
+      [
+        "Ferramenta",
+        "Executor qa/massa-dados (Playwright) + Playwright (capturas) + Pest"
+      ]
+    ]
+  },
+  "summary": "15 critérios (CA01–CA13, CA02b, CA-T1). 13 atendidos — 6 por navegador (CA05, CA06, CA07, CA09, CA13, CA-T1), 4 combinando tela/terminal e verificação automatizada (CA02, CA02b, CA04, CA10) e 3 automatizados (CA03, CA08, CA11). CA01 atendido com ressalva (P7 sem a permissão de apuração). CA12 não atendido literalmente: unidade e entidade de outra organização respondem 403, não 404 — sem vazamento de dado. A massa foi gerada pela modalidade híbrida: E1–E3 pelo fluxo manual (simulado pelo executor), E4–E16 pelo comando massa-demo:popular e a conferência E17–E20 pelo massa:conferir, com 0 divergências na apuração.",
+  "cas": [
+    {
+      "id": "CA01",
+      "title": "Município de demonstração gerado",
+      "status": "parc",
+      "gherkin": "Cenário: CA01 — Município de demonstração gerado\nDado que executei \"npm run massa\" contra um ambiente de homologação\nQuando a execução concluir sem erro\nEntão existe a organização \"Município Demonstração SigSUAS\"\nE ela tem dois CRAS, um CREAS e profissionais lotados\nE tem 60 famílias, cerca de 200 pessoas e registros em 2026-06, 2026-07 e 2026-08",
+      "steps_html": "Base populada pela modalidade híbrida; telas de Unidades e Profissionais vistas pelo Master; painel geo visto pelo P6; contagens conferidas por SQL somente leitura na E20 (<code>qa/massa-dados/relatorios/2026-10-01_0914</code>).",
+      "results": [
+        "Organização “Município Demonstração SigSUAS” com CRAS Demonstração Norte, CRAS Demonstração Sul e CREAS Demonstração.",
+        "8 profissionais (P0–P7), P1–P7 lotados desde 01/05/2026.",
+        "60 famílias, 202 pessoas (9 sem CPF) e 208 registros em 2026-06, 2026-07 e 2026-08.",
+        "Ressalva: o P7 fica sem a permissão de ver a apuração — o Master não tem como concedê-la (achado RN14, igual no modo API)."
+      ],
+      "images": [
+        "screenshots/ca01-01-unidades.png",
+        "screenshots/ca01-02-profissionais.png",
+        "screenshots/ca01-03-painel-geo.png"
+      ]
+    },
+    {
+      "id": "CA02",
+      "title": "Geração bloqueada em produção",
+      "status": "parc",
+      "gherkin": "Cenário: CA02 — Geração bloqueada em produção\nDado que \"GET /api/environment\" responde {\"environment\":\"production\"}\nQuando executo \"npm run massa\"\nEntão a execução é recusada antes do reset e antes de qualquer requisição de escrita\nE a mensagem informa que o ambiente se identifica como produção\nE a contagem de registros da base é a mesma de antes",
+      "steps_html": "Uma cópia da API real foi servida com <code>APP_ENV=production</code> e o executor foi apontado para ela (<code>API_BASE</code>). Contagem de <code>tenants</code> antes e depois por SQL. Pest cobre a normalização (<code>EnvironmentEndpointTest</code>).",
+      "results": [
+        "GET /api/environment respondeu {\"environment\":\"production\"}.",
+        "Execução recusada no preflight, antes do aviso e do reset, com a mensagem “o ambiente-alvo se identifica como production”; código de saída 1.",
+        "Tenants: 4 antes e 4 depois — nenhum registro criado."
+      ],
+      "images": [
+        "screenshots/ca02-01-producao-recusada.png"
+      ]
+    },
+    {
+      "id": "CA02b",
+      "title": "Falha ao identificar o ambiente",
+      "status": "parc",
+      "gherkin": "Cenário: CA02b — Falha ao identificar o ambiente\nDado que \"GET /api/environment\" não responde ou responde com erro\nQuando executo \"npm run massa\"\nEntão a execução é recusada, pela mesma regra da produção",
+      "steps_html": "Executor apontado para a API fora do ar. A suíte <code>infra.test.ts</code> cobre também resposta 500, JSON inválido, chave ausente e valor fora da lista permitida.",
+      "results": [
+        "Recusa pela mesma regra: “não foi possível identificar o ambiente-alvo (erro de rede)”; código 1; nada apagado nem escrito."
+      ],
+      "images": [
+        "screenshots/ca02b-01-api-fora-do-ar.png"
+      ]
+    },
+    {
+      "id": "CA03",
+      "title": "Não existe caminho pelo sistema",
+      "status": "auto",
+      "gherkin": "Cenário: CA03 — Não existe caminho pelo sistema\nDado que sou Master ou Administrador\nQuando percorro os menus e as rotas do admin e do client\nEntão não existe ação, tela ou permissão de gerar massa\nE a única rota nova é \"GET /api/environment\", que só informa o ambiente",
+      "steps_html": "Varredura da E20: rotas da API (<code>route:list</code>), literais de menu e rota do admin e do client, e permissões.",
+      "results": [
+        "0 rotas, 0 itens de menu/rota e 0 permissões com termo de gerar massa.",
+        "Mudanças no produto ligadas à massa: GET /api/environment (só informa) e o bloco “Pendências de cadastro” da apuração (10994b, só leitura). O seed é comando Artisan, sem rota, tela nem permissão."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA04",
+      "title": "Mesma semente, mesmo resultado",
+      "status": "parc",
+      "gherkin": "Cenário: CA04 — Mesma semente, mesmo resultado\nDado duas execuções com \"--evidencias\" em bases recriadas\nQuando executo \"npm run massa:comparar\" com as duas pastas\nEntão os dois snapshot.json são idênticos por chave de negócio\nE os números da apuração são idênticos",
+      "steps_html": "<code>npm run massa:comparar</code> entre duas execuções completas pela API em bases recriadas, e entre a execução pela API e a conferência do seed (<code>--modo=api-x-seed</code>).",
+      "results": [
+        "API × API (2026-09-30_0958 × 2026-10-01_0148): idênticas por chave de negócio — 15 tabelas e 372 valores da apuração.",
+        "API × seed: código 0; 30 divergências, todas dos cenários só via seed; nenhuma inesperada."
+      ],
+      "images": [
+        "screenshots/ca04-01-comparar.png"
+      ]
+    },
+    {
+      "id": "CA05",
+      "title": "Números conferíveis à mão",
+      "status": "nav",
+      "gherkin": "Cenário: CA05 — Números conferíveis à mão\nDado que a massa foi gerada\nQuando consulto a apuração de 2026-07 do \"CRAS Demonstração Norte\"\nEntão cada contador coincide com o esperado.json\nE a etapa-17 do relatório mostra esperado × apurado sem divergência",
+      "steps_html": "Master abre a Apuração de Atendimentos de 07/2026 (todas as unidades). A E17 compara cada contador com o <code>esperado.json</code> nos 3 meses × 3 unidades (<code>qa/massa-dados/relatorios/2026-10-01_0914</code>).",
+      "results": [
+        "Tela com os contadores de 07/2026 por unidade (CRAS Norte 25 atendimentos, CRAS Sul 22, CREAS 11).",
+        "E17: 0 divergências (inclusive sem nenhuma justificativa RN14) na conferência do seed."
+      ],
+      "images": [
+        "screenshots/ca05-01-apuracao-julho.png"
+      ]
+    },
+    {
+      "id": "CA06",
+      "title": "Casos que parecem erro estão presentes",
+      "status": "nav",
+      "gherkin": "Cenário: CA06 — Casos que parecem erro estão presentes\nDado que a massa foi gerada\nQuando consulto a apuração\nEntão a família F-IDOSO gera \"elderly_outside_range\" sem incrementar faixa etária\nE a família F-GRUPO conta em \"families_in_groups\" com zero nas quatro faixas\nE uma unidade tem a soma dos perfis maior que o total de novas famílias\nE cada caso está descrito em elenco.md",
+      "steps_html": "Apuração de 07/2026, seção do SCFV (leiaute 15.8) e perfis das novas famílias (15.7); asserções nominais da E17.",
+      "results": [
+        "Aviso na tela: há participantes com 60 anos ou mais em SCFV que não é de idosos (F-IDOSO), fora de todas as faixas.",
+        "F-GRUPO conta em “famílias participando de grupos” com zero nas quatro faixas.",
+        "CRAS Norte, 07/2026: soma dos perfis 10 > 5 novas famílias (no modo seed; no modo API a soma fica em 2, porque os dados de perfil só entram por CadÚnico ou seed)."
+      ],
+      "images": [
+        "screenshots/ca06-01-apuracao-scfv.png"
+      ]
+    },
+    {
+      "id": "CA07",
+      "title": "Pendências propositais presentes (revisado, A1; depende da 10994b)",
+      "status": "nav",
+      "gherkin": "Cenário: CA07 — Pendências propositais presentes (revisado, A1; depende da 10994b)\nDado que a massa foi gerada\nQuando o Master abre a apuração sem filtro de unidade\nEntão a seção \"Pendências de cadastro\" mostra as cinco pendências da RN10\nE cada contagem coincide com a documentada no esperado.json",
+      "steps_html": "Master abre a apuração sem filtro de unidade; seção “Pendências de cadastro” (10994b). Tela de entidades mostrando a ENT-2 sem CNEAS.",
+      "results": [
+        "As cinco pendências da RN10 aparecem: 3 famílias sem unidade de referência, 2 + 2 sem especificidade confirmada, 1 + 3 pessoas atendidas sem CPF, 1 integrante sem escolaridade e 1 entidade sem CNEAS.",
+        "Contagens iguais às do esperado.json.",
+        "Famílias sem unidade e entidade sem CNEAS são cenários só via seed: a API recusa criá-los."
+      ],
+      "images": [
+        "screenshots/ca07-01-pendencias-apuracao.png",
+        "screenshots/ca07-02-entidades-sem-cneas.png"
+      ]
+    },
+    {
+      "id": "CA08",
+      "title": "Família acompanhada por duas unidades",
+      "status": "auto",
+      "gherkin": "Cenário: CA08 — Família acompanhada por duas unidades\nDado que F-DUPLA está em PAIF no CRAS Norte e em PAEFI no CREAS\nQuando consulto a apuração das duas unidades no mesmo mês\nEntão F-DUPLA é contada em cada uma",
+      "steps_html": "E17: F-DUPLA (PAIF no CRAS Norte e PAEFI no CREAS, P4 com as duas lotações) conferida nos contadores de acompanhamento das duas unidades no mesmo mês.",
+      "results": [
+        "F-DUPLA contada em cada uma das duas unidades; nenhuma divergência na E17."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA09",
+      "title": "Encaminhamento sem desfecho concedendo acesso",
+      "status": "nav",
+      "gherkin": "Cenário: CA09 — Encaminhamento sem desfecho concedendo acesso\nDado que F-ENC tem encaminhamento de trânsito interno para o CRAS Sul, sem desfecho\nQuando entro como P2, lotado só no CRAS Sul\nEntão consigo abrir o prontuário de F-ENC",
+      "steps_html": "P2 (lotado só no CRAS Sul) entra e abre o prontuário de F-ENC; E20 confere o HTTP e o desfecho vazio.",
+      "results": [
+        "Prontuário aberto (HTTP 200).",
+        "O encaminhamento de trânsito interno (código 14, do CREAS para o CRAS Sul) segue sem desfecho."
+      ],
+      "images": [
+        "screenshots/ca09-01-p2-abre-f-enc.png"
+      ]
+    },
+    {
+      "id": "CA10",
+      "title": "Pessoas atendidas sem CPF (revisado, A2)",
+      "status": "parc",
+      "gherkin": "Cenário: CA10 — Pessoas atendidas sem CPF (revisado, A2)\nDado que a massa foi gerada\nQuando consulto as pessoas atendidas no mês\nEntão há pessoas com a indicação \"sem CPF\" (without_cpf)\nE elas estão contadas na seção \"Pendências de cadastro\" da apuração",
+      "steps_html": "Seção de pendências da apuração (07/2026) e E20 (SQL somente leitura).",
+      "results": [
+        "“Pessoas atendidas sem CPF”: 1 no CRAS Norte e 3 no CRAS Sul no mês de referência.",
+        "9 pessoas sem CPF na massa, gravadas como NULL, com a indicação without_cpf."
+      ],
+      "images": [
+        "screenshots/ca07-01-pendencias-apuracao.png"
+      ]
+    },
+    {
+      "id": "CA11",
+      "title": "Nenhum CPF de pessoa real",
+      "status": "auto",
+      "gherkin": "Cenário: CA11 — Nenhum CPF de pessoa real\nDado que a massa foi gerada\nQuando verifico os CPFs de pessoas e usuários da organização demo\nEntão todos começam com \"98\", têm DV válido e seguem a sequência do elenco",
+      "steps_html": "E20: CPFs de pessoas e usuários da organização demo conferidos por SQL somente leitura.",
+      "results": [
+        "193 CPFs de pessoas e 9 de usuários conferidos: todos na base 98, com DV válido e iguais ao elenco.",
+        "0 CPFs fora da faixa; 9 pessoas sem CPF (NULL)."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA12",
+      "title": "Isolamento preservado",
+      "status": "fail",
+      "gherkin": "Cenário: CA12 — Isolamento preservado\nDado que existe outra organização na base\nQuando P1 tenta ler família, unidade ou entidade da outra organização\nEntão recebe 404\nE um usuário da outra organização também recebe 404 ao tentar ler a organização demo",
+      "steps_html": "E20: P1 tenta ler família, unidade e entidade da “Organização Controle SigSUAS” (criada pelo fluxo real); o Master dela tenta o inverso.",
+      "results": [
+        "Família: 404 nos dois sentidos (atende).",
+        "Unidade e entidade: 403 nos dois sentidos (o critério pede 404).",
+        "Nenhum dado da outra organização é devolvido; o isolamento está preservado. Achado para o PO/time: padronizar o código de resposta."
+      ],
+      "images": []
+    },
+    {
+      "id": "CA13",
+      "title": "Documentação da massa",
+      "status": "nav",
+      "gherkin": "Cenário: CA13 — Documentação da massa\nDado que a massa foi gerada com \"--evidencias\"\nQuando abro o index.html da execução\nEntão vejo composição, cenários, pendências propositais e números esperados por mês e unidade",
+      "steps_html": "Índice do relatório de evidências gerado pela conferência híbrida (<code>qa/massa-dados/relatorios/2026-10-01_0914</code>/index.html).",
+      "results": [
+        "O índice mostra a modalidade, a origem de cada etapa, a matriz dos CAs, esperado × apurado, os cenários só via seed e os achados.",
+        "Documentação da massa: elenco.md, esperado.json, roadmap 10-modalidade-hibrida.md e roteiro 11-roteiro-validacao-hibrida.md."
+      ],
+      "images": [
+        "screenshots/ca13-01-indice-relatorio.png"
+      ]
+    },
+    {
+      "id": "CA-T1",
+      "title": "Preflight bloqueia antes de apagar",
+      "status": "nav",
+      "gherkin": "Cenário: CA-T1 — Preflight bloqueia antes de apagar\nDado que o worker de fila está parado\nQuando executo \"npm run massa\"\nEntão o preflight aponta o worker com ✖ e a instrução para corrigir\nE a execução termina antes do aviso de apagamento, sem reset",
+      "steps_html": "<code>docker stop api-laravel.worker-1</code> e <code>npm run massa</code>; depois o worker é religado. Para comparação, o preflight APTO com a stack completa.",
+      "results": [
+        "Preflight aponta o worker parado com ✖ e a instrução “rode docker start api-laravel.worker-1”.",
+        "Execução termina antes do aviso de apagamento, sem reset (código 1)."
+      ],
+      "images": [
+        "screenshots/cat1-02-worker-parado.png",
+        "screenshots/cat1-01-preflight-apto.png"
+      ]
+    }
+  ],
+  "notes": [
+    {
+      "title": "Modalidade híbrida e cenários só via seed",
+      "html": "<p>O ticket foi validado pela nova modalidade híbrida: cadastro manual (organização, Master, DNE e camadas, primeiro acesso), seed das etapas E4–E16 (<code>php artisan massa-demo:popular</code>) e conferência. Quatro cenários só existem por seed porque a API os recusa: entidade sem CNEAS, famílias sem unidade de referência, dados de perfil do 15.7 (PBF, renda, trabalho infantil) e endereço da família. Roteiro: <code>.planning/roadmap-massa-dados/11-roteiro-validacao-hibrida.md</code>.</p>"
+    },
+    {
+      "title": "Remessa SIAP no modo seed",
+      "html": "<p>A entidade sem CNEAS (pendência proposital do CA07) é bloqueante na conferência prévia: no modo seed a remessa não é gerada (a E18 confere esse bloqueio). No modo API a remessa é gerada e não enviada ao TCE-AL. Decisão pendente do PO: se a pendência proposital pode impedir a remessa na demonstração.</p>"
+    },
+    {
+      "title": "Contadores omitidos pela API",
+      "html": "<p>A E17 compara 432 contadores esperados com 372 valores presentes na resposta. Os 60 restantes são contadores <code>missing_fields.*</code> que a API omite quando valem zero; o comparador os trata como zero. Resultado: 0 divergências.</p>"
+    },
+    {
+      "title": "Achados para o PO",
+      "html": "<ul><li>P7 sem permissão de apuração (o Master só atribui papéis).</li><li>CA12: 403 em vez de 404 para unidade e entidade de outra organização.</li><li>Família sem unidade de referência e entidade sem CNEAS não podem ser criadas pela tela/API.</li><li>Endereço da família não é gravável pela API do client (painel geo sem pontos no modo API).</li></ul>"
+    }
+  ],
+  "appendix": {
+    "label": "Cobertura automatizada (Pest, --filter=\"Environment|MassaDemo\")",
+    "file": "pest-10994.txt"
+  }
+}
