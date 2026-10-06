@@ -32,7 +32,7 @@ test.describe('E2E-002 Ocupação × função no vínculo do profissional', () =
     tag: ['@P1', '@client', '@professionals', '@ocupacao-funcao', '@lgpd'],
     annotation: [{ type: 'E2E', description: 'E2E-002' }, { type: 'AC', description: 'AC-001' }, { type: 'AC', description: 'AC-003' }, { type: 'AC', description: 'AC-004' }, { type: 'AC', description: 'AC-007' }, { type: 'AC', description: 'AC-009' }, { type: 'AC', description: 'AC-011' }, { type: 'user', description: 'master' }],
   }, async ({ page }) => {
-    await page.goto('/login');
+    await page.goto('/auth/login');
     await page.locator('input#cpf').fill(env('E2E_CLIENT_MASTER_CPF'));
     await page.locator('input#password').fill(env('E2E_CLIENT_MASTER_PASSWORD'));
     await page.locator('button[type="submit"]').click();
@@ -55,7 +55,7 @@ test.describe('E2E-002 Ocupação × função no vínculo do profissional', () =
     tag: ['@P1', '@client', '@professionals', '@ocupacao-funcao', '@lgpd'],
     annotation: [{ type: 'E2E', description: 'E2E-002' }, { type: 'AC', description: 'AC-001' }, { type: 'AC', description: 'AC-003' }, { type: 'AC', description: 'AC-004' }, { type: 'AC', description: 'AC-007' }, { type: 'AC', description: 'AC-009' }, { type: 'AC', description: 'AC-011' }, { type: 'user', description: 'master' }],
   }, async ({ page }) => {
-    await page.goto('/login');
+    await page.goto('/auth/login');
     await page.locator('input#cpf').fill(env('E2E_CLIENT_MASTER_CPF'));
     await page.locator('input#password').fill(env('E2E_CLIENT_MASTER_PASSWORD'));
     await page.locator('button[type="submit"]').click();
@@ -82,7 +82,7 @@ test.describe('E2E-002 Ocupação × função no vínculo do profissional', () =
     tag: ['@P1', '@client', '@professionals', '@ocupacao-funcao', '@lgpd'],
     annotation: [{ type: 'E2E', description: 'E2E-002' }, { type: 'AC', description: 'AC-001' }, { type: 'AC', description: 'AC-003' }, { type: 'AC', description: 'AC-004' }, { type: 'AC', description: 'AC-007' }, { type: 'AC', description: 'AC-009' }, { type: 'AC', description: 'AC-011' }, { type: 'user', description: 'master' }],
   }, async ({ page }) => {
-    await page.goto('/login');
+    await page.goto('/auth/login');
     await page.locator('input#cpf').fill(env('E2E_CLIENT_MASTER_CPF'));
     await page.locator('input#password').fill(env('E2E_CLIENT_MASTER_PASSWORD'));
     await page.locator('button[type="submit"]').click();
@@ -91,7 +91,7 @@ test.describe('E2E-002 Ocupação × função no vínculo do profissional', () =
     await page.goto(`/app/cadastros/profissionais-municipais/${env('E2E_CLIENT_PROFESSIONAL_CBO_UUID')}/editar`);
     // prefill da edição
     await page.waitForTimeout(1500);
-    await page.locator('svg.lucide-x').click();
+    await page.locator('button:has-text("2516-05") svg.lucide-x').click();
     await page.getByRole('button', { name: 'Salvar profissional' }).click();
     await page.waitForTimeout(500);
     await expect(page.getByText('Remover a ocupação do profissional?')).toBeVisible();
@@ -102,14 +102,14 @@ test.describe('E2E-002 Ocupação × função no vínculo do profissional', () =
     tag: ['@P1', '@client', '@professionals', '@ocupacao-funcao', '@lgpd'],
     annotation: [{ type: 'E2E', description: 'E2E-002' }, { type: 'AC', description: 'AC-001' }, { type: 'AC', description: 'AC-003' }, { type: 'AC', description: 'AC-004' }, { type: 'AC', description: 'AC-007' }, { type: 'AC', description: 'AC-009' }, { type: 'AC', description: 'AC-011' }, { type: 'user', description: 'master' }],
   }, async ({ page }) => {
-    await page.goto('/login');
+    await page.goto('/auth/login');
     await page.locator('input#cpf').fill(env('E2E_CLIENT_MASTER_CPF'));
     await page.locator('input#password').fill(env('E2E_CLIENT_MASTER_PASSWORD'));
     await page.locator('button[type="submit"]').click();
     // login + gate LGPD
     await page.waitForTimeout(1500);
     await page.goto(`/app/unidades/${env('E2E_CLIENT_UNIT_UUID')}`);
-    await page.getByRole('button', { name: 'Profissionais' }).click();
+    await page.locator('main button:has-text("Profissionais")').click();
     await page.getByRole('button', { name: 'Vincular profissional' }).click();
     await page.getByText('Selecione o profissional').click();
     await page.getByRole('option', { name: env('E2E_CLIENT_CBO_CANDIDATE_LABEL') }).click();
@@ -123,14 +123,14 @@ test.describe('E2E-002 Ocupação × função no vínculo do profissional', () =
     tag: ['@P1', '@client', '@professionals', '@ocupacao-funcao', '@lgpd'],
     annotation: [{ type: 'E2E', description: 'E2E-002' }, { type: 'AC', description: 'AC-001' }, { type: 'AC', description: 'AC-003' }, { type: 'AC', description: 'AC-004' }, { type: 'AC', description: 'AC-007' }, { type: 'AC', description: 'AC-009' }, { type: 'AC', description: 'AC-011' }, { type: 'user', description: 'master' }],
   }, async ({ page }) => {
-    await page.goto('/login');
+    await page.goto('/auth/login');
     await page.locator('input#cpf').fill(env('E2E_CLIENT_MASTER_CPF'));
     await page.locator('input#password').fill(env('E2E_CLIENT_MASTER_PASSWORD'));
     await page.locator('button[type="submit"]').click();
     // login + gate LGPD
     await page.waitForTimeout(1500);
     await page.goto(`/app/unidades/${env('E2E_CLIENT_UNIT_UUID')}`);
-    await page.getByRole('button', { name: 'Profissionais' }).click();
+    await page.locator('main button:has-text("Profissionais")').click();
     await page.getByRole('button', { name: 'Vincular profissional' }).click();
     await page.getByText('Selecione o profissional').click();
     await page.getByRole('option', { name: env('E2E_CLIENT_CBO_CANDIDATE_LABEL') }).click();
@@ -147,14 +147,14 @@ test.describe('E2E-002 Ocupação × função no vínculo do profissional', () =
     tag: ['@P1', '@client', '@professionals', '@ocupacao-funcao', '@lgpd'],
     annotation: [{ type: 'E2E', description: 'E2E-002' }, { type: 'AC', description: 'AC-001' }, { type: 'AC', description: 'AC-003' }, { type: 'AC', description: 'AC-004' }, { type: 'AC', description: 'AC-007' }, { type: 'AC', description: 'AC-009' }, { type: 'AC', description: 'AC-011' }, { type: 'user', description: 'master' }],
   }, async ({ page }) => {
-    await page.goto('/login');
+    await page.goto('/auth/login');
     await page.locator('input#cpf').fill(env('E2E_CLIENT_MASTER_CPF'));
     await page.locator('input#password').fill(env('E2E_CLIENT_MASTER_PASSWORD'));
     await page.locator('button[type="submit"]').click();
     // login + gate LGPD
     await page.waitForTimeout(1500);
     await page.goto(`/app/unidades/${env('E2E_CLIENT_UNIT_UUID')}`);
-    await page.getByRole('button', { name: 'Profissionais' }).click();
+    await page.locator('main button:has-text("Profissionais")').click();
     await page.getByRole('button', { name: 'Vincular profissional' }).click();
     await page.getByText('Selecione o profissional').click();
     await page.getByRole('option', { name: env('E2E_CLIENT_NOCBO_CANDIDATE_LABEL') }).click();
@@ -167,15 +167,16 @@ test.describe('E2E-002 Ocupação × função no vínculo do profissional', () =
     tag: ['@P1', '@client', '@professionals', '@ocupacao-funcao', '@lgpd'],
     annotation: [{ type: 'E2E', description: 'E2E-002' }, { type: 'AC', description: 'AC-001' }, { type: 'AC', description: 'AC-003' }, { type: 'AC', description: 'AC-004' }, { type: 'AC', description: 'AC-007' }, { type: 'AC', description: 'AC-009' }, { type: 'AC', description: 'AC-011' }, { type: 'user', description: 'operador' }],
   }, async ({ page }) => {
-    await page.goto('/login');
+    await page.goto('/auth/login');
     await page.locator('input#cpf').fill(env('E2E_CLIENT_OPERADOR_CPF'));
     await page.locator('input#password').fill(env('E2E_CLIENT_OPERADOR_PASSWORD'));
     await page.locator('button[type="submit"]').click();
     // login + gate LGPD
     await page.waitForTimeout(1500);
     await page.goto(`/app/unidades/${env('E2E_CLIENT_UNIT_UUID')}`);
-    await page.getByRole('button', { name: 'Profissionais' }).click();
-    await page.waitForTimeout(1000);
+    // o Operacional nem enxerga a aba Profissionais da unidade
+    await page.waitForTimeout(1500);
+    await expect(page.locator('main button:has-text("Profissionais")')).toHaveCount(0);
     await expect(page.getByRole('button', { name: 'Vincular profissional' })).toHaveCount(0);
     await expect(page.getByText('Editar CBO')).toHaveCount(0);
   });

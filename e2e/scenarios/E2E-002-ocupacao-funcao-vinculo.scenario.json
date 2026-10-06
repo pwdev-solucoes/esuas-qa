@@ -21,7 +21,7 @@
   ],
   "preconditions": {
     "base_url_env": "CLIENT_BASE_URL",
-    "start_path": "/login",
+    "start_path": "/auth/login",
     "viewport": {
       "width": 1440,
       "height": 900
@@ -314,7 +314,7 @@
           "action": "click",
           "target": {
             "by": "css",
-            "value": "svg.lucide-x"
+            "value": "button:has-text(\"2516-05\") svg.lucide-x"
           }
         },
         {
@@ -387,9 +387,8 @@
         {
           "action": "click",
           "target": {
-            "by": "role",
-            "value": "button",
-            "name": "Profissionais"
+            "by": "css",
+            "value": "main button:has-text(\"Profissionais\")"
           }
         },
         {
@@ -479,9 +478,8 @@
         {
           "action": "click",
           "target": {
-            "by": "role",
-            "value": "button",
-            "name": "Profissionais"
+            "by": "css",
+            "value": "main button:has-text(\"Profissionais\")"
           }
         },
         {
@@ -602,9 +600,8 @@
         {
           "action": "click",
           "target": {
-            "by": "role",
-            "value": "button",
-            "name": "Profissionais"
+            "by": "css",
+            "value": "main button:has-text(\"Profissionais\")"
           }
         },
         {
@@ -692,19 +689,20 @@
           "value": "/app/unidades/${env:E2E_CLIENT_UNIT_UUID}"
         },
         {
-          "action": "click",
-          "target": {
-            "by": "role",
-            "value": "button",
-            "name": "Profissionais"
-          }
-        },
-        {
           "action": "wait",
-          "timeout_ms": 1000
+          "timeout_ms": 1500,
+          "note": "o Operacional nem enxerga a aba Profissionais da unidade"
         }
       ],
       "assertions": [
+        {
+          "expect": "count",
+          "target": {
+            "by": "css",
+            "value": "main button:has-text(\"Profissionais\")"
+          },
+          "value": 0
+        },
         {
           "expect": "count",
           "target": {
