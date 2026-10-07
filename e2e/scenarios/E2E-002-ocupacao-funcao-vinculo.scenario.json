@@ -1,0 +1,729 @@
+{
+  "schema_version": 1,
+  "id": "E2E-002",
+  "title": "Ocupação × função no vínculo do profissional",
+  "description": "HU #11131: a edição do profissional mostra a ocupação salva e só confirma ao trocá-la ou retirá-la (cancelar não salva); os modais de função partem da ocupação ativa do profissional selecionado, avisam a divergência sem bloquear e exigem a função; o Operacional não vê as ações de vincular. Nomes de profissional vêm de variáveis de ambiente (massa fictícia).",
+  "feature_slug": "11131-ocupacao-funcao-vinculo-02-client",
+  "ac_refs": [
+    "AC-001",
+    "AC-003",
+    "AC-004",
+    "AC-007",
+    "AC-009",
+    "AC-011"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "professionals",
+    "ocupacao-funcao",
+    "lgpd"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/auth/login",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "users": [
+      {
+        "role": "master",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_MASTER_CPF",
+          "password": "E2E_CLIENT_MASTER_PASSWORD"
+        }
+      },
+      {
+        "role": "operador",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_OPERADOR_CPF",
+          "password": "E2E_CLIENT_OPERADOR_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Profissional fictício com a ocupação 2516-05 (Assistente social) ativa no catálogo (E2E_CLIENT_PROFESSIONAL_CBO_UUID)",
+      "Unidade de teste (E2E_CLIENT_UNIT_UUID) com dois profissionais elegíveis ao vínculo: um com ocupação 2516-05 ativa (rótulo E2E_CLIENT_CBO_CANDIDATE_LABEL) e um sem ocupação (rótulo E2E_CLIENT_NOCBO_CANDIDATE_LABEL)",
+      "O CBO 1422-05 (Gerente de recursos humanos) existe e está ativo no catálogo",
+      "Operacional sem professionals.units.manage, com acesso à unidade"
+    ]
+  },
+  "data": {
+    "cbo_principal": "2516-05 — Assistente social",
+    "cbo_outro": "1422-05",
+    "cbo_outro_label": "1422-05 — Gerente de recursos humanos"
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "Edição mostra a ocupação salva; trocar pede confirmação (CA09/CA10)",
+      "as_user": "master",
+      "steps": [
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "login + gate LGPD"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/profissionais-municipais/${env:E2E_CLIENT_PROFESSIONAL_CBO_UUID}/editar"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "prefill da edição"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "${data.cbo_principal}"
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "placeholder",
+            "value": "Buscar por código ou nome..."
+          },
+          "value": "${data.cbo_outro}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "${data.cbo_outro_label}"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Salvar profissional"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 500
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "role",
+            "value": "dialog"
+          },
+          "note": "diálogo de troca (AC-003)"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "text",
+            "value": "Alterar a ocupação do profissional?"
+          }
+        }
+      ]
+    },
+    {
+      "name": "cancel_keeps_form",
+      "title": "Cancelar o diálogo fecha sem salvar e mantém a nova ocupação no formulário (CA10)",
+      "as_user": "master",
+      "steps": [
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "login + gate LGPD"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/profissionais-municipais/${env:E2E_CLIENT_PROFESSIONAL_CBO_UUID}/editar"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "prefill da edição"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "${data.cbo_principal}"
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "placeholder",
+            "value": "Buscar por código ou nome..."
+          },
+          "value": "${data.cbo_outro}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "${data.cbo_outro_label}"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Salvar profissional"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 500
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Cancelar",
+            "exact": true
+          },
+          "note": "o fundo fica aria-hidden com o diálogo aberto"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 500
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "hidden",
+          "target": {
+            "by": "text",
+            "value": "Alterar a ocupação do profissional?"
+          }
+        },
+        {
+          "expect": "url",
+          "value": "/app/cadastros/profissionais-municipais/${env:E2E_CLIENT_PROFESSIONAL_CBO_UUID}/editar"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "${data.cbo_outro_label}"
+          },
+          "note": "formulário mantém a ocupação escolhida"
+        }
+      ]
+    },
+    {
+      "name": "confirm_remove",
+      "title": "Apagar a ocupação abre o diálogo de retirada, que garante que o acesso não muda (CA11)",
+      "as_user": "master",
+      "steps": [
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "login + gate LGPD"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/profissionais-municipais/${env:E2E_CLIENT_PROFESSIONAL_CBO_UUID}/editar"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "prefill da edição"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button:has-text(\"2516-05\") svg.lucide-x"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Salvar profissional"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 500
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "text",
+            "value": "Remover a ocupação do profissional?"
+          }
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "text",
+            "value": "O acesso do profissional não será alterado."
+          }
+        }
+      ]
+    },
+    {
+      "name": "unit_suggestion",
+      "title": "Pela unidade, a função segue o profissional selecionado (CA02)",
+      "as_user": "master",
+      "steps": [
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "login + gate LGPD"
+        },
+        {
+          "action": "goto",
+          "value": "/app/unidades/${env:E2E_CLIENT_UNIT_UUID}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "main button:has-text(\"Profissionais\")"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Vincular profissional"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "text",
+            "value": "Selecione o profissional"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "${env:E2E_CLIENT_CBO_CANDIDATE_LABEL}"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 500
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "${data.cbo_principal}"
+          },
+          "note": "função sugerida"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "text",
+            "value": "Função nesta unidade (CBO)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "divergence",
+      "title": "Escolher função diferente da ocupação mostra o aviso lado a lado e não pede confirmação (CA05)",
+      "as_user": "master",
+      "steps": [
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "login + gate LGPD"
+        },
+        {
+          "action": "goto",
+          "value": "/app/unidades/${env:E2E_CLIENT_UNIT_UUID}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "main button:has-text(\"Profissionais\")"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Vincular profissional"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "text",
+            "value": "Selecione o profissional"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "${env:E2E_CLIENT_CBO_CANDIDATE_LABEL}"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 500
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "${data.cbo_principal}"
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "placeholder",
+            "value": "Buscar CBO..."
+          },
+          "value": "${data.cbo_outro}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "${data.cbo_outro_label}"
+          }
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "cbo-divergence-notice"
+          }
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "cbo-divergence-registered"
+          },
+          "value": "${data.cbo_principal}"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "cbo-divergence-function"
+          },
+          "value": "${data.cbo_outro_label}"
+        }
+      ]
+    },
+    {
+      "name": "validation_error",
+      "title": "Candidato sem ocupação e sem função escolhida: o vínculo não é salvo (CA03)",
+      "as_user": "master",
+      "steps": [
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "login + gate LGPD"
+        },
+        {
+          "action": "goto",
+          "value": "/app/unidades/${env:E2E_CLIENT_UNIT_UUID}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "main button:has-text(\"Profissionais\")"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Vincular profissional"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "text",
+            "value": "Selecione o profissional"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "${env:E2E_CLIENT_NOCBO_CANDIDATE_LABEL}"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 500
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Vincular",
+            "exact": true
+          }
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "text",
+            "value": "Selecione o CBO."
+          }
+        }
+      ]
+    },
+    {
+      "name": "forbidden",
+      "title": "Operacional não vê as ações de vincular nem de editar a função (AC-011)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "login + gate LGPD"
+        },
+        {
+          "action": "goto",
+          "value": "/app/unidades/${env:E2E_CLIENT_UNIT_UUID}"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "o Operacional nem enxerga a aba Profissionais da unidade"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "count",
+          "target": {
+            "by": "css",
+            "value": "main button:has-text(\"Profissionais\")"
+          },
+          "value": 0
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Vincular profissional"
+          },
+          "value": 0
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "text",
+            "value": "Editar CBO"
+          },
+          "value": 0
+        }
+      ]
+    }
+  ],
+  "not_applicable": {
+    "empty_state": "Sem lista nova: a HU só altera formulários e modais; os estados vazios das telas existentes não mudam."
+  }
+}
