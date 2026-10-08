@@ -147,18 +147,18 @@
         {
           "expect": "visible",
           "target": {
-            "by": "text",
-            "value": "Parâmetros do TCE",
-            "exact": false
-          }
+            "by": "css",
+            "value": "[data-testid=\"history-entry\"]:has-text(\"Parâmetros do TCE\") >> nth=0"
+          },
+          "note": "primeiro item da trilha sobre os parâmetros do TCE — nth=0 evita strict mode quando há vários"
         },
         {
           "expect": "visible",
           "target": {
-            "by": "text",
-            "value": "→"
+            "by": "css",
+            "value": "[data-testid=\"history-change\"]:has-text(\"→\") >> nth=0"
           },
-          "note": "antes → depois"
+          "note": "antes → depois (um por alteração; nth=0 evita strict mode)"
         }
       ]
     },

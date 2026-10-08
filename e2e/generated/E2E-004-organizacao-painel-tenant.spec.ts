@@ -44,9 +44,10 @@ test.describe('E2E-004 Organização no Painel do Tenant: CARDUG, histórico e u
     await page.goto('/app/configuracoes?tab=history');
     await page.waitForTimeout(1000);
     await expect(page.getByTestId('organization-history')).toBeVisible();
-    await expect(page.getByText('Parâmetros do TCE')).toBeVisible();
-    // antes → depois
-    await expect(page.getByText('→')).toBeVisible();
+    // primeiro item da trilha sobre os parâmetros do TCE — nth=0 evita strict mode quando há vários
+    await expect(page.locator('[data-testid="history-entry"]:has-text("Parâmetros do TCE") >> nth=0')).toBeVisible();
+    // antes → depois (um por alteração; nth=0 evita strict mode)
+    await expect(page.locator('[data-testid="history-change"]:has-text("→") >> nth=0')).toBeVisible();
   });
 
   test('validation_error — CARDUG só zeros e com letra são recusados (C-CA04, C-CA04b)', {
