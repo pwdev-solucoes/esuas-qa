@@ -1,0 +1,555 @@
+{
+  "schema_version": 1,
+  "id": "E2E-003",
+  "title": "Organização no Painel Global: nome, telefone, CARDUG e vínculo com nome longo",
+  "description": "HU #10996: o cadastro da organização aceita pontuação usual na Razão Social e recusa nome sem letra e telefone curto com mensagem pt-BR; o drawer TCE aceita CARDUG curto e recusa só zeros; o vínculo de gestor conclui com organização de nome longo; o Operacional Global não acessa o detalhe da organização. Massa fictícia.",
+  "feature_slug": "10996-onda1-03-admin",
+  "ac_refs": [
+    "AC-002",
+    "AC-003",
+    "AC-005",
+    "AC-006",
+    "AC-007"
+  ],
+  "priority": "P1",
+  "tags": [
+    "admin",
+    "tenants",
+    "validacao"
+  ],
+  "preconditions": {
+    "base_url_env": "E2E_BASE_URL",
+    "start_path": "/auth/login",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "users": [
+      {
+        "role": "admin",
+        "credentials_env": {
+          "cpf": "E2E_ADMIN_CPF",
+          "password": "E2E_ADMIN_PASSWORD"
+        }
+      },
+      {
+        "role": "operador_global",
+        "credentials_env": {
+          "cpf": "E2E_ADMIN_OPERADOR_CPF",
+          "password": "E2E_ADMIN_OPERADOR_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Organização fictícia com razão social acima de 150 caracteres (E2E_LONG_TENANT_SEARCH) ativa",
+      "Organização de teste com detalhe acessível (E2E_TENANT_UUID)",
+      "Usuário de organização fictício para vínculo (E2E_CLIENT_USER_UUID)",
+      "Base recém-semeada (npm run e2e:local → migrate:fresh): o CNPJ fictício 10.996.000/0001-47 da organização criada pelo happy_path ainda não existe (unique + soft delete)"
+    ]
+  },
+  "data": {
+    "valid_name": "CRAS - Centro / Norte (Sede), Ltda. & D'Ávila",
+    "cnpj": "10996000000147",
+    "email": "e2e-10996-003@e2e.local",
+    "cardug_ok": "20"
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "Razão Social com pontuação usual é gravada e CARDUG curto é aceito (A-CA03, C-CA01)",
+      "as_user": "admin",
+      "steps": [
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_ADMIN_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_ADMIN_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo (o POST de login passa de 1,5 s numa stack recém-subida e o goto seguinte o abortava)",
+          "value": "/app"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/tenants"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Nova Organização"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 800
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "#t-legal-name"
+          },
+          "value": "${data.valid_name}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "#t-cnpj"
+          },
+          "value": "${data.cnpj}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "#t-email"
+          },
+          "value": "${data.email}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "#t-phone"
+          },
+          "value": "82999990000"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "#t-status"
+          },
+          "note": "Select do shadcn"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[role=\"option\"] >> nth=0"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Salvar"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "POST /manager/tenants + toast \"Organização cadastrada com sucesso.\""
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "placeholder",
+            "value": "Buscar por razão social"
+          },
+          "value": "${data.valid_name}"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "busca na listagem"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "${data.valid_name}",
+            "exact": true
+          },
+          "note": "a razão social da linha abre o detalhe — só existe se a organização foi gravada (A-CA03)"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Parâmetros TCE/AL"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Preencher parâmetros"
+          },
+          "note": "organização recém-criada: cartão TCE vazio"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 500
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "#tenant-cardug-identifier"
+          },
+          "value": "${data.cardug_ok}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "aside[role=\"dialog\"] button:has-text(\"Salvar\")"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "PUT tce-parameters"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "url",
+          "value": "/app/tenants/",
+          "note": "detalhe da organização criada (a listagem é /app/tenants, sem barra final)"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "h1"
+          },
+          "value": "${data.valid_name}",
+          "note": "A-CA03: razão social gravada com a pontuação usual, sem normalização"
+        },
+        {
+          "expect": "hidden",
+          "target": {
+            "by": "css",
+            "value": "aside[role=\"dialog\"]"
+          },
+          "note": "drawer TCE fechou após salvar"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "section:has(h2:has-text(\"Parâmetros do TCE/AL\")) dd >> nth=0"
+          },
+          "value": "${data.cardug_ok}",
+          "note": "C-CA01: CARDUG \"20\" exibido no cartão TCE sem padding (escopo na seção: o cartão de contatos também tem <dl>, oculto por v-show)"
+        },
+        {
+          "expect": "hidden",
+          "target": {
+            "by": "testid",
+            "value": "siap-warning"
+          },
+          "note": "C-CA01: com CARDUG curto válido a remessa SIAP não fica bloqueada"
+        }
+      ]
+    },
+    {
+      "name": "validation_error",
+      "title": "Nome sem letra e telefone curto são recusados localmente (A-CA02, A-CA04)",
+      "as_user": "admin",
+      "steps": [
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_ADMIN_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_ADMIN_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo (o POST de login passa de 1,5 s numa stack recém-subida e o goto seguinte o abortava)",
+          "value": "/app"
+        },
+        {
+          "action": "goto",
+          "value": "/app/tenants"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Nova Organização"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 800
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "#t-legal-name"
+          },
+          "value": "123 - 456"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "#t-phone"
+          },
+          "value": "8299"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Salvar"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 800
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "text",
+            "value": "A razão social precisa conter letras."
+          }
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "text",
+            "value": "O telefone deve ter 10 ou 11 dígitos, com DDD."
+          }
+        }
+      ]
+    },
+    {
+      "name": "long_name_binding",
+      "title": "Vínculo de gestor conclui com organização de nome longo (A-CA07)",
+      "as_user": "admin",
+      "steps": [
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_ADMIN_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_ADMIN_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo (o POST de login passa de 1,5 s numa stack recém-subida e o goto seguinte o abortava)",
+          "value": "/app"
+        },
+        {
+          "action": "goto",
+          "value": "/app/usuarios/${env:E2E_CLIENT_USER_UUID}?tab=bindings"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Adicionar vínculo"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Selecione a organização..."
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input[placeholder^=\"Buscar por nome\"]"
+          },
+          "value": "${env:E2E_LONG_TENANT_SEARCH}"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "role",
+            "value": "listbox"
+          }
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Adicionar"
+          }
+        }
+      ]
+    },
+    {
+      "name": "forbidden",
+      "title": "Operacional Global não acessa o detalhe da organização (403)",
+      "as_user": "operador_global",
+      "steps": [
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_ADMIN_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_ADMIN_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo (o POST de login passa de 1,5 s numa stack recém-subida e o goto seguinte o abortava)",
+          "value": "/app"
+        },
+        {
+          "action": "goto",
+          "value": "/app/tenants/${env:E2E_TENANT_UUID}"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "text",
+            "value": "Acesso negado"
+          }
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Parâmetros TCE/AL"
+          },
+          "value": 0
+        }
+      ]
+    }
+  ]
+}
