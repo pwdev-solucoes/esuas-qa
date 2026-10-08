@@ -98,7 +98,12 @@
         },
         {
           "action": "wait",
-          "timeout_ms": 1500
+          "timeout_ms": 2500
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
         },
         {
           "action": "click",
@@ -322,7 +327,12 @@
         },
         {
           "action": "wait",
-          "timeout_ms": 1500
+          "timeout_ms": 2500
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
         },
         {
           "action": "click",
@@ -421,7 +431,12 @@
         },
         {
           "action": "wait",
-          "timeout_ms": 1500
+          "timeout_ms": 2500
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
         },
         {
           "action": "click",
@@ -509,7 +524,12 @@
         },
         {
           "action": "wait",
-          "timeout_ms": 1500
+          "timeout_ms": 2500
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
         }
       ],
       "assertions": [

@@ -42,7 +42,9 @@ test.describe('E2E-003 Organização no Painel Global: nome, telefone, CARDUG e 
     // fecha o modal de novidades da plataforma, se estiver aberto
     await page.keyboard.press('Escape');
     await page.goto('/app/tenants');
-    await page.waitForTimeout(1500);
+    await page.waitForTimeout(2500);
+    // fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)
+    await page.keyboard.press('Escape');
     await page.getByRole('button', { name: 'Nova Organização' }).click();
     await page.waitForTimeout(800);
     await page.locator('#t-legal-name').fill(String(data.valid_name));
@@ -92,7 +94,9 @@ test.describe('E2E-003 Organização no Painel Global: nome, telefone, CARDUG e 
     // login
     await page.waitForTimeout(1500);
     await page.goto('/app/tenants');
-    await page.waitForTimeout(1500);
+    await page.waitForTimeout(2500);
+    // fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)
+    await page.keyboard.press('Escape');
     await page.getByRole('button', { name: 'Nova Organização' }).click();
     await page.waitForTimeout(800);
     await page.locator('#t-legal-name').fill('123 - 456');
@@ -114,7 +118,9 @@ test.describe('E2E-003 Organização no Painel Global: nome, telefone, CARDUG e 
     // login
     await page.waitForTimeout(1500);
     await page.goto(`/app/usuarios/${env('E2E_CLIENT_USER_UUID')}?tab=bindings`);
-    await page.waitForTimeout(1500);
+    await page.waitForTimeout(2500);
+    // fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)
+    await page.keyboard.press('Escape');
     await page.getByRole('button', { name: 'Adicionar vínculo' }).click();
     await page.getByRole('button', { name: 'Selecione a organização...' }).click();
     await page.locator('input[placeholder^="Buscar por nome"]').fill(env('E2E_LONG_TENANT_SEARCH'));
@@ -134,7 +140,9 @@ test.describe('E2E-003 Organização no Painel Global: nome, telefone, CARDUG e 
     // login
     await page.waitForTimeout(1500);
     await page.goto(`/app/tenants/${env('E2E_TENANT_UUID')}`);
-    await page.waitForTimeout(1500);
+    await page.waitForTimeout(2500);
+    // fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)
+    await page.keyboard.press('Escape');
     await expect(page.getByText('Acesso negado')).toBeVisible();
     await expect(page.getByRole('button', { name: 'Parâmetros TCE/AL' })).toHaveCount(0);
   });
