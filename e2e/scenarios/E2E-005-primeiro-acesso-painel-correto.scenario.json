@@ -1,0 +1,186 @@
+{
+  "schema_version": 1,
+  "id": "E2E-005",
+  "title": "Primeiro acesso no painel correto e Gestão de Usuários removida do tenant",
+  "description": "HU #10996: a tela de definição de senha abre no client com o formulário de senha e confirmação; /app/usuarios do tenant leva ao acesso negado para Master e Operador. O fluxo completo com e-mail (Mailpit) está na spec primeiro-acesso-10996.spec.ts. Massa fictícia; nenhum dado pessoal.",
+  "feature_slug": "10996-onda1-05-qa",
+  "ac_refs": [
+    "AC-002",
+    "AC-003"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "primeiro-acesso",
+    "usuarios",
+    "lgpd"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/login",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "users": [
+      {
+        "role": "master",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_MASTER_CPF",
+          "password": "E2E_CLIENT_MASTER_PASSWORD"
+        }
+      },
+      {
+        "role": "operador",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_OPERADOR_CPF",
+          "password": "E2E_CLIENT_OPERADOR_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Master e Operador com profissional ativo no tenant",
+      "API com os planos 01 e 02 da HU #10996 (sem rotas client/users)"
+    ]
+  },
+  "data": {},
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "Tela de definição de senha abre no client (B-CA04)",
+      "as_user": "master",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/reset-password?token=e2e-token-invalido&email=e2e%40e2e.local"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1000
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          }
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "input#password_confirmation"
+          }
+        }
+      ]
+    },
+    {
+      "name": "usuarios_negado_master",
+      "title": "/app/usuarios leva ao acesso negado para o Master (B-CA07)",
+      "as_user": "master",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "login + gate LGPD"
+        },
+        {
+          "action": "goto",
+          "value": "/app/usuarios"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1000
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "url",
+          "value": "/403"
+        }
+      ]
+    },
+    {
+      "name": "usuarios_negado_operador",
+      "title": "/app/usuarios leva ao acesso negado para o Operador (B-CA07)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "login + gate LGPD"
+        },
+        {
+          "action": "goto",
+          "value": "/app/usuarios"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1000
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "url",
+          "value": "/403"
+        }
+      ]
+    }
+  ]
+}
