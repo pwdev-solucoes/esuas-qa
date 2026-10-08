@@ -1,0 +1,399 @@
+{
+  "schema_version": 1,
+  "id": "E2E-003",
+  "title": "Organização no Painel Global: nome, telefone, CARDUG e vínculo com nome longo",
+  "description": "HU #10996: o cadastro da organização aceita pontuação usual na Razão Social e recusa nome sem letra e telefone curto com mensagem pt-BR; o drawer TCE aceita CARDUG curto e recusa só zeros; o vínculo de gestor conclui com organização de nome longo; o Operacional Global não acessa o detalhe da organização. Massa fictícia.",
+  "feature_slug": "10996-onda1-03-admin",
+  "ac_refs": [
+    "AC-002",
+    "AC-003",
+    "AC-005",
+    "AC-006",
+    "AC-007"
+  ],
+  "priority": "P1",
+  "tags": [
+    "admin",
+    "tenants",
+    "validacao"
+  ],
+  "preconditions": {
+    "base_url_env": "ADMIN_BASE_URL",
+    "start_path": "/auth/login",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "users": [
+      {
+        "role": "admin",
+        "credentials_env": {
+          "cpf": "E2E_ADMIN_CPF",
+          "password": "E2E_ADMIN_PASSWORD"
+        }
+      },
+      {
+        "role": "operador_global",
+        "credentials_env": {
+          "cpf": "E2E_ADMIN_OPERADOR_CPF",
+          "password": "E2E_ADMIN_OPERADOR_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Organização fictícia com razão social acima de 150 caracteres (E2E_LONG_TENANT_SEARCH) ativa",
+      "Organização de teste com detalhe acessível (E2E_TENANT_UUID)",
+      "Usuário de organização fictício para vínculo (E2E_CLIENT_USER_UUID)"
+    ]
+  },
+  "data": {
+    "valid_name": "CRAS - Centro / Norte (Sede), Ltda. & D'Ávila"
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "Razão Social com pontuação usual e CARDUG curto são aceitos (A-CA03, C-CA01)",
+      "as_user": "admin",
+      "steps": [
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_ADMIN_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_ADMIN_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "login"
+        },
+        {
+          "action": "goto",
+          "value": "/app/tenants"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Nova Organização"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 800
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "#t-legal-name"
+          },
+          "value": "${data.valid_name}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "#t-phone"
+          },
+          "value": "82999990000"
+        },
+        {
+          "action": "goto",
+          "value": "/app/tenants/${env:E2E_TENANT_UUID}"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Parâmetros TCE/AL"
+          }
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Parâmetros TCE/AL"
+          }
+        }
+      ]
+    },
+    {
+      "name": "validation_error",
+      "title": "Nome sem letra e telefone curto são recusados localmente (A-CA02, A-CA04)",
+      "as_user": "admin",
+      "steps": [
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_ADMIN_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_ADMIN_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "login"
+        },
+        {
+          "action": "goto",
+          "value": "/app/tenants"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Nova Organização"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 800
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "#t-legal-name"
+          },
+          "value": "123 - 456"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "#t-phone"
+          },
+          "value": "8299"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Salvar"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 800
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "text",
+            "value": "A razão social precisa conter letras."
+          }
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "text",
+            "value": "O telefone deve ter 10 ou 11 dígitos, com DDD."
+          }
+        }
+      ]
+    },
+    {
+      "name": "long_name_binding",
+      "title": "Vínculo de gestor conclui com organização de nome longo (A-CA07)",
+      "as_user": "admin",
+      "steps": [
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_ADMIN_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_ADMIN_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "login"
+        },
+        {
+          "action": "goto",
+          "value": "/app/usuarios/${env:E2E_CLIENT_USER_UUID}?tab=bindings"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Adicionar vínculo"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Selecione a organização..."
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input[placeholder^=\"Buscar por nome\"]"
+          },
+          "value": "${env:E2E_LONG_TENANT_SEARCH}"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "role",
+            "value": "listbox"
+          }
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Adicionar"
+          }
+        }
+      ]
+    },
+    {
+      "name": "forbidden",
+      "title": "Operacional Global não acessa o detalhe da organização (403)",
+      "as_user": "operador_global",
+      "steps": [
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_ADMIN_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_ADMIN_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "login"
+        },
+        {
+          "action": "goto",
+          "value": "/app/tenants/${env:E2E_TENANT_UUID}"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "text",
+            "value": "Acesso negado"
+          }
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Parâmetros TCE/AL"
+          },
+          "value": 0
+        }
+      ]
+    }
+  ]
+}
