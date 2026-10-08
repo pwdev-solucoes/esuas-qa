@@ -34,8 +34,8 @@ test.describe('E2E-004 Organização no Painel do Tenant: CARDUG, histórico e u
     await page.locator('input#cpf').fill(env('E2E_CLIENT_MASTER_CPF'));
     await page.locator('input#password').fill(env('E2E_CLIENT_MASTER_PASSWORD'));
     await page.locator('button[type="submit"]').click();
-    // login + gate LGPD
-    await page.waitForTimeout(1500);
+    // login concluído: espera a URL autenticada em vez de tempo fixo (o POST de login passa de 1,5 s numa stack recém-subida e o goto seguinte o abortava)
+    await page.waitForURL(new RegExp(escapeRegExp('/app')));
     // fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)
     await page.keyboard.press('Escape');
     await page.goto('/app/configuracoes?tab=tce');
@@ -68,8 +68,8 @@ test.describe('E2E-004 Organização no Painel do Tenant: CARDUG, histórico e u
     await page.locator('input#cpf').fill(env('E2E_CLIENT_MASTER_CPF'));
     await page.locator('input#password').fill(env('E2E_CLIENT_MASTER_PASSWORD'));
     await page.locator('button[type="submit"]').click();
-    // login + gate LGPD
-    await page.waitForTimeout(1500);
+    // login concluído: espera a URL autenticada em vez de tempo fixo (o POST de login passa de 1,5 s numa stack recém-subida e o goto seguinte o abortava)
+    await page.waitForURL(new RegExp(escapeRegExp('/app')));
     // fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)
     await page.keyboard.press('Escape');
     await page.goto('/app/configuracoes?tab=tce');
@@ -93,8 +93,8 @@ test.describe('E2E-004 Organização no Painel do Tenant: CARDUG, histórico e u
     await page.locator('input#cpf').fill(env('E2E_CLIENT_OPERADOR_CPF'));
     await page.locator('input#password').fill(env('E2E_CLIENT_OPERADOR_PASSWORD'));
     await page.locator('button[type="submit"]').click();
-    // login + gate LGPD
-    await page.waitForTimeout(1500);
+    // login concluído: espera a URL autenticada em vez de tempo fixo (o POST de login passa de 1,5 s numa stack recém-subida e o goto seguinte o abortava)
+    await page.waitForURL(new RegExp(escapeRegExp('/app')));
     // fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)
     await page.keyboard.press('Escape');
     await page.goto('/app/configuracoes?tab=history');
@@ -115,8 +115,8 @@ test.describe('E2E-004 Organização no Painel do Tenant: CARDUG, histórico e u
     await page.locator('input#cpf').fill(env('E2E_CLIENT_OPERADOR_CPF'));
     await page.locator('input#password').fill(env('E2E_CLIENT_OPERADOR_PASSWORD'));
     await page.locator('button[type="submit"]').click();
-    // login + gate LGPD
-    await page.waitForTimeout(1500);
+    // login concluído: espera a URL autenticada em vez de tempo fixo (o POST de login passa de 1,5 s numa stack recém-subida e o goto seguinte o abortava)
+    await page.waitForURL(new RegExp(escapeRegExp('/app')));
     // fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)
     await page.keyboard.press('Escape');
     await page.goto('/app/usuarios');
@@ -135,8 +135,8 @@ test.describe('E2E-004 Organização no Painel do Tenant: CARDUG, histórico e u
     await page.locator('input#cpf').fill(env('E2E_CLIENT_EMPTY_MASTER_CPF'));
     await page.locator('input#password').fill(env('E2E_CLIENT_EMPTY_MASTER_PASSWORD'));
     await page.locator('button[type="submit"]').click();
-    // login + gate LGPD
-    await page.waitForTimeout(1500);
+    // login concluído: espera a URL autenticada em vez de tempo fixo (o POST de login passa de 1,5 s numa stack recém-subida e o goto seguinte o abortava)
+    await page.waitForURL(new RegExp(escapeRegExp('/app')));
     // fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)
     await page.keyboard.press('Escape');
     await page.goto('/app/configuracoes?tab=history');

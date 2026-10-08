@@ -94,8 +94,8 @@
         },
         {
           "action": "wait",
-          "timeout_ms": 1500,
-          "note": "login + gate LGPD"
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo (o POST de login passa de 1,5 s numa stack recém-subida e o goto seguinte o abortava)",
+          "value": "/app"
         },
         {
           "action": "press",
@@ -217,8 +217,8 @@
         },
         {
           "action": "wait",
-          "timeout_ms": 1500,
-          "note": "login + gate LGPD"
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo (o POST de login passa de 1,5 s numa stack recém-subida e o goto seguinte o abortava)",
+          "value": "/app"
         },
         {
           "action": "press",
@@ -307,8 +307,8 @@
         },
         {
           "action": "wait",
-          "timeout_ms": 1500,
-          "note": "login + gate LGPD"
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo (o POST de login passa de 1,5 s numa stack recém-subida e o goto seguinte o abortava)",
+          "value": "/app"
         },
         {
           "action": "press",
@@ -382,8 +382,8 @@
         },
         {
           "action": "wait",
-          "timeout_ms": 1500,
-          "note": "login + gate LGPD"
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo (o POST de login passa de 1,5 s numa stack recém-subida e o goto seguinte o abortava)",
+          "value": "/app"
         },
         {
           "action": "press",
@@ -445,8 +445,8 @@
         },
         {
           "action": "wait",
-          "timeout_ms": 1500,
-          "note": "login + gate LGPD"
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo (o POST de login passa de 1,5 s numa stack recém-subida e o goto seguinte o abortava)",
+          "value": "/app"
         },
         {
           "action": "press",

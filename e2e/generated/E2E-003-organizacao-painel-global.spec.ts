@@ -37,8 +37,8 @@ test.describe('E2E-003 Organização no Painel Global: nome, telefone, CARDUG e 
     await page.locator('input#cpf').fill(env('E2E_ADMIN_CPF'));
     await page.locator('input#password').fill(env('E2E_ADMIN_PASSWORD'));
     await page.locator('button[type="submit"]').click();
-    // login
-    await page.waitForTimeout(1500);
+    // login concluído: espera a URL autenticada em vez de tempo fixo (o POST de login passa de 1,5 s numa stack recém-subida e o goto seguinte o abortava)
+    await page.waitForURL(new RegExp(escapeRegExp('/app')));
     // fecha o modal de novidades da plataforma, se estiver aberto
     await page.keyboard.press('Escape');
     await page.goto('/app/tenants');
@@ -91,8 +91,8 @@ test.describe('E2E-003 Organização no Painel Global: nome, telefone, CARDUG e 
     await page.locator('input#cpf').fill(env('E2E_ADMIN_CPF'));
     await page.locator('input#password').fill(env('E2E_ADMIN_PASSWORD'));
     await page.locator('button[type="submit"]').click();
-    // login
-    await page.waitForTimeout(1500);
+    // login concluído: espera a URL autenticada em vez de tempo fixo (o POST de login passa de 1,5 s numa stack recém-subida e o goto seguinte o abortava)
+    await page.waitForURL(new RegExp(escapeRegExp('/app')));
     await page.goto('/app/tenants');
     await page.waitForTimeout(2500);
     // fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)
@@ -115,8 +115,8 @@ test.describe('E2E-003 Organização no Painel Global: nome, telefone, CARDUG e 
     await page.locator('input#cpf').fill(env('E2E_ADMIN_CPF'));
     await page.locator('input#password').fill(env('E2E_ADMIN_PASSWORD'));
     await page.locator('button[type="submit"]').click();
-    // login
-    await page.waitForTimeout(1500);
+    // login concluído: espera a URL autenticada em vez de tempo fixo (o POST de login passa de 1,5 s numa stack recém-subida e o goto seguinte o abortava)
+    await page.waitForURL(new RegExp(escapeRegExp('/app')));
     await page.goto(`/app/usuarios/${env('E2E_CLIENT_USER_UUID')}?tab=bindings`);
     await page.waitForTimeout(2500);
     // fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)
@@ -137,8 +137,8 @@ test.describe('E2E-003 Organização no Painel Global: nome, telefone, CARDUG e 
     await page.locator('input#cpf').fill(env('E2E_ADMIN_OPERADOR_CPF'));
     await page.locator('input#password').fill(env('E2E_ADMIN_OPERADOR_PASSWORD'));
     await page.locator('button[type="submit"]').click();
-    // login
-    await page.waitForTimeout(1500);
+    // login concluído: espera a URL autenticada em vez de tempo fixo (o POST de login passa de 1,5 s numa stack recém-subida e o goto seguinte o abortava)
+    await page.waitForURL(new RegExp(escapeRegExp('/app')));
     await page.goto(`/app/tenants/${env('E2E_TENANT_UUID')}`);
     await page.waitForTimeout(2500);
     // fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)
