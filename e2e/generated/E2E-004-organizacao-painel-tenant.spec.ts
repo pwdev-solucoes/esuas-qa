@@ -36,13 +36,22 @@ test.describe('E2E-004 Organização no Painel do Tenant: CARDUG, histórico e u
     await page.locator('button[type="submit"]').click();
     // login + gate LGPD
     await page.waitForTimeout(1500);
+    // fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)
+    await page.keyboard.press('Escape');
     await page.goto('/app/configuracoes?tab=tce');
-    await page.locator('button:has-text("Editar")').click();
+    // deixa o modal de novidades abrir antes de fechá-lo
+    await page.waitForTimeout(2500);
+    // fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)
+    await page.keyboard.press('Escape');
+    // abre o drawer TCE nos dois estados do cartão: com parâmetros (Editar) ou vazio (Preencher parâmetros)
+    await page.locator('button:has-text("Editar"), button:has-text("Preencher parâmetros") >> nth=0').click();
     await page.locator('#tce-cardug-identifier').fill(String(data.cardug_ok));
     await page.locator('aside[role="dialog"] button:has-text("Salvar")').click();
     await page.waitForTimeout(1500);
     await page.goto('/app/configuracoes?tab=history');
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(2500);
+    // fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)
+    await page.keyboard.press('Escape');
     await expect(page.getByTestId('organization-history')).toBeVisible();
     // primeiro item da trilha sobre os parâmetros do TCE — nth=0 evita strict mode quando há vários
     await expect(page.locator('[data-testid="history-entry"]:has-text("Parâmetros do TCE") >> nth=0')).toBeVisible();
@@ -61,8 +70,15 @@ test.describe('E2E-004 Organização no Painel do Tenant: CARDUG, histórico e u
     await page.locator('button[type="submit"]').click();
     // login + gate LGPD
     await page.waitForTimeout(1500);
+    // fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)
+    await page.keyboard.press('Escape');
     await page.goto('/app/configuracoes?tab=tce');
-    await page.locator('button:has-text("Editar")').click();
+    // deixa o modal de novidades abrir antes de fechá-lo
+    await page.waitForTimeout(2500);
+    // fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)
+    await page.keyboard.press('Escape');
+    // abre o drawer TCE nos dois estados do cartão: com parâmetros (Editar) ou vazio (Preencher parâmetros)
+    await page.locator('button:has-text("Editar"), button:has-text("Preencher parâmetros") >> nth=0').click();
     await page.locator('#tce-cardug-identifier').fill('000000');
     await expect(page.getByText('não pode ser composto apenas por zeros')).toBeVisible();
     await expect(page.locator('aside[role="dialog"] button:has-text("Salvar")')).toBeDisabled();
@@ -79,8 +95,12 @@ test.describe('E2E-004 Organização no Painel do Tenant: CARDUG, histórico e u
     await page.locator('button[type="submit"]').click();
     // login + gate LGPD
     await page.waitForTimeout(1500);
+    // fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)
+    await page.keyboard.press('Escape');
     await page.goto('/app/configuracoes?tab=history');
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(2500);
+    // fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)
+    await page.keyboard.press('Escape');
     await expect(page.getByTestId('organization-history')).toBeVisible();
     // somente leitura
     await expect(page.locator('[data-testid="organization-history"] button')).toHaveCount(0);
@@ -97,8 +117,12 @@ test.describe('E2E-004 Organização no Painel do Tenant: CARDUG, histórico e u
     await page.locator('button[type="submit"]').click();
     // login + gate LGPD
     await page.waitForTimeout(1500);
+    // fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)
+    await page.keyboard.press('Escape');
     await page.goto('/app/usuarios');
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(2500);
+    // fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)
+    await page.keyboard.press('Escape');
     await expect(page).toHaveURL(new RegExp(escapeRegExp('/403')));
   });
 
@@ -113,8 +137,12 @@ test.describe('E2E-004 Organização no Painel do Tenant: CARDUG, histórico e u
     await page.locator('button[type="submit"]').click();
     // login + gate LGPD
     await page.waitForTimeout(1500);
+    // fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)
+    await page.keyboard.press('Escape');
     await page.goto('/app/configuracoes?tab=history');
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(2500);
+    // fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)
+    await page.keyboard.press('Escape');
     await expect(page.getByTestId('history-empty')).toBeVisible();
   });
 });

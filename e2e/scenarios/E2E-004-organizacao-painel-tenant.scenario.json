@@ -98,15 +98,31 @@
           "note": "login + gate LGPD"
         },
         {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
           "action": "goto",
           "value": "/app/configuracoes?tab=tce"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
         },
         {
           "action": "click",
           "target": {
             "by": "css",
-            "value": "button:has-text(\"Editar\")"
-          }
+            "value": "button:has-text(\"Editar\"), button:has-text(\"Preencher parâmetros\") >> nth=0"
+          },
+          "note": "abre o drawer TCE nos dois estados do cartão: com parâmetros (Editar) ou vazio (Preencher parâmetros)"
         },
         {
           "action": "fill",
@@ -133,7 +149,12 @@
         },
         {
           "action": "wait",
-          "timeout_ms": 1000
+          "timeout_ms": 2500
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
         }
       ],
       "assertions": [
@@ -200,15 +221,31 @@
           "note": "login + gate LGPD"
         },
         {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
           "action": "goto",
           "value": "/app/configuracoes?tab=tce"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
         },
         {
           "action": "click",
           "target": {
             "by": "css",
-            "value": "button:has-text(\"Editar\")"
-          }
+            "value": "button:has-text(\"Editar\"), button:has-text(\"Preencher parâmetros\") >> nth=0"
+          },
+          "note": "abre o drawer TCE nos dois estados do cartão: com parâmetros (Editar) ou vazio (Preencher parâmetros)"
         },
         {
           "action": "fill",
@@ -274,12 +311,22 @@
           "note": "login + gate LGPD"
         },
         {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
           "action": "goto",
           "value": "/app/configuracoes?tab=history"
         },
         {
           "action": "wait",
-          "timeout_ms": 1000
+          "timeout_ms": 2500
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
         }
       ],
       "assertions": [
@@ -339,12 +386,22 @@
           "note": "login + gate LGPD"
         },
         {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
           "action": "goto",
           "value": "/app/usuarios"
         },
         {
           "action": "wait",
-          "timeout_ms": 1000
+          "timeout_ms": 2500
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
         }
       ],
       "assertions": [
@@ -392,12 +449,22 @@
           "note": "login + gate LGPD"
         },
         {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
           "action": "goto",
           "value": "/app/configuracoes?tab=history"
         },
         {
           "action": "wait",
-          "timeout_ms": 1000
+          "timeout_ms": 2500
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
         }
       ],
       "assertions": [
