@@ -18,7 +18,7 @@
     "validacao"
   ],
   "preconditions": {
-    "base_url_env": "ADMIN_BASE_URL",
+    "base_url_env": "E2E_BASE_URL",
     "start_path": "/auth/login",
     "viewport": {
       "width": 1440,
@@ -43,16 +43,20 @@
     "state": [
       "Organização fictícia com razão social acima de 150 caracteres (E2E_LONG_TENANT_SEARCH) ativa",
       "Organização de teste com detalhe acessível (E2E_TENANT_UUID)",
-      "Usuário de organização fictício para vínculo (E2E_CLIENT_USER_UUID)"
+      "Usuário de organização fictício para vínculo (E2E_CLIENT_USER_UUID)",
+      "Base recém-semeada (npm run e2e:local → migrate:fresh): o CNPJ fictício 10.996.000/0001-47 da organização criada pelo happy_path ainda não existe (unique + soft delete)"
     ]
   },
   "data": {
-    "valid_name": "CRAS - Centro / Norte (Sede), Ltda. & D'Ávila"
+    "valid_name": "CRAS - Centro / Norte (Sede), Ltda. & D'Ávila",
+    "cnpj": "10996000000147",
+    "email": "e2e-10996-003@e2e.local",
+    "cardug_ok": "20"
   },
   "variants": [
     {
       "name": "happy_path",
-      "title": "Razão Social com pontuação usual e CARDUG curto são aceitos (A-CA03, C-CA01)",
+      "title": "Razão Social com pontuação usual é gravada e CARDUG curto é aceito (A-CA03, C-CA01)",
       "as_user": "admin",
       "steps": [
         {
@@ -82,6 +86,11 @@
           "action": "wait",
           "timeout_ms": 1500,
           "note": "login"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
         },
         {
           "action": "goto",
@@ -115,13 +124,76 @@
           "action": "fill",
           "target": {
             "by": "css",
+            "value": "#t-cnpj"
+          },
+          "value": "${data.cnpj}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "#t-email"
+          },
+          "value": "${data.email}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
             "value": "#t-phone"
           },
           "value": "82999990000"
         },
         {
-          "action": "goto",
-          "value": "/app/tenants/${env:E2E_TENANT_UUID}"
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "#t-status"
+          },
+          "note": "Select do shadcn"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[role=\"option\"] >> nth=0"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Salvar"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "POST /manager/tenants + toast \"Organização cadastrada com sucesso.\""
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "placeholder",
+            "value": "Buscar por razão social"
+          },
+          "value": "${data.valid_name}"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "busca na listagem"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "${data.valid_name}",
+            "exact": true
+          },
+          "note": "a razão social da linha abre o detalhe — só existe se a organização foi gravada (A-CA03)"
         },
         {
           "action": "wait",
@@ -134,16 +206,80 @@
             "value": "button",
             "name": "Parâmetros TCE/AL"
           }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Preencher parâmetros"
+          },
+          "note": "organização recém-criada: cartão TCE vazio"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 500
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "#tenant-cardug-identifier"
+          },
+          "value": "${data.cardug_ok}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "aside[role=\"dialog\"] button:has-text(\"Salvar\")"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "PUT tce-parameters"
         }
       ],
       "assertions": [
         {
-          "expect": "visible",
+          "expect": "url",
+          "value": "/app/tenants/",
+          "note": "detalhe da organização criada (a listagem é /app/tenants, sem barra final)"
+        },
+        {
+          "expect": "text",
           "target": {
-            "by": "role",
-            "value": "button",
-            "name": "Parâmetros TCE/AL"
-          }
+            "by": "css",
+            "value": "h1"
+          },
+          "value": "${data.valid_name}",
+          "note": "A-CA03: razão social gravada com a pontuação usual, sem normalização"
+        },
+        {
+          "expect": "hidden",
+          "target": {
+            "by": "css",
+            "value": "aside[role=\"dialog\"]"
+          },
+          "note": "drawer TCE fechou após salvar"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "section:has(h2:has-text(\"Parâmetros do TCE/AL\")) dd >> nth=0"
+          },
+          "value": "${data.cardug_ok}",
+          "note": "C-CA01: CARDUG \"20\" exibido no cartão TCE sem padding (escopo na seção: o cartão de contatos também tem <dl>, oculto por v-show)"
+        },
+        {
+          "expect": "hidden",
+          "target": {
+            "by": "testid",
+            "value": "siap-warning"
+          },
+          "note": "C-CA01: com CARDUG curto válido a remessa SIAP não fica bloqueada"
         }
       ]
     },

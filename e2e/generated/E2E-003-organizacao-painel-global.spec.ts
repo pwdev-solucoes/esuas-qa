@@ -14,18 +14,22 @@ function escapeRegExp(text: string): string {
 }
 
 const data = {
+  "cardug_ok": "20",
+  "cnpj": "10996000000147",
+  "email": "e2e-10996-003@e2e.local",
   "valid_name": "CRAS - Centro / Norte (Sede), Ltda. & D'Ávila"
 };
 void data;
 
 test.describe('E2E-003 Organização no Painel Global: nome, telefone, CARDUG e vínculo com nome longo', () => {
-  test.use({ baseURL: process.env['ADMIN_BASE_URL'], viewport: { width: 1440, height: 900 } });
+  test.use({ baseURL: process.env['E2E_BASE_URL'], viewport: { width: 1440, height: 900 } });
   // Preconditions (arrange before running):
   //   - Organização fictícia com razão social acima de 150 caracteres (E2E_LONG_TENANT_SEARCH) ativa
   //   - Organização de teste com detalhe acessível (E2E_TENANT_UUID)
   //   - Usuário de organização fictício para vínculo (E2E_CLIENT_USER_UUID)
+  //   - Base recém-semeada (npm run e2e:local → migrate:fresh): o CNPJ fictício 10.996.000/0001-47 da organização criada pelo happy_path ainda não existe (unique + soft delete)
 
-  test('happy_path — Razão Social com pontuação usual e CARDUG curto são aceitos (A-CA03, C-CA01)', {
+  test('happy_path — Razão Social com pontuação usual é gravada e CARDUG curto é aceito (A-CA03, C-CA01)', {
     tag: ['@P1', '@admin', '@tenants', '@validacao'],
     annotation: [{ type: 'E2E', description: 'E2E-003' }, { type: 'AC', description: 'AC-002' }, { type: 'AC', description: 'AC-003' }, { type: 'AC', description: 'AC-005' }, { type: 'AC', description: 'AC-006' }, { type: 'AC', description: 'AC-007' }, { type: 'user', description: 'admin' }],
   }, async ({ page }) => {
@@ -35,16 +39,46 @@ test.describe('E2E-003 Organização no Painel Global: nome, telefone, CARDUG e 
     await page.locator('button[type="submit"]').click();
     // login
     await page.waitForTimeout(1500);
+    // fecha o modal de novidades da plataforma, se estiver aberto
+    await page.keyboard.press('Escape');
     await page.goto('/app/tenants');
     await page.waitForTimeout(1500);
     await page.getByRole('button', { name: 'Nova Organização' }).click();
     await page.waitForTimeout(800);
     await page.locator('#t-legal-name').fill(String(data.valid_name));
+    await page.locator('#t-cnpj').fill(String(data.cnpj));
+    await page.locator('#t-email').fill(String(data.email));
     await page.locator('#t-phone').fill('82999990000');
-    await page.goto(`/app/tenants/${env('E2E_TENANT_UUID')}`);
+    // Select do shadcn
+    await page.locator('#t-status').click();
+    await page.locator('[role="option"] >> nth=0').click();
+    await page.getByRole('button', { name: 'Salvar' }).click();
+    // POST /manager/tenants + toast "Organização cadastrada com sucesso."
+    await page.waitForTimeout(1500);
+    await page.getByPlaceholder('Buscar por razão social').fill(String(data.valid_name));
+    // busca na listagem
+    await page.waitForTimeout(1500);
+    // a razão social da linha abre o detalhe — só existe se a organização foi gravada (A-CA03)
+    await page.getByRole('button', { name: String(data.valid_name), exact: true }).click();
     await page.waitForTimeout(1500);
     await page.getByRole('button', { name: 'Parâmetros TCE/AL' }).click();
-    await expect(page.getByRole('button', { name: 'Parâmetros TCE/AL' })).toBeVisible();
+    // organização recém-criada: cartão TCE vazio
+    await page.getByRole('button', { name: 'Preencher parâmetros' }).click();
+    await page.waitForTimeout(500);
+    await page.locator('#tenant-cardug-identifier').fill(String(data.cardug_ok));
+    await page.locator('aside[role="dialog"] button:has-text("Salvar")').click();
+    // PUT tce-parameters
+    await page.waitForTimeout(1500);
+    // detalhe da organização criada (a listagem é /app/tenants, sem barra final)
+    await expect(page).toHaveURL(new RegExp(escapeRegExp('/app/tenants/')));
+    // A-CA03: razão social gravada com a pontuação usual, sem normalização
+    await expect(page.locator('h1')).toContainText(String(data.valid_name));
+    // drawer TCE fechou após salvar
+    await expect(page.locator('aside[role="dialog"]')).toBeHidden();
+    // C-CA01: CARDUG "20" exibido no cartão TCE sem padding (escopo na seção: o cartão de contatos também tem <dl>, oculto por v-show)
+    await expect(page.locator('section:has(h2:has-text("Parâmetros do TCE/AL")) dd >> nth=0')).toContainText(String(data.cardug_ok));
+    // C-CA01: com CARDUG curto válido a remessa SIAP não fica bloqueada
+    await expect(page.getByTestId('siap-warning')).toBeHidden();
   });
 
   test('validation_error — Nome sem letra e telefone curto são recusados localmente (A-CA02, A-CA04)', {
