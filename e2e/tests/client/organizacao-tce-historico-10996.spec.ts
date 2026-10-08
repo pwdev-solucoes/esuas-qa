@@ -178,10 +178,16 @@ test.describe('US-10996-03 — Parâmetros TCE/AL e Histórico da organização'
   test('C-CA12 — Operador lê a trilha (200) e a aba Histórico não tem ação de editar ou apagar', async ({ page }) => {
     const audits = await call(api, 'GET', '/api/client/tenant-settings/audits');
     expect(audits.status).toBe(200);
-    // Operador puro não grava parâmetros TCE (a API recusa), mesmo vendo o botão "Editar" no cartão.
+    // Operador puro não grava parâmetros TCE: a API recusa e o cartão não oferece edição
+    // (gate `tenant-tce-parameters.update`, que só o Master tem).
     const write = await call(api, 'PUT', '/api/client/tenant-tce-parameters', { cardug_identifier: '99' });
     expect(write.status).toBe(403);
     const org = new OrganizacaoPage(page);
+    await org.goto('tce');
+    const tcePanel = page.locator('[role="tabpanel"][data-state="active"]');
+    await expect(tcePanel.getByText(/Parâmetros do TCE\/AL/i).first()).toBeVisible({ timeout: 10_000 });
+    await expect(tcePanel.getByRole('button', { name: /editar|preencher|informar/i })).toHaveCount(0);
+    await page.screenshot({ path: evidencePath('C-CA12-operador-tce-sem-editar.png') });
     await org.openHistory();
     await expect(org.history.getByRole('button', { name: /editar|excluir|apagar|remover/i })).toHaveCount(0);
     await page.screenshot({ path: evidencePath('C-CA12-operador-historico.png') });
