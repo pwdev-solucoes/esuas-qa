@@ -1,0 +1,414 @@
+{
+  "schema_version": 1,
+  "id": "E2E-004",
+  "title": "Organização no Painel do Tenant: CARDUG, histórico e usuários removidos",
+  "description": "HU #10996: o drawer TCE aceita CARDUG de 1 a 6 dígitos e recusa só zeros e letras; a aba Histórico mostra a trilha da organização (somente leitura) para Master e Operador; /app/usuarios leva ao acesso negado. Massa fictícia; nenhum dado pessoal.",
+  "feature_slug": "10996-onda1-04-client",
+  "ac_refs": [
+    "AC-001",
+    "AC-002",
+    "AC-003",
+    "AC-005",
+    "AC-007",
+    "AC-008",
+    "AC-009"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "organizacao",
+    "historico",
+    "lgpd"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/login",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "users": [
+      {
+        "role": "master",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_MASTER_CPF",
+          "password": "E2E_CLIENT_MASTER_PASSWORD"
+        }
+      },
+      {
+        "role": "operador",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_OPERADOR_CPF",
+          "password": "E2E_CLIENT_OPERADOR_PASSWORD"
+        }
+      },
+      {
+        "role": "master_sem_historico",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_EMPTY_MASTER_CPF",
+          "password": "E2E_CLIENT_EMPTY_MASTER_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Master e Operador com profissional ativo no tenant, com um único vínculo de organização",
+      "API com os planos 01 e 02 da HU #10996 (GET client/tenant-settings/audits)",
+      "Uma segunda organização sem nenhuma alteração registrada, com Master próprio (E2E_CLIENT_EMPTY_MASTER_*)"
+    ]
+  },
+  "data": {
+    "cardug_ok": "21"
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "Master altera o CARDUG e o histórico mostra a alteração (C-CA01, C-CA10)",
+      "as_user": "master",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "login + gate LGPD"
+        },
+        {
+          "action": "goto",
+          "value": "/app/configuracoes?tab=tce"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button:has-text(\"Editar\")"
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "#tce-cardug-identifier"
+          },
+          "value": "${data.cardug_ok}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "aside[role=\"dialog\"] button:has-text(\"Salvar\")"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500
+        },
+        {
+          "action": "goto",
+          "value": "/app/configuracoes?tab=history"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1000
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "organization-history"
+          }
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "text",
+            "value": "Parâmetros do TCE",
+            "exact": false
+          }
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "text",
+            "value": "→"
+          },
+          "note": "antes → depois"
+        }
+      ]
+    },
+    {
+      "name": "validation_error",
+      "title": "CARDUG só zeros e com letra são recusados (C-CA04, C-CA04b)",
+      "as_user": "master",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "login + gate LGPD"
+        },
+        {
+          "action": "goto",
+          "value": "/app/configuracoes?tab=tce"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button:has-text(\"Editar\")"
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "#tce-cardug-identifier"
+          },
+          "value": "000000"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "text",
+            "value": "não pode ser composto apenas por zeros"
+          }
+        },
+        {
+          "expect": "disabled",
+          "target": {
+            "by": "css",
+            "value": "aside[role=\"dialog\"] button:has-text(\"Salvar\")"
+          }
+        }
+      ]
+    },
+    {
+      "name": "forbidden",
+      "title": "Operador vê o histórico sem ações e /app/usuarios é negado (C-CA12, B-CA07)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "login + gate LGPD"
+        },
+        {
+          "action": "goto",
+          "value": "/app/configuracoes?tab=history"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1000
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "organization-history"
+          }
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"organization-history\"] button"
+          },
+          "value": 0,
+          "note": "somente leitura"
+        }
+      ]
+    },
+    {
+      "name": "usuarios_negado",
+      "title": "/app/usuarios leva ao acesso negado (B-CA07)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "login + gate LGPD"
+        },
+        {
+          "action": "goto",
+          "value": "/app/usuarios"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1000
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "url",
+          "value": "/403"
+        }
+      ]
+    },
+    {
+      "name": "empty_state",
+      "title": "Organização sem alterações mostra o estado vazio (AC-008)",
+      "as_user": "master_sem_historico",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_EMPTY_MASTER_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_EMPTY_MASTER_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "login + gate LGPD"
+        },
+        {
+          "action": "goto",
+          "value": "/app/configuracoes?tab=history"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1000
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "history-empty"
+          }
+        }
+      ]
+    }
+  ]
+}
