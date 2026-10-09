@@ -1,0 +1,547 @@
+{
+  "schema_version": 1,
+  "id": "E2E-006",
+  "title": "Anotações do prontuário: registro assinado, avisos de leitores e negativa de acesso",
+  "description": "HU #11176 (US-ANOT-01): a aba Anotações do prontuário registra uma anotação imutável assinada com a função da unidade, mostra sempre o aviso de quem vai ler (e o aviso específico do bloco de violência), valida os campos obrigatórios, respeita a negativa de acesso ao prontuário e mostra o estado vazio. Massa fictícia; nenhum dado pessoal.",
+  "feature_slug": "11176-anotacoes-prontuario-02-client",
+  "ac_refs": [
+    "AC-001",
+    "AC-006",
+    "AC-008",
+    "AC-010",
+    "AC-011"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "prontuario",
+    "anotacoes",
+    "lgpd"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/login",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "users": [
+      {
+        "role": "operador",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_OPERADOR_CPF",
+          "password": "E2E_CLIENT_OPERADOR_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Operador lotado no CRAS Centro e no CRAS Sem MDS (E2EProntuarioSeeder)",
+      "API com o plano 01 da HU #11176 (rotas client/families/{uuid}/notes e notes/options)",
+      "E2E_CLIENT_FAMILY_IN_UNIT_UUID (família da unidade), E2E_CLIENT_FAMILY_OTHER_UNIT_UUID (CREAS, inacessível ao operador) e E2E_CLIENT_FAMILY_INTAKE_PENDING_UUID (sem anotações)"
+    ]
+  },
+  "data": {
+    "health_text": "Anotação E2E-006 sobre condições de saúde",
+    "unit": "E2E CRAS Centro"
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "Operador registra uma anotação de saúde pelo CRAS Centro e ela aparece na lista (CA01)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${env:E2E_CLIENT_FAMILY_IN_UNIT_UUID}?tab=anotacoes"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "family-note-register-action"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 800,
+          "note": "aguarda o Sheet abrir"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "family-note-unit-select"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "E2E CRAS Centro",
+            "exact": true
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "family-note-block-select"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Condições de saúde",
+            "exact": true
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "family-note-content"
+          },
+          "value": "${data.health_text}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "family-note-submit"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "aguarda o POST e o recarregamento da lista"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"family-note-item\"]:has-text(\"Anotação E2E-006\") >> nth=0"
+          },
+          "note": "a anotação nova aparece na lista"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"family-note-signature\"]:has-text(\"E2E CRAS Centro\") >> nth=0"
+          },
+          "note": "assinatura com a unidade escolhida"
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"family-note-item\"] button"
+          },
+          "value": 0,
+          "note": "sem editar nem excluir"
+        }
+      ]
+    },
+    {
+      "name": "violence_notice",
+      "title": "O aviso geral é sempre visível e o bloco de violência mostra o aviso específico (CA06/CA06b)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${env:E2E_CLIENT_FAMILY_IN_UNIT_UUID}?tab=anotacoes"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "family-note-register-action"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 800,
+          "note": "aguarda o Sheet abrir"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "family-note-block-select"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Violência e violações de direitos",
+            "exact": true
+          }
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "family-note-readers-notice"
+          }
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "family-note-block-notice"
+          }
+        }
+      ]
+    },
+    {
+      "name": "validation_error",
+      "title": "Salvar sem referência e sem texto mostra o erro nos campos (validação)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${env:E2E_CLIENT_FAMILY_IN_UNIT_UUID}?tab=anotacoes"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "family-note-register-action"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 800,
+          "note": "aguarda o Sheet abrir"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "family-note-submit"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 500
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "text",
+            "value": "Selecione a referência."
+          }
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "text",
+            "value": "Escreva a anotação."
+          }
+        }
+      ]
+    },
+    {
+      "name": "forbidden",
+      "title": "Família de outra unidade sem eixo: a negativa de acesso aparece e a aba não (CA11)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${env:E2E_CLIENT_FAMILY_OTHER_UNIT_UUID}?tab=anotacoes"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "family-access-denied"
+          }
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "testid",
+            "value": "family-note-register-action"
+          },
+          "value": 0,
+          "note": "a aba de anotações não é oferecida"
+        }
+      ]
+    },
+    {
+      "name": "empty_state",
+      "title": "Família sem anotações mostra o estado vazio com o botão de registrar",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${env:E2E_CLIENT_FAMILY_INTAKE_PENDING_UUID}?tab=anotacoes"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "family-notes-empty"
+          }
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "family-note-register-action"
+          }
+        }
+      ]
+    }
+  ]
+}
