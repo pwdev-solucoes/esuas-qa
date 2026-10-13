@@ -1,0 +1,581 @@
+{
+  "schema_version": 1,
+  "id": "E2E-007",
+  "title": "Planejamento inicial e evoluções do acompanhamento: registro assinado, evolução imutável, validação e negativa de acesso",
+  "description": "HU #11177 (US-EVOL-01): na aba Acompanhamento do prontuário, o operador registra o planejamento inicial em texto livre (assinado e datado), registra uma evolução fora de atendimento pelo atalho do card (bloco 24 com unidade e acompanhamento travados), vê as evoluções sem editar nem excluir, recebe erro de campo ao enviar o planejamento vazio e tem a negativa de acesso sem nomes de unidades. Massa fictícia; nenhum dado pessoal.",
+  "feature_slug": "11177-planejamento-evolucao-02-client-acompanhamento",
+  "ac_refs": [
+    "AC-001",
+    "AC-007",
+    "AC-011",
+    "AC-012"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "prontuario",
+    "acompanhamento",
+    "planejamento",
+    "evolucao",
+    "lgpd"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/login",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "users": [
+      {
+        "role": "operador",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_OPERADOR_CPF",
+          "password": "E2E_CLIENT_OPERADOR_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Operador lotado no CRAS Centro (E2EProntuarioSeeder); família de trabalho 00000000-0000-4000-8000-0000000f0008 (CRAS Centro) que nenhuma outra spec usa para acompanhamento",
+      "API com o plano 01 da HU #11177 (rotas follow-ups/{uuid}/plan, plan/options e evolutions; notes com follow_up_uuid)",
+      "Família 00000000-0000-4000-8000-0000000f0002 referenciada no CREAS, inacessível ao operador",
+      "Re-executável: o ingresso tolera acompanhamento vigente já existente (409) e o planejamento vira correção; evoluções são imutáveis e se acumulam"
+    ]
+  },
+  "data": {
+    "unit": "E2E CRAS Centro",
+    "plan_text": "Planejamento E2E-007: garantir a frequência escolar e inscrever a família no CadÚnico.",
+    "evolution_text": "Evolução E2E-007: a família retomou o contato com a escola."
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "Operador registra o planejamento e uma evolução fora de atendimento e ambos aparecem no card (CA01, CA10, CA11)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/00000000-0000-4000-8000-0000000f0008?tab=acompanhamento"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "follow-up-register-action"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1000,
+          "note": "aguarda o Sheet abrir e carregar as opções"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "follow-up-form-unit"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "${data.unit}"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1000,
+          "note": "aguarda a reconsulta de opções da unidade (serviço ofertado)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "follow-up-form-service"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "PAIF"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "follow-up-form-submit"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2000,
+          "note": "201 cria o ingresso; 409 (já vigente, execução anterior) é tolerado — a página é recarregada em seguida"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/00000000-0000-4000-8000-0000000f0008?tab=acompanhamento"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"follow-up-expand-\"] >> nth=0"
+          },
+          "note": "expande o 1º acompanhamento vigente (CRAS oferta só PAIF: há um)"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1000,
+          "note": "aguarda as evoluções carregarem"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"follow-up-plan-action-\"] >> nth=0"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1000,
+          "note": "aguarda o Sheet do planejamento abrir"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "follow-up-plan-content"
+          },
+          "value": "${data.plan_text}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "follow-up-plan-submit"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2000,
+          "note": "aguarda o PUT e o recarregamento do bloco"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"follow-up-evolution-register-\"] >> nth=0"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "aguarda o Sheet de anotação abrir com as opções carregadas"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "family-note-content"
+          },
+          "value": "${data.evolution_text}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "family-note-submit"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2000,
+          "note": "aguarda o POST e o recarregamento da lista de evoluções"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"follow-up-plan-text-\"]:has-text(\"Planejamento E2E-007\") >> nth=0"
+          },
+          "note": "o planejamento aparece no card (CA01)"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"follow-up-plan-signature-\"] >> nth=0"
+          },
+          "note": "assinada e datada"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"follow-up-evolution-item\"]:has-text(\"Evolução E2E-007\") >> nth=0"
+          },
+          "note": "a evolução entra na lista (CA10, CA11)"
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"follow-up-evolution-item\"] button"
+          },
+          "value": 0,
+          "note": "evolução sem editar nem excluir (CA09)"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"follow-up-plan-text-\"]:has-text(\"Planejamento E2E-007\") >> nth=0"
+          },
+          "note": "o planejamento segue o mesmo depois da evolução (CA10)"
+        }
+      ]
+    },
+    {
+      "name": "validation_error",
+      "title": "Planejamento vazio mostra o erro no campo e não envia (validação)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/00000000-0000-4000-8000-0000000f0008?tab=acompanhamento"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "follow-up-register-action"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1000,
+          "note": "aguarda o Sheet abrir e carregar as opções"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "follow-up-form-unit"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "${data.unit}"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1000,
+          "note": "aguarda a reconsulta de opções da unidade (serviço ofertado)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "follow-up-form-service"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "PAIF"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "follow-up-form-submit"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2000,
+          "note": "201 cria o ingresso; 409 (já vigente, execução anterior) é tolerado — a página é recarregada em seguida"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/00000000-0000-4000-8000-0000000f0008?tab=acompanhamento"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"follow-up-expand-\"] >> nth=0"
+          },
+          "note": "expande o 1º acompanhamento vigente (CRAS oferta só PAIF: há um)"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1000,
+          "note": "aguarda as evoluções carregarem"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"follow-up-plan-action-\"] >> nth=0"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1000,
+          "note": "aguarda o Sheet do planejamento abrir"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "follow-up-plan-content"
+          },
+          "value": "   "
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "follow-up-plan-submit"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 500
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "text",
+            "value": "Escreva o planejamento."
+          },
+          "note": "erro no campo, sem envio"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "follow-up-plan-guidance"
+          },
+          "note": "a orientação do MDS segue visível (CA02)"
+        }
+      ]
+    },
+    {
+      "name": "forbidden",
+      "title": "Operador sem eixo sobre a família vê a negativa sem nomes de unidades (CA13)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/00000000-0000-4000-8000-0000000f0002?tab=acompanhamento"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "family-access-denied"
+          }
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"family-access-denied\"]:has-text(\"E2E CREAS\")"
+          },
+          "value": 0,
+          "note": "a negativa não nomeia unidades (CA13)"
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "testid",
+            "value": "follow-up-register-action"
+          },
+          "value": 0,
+          "note": "a aba de acompanhamento não é oferecida"
+        }
+      ]
+    }
+  ]
+}
