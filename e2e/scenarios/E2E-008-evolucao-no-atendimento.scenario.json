@@ -1,0 +1,319 @@
+{
+  "schema_version": 1,
+  "id": "E2E-008",
+  "title": "Evolução do acompanhamento no registro de atendimento: campo oferecido só com acompanhamento vigente, evolução no histórico e ausência do campo sem acompanhamento",
+  "description": "HU #11177 (US-EVOL-01), plano 03: o operador registra um atendimento com evolução na família de trabalho (acompanhamento vigente garantido pela spec manual follow-up-evolution-11177) e a vê no histórico, sem ações; numa família sem acompanhamento o formulário não oferece o campo. Massa fictícia; nenhum dado pessoal.",
+  "feature_slug": "11177-planejamento-evolucao-03-client-atendimento",
+  "ac_refs": [
+    "AC-001",
+    "AC-003"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "prontuario",
+    "atendimento",
+    "acompanhamento",
+    "evolucao",
+    "lgpd"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/login",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "users": [
+      {
+        "role": "operador",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_OPERADOR_CPF",
+          "password": "E2E_CLIENT_OPERADOR_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Operador lotado no CRAS Centro (E2EProntuarioSeeder); família de trabalho 00000000-0000-4000-8000-0000000f0008 com acompanhamento PAIF vigente no CRAS Centro, garantido por API pela spec manual tests/client/follow-up-evolution-11177.spec.ts (rodar ANTES)",
+      "Catálogo global de tipos de atendimento com ao menos um tipo ativo (a spec manual o semeia por API se vazio)",
+      "Família 00000000-0000-4000-8000-0000000f0012 sem acompanhamento (empty_state)",
+      "Re-executável: atendimentos se acumulam; evolução é imutável"
+    ]
+  },
+  "data": {
+    "unit": "E2E CRAS Centro",
+    "description_text": "Atendimento E2E-008 com evolução.",
+    "evolution_text": "Evolução E2E-008: a família retomou o contato com a escola."
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "Atendimento com evolução aparece no histórico, sem ações (CA06, CA09)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/00000000-0000-4000-8000-0000000f0008?tab=atendimentos"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "attendance-register-action"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1000,
+          "note": "aguarda o Sheet abrir e carregar as opções"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-unit"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "${data.unit}"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "aguarda a reconsulta de opções da unidade (disponibilidade da evolução)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-type"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[role=\"option\"] >> nth=0"
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-description"
+          },
+          "value": "${data.description_text}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-evolution"
+          },
+          "value": "${data.evolution_text}",
+          "note": "o campo só existe com acompanhamento vigente na unidade (CA06)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-submit"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2000,
+          "note": "aguarda o POST e o recarregamento do histórico"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"attendance-expand-\"] >> nth=0"
+          },
+          "note": "expande o atendimento mais recente"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"attendance-evolution-\"]:has-text(\"Evolução E2E-008\") >> nth=0"
+          },
+          "note": "a evolução aparece no histórico do atendimento (CA09)"
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"attendance-evolution-\"] button"
+          },
+          "value": 0,
+          "note": "evolução sem editar nem excluir (CA09)"
+        }
+      ]
+    },
+    {
+      "name": "empty_state",
+      "title": "Família sem acompanhamento: o formulário não oferece a evolução (CA08)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/00000000-0000-4000-8000-0000000f0012?tab=atendimentos"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "attendance-register-action"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1000,
+          "note": "aguarda o Sheet abrir e carregar as opções"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-unit"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "${data.unit}"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "aguarda a reconsulta de opções da unidade (disponibilidade da evolução)"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-description"
+          },
+          "note": "o formulário abre normalmente"
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-evolution"
+          },
+          "value": 0,
+          "note": "sem acompanhamento vigente o campo de evolução não existe (CA08)"
+        }
+      ]
+    }
+  ]
+}
