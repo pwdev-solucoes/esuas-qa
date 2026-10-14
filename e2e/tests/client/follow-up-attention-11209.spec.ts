@@ -1,7 +1,15 @@
-import { expect, test, type APIRequestContext, type Page } from '@playwright/test';
-import { createTenantApiClient, loginAsTenantUser } from '../../fixtures/tenant-auth';
-import { dismissPlatformUpdates } from '../../helpers/platform-updates';
-import { captureFinalEvidence } from '../../helpers/evidence';
+import {
+  expect,
+  test,
+  type APIRequestContext,
+  type Page,
+} from "@playwright/test";
+import {
+  createTenantApiClient,
+  loginAsTenantUser,
+} from "../../fixtures/tenant-auth";
+import { dismissPlatformUpdates } from "../../helpers/platform-updates";
+import { captureFinalEvidence } from "../../helpers/evidence";
 
 /**
  * US-EVOL-02 (HU #11209) — plano 03: acompanhamentos que pedem atenção, no
@@ -35,9 +43,9 @@ import { captureFinalEvidence } from '../../helpers/evidence';
 
 const BASE = process.env.CLIENT_BASE_URL;
 const UNIT_UUID =
-  process.env.E2E_CLIENT_UNIT_UUID ?? '00000000-0000-4000-8000-0000000e0001';
+  process.env.E2E_CLIENT_UNIT_UUID ?? "00000000-0000-4000-8000-0000000e0001";
 
-const EVIDENCE_SLUG = 'us-evol-02-acompanhamentos-atencao';
+const EVIDENCE_SLUG = "us-evol-02-acompanhamentos-atencao";
 
 type AttentionRow = {
   uuid: string;
@@ -45,42 +53,52 @@ type AttentionRow = {
   waiting_days: number;
 };
 
-const MASTER_CPF = process.env.E2E_CLIENT_MASTER_CPF ?? '';
-const MASTER_PASSWORD = process.env.E2E_CLIENT_MASTER_PASSWORD ?? '';
+const MASTER_CPF = process.env.E2E_CLIENT_MASTER_CPF ?? "";
+const MASTER_PASSWORD = process.env.E2E_CLIENT_MASTER_PASSWORD ?? "";
 
 let api: APIRequestContext;
-let xsrf = '';
+let xsrf = "";
 let masterPage: Page;
 
-async function listWithoutPlan(): Promise<{ rows: AttentionRow[]; total: number }> {
+async function listWithoutPlan(): Promise<{
+  rows: AttentionRow[];
+  total: number;
+}> {
   const response = await api.get(
     `/api/client/follow-ups/attention?reason=without_plan&social_unit_uuid=${UNIT_UUID}&per_page=50`,
   );
-  expect(response.status(), 'relação de acompanhamentos com atenção').toBe(200);
+  expect(response.status(), "relação de acompanhamentos com atenção").toBe(200);
   const body = await response.json();
-  return { rows: (body.data ?? []) as AttentionRow[], total: Number(body.meta?.total ?? 0) };
+  return {
+    rows: (body.data ?? []) as AttentionRow[],
+    total: Number(body.meta?.total ?? 0),
+  };
 }
 
 async function openRelation(page: Page, query: string): Promise<void> {
   await page.goto(`/app/cadastros/acompanhamentos-atencao?${query}`);
   await dismissPlatformUpdates(page);
-  await expect(page.getByTestId('follow-ups-attention-filters')).toBeVisible();
+  await expect(page.getByTestId("follow-ups-attention-filters")).toBeVisible();
 }
 
 /** Número do aviso "sem planejamento" da unidade, na apuração do mês corrente. */
 async function withoutPlanCountOnReport(page: Page): Promise<number> {
   const responsePromise = page.waitForResponse(
-    (res) => res.url().includes('/attendance-reports') && res.request().method() === 'GET',
+    (res) =>
+      res.url().includes("/attendance-reports") &&
+      res.request().method() === "GET",
     { timeout: 15_000 },
   );
-  await page.goto('/app/prestacao-contas/apuracao-atendimentos');
+  await page.goto("/app/prestacao-contas/apuracao-atendimentos");
   await dismissPlatformUpdates(page);
-  expect((await responsePromise).status(), 'apuração').toBe(200);
+  expect((await responsePromise).status(), "apuração").toBe(200);
 
-  const counter = page.getByTestId(`follow-ups-without-plan-count-${UNIT_UUID}`);
+  const counter = page.getByTestId(
+    `follow-ups-without-plan-count-${UNIT_UUID}`,
+  );
   if ((await counter.count()) === 0) return 0; // o aviso some quando a contagem é zero
   await expect(counter).toBeVisible();
-  const text = (await counter.innerText()).replace(/\D/g, '');
+  const text = (await counter.innerText()).replace(/\D/g, "");
   return Number(text);
 }
 
@@ -88,16 +106,21 @@ test.beforeAll(async () => {
   if (!BASE) return;
   api = await createTenantApiClient();
   const state = await api.storageState();
-  xsrf = decodeURIComponent(state.cookies.find((c) => c.name === 'XSRF-TOKEN')?.value ?? '');
-  expect(xsrf, 'XSRF-TOKEN da sessão de tenant').not.toBe('');
+  xsrf = decodeURIComponent(
+    state.cookies.find((c) => c.name === "XSRF-TOKEN")?.value ?? "",
+  );
+  expect(xsrf, "XSRF-TOKEN da sessão de tenant").not.toBe("");
 });
 
 test.beforeAll(async ({ browser }) => {
   if (!BASE) return;
-  expect(MASTER_CPF && MASTER_PASSWORD, 'E2E_CLIENT_MASTER_CPF/PASSWORD no ambiente').toBeTruthy();
+  expect(
+    MASTER_CPF && MASTER_PASSWORD,
+    "E2E_CLIENT_MASTER_CPF/PASSWORD no ambiente",
+  ).toBeTruthy();
   const context = await browser.newContext({
     baseURL: BASE,
-    locale: 'pt-BR',
+    locale: "pt-BR",
     viewport: { width: 1440, height: 900 },
   });
   masterPage = await context.newPage();
@@ -109,51 +132,75 @@ test.afterAll(async () => {
   await api?.dispose();
 });
 
-test.describe('US-EVOL-02 — acompanhamentos que pedem atenção (client)', () => {
-  test.skip(!BASE, 'Defina CLIENT_BASE_URL no arquivo de ambiente do E2E.');
+test.describe("US-EVOL-02 — acompanhamentos que pedem atenção (client)", () => {
+  test.skip(!BASE, "Defina CLIENT_BASE_URL no arquivo de ambiente do E2E.");
 
-  test.describe.configure({ mode: 'serial' });
-  test.use({ baseURL: BASE, locale: 'pt-BR' });
+  test.describe.configure({ mode: "serial" });
+  test.use({ baseURL: BASE, locale: "pt-BR" });
 
   test.afterEach(async ({ page }, testInfo) => {
     // CA03/CA06 rodam como Master (P6): a evidência final vem da página dele.
-    await captureFinalEvidence(testInfo.title.startsWith('CA05') ? page : masterPage, testInfo, EVIDENCE_SLUG);
+    await captureFinalEvidence(
+      testInfo.title.startsWith("CA05") ? page : masterPage,
+      testInfo,
+      EVIDENCE_SLUG,
+    );
   });
 
-  test('CA05 — sem planejamento: do mais antigo para o mais novo', async ({ page }) => {
+  test("CA05 — sem planejamento: do mais antigo para o mais novo", async ({
+    page,
+  }) => {
     await openRelation(page, `reason=without_plan&social_unit=${UNIT_UUID}`);
 
-    const waiting = page.getByTestId('attention-waiting');
+    const waiting = page.getByTestId("attention-waiting");
     await expect(waiting.first()).toBeVisible();
-    const days = (await waiting.allInnerTexts()).map((text) => Number(text.replace(/\D/g, '')));
+    const days = (await waiting.allInnerTexts()).map((text) =>
+      Number(text.replace(/\D/g, "")),
+    );
 
-    expect(days.length, 'linhas sem planejamento na massa').toBeGreaterThanOrEqual(1);
-    expect([...days].sort((a, b) => b - a), 'ordem decrescente de espera').toEqual(days);
+    expect(
+      days.length,
+      "linhas sem planejamento na massa",
+    ).toBeGreaterThanOrEqual(1);
+    expect(
+      [...days].sort((a, b) => b - a),
+      "ordem decrescente de espera",
+    ).toEqual(days);
 
     // A massa original traz 200, 90 e 35 dias: quem ainda existir segue essa ordem.
     const seeded = days.filter((value) => [200, 90, 35].includes(value));
     expect([...seeded].sort((a, b) => b - a)).toEqual(seeded);
 
-    await page.screenshot({ path: 'test-results/evol02-ca05-ordem.png' });
+    await page.screenshot({ path: "test-results/evol02-ca05-ordem.png" });
   });
 
-  test('CA03 — a contagem da apuração é igual ao total da relação filtrada', async () => {
+  test("CA03 — a contagem da apuração é igual ao total da relação filtrada", async () => {
     const { total } = await listWithoutPlan();
-    expect(total, 'a massa precisa ter acompanhamento sem planejamento').toBeGreaterThan(0);
+    expect(
+      total,
+      "a massa precisa ter acompanhamento sem planejamento",
+    ).toBeGreaterThan(0);
 
     const reported = await withoutPlanCountOnReport(masterPage);
-    expect(reported, 'aviso da apuração = total da relação').toBe(total);
+    expect(reported, "aviso da apuração = total da relação").toBe(total);
 
-    await openRelation(masterPage, `reason=without_plan&social_unit=${UNIT_UUID}`);
-    await expect(masterPage.locator('[data-testid^="follow-up-attention-row-"]')).toHaveCount(total);
-    await masterPage.screenshot({ path: 'test-results/evol02-ca03-coincide.png' });
+    await openRelation(
+      masterPage,
+      `reason=without_plan&social_unit=${UNIT_UUID}`,
+    );
+    await expect(
+      masterPage.locator('[data-testid^="follow-up-attention-row-"]'),
+    ).toHaveCount(total);
+    await masterPage.screenshot({
+      path: "test-results/evol02-ca03-coincide.png",
+    });
   });
 
-  test('CA06 — registrar o planejamento tira a linha e baixa a contagem em 1', async () => {
+  test("CA06 — registrar o planejamento tira a linha e baixa a contagem em 1", async () => {
     const before = await listWithoutPlan();
     test.skip(
       before.rows.length === 0,
-      'Não há mais acompanhamento sem planejamento na massa; rode o E2EFollowUpAttentionSeeder.',
+      "Não há mais acompanhamento sem planejamento na massa; rode o E2EFollowUpAttentionSeeder.",
     );
 
     // A mais nova (menor espera) que ainda exista.
@@ -164,18 +211,27 @@ test.describe('US-EVOL-02 — acompanhamentos que pedem atenção (client)', () 
     const saved = await api.put(
       `/api/client/families/${target.family.uuid}/follow-ups/${target.uuid}/plan`,
       {
-        headers: { 'X-XSRF-TOKEN': xsrf },
-        data: { content: `E2E11209-${Date.now()} planejamento registrado pelo teste` },
+        headers: { "X-XSRF-TOKEN": xsrf },
+        data: {
+          content: `E2E11209-${Date.now()} planejamento registrado pelo teste`,
+        },
       },
     );
-    expect([200, 201], 'registro do planejamento').toContain(saved.status());
+    expect([200, 201], "registro do planejamento").toContain(saved.status());
 
-    await openRelation(masterPage, `reason=without_plan&social_unit=${UNIT_UUID}`);
-    await expect(masterPage.getByTestId(`follow-up-attention-row-${target.uuid}`)).toHaveCount(0);
-    await masterPage.screenshot({ path: 'test-results/evol02-ca06-linha-saiu.png' });
+    await openRelation(
+      masterPage,
+      `reason=without_plan&social_unit=${UNIT_UUID}`,
+    );
+    await expect(
+      masterPage.getByTestId(`follow-up-attention-row-${target.uuid}`),
+    ).toHaveCount(0);
+    await masterPage.screenshot({
+      path: "test-results/evol02-ca06-linha-saiu.png",
+    });
 
     const countAfter = await withoutPlanCountOnReport(masterPage);
-    expect(countAfter, 'a contagem da apuração baixou 1').toBe(countBefore - 1);
+    expect(countAfter, "a contagem da apuração baixou 1").toBe(countBefore - 1);
     // Sem desfazer: planejamento não se apaga.
   });
 });
