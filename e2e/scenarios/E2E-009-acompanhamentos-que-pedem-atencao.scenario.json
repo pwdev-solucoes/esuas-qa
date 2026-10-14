@@ -1,0 +1,382 @@
+{
+  "schema_version": 1,
+  "id": "E2E-009",
+  "title": "Acompanhamentos que pedem atenção: relação do Operacional (cinco linhas, filtro por motivo, linha leva ao card em destaque) e visão do Master com a unidade",
+  "description": "HU #11209 (US-EVOL-02), plano 03: o Operacional com add-on abre a relação pelo menu, vê as cinco linhas do CRAS Centro (uma com dois motivos), filtra Sem planejamento e aciona a linha que abre a aba Acompanhamento com o card em destaque; o Master vê também a linha do CREAS com a unidade. Massa fictícia do E2EFollowUpAttentionSeeder; nenhum dado pessoal.",
+  "feature_slug": "11209-acompanhamentos-atencao-03-qa-e2e",
+  "ac_refs": [
+    "AC-001",
+    "AC-002",
+    "AC-003"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "prontuario",
+    "acompanhamento",
+    "atencao",
+    "lgpd"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/login",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "users": [
+      {
+        "role": "operador",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_OPERADOR_CPF",
+          "password": "E2E_CLIENT_OPERADOR_PASSWORD"
+        }
+      },
+      {
+        "role": "master",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_MASTER_CPF",
+          "password": "E2E_CLIENT_MASTER_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Massa do E2EFollowUpAttentionSeeder: CRAS Centro com cinco linhas (três sem planejamento, uma delas também sem atendimento; duas só sem atendimento) e um PAEFI sinalizado no CREAS",
+      "Operador com add-on lotado no CRAS Centro; Master vê todas as unidades",
+      "Rodar ANTES da spec manual tests/client/follow-up-attention-11209.spec.ts, que registra um planejamento e tira uma linha da relação (reexecutar o seeder restaura)"
+    ]
+  },
+  "data": {
+    "unit_creas": "CREAS"
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "Operacional: cinco linhas, uma delas com dois motivos (CA01, CA02)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/acompanhamentos-atencao"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "aguarda a relação carregar"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "count",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"follow-up-attention-row-\"]"
+          },
+          "value": 5,
+          "note": "cinco linhas do CRAS Centro (CA01)"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"follow-up-attention-row-\"]:has([data-testid=\"attention-reason-without_plan\"]):has([data-testid=\"attention-reason-without_attendance\"])"
+          },
+          "note": "linha com os dois motivos (CA02)"
+        }
+      ]
+    },
+    {
+      "name": "filter_reason",
+      "title": "Operacional: filtro Sem planejamento deixa três linhas (CA03)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/acompanhamentos-atencao"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "follow-ups-attention-reason-without_plan"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "aguarda a relação recarregar com o filtro"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "count",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"follow-up-attention-row-\"]"
+          },
+          "value": 3,
+          "note": "três linhas sem planejamento (CA03)"
+        }
+      ]
+    },
+    {
+      "name": "row_opens_card",
+      "title": "Operacional: a linha abre a aba Acompanhamento com o card em destaque (CA04)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/acompanhamentos-atencao?reason=without_plan"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"follow-up-attention-row-\"] >> nth=0"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2000,
+          "note": "aguarda a aba Acompanhamento e o foco no card"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "url",
+          "value": "tab=acompanhamento"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"follow-up-card-\"][data-highlighted=\"true\"]"
+          },
+          "note": "card do acompanhamento em destaque (CA04)"
+        }
+      ]
+    },
+    {
+      "name": "master",
+      "title": "Master: vê a linha do CREAS com a unidade identificada (CA09)",
+      "as_user": "master",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/acompanhamentos-atencao"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "aguarda a relação carregar"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"follow-up-attention-row-\"]:has-text(\"${data.unit_creas}\")"
+          },
+          "note": "linha da unidade CREAS (CA09)"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "follow-ups-attention-unit"
+          },
+          "note": "filtro de unidade oferecido a quem vê mais de uma"
+        }
+      ]
+    }
+  ]
+}
