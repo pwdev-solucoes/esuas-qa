@@ -274,16 +274,24 @@ test.describe('US-10996-02 — primeiro acesso e Gestão de Usuários removida',
     }
   });
 
-  test('B-CA02 — E-mails de boas-vindas e de definição estão em português', async () => {
+  test('B-CA02 — E-mails de boas-vindas e de definição estão em português', async ({ page }) => {
     const setup = await waitForMail(mailpit, professional.email, SETUP_SUBJECT);
-    const welcome = await waitForMail(mailpit, professional.email, 'Bem-vindo(a) ao eSUAS');
+    const welcome = await waitForMail(mailpit, professional.email, 'Bem-vindo(a) ao SigSUAS');
     expect(setup.Subject).toBe('Defina sua senha de acesso ao SigSUAS');
 
     for (const message of [setup, welcome]) {
       const body = textWithoutUrls(message);
       expect(body, `corpo de "${message.Subject}"`).not.toMatch(/\b(Hello|Regards|Reset Password|Whoops|If you did not|Thanks)\b/i);
       expect(body).toMatch(/senha|acesso|bem-vind/i);
+      // HU #11159: o nome do produto é SigSUAS em todos os e-mails.
+      expect(body, `corpo de "${message.Subject}"`).not.toMatch(/eSUAS/);
     }
+
+    // Evidência: os dois e-mails renderizados como o profissional os recebe.
+    await page.goto(`${MAILPIT_URL}/view/${welcome.ID}.html`);
+    await page.screenshot({ path: evidencePath('B-CA02-email-boas-vindas.png'), fullPage: true });
+    await page.goto(`${MAILPIT_URL}/view/${setup.ID}.html`);
+    await page.screenshot({ path: evidencePath('B-CA02-email-definicao-senha.png'), fullPage: true });
   });
 
   test('B-CA03 — Recuperação de senha no tenant envia "Redefinição de senha" com link do client', async ({ browser }) => {
