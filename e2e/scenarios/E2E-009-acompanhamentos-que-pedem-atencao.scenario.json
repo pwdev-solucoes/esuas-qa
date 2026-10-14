@@ -2,7 +2,7 @@
   "schema_version": 1,
   "id": "E2E-009",
   "title": "Acompanhamentos que pedem atenção: relação do Operacional (cinco linhas, filtro por motivo, linha leva ao card em destaque) e visão do Master com a unidade",
-  "description": "HU #11209 (US-EVOL-02), plano 03: o Operacional com add-on abre a relação pelo menu, vê as cinco linhas do CRAS Centro (uma com dois motivos), filtra Sem planejamento e aciona a linha que abre a aba Acompanhamento com o card em destaque; o Master vê também a linha do CREAS com a unidade. Massa fictícia do E2EFollowUpAttentionSeeder; nenhum dado pessoal.",
+  "description": "HU #11209 (US-EVOL-02), plano 03: o Operacional com add-on abre a relação pelo menu, vê as cinco linhas do CRAS Centro (uma com dois motivos), filtra Sem planejamento e aciona a linha que abre a aba Acompanhamento com o card em destaque; o Master vê também a linha do CREAS com a unidade. Massa fictícia do E2EFollowUpAttentionSeeder; nenhum dado pessoal. As asserções identificam as famílias da massa pelo nome (\"E2E Atenção A1..A6\"), porque outros specs deixam acompanhamentos sem planejamento no mesmo CRAS.",
   "feature_slug": "11209-acompanhamentos-atencao-03-qa-e2e",
   "ac_refs": [
     "AC-001",
@@ -114,13 +114,53 @@
       ],
       "assertions": [
         {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"follow-up-attention-row-\"]:has-text(\"E2E Atenção A1 \")"
+          },
+          "note": "A1 listada (CA01)"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"follow-up-attention-row-\"]:has-text(\"E2E Atenção A2 \")"
+          },
+          "note": "A2 listada (CA01)"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"follow-up-attention-row-\"]:has-text(\"E2E Atenção A3 \")"
+          },
+          "note": "A3 listada (CA01)"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"follow-up-attention-row-\"]:has-text(\"E2E Atenção A4 \")"
+          },
+          "note": "A4 listada (CA01)"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"follow-up-attention-row-\"]:has-text(\"E2E Atenção A5 \")"
+          },
+          "note": "A5 listada (CA01)"
+        },
+        {
           "expect": "count",
           "target": {
             "by": "css",
-            "value": "[data-testid^=\"follow-up-attention-row-\"]"
+            "value": "[data-testid^=\"follow-up-attention-row-\"]:has-text(\"E2E Atenção A6 \")"
           },
-          "value": 5,
-          "note": "cinco linhas do CRAS Centro (CA01)"
+          "value": 0,
+          "note": "A6 em dia não entra (CA01)"
         },
         {
           "expect": "visible",
@@ -134,7 +174,7 @@
     },
     {
       "name": "filter_reason",
-      "title": "Operacional: filtro Sem planejamento deixa três linhas (CA03)",
+      "title": "Operacional: filtro Sem planejamento mantém as três da massa e tira as com planejamento (CA03)",
       "as_user": "operador",
       "steps": [
         {
@@ -203,13 +243,46 @@
       ],
       "assertions": [
         {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"follow-up-attention-row-\"]:has-text(\"E2E Atenção A1 \")"
+          },
+          "note": "A1 sem planejamento (CA03)"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"follow-up-attention-row-\"]:has-text(\"E2E Atenção A2 \")"
+          },
+          "note": "A2 sem planejamento (CA03)"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"follow-up-attention-row-\"]:has-text(\"E2E Atenção A3 \")"
+          },
+          "note": "A3 sem planejamento (CA03)"
+        },
+        {
           "expect": "count",
           "target": {
             "by": "css",
-            "value": "[data-testid^=\"follow-up-attention-row-\"]"
+            "value": "[data-testid^=\"follow-up-attention-row-\"]:has-text(\"E2E Atenção A4 \")"
           },
-          "value": 3,
-          "note": "três linhas sem planejamento (CA03)"
+          "value": 0,
+          "note": "A4 tem planejamento: sai do filtro (CA03)"
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"follow-up-attention-row-\"]:has-text(\"E2E Atenção A5 \")"
+          },
+          "value": 0,
+          "note": "A5 tem planejamento: sai do filtro (CA03)"
         }
       ]
     },
