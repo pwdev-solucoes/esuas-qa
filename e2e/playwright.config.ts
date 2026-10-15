@@ -8,6 +8,8 @@ import * as path from 'node:path';
  */
 const qaDir = path.resolve(__dirname, '..');
 dotenv.config({ path: path.join(qaDir, '.env.qa') });
+// Staging/HML: variáveis STG_* (nomes próprios, não colidem com as do stack local).
+dotenv.config({ path: path.join(qaDir, '.env.staging') });
 
 const BASE_URL = process.env.E2E_BASE_URL ?? 'http://localhost:4173';
 /**
@@ -60,7 +62,7 @@ export default defineConfig({
         storageState: '.auth/super-admin.json',
       },
       dependencies: ['setup'],
-      testIgnore: [/.*\.setup\.ts/, /[\\/]tests[\\/]client[\\/]/],
+      testIgnore: [/.*\.setup\.ts/, /[\\/]tests[\\/]client[\\/]/, /[\\/]tests[\\/]staging[\\/]/],
     },
     /**
      * Frontend do TENANT (`client/` em 4174), autenticado como o Operacional
@@ -81,6 +83,28 @@ export default defineConfig({
         storageState: '.auth/tenant.json',
       },
       dependencies: ['setup'],
+    },
+    /**
+     * STAGING/HML (ambiente remoto, sem stack local nem sessão herdada).
+     *
+     * Roda `tests/staging/`: cada spec faz o próprio login e usa caixa de e-mail
+     * descartável (helpers/mailgw.ts). O ambiente é lento e o evento `load` das
+     * páginas não dispara, então os prazos são maiores e a navegação espera por
+     * elementos, não por `load`. Rode com `npm run e2e:staging`.
+     */
+    {
+      name: 'staging',
+      testDir: './tests/staging',
+      timeout: 300_000,
+      use: {
+        ...devices['Desktop Chrome'],
+        baseURL: process.env.STG_ADMIN_URL,
+        storageState: undefined,
+        trace: 'retain-on-failure',
+        video: 'off',
+        actionTimeout: 45_000,
+        navigationTimeout: 60_000,
+      },
     },
   ],
 });

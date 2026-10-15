@@ -7,6 +7,8 @@ npm-debug.log
 .env.e2e
 .env.e2e.local
 .env.test
+.env.qa
+.env.staging
 
 # Test results & artifacts
 test-results/

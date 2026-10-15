@@ -11,6 +11,7 @@
     "e2e:debug": "playwright test --debug",
     "e2e:ui": "playwright test --ui",
     "e2e:report": "playwright show-report",
+    "e2e:staging": "E2E_CACHE_CLEAR_CMD=true playwright test --project=staging",
     "e2e:local": "./scripts/start-stack.sh && playwright test; ./scripts/stop-stack.sh",
     "stack:up": "./scripts/start-stack.sh",
     "stack:down": "./scripts/stop-stack.sh",
