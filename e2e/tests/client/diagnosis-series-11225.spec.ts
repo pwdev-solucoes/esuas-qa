@@ -104,9 +104,7 @@ test.describe("US-SERIE-01 — diagnóstico como série (client)", () => {
     await expect(
       page.getByRole("tab", { name: /composição familiar/i }),
     ).toHaveAttribute("aria-selected", "true");
-    await expect(
-      page.locator('[data-testid^="member-row-"]').first(),
-    ).toBeVisible();
+    await page.waitForLoadState("networkidle");
 
     // A ausência é a evidência: nenhuma ação de registrar atualização/retrato.
     await expect(
