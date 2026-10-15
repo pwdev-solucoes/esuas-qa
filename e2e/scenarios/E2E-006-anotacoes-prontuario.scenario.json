@@ -196,7 +196,7 @@
     },
     {
       "name": "violence_notice",
-      "title": "O aviso geral é sempre visível e o bloco de violência mostra o aviso específico (CA06/CA06b)",
+      "title": "O bloco de violência mostra o aviso restrito no lugar do aviso geral (CA06b, #11227 CA05)",
       "as_user": "operador",
       "steps": [
         {
@@ -281,11 +281,12 @@
       ],
       "assertions": [
         {
-          "expect": "visible",
+          "expect": "hidden",
           "target": {
             "by": "testid",
             "value": "family-note-readers-notice"
-          }
+          },
+          "note": "#11227 D10: com o bloco restrito o aviso geral some"
         },
         {
           "expect": "visible",
@@ -293,6 +294,15 @@
             "by": "testid",
             "value": "family-note-block-notice"
           }
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "family-note-block-notice"
+          },
+          "value": "lido apenas pela unidade pela qual você está registrando",
+          "note": "texto do aviso restrito"
         }
       ]
     },

@@ -63,7 +63,7 @@ test.describe('E2E-006 Anotações do prontuário: registro assinado, avisos de 
     await expect(page.locator('[data-testid="family-note-item"] button')).toHaveCount(0);
   });
 
-  test('violence_notice — O aviso geral é sempre visível e o bloco de violência mostra o aviso específico (CA06/CA06b)', {
+  test('violence_notice — O bloco de violência mostra o aviso restrito no lugar do aviso geral (CA06b, #11227 CA05)', {
     tag: ['@P1', '@client', '@prontuario', '@anotacoes', '@lgpd'],
     annotation: [{ type: 'E2E', description: 'E2E-006' }, { type: 'AC', description: 'AC-001' }, { type: 'AC', description: 'AC-006' }, { type: 'AC', description: 'AC-008' }, { type: 'AC', description: 'AC-010' }, { type: 'AC', description: 'AC-011' }, { type: 'user', description: 'operador' }],
   }, async ({ page }) => {
@@ -86,8 +86,11 @@ test.describe('E2E-006 Anotações do prontuário: registro assinado, avisos de 
     await page.waitForTimeout(800);
     await page.getByTestId('family-note-block-select').click();
     await page.getByRole('option', { name: 'Violência e violações de direitos', exact: true }).click();
-    await expect(page.getByTestId('family-note-readers-notice')).toBeVisible();
+    // #11227 D10: com o bloco restrito o aviso geral some
+    await expect(page.getByTestId('family-note-readers-notice')).toBeHidden();
     await expect(page.getByTestId('family-note-block-notice')).toBeVisible();
+    // texto do aviso restrito
+    await expect(page.getByTestId('family-note-block-notice')).toContainText('lido apenas pela unidade pela qual você está registrando');
   });
 
   test('validation_error — Salvar sem referência e sem texto mostra o erro nos campos (validação)', {
