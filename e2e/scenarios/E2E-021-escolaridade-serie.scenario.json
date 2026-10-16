@@ -1,0 +1,323 @@
+{
+  "schema_version": 1,
+  "id": "E2E-021",
+  "title": "Escolaridade pela série: o Operacional informa a série e vê o nível derivado somente leitura, gravado (série 23 → Ensino médio; série 31 + Mestrado → Mestrado)",
+  "description": "HU #11235 (US-DIAG2-06), plano 03: o Operacional com acesso abre as condições da integrante sem dado de escolaridade da família 'E2E Lima Escolaridade' (massa do E2ESchoolGradeSeeder), informa a série 23 (3º ano do ensino médio) e vê o nível 'Ensino médio' como texto derivado, sem campo para digitá-lo, gravado com origem 'Derivada da série informada' (CA01). Em seguida informa a série 31 (superior completo) e a maior titulação Mestrado e vê o nível 'Mestrado' (CA03). CA02, CA04, CA05 e CA06 estão na spec manual tests/client/school-grade-schooling-11235.spec.ts. Massa fictícia; nenhum dado pessoal.",
+  "feature_slug": "11235-escolaridade-serie-03-evidencias",
+  "ac_refs": [
+    "AC-002"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "prontuario",
+    "escolaridade",
+    "diagnostico",
+    "lgpd"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/login",
+    "viewport": {
+      "width": 1440,
+      "height": 1600
+    },
+    "users": [
+      {
+        "role": "operador",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_OPERADOR_CPF",
+          "password": "E2E_CLIENT_OPERADOR_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Massa do E2ESchoolGradeSeeder: família 'E2E Lima Escolaridade' (…000001123501) no CRAS Centro, três integrantes ativos e retrato migrado de educação (só do terceiro)",
+      "Operador com add-on lotado no CRAS Centro (e no CRAS Sem MDS, por isso a unidade é escolhida na atualização)"
+    ]
+  },
+  "data": {
+    "family_uuid": "00000000-0000-4000-8000-000001123501",
+    "member_one": "E2E Escolaridade Lima Ana",
+    "grade_23": "3º ano do ensino médio",
+    "grade_31": "Superior completo",
+    "title_master": "Mestrado",
+    "unit_name": "E2E CRAS Centro"
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "Operacional informa a série 23 e depois a série 31 com mestrado e vê o nível derivado gravado (CA01, CA03)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=composicao"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "tr[data-testid^=\"member-row-\"]:has-text(\"${data.member_one}\") [data-testid^=\"member-conditions-\"]"
+          },
+          "timeout_ms": 15000
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "tr[data-testid^=\"member-row-\"]:has-text(\"${data.member_one}\") [data-testid^=\"member-conditions-\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-conditions-drawer\"]"
+          },
+          "note": "drawer do integrante sem dado de escolaridade"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-school-grade\"]"
+          },
+          "timeout_ms": 15000
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-school-grade\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "${data.grade_23}"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-derived-level\"]:has-text(\"Ensino médio\")"
+          },
+          "note": "CA01 · série 23 → nível derivado, só leitura"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-conditions-save\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"snapshot-kind-update\"]"
+          },
+          "note": "a família já tem retrato de educação: atualização"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-conditions-unit\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "${data.unit_name}"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-conditions-confirm-update\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-schooling-source\"]:has-text(\"Derivada da série informada\")"
+          },
+          "timeout_ms": 15000,
+          "note": "CA01 · gravado com origem derived_grade"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-school-grade\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "${data.grade_31}"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-academic-title\"]"
+          },
+          "note": "a titulação só existe para a série 31"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-academic-title\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "${data.title_master}"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-derived-level\"]:has-text(\"Mestrado\")"
+          },
+          "note": "CA03 · série 31 + mestrado → Mestrado"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-conditions-save\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"snapshot-kind-update\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-conditions-unit\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "${data.unit_name}"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-conditions-confirm-update\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "espera a gravação"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-derived-level-name\"]"
+          },
+          "value": "Mestrado",
+          "note": "CA03 · o nível derivado gravado é Mestrado"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-schooling-source\"]"
+          },
+          "value": "Derivada da série informada",
+          "note": "origem derived_grade (CA01/CA03)"
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-derived-level\"] input, [data-testid=\"member-derived-level\"] select, [data-testid=\"member-derived-level\"] textarea"
+          },
+          "value": 0,
+          "note": "CA01 · o nível não tem campo para digitar"
+        }
+      ]
+    }
+  ]
+}
