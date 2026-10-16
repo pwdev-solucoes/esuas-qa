@@ -1,0 +1,405 @@
+{
+  "schema_version": 1,
+  "id": "E2E-022",
+  "title": "Avaliação técnica das relações: o CREAS registra e lê, com assinatura e série (a mais recente primeiro)",
+  "description": "HU #11229 (US-CONV-02), plano 03: o operador do CREAS, que acompanha a família, registra a avaliação da relação conjugal pela aba Convivência e vê o aviso de visibilidade no formulário e no toast, mais a avaliação com nome, função e data. Uma segunda avaliação com data retroativa não substitui a anterior: as duas aparecem, a mais recente primeiro. Massa fictícia (E2ERelationshipAssessmentSeeder); nenhum dado pessoal.",
+  "feature_slug": "11229-avaliacao-relacoes-03-evidencias",
+  "ac_refs": [
+    "AC-002"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "prontuario",
+    "convivencia",
+    "avaliacao",
+    "visibilidade"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/login",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "users": [
+      {
+        "role": "operador_creas",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_CREAS_OPERADOR_CPF",
+          "password": "E2E_CLIENT_CREAS_OPERADOR_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Massa do E2ERelationshipAssessmentSeeder: família …0f0501 referenciada no CRAS Centro e acompanhada pelo CREAS (PAEFI vigente), com duas avaliações do CREAS (conjugal 2026-09-10, irmãos 2026-09-12)",
+      "Operador do CREAS (E2EBlockVisibilitySeeder, #11227) com o add-on, lotado no CREAS com a função Assistente social",
+      "As avaliações extras da família são removidas a cada rodada do seeder; as duas variantes rodam em sequência na mesma massa (serie_retroativa depois de happy_path)",
+      "API e client com os planos 01 e 02 da HU #11229"
+    ]
+  },
+  "data": {
+    "family_uuid": "00000000-0000-4000-8000-0000000f0501"
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "O CREAS registra a avaliação conjugal e lê com nome, função e data; aviso no formulário e no toast (CA01/CA07)",
+      "as_user": "operador_creas",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=convivencia"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "relationship-assessments-section"
+          },
+          "timeout_ms": 15000,
+          "note": "seção da avaliação carregada"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "relationship-assessments-register"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "relationship-assessment-form-sheet"
+          },
+          "timeout_ms": 10000
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "relationship-relation-select"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Relações conjugais",
+            "exact": true
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "relationship-result-select"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Conflituoso, sem violência",
+            "exact": true
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "relationship-assessment-notice"
+          },
+          "timeout_ms": 10000,
+          "note": "aviso de visibilidade no formulário"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "relationship-assessment-submit"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-title]:has-text(\"Este registro será lido apenas pela unidade pela qual você está registrando\")"
+          },
+          "timeout_ms": 10000,
+          "note": "aviso no toast (mesmo texto do servidor)"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"relationship-card-conjugal\"] [data-testid=\"relationship-assessment-item\"] >> nth=0"
+          },
+          "note": "a avaliação aparece na relação conjugal"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"relationship-card-conjugal\"] [data-testid=\"relationship-assessment-item\"] >> nth=0"
+          },
+          "value": "Conflituoso, sem violência"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"relationship-card-conjugal\"] [data-testid=\"relationship-assessment-signature\"] >> nth=0"
+          },
+          "value": "E2E Operador CREAS · Assistente social",
+          "note": "nome e função (CBO da lotação no CREAS)"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"relationship-card-conjugal\"] [data-testid=\"relationship-assessment-item\"] >> nth=0"
+          },
+          "value": "Avaliado em",
+          "note": "data da avaliação"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-title]:has-text(\"Este registro será lido apenas pela unidade pela qual você está registrando\")"
+          },
+          "note": "toast com o aviso"
+        }
+      ]
+    },
+    {
+      "name": "serie_retroativa",
+      "title": "Nova avaliação conjugal com data retroativa não substitui a anterior: as avaliações aparecem em série, a mais recente primeiro (CA02)",
+      "as_user": "operador_creas",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=convivencia"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "relationship-assessments-section"
+          },
+          "timeout_ms": 15000,
+          "note": "seção da avaliação carregada"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "relationship-assessments-register"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "relationship-assessment-form-sheet"
+          },
+          "timeout_ms": 10000
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "relationship-relation-select"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Relações conjugais",
+            "exact": true
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "relationship-result-select"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Sem conflitos relevantes",
+            "exact": true
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "relationship-assessed-on"
+          },
+          "value": "2026-10-02"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "relationship-assessment-submit"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"relationship-card-conjugal\"] [data-testid=\"relationship-assessment-item\"]:has-text(\"Sem conflitos relevantes\") >> nth=0"
+          },
+          "timeout_ms": 10000,
+          "note": "a avaliação retroativa entrou na série"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"relationship-card-conjugal\"] [data-testid=\"relationship-assessment-item\"] >> nth=0"
+          },
+          "value": "Conflituoso, sem violência",
+          "note": "a mais recente (registrada na variante anterior, data de hoje) vem primeiro"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"relationship-card-conjugal\"] [data-testid=\"relationship-assessment-item\"] >> nth=1"
+          },
+          "value": "Sem conflitos relevantes",
+          "note": "a retroativa vem depois, sem substituir"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"relationship-card-conjugal\"] [data-testid=\"relationship-assessment-item\"] >> nth=2"
+          },
+          "value": "Conflituoso, com violência",
+          "note": "a avaliação semeada permanece (append-only)"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"relationship-card-conjugal\"] [data-testid=\"relationship-assessment-item\"] >> nth=1"
+          },
+          "value": "02/10/2026",
+          "note": "data retroativa preservada"
+        }
+      ]
+    }
+  ]
+}
