@@ -1,0 +1,259 @@
+{
+  "schema_version": 1,
+  "id": "E2E-023",
+  "title": "Avaliação técnica das relações restrita: o CRAS Centro não vê as avaliações do CREAS e o Master sem lotação não registra",
+  "description": "HU #11229 (US-CONV-02), plano 03: a família tem avaliações registradas pelo CREAS (uma conjugal com violência e uma de irmãos sem conflito). O operador do CRAS Centro, que a referencia, vê Nenhuma avaliação registrada nas duas relações, igual a uma família sem registro, e sem contador. O Master sem lotação lê a aba mas não tem a ação Registrar avaliação. Massa fictícia (E2ERelationshipAssessmentSeeder); nenhum dado pessoal.",
+  "feature_slug": "11229-avaliacao-relacoes-03-evidencias",
+  "ac_refs": [
+    "AC-003",
+    "AC-004"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "prontuario",
+    "convivencia",
+    "avaliacao",
+    "visibilidade",
+    "lgpd"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/login",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "users": [
+      {
+        "role": "master",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_MASTER_CPF",
+          "password": "E2E_CLIENT_MASTER_PASSWORD"
+        }
+      },
+      {
+        "role": "operador",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_OPERADOR_CPF",
+          "password": "E2E_CLIENT_OPERADOR_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Massa do E2ERelationshipAssessmentSeeder: família …0f0501 referenciada no CRAS Centro, com avaliações registradas só pelo CREAS",
+      "Operador do CRAS Centro com o add-on, lotado no CRAS Centro; Master sem lotação",
+      "Ordem de execução por causa da sessão única: master_sem_lotacao antes de happy_path",
+      "API e client com os planos 01 e 02 da HU #11229"
+    ]
+  },
+  "data": {
+    "family_uuid": "00000000-0000-4000-8000-0000000f0501"
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "O CRAS Centro vê Nenhuma avaliação registrada nas relações conjugal e dos irmãos, sem contador nem indício das avaliações do CREAS (CA05/CA06)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=convivencia"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "relationship-assessments-section"
+          },
+          "timeout_ms": 15000,
+          "note": "seção da avaliação carregada"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"relationship-card-conjugal\"] [data-testid=\"relationship-empty\"]"
+          },
+          "timeout_ms": 10000,
+          "note": "relação conjugal carregada, vazia"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"relationship-card-conjugal\"] [data-testid=\"relationship-empty\"]"
+          },
+          "value": "Nenhuma avaliação registrada"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"relationship-card-siblings\"] [data-testid=\"relationship-empty\"]"
+          },
+          "value": "Nenhuma avaliação registrada"
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "testid",
+            "value": "relationship-assessment-item"
+          },
+          "value": 0,
+          "note": "ausência: nenhuma avaliação do CREAS é exibida"
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"relationship-toggle-\"]"
+          },
+          "value": 0,
+          "note": "ausência: nenhum 'ver anteriores' nem contador que denuncie registros"
+        }
+      ]
+    },
+    {
+      "name": "master_sem_lotacao",
+      "title": "O Master sem lotação lê a aba Convivência mas não tem a ação Registrar avaliação (CA04)",
+      "as_user": "master",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=convivencia"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "relationship-assessments-section"
+          },
+          "timeout_ms": 15000,
+          "note": "seção da avaliação carregada"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "relationship-assessments-section"
+          }
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "relationship-card-conjugal"
+          }
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "testid",
+            "value": "relationship-assessments-register"
+          },
+          "value": 0,
+          "note": "ausência: sem a ação de registrar"
+        }
+      ]
+    }
+  ]
+}
