@@ -1,0 +1,605 @@
+{
+  "schema_version": 1,
+  "id": "E2E-018",
+  "title": "Trabalho e rendimentos: registrar renda e ocupação dos integrantes da Souza, declarado ao lado do calculado com divergência, e valor de 'Outros' sem descrição recusado",
+  "description": "HU #11233 (US-DIAG2-04), plano 03: o Operacional registra ocupação e renda de cada integrante da família 'E2E Souza Renda' (400,00, 800,00 e 0,00; massa do E2EWorkIncomeSeeder, sem retrato de trabalho), informa a renda total declarada de R$ 1.500,00 e o Bolsa Família de R$ 600,00, e vê o calculado R$ 1.200,00 ao lado com a divergência sinalizada e o declarado mantido depois de salvar (CA01/CA02/CA03). A variante validation_error tenta registrar na 'E2E Silva Renda' um valor em 'Outros' sem dizer qual programa e vê o erro no campo, sem gravar (CT02 — a UI mascara a renda só com dígitos e esconde a qualificação sem 'Sim', então o caso de borda alcançável é a descrição de 'Outros'; a recusa de qualificação sem 'sim' e de valor negativo está nos testes Pest). CA05, CA04, CA06 e CA07 estão na spec manual tests/client/work-income-11233.spec.ts. Massa fictícia; nenhum dado pessoal.",
+  "feature_slug": "11233-trabalho-rendimentos-03-evidencias",
+  "ac_refs": [
+    "AC-002",
+    "AC-003"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "prontuario",
+    "trabalho-renda",
+    "diagnostico",
+    "lgpd"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/login",
+    "viewport": {
+      "width": 1440,
+      "height": 1600
+    },
+    "users": [
+      {
+        "role": "operador",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_OPERADOR_CPF",
+          "password": "E2E_CLIENT_OPERADOR_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Massa do E2EWorkIncomeSeeder: 'E2E Souza Renda' (…0000000f2233, receives_pbf = true, 3 integrantes ativos) e 'E2E Silva Renda' (…0000000f1233, CadÚnico, BPC), as duas SEM retrato de trabalho. Rode o seeder antes de cada execução do happy_path (ele apaga só os retratos de trabalho dessas famílias)",
+      "Operador com add-on lotado no CRAS Centro (e no CRAS Sem MDS, por isso a unidade é escolhida no formulário)"
+    ]
+  },
+  "data": {
+    "family_souza_uuid": "00000000-0000-4000-8000-0000000f2233",
+    "family_silva_uuid": "00000000-0000-4000-8000-0000000f1233",
+    "unit_name": "E2E CRAS Centro"
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "Operacional registra renda dos integrantes e o declarado da Souza e vê a divergência (CA01, CA02, CA03)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_souza_uuid}?tab=composicao"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "button[data-testid^=\"member-conditions-\"] >> nth=0"
+          },
+          "timeout_ms": 15000
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[data-testid^=\"member-conditions-\"] >> nth=0"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-conditions-drawer\"]"
+          },
+          "note": "drawer do integrante 1 aberto"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-own-income\"]"
+          },
+          "value": "40000",
+          "note": "renda própria em centavos (máscara)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-work-work-card-yes\"]"
+          },
+          "note": "carteira: Sim"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-work-occupation\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "4 — Empregado com carteira de trabalho assinada"
+          },
+          "note": "ocupação (lookup da #11230)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-work-qualification-yes\"]"
+          },
+          "note": "qualificação: Sim"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-work-qualification-text\"]"
+          },
+          "value": "Pedreiro"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-work-retirement-no\"]"
+          },
+          "note": "aposentadoria/pensão: Não"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-conditions-save\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-conditions-unit\"]"
+          },
+          "note": "primeiro retrato: sem pergunta de atualização × correção"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-conditions-unit\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "${data.unit_name}"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-conditions-confirm-update\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "espera a gravação"
+        },
+        {
+          "action": "press",
+          "key": "Escape"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 800
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[data-testid^=\"member-conditions-\"] >> nth=1"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-conditions-drawer\"]"
+          },
+          "note": "drawer do integrante 2 aberto"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-own-income\"]"
+          },
+          "value": "80000",
+          "note": "renda própria em centavos (máscara)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-conditions-save\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"snapshot-kind-correct\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"snapshot-kind-correct\"]"
+          },
+          "note": "mesmo dia: corrige o retrato de hoje"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "espera a gravação"
+        },
+        {
+          "action": "press",
+          "key": "Escape"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 800
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[data-testid^=\"member-conditions-\"] >> nth=2"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-conditions-drawer\"]"
+          },
+          "note": "drawer do integrante 3 aberto"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-own-income\"]"
+          },
+          "value": "000",
+          "note": "renda própria em centavos (máscara)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-conditions-save\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"snapshot-kind-correct\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"snapshot-kind-correct\"]"
+          },
+          "note": "mesmo dia: corrige o retrato de hoje"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "espera a gravação"
+        },
+        {
+          "action": "press",
+          "key": "Escape"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 800
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_souza_uuid}?tab=trabalho-renda"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"work-income-block\"] [data-testid=\"snapshot-series\"]"
+          },
+          "timeout_ms": 15000
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"work-income-block\"] [data-testid^=\"snapshot-alter-\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"snapshot-kind-correct\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"work-income-declared_total_income\"]"
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"work-income-declared_total_income\"]"
+          },
+          "value": "150000",
+          "note": "declarado R$ 1.500,00 (CA01)"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"work-income-program-bolsa_familia-amount\"]"
+          },
+          "value": "60000",
+          "note": "Bolsa Família R$ 600,00 (CA04)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"diagnosis-snapshot-submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 3000,
+          "note": "espera o PUT terminar e a série recarregar"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "hidden",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"diagnosis-snapshot-form-sheet\"]"
+          },
+          "note": "correção gravada, formulário fechado (CA01)"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"work-income-comparison-declared-total_income\"]"
+          },
+          "value": "1.500,00",
+          "note": "o declarado fica ao lado e é mantido depois de salvar (CA03)"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"work-income-comparison-computed-total_income\"]"
+          },
+          "value": "1.200,00",
+          "note": "calculado = 400 + 800 + 0 (CA02)"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"work-income-comparison-badge-total_income\"]"
+          },
+          "note": "divergência sinalizada, sem bloquear (CA02)"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"work-income-comparison-computed-total_income_with_programs\"]"
+          },
+          "value": "1.800,00",
+          "note": "com programas: 1.200 + Bolsa Família 600 (CA04)"
+        }
+      ]
+    },
+    {
+      "name": "validation_error",
+      "title": "Valor em 'Outros' sem descrição é recusado no campo (CT02)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_silva_uuid}?tab=trabalho-renda"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"work-income-block\"] [data-testid=\"snapshot-register\"]"
+          },
+          "timeout_ms": 15000
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"work-income-block\"] [data-testid=\"snapshot-register\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"work-income-family-fields\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"diagnosis-snapshot-unit-select\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "${data.unit_name}"
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"work-income-program-other-amount\"]"
+          },
+          "value": "10000",
+          "note": "Outros R$ 100,00 sem dizer qual programa"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"diagnosis-snapshot-submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2000,
+          "note": "espera a validação responder"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"work-income-program-other-error\"]"
+          },
+          "note": "a mensagem aparece no campo 'Qual programa' (CT02). O texto em pt-BR é conferido na spec manual/dossiê"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"diagnosis-snapshot-form-sheet\"]"
+          },
+          "note": "o formulário segue aberto: nada foi gravado (CT02)"
+        }
+      ]
+    }
+  ]
+}
