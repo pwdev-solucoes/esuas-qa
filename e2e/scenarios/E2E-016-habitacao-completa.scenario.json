@@ -1,0 +1,615 @@
+{
+  "schema_version": 1,
+  "id": "E2E-016",
+  "title": "Habitação completa: registrar os onze itens na Silva, pessoas por dormitório 2,5 calculado, e dormitórios acima de cômodos recusado",
+  "description": "HU #11231 (US-DIAG2-02), plano 03: o Operacional abre a série de habitação da família 'E2E Silva Habitação' (massa do E2EHousingCompleteSeeder: 5 integrantes ativos e um retrato migrado só com os itens da F6), registra uma atualização preenchendo os onze itens e vê pessoas por dormitório = 2,5, calculado e sem campo editável (CA01/CA02). A variante validation_error informa 4 dormitórios para 3 cômodos e vê o erro no campo, sem gravar (CA04). CA03, CT05 e CA06 estão na spec manual tests/client/housing-conditions-complete-11231.spec.ts. Massa fictícia; nenhum dado pessoal.",
+  "feature_slug": "11231-habitacao-completa-03-evidencias",
+  "ac_refs": [
+    "AC-002",
+    "AC-003"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "prontuario",
+    "habitacao",
+    "diagnostico",
+    "lgpd"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/login",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "users": [
+      {
+        "role": "operador",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_OPERADOR_CPF",
+          "password": "E2E_CLIENT_OPERADOR_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Massa do E2EHousingCompleteSeeder: família 'E2E Silva Habitação' (…000001123101) no CRAS Centro, 5 integrantes ativos e um retrato migrado (hoje-120 d) só com tipo de residência e área de risco",
+      "Operador com add-on lotado no CRAS Centro (e no CRAS Sem MDS, por isso a unidade é escolhida no formulário)",
+      "A variante happy_path GRAVA um retrato novo (taken_on = hoje) por execução; a re-execução aceita N retratos e o seeder poda os extras"
+    ]
+  },
+  "data": {
+    "family_silva_uuid": "00000000-0000-4000-8000-000001123101",
+    "unit_name": "E2E CRAS Centro"
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "Operacional registra os onze itens na Silva e vê 2,5 pessoas por dormitório (CA01, CA02)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_silva_uuid}?tab=habitacao"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"housing-condition-block\"] [data-testid=\"snapshot-series\"]"
+          },
+          "timeout_ms": 15000,
+          "note": "a série de habitação da Silva carregou"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"housing-condition-block\"] [data-testid^=\"snapshot-alter-\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"snapshot-change-kind-dialog\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"snapshot-kind-update\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"diagnosis-snapshot-form-sheet\"]"
+          },
+          "note": "formulário de atualização aberto"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"diagnosis-snapshot-unit-select\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "${data.unit_name}"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"housing-wall_material\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Alvenaria ou madeira aparelhada"
+          },
+          "note": "b · paredes"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"housing-electricity_access_type\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "medidor próprio"
+          },
+          "note": "c · energia"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"housing-has_piped_water-yes\"]"
+          },
+          "note": "d · água canalizada: Sim"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"housing-water_supply_type\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Rede geral de distribuição"
+          },
+          "note": "e · abastecimento"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"housing-sanitation_type\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Rede coletora de esgoto"
+          },
+          "note": "f · escoamento"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"housing-garbage_collection_type\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Sim, coleta direta"
+          },
+          "note": "g · lixo"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"housing-rooms_count\"]"
+          },
+          "value": "3",
+          "note": "h · cômodos"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"housing-bedrooms_count\"]"
+          },
+          "value": "2",
+          "note": "i · dormitórios"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"housing-home_accessibility_type\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "tanto nos espaços internos"
+          },
+          "note": "k · acessibilidade"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"housing-condition-risk-area-no\"]"
+          },
+          "note": "l · área de risco: Não"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"housing-difficult_geographic_access-no\"]"
+          },
+          "note": "m · difícil acesso: Não"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"housing-area_conflict_violence-yes\"]"
+          },
+          "note": "n · conflito/violência: Sim"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"housing-persons-per-bedroom\"]:has-text(\"2,5\")"
+          },
+          "note": "j · 5 integrantes ÷ 2 dormitórios = 2,5, calculado (CA02)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"diagnosis-snapshot-submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 3000,
+          "note": "espera o POST terminar e a série recarregar"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "hidden",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"diagnosis-snapshot-form-sheet\"]"
+          },
+          "note": "retrato gravado, formulário fechado (CA01)"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"housing-condition-block\"] [data-testid=\"snapshot-value-rooms_count\"] >> nth=0"
+          },
+          "value": "3",
+          "note": "retrato mais novo traz os 3 cômodos (CA01)"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"housing-condition-block\"] [data-testid=\"snapshot-value-bedrooms_count\"] >> nth=0"
+          },
+          "value": "2",
+          "note": "e os 2 dormitórios (CA01)"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"housing-condition-block\"] [data-testid=\"snapshot-change-marker\"] >> nth=0"
+          },
+          "note": "itens novos marcados como mudou (CA01)"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"housing-condition-block\"] [data-testid^=\"snapshot-column-\"] >> nth=1"
+          },
+          "note": "o retrato anterior permanece (CA01)"
+        }
+      ]
+    },
+    {
+      "name": "validation_error",
+      "title": "Dormitórios acima de cômodos é recusado no campo (CA04)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_silva_uuid}?tab=habitacao"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"housing-condition-block\"] [data-testid=\"snapshot-series\"]"
+          },
+          "timeout_ms": 15000,
+          "note": "a série de habitação da Silva carregou"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"housing-condition-block\"] [data-testid^=\"snapshot-alter-\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"snapshot-change-kind-dialog\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"snapshot-kind-update\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"diagnosis-snapshot-form-sheet\"]"
+          },
+          "note": "formulário de atualização aberto"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"diagnosis-snapshot-unit-select\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "${data.unit_name}"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"housing-wall_material\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Alvenaria ou madeira aparelhada"
+          },
+          "note": "b · paredes"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"housing-electricity_access_type\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "medidor próprio"
+          },
+          "note": "c · energia"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"housing-has_piped_water-yes\"]"
+          },
+          "note": "d · água canalizada: Sim"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"housing-water_supply_type\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Rede geral de distribuição"
+          },
+          "note": "e · abastecimento"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"housing-sanitation_type\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Rede coletora de esgoto"
+          },
+          "note": "f · escoamento"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"housing-garbage_collection_type\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Sim, coleta direta"
+          },
+          "note": "g · lixo"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"housing-rooms_count\"]"
+          },
+          "value": "3",
+          "note": "h · cômodos"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"housing-bedrooms_count\"]"
+          },
+          "value": "4",
+          "note": "i · dormitórios"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"diagnosis-snapshot-submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2000,
+          "note": "espera a validação responder"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "#housing-bedrooms_count ~ [role=\"alert\"]"
+          },
+          "note": "a mensagem de erro aparece no campo de dormitórios (CA04). O texto em pt-BR é conferido na spec manual (a gerada roda com locale padrão e a API ainda não tem lang/en para esta chave)"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"diagnosis-snapshot-form-sheet\"]"
+          },
+          "note": "o formulário segue aberto: nada foi gravado (CA04)"
+        }
+      ]
+    }
+  ]
+}
