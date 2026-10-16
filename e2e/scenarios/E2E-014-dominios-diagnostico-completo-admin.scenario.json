@@ -463,7 +463,7 @@
           "action": "click",
           "target": {
             "by": "css",
-            "value": "tbody tr button[aria-label=\"Mais ações\"]"
+            "value": "tbody tr:first-child button[aria-label=\"Mais ações\"]"
           }
         },
         {

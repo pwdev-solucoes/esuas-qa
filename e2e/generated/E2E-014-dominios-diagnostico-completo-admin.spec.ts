@@ -121,7 +121,7 @@ test.describe('E2E-014 Domínios do diagnóstico completo no Painel Global: seis
     // fecha o modal de novidades da plataforma, se estiver aberto
     await page.keyboard.press('Escape');
     await expect(page.getByText('Nunca frequentou escola', { exact: true })).toBeVisible();
-    await page.locator('tbody tr button[aria-label="Mais ações"]').click();
+    await page.locator('tbody tr:first-child button[aria-label="Mais ações"]').click();
     await expect(page.getByRole('menuitem', { name: 'Ver correspondência' })).toBeVisible();
     // CT06: sem edição
     await expect(page.getByRole('menuitem', { name: 'Editar nome' })).toHaveCount(0);
