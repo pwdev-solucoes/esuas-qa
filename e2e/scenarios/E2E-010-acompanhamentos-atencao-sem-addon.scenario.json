@@ -1,0 +1,146 @@
+{
+  "schema_version": 1,
+  "id": "E2E-010",
+  "title": "Acompanhamentos que pedem atenção sem o add-on do prontuário: a relação nega com o motivo e aponta para a apuração",
+  "description": "HU #11209 (US-EVOL-02), plano 03: o Operacional sem add-on abre a relação e vê o estado de acesso ao prontuário familiar (\"exige o acesso ao prontuário familiar\") em vez de famílias, com o link para a apuração (a apuração é do Master, P6). Massa fictícia; nenhum dado pessoal.",
+  "feature_slug": "11209-acompanhamentos-atencao-03-qa-e2e",
+  "ac_refs": [
+    "AC-004"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "prontuario",
+    "acompanhamento",
+    "atencao",
+    "lgpd",
+    "addon"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/login",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "users": [
+      {
+        "role": "sem_addon",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_NO_ADDON_CPF",
+          "password": "E2E_CLIENT_NO_ADDON_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Operador lotado no CRAS Centro SEM o add-on do prontuário familiar (E2EProntuarioSeeder)",
+      "A API recusa a relação com 403 genérico; a tela traduz no estado de acesso ao prontuário",
+      "A apuração (attendance-reports.view) é exclusiva do Master: o cenário não a abre com este usuário"
+    ]
+  },
+  "data": {},
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "Sem add-on: a relação mostra o estado de acesso ao prontuário e o link para a apuração (CA10)",
+      "as_user": "sem_addon",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_NO_ADDON_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_NO_ADDON_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/acompanhamentos-atencao"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "aguarda a relação responder 403"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "url",
+          "value": "/app/cadastros/acompanhamentos-atencao"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "follow-ups-attention-missing-addon"
+          },
+          "note": "estado de acesso ao prontuário familiar"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "follow-ups-attention-missing-addon"
+          },
+          "value": "exige o acesso ao prontuário familiar"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "follow-ups-attention-report-link"
+          },
+          "note": "link para a apuração"
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"follow-up-attention-row-\"]"
+          },
+          "value": 0,
+          "note": "nenhuma família listada"
+        }
+      ]
+    }
+  ]
+}
