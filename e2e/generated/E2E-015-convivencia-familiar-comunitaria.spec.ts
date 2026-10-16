@@ -49,6 +49,8 @@ test.describe('E2E-015 Convivência familiar e comunitária: registrar e \'sempr
     await page.locator('[data-testid="community-living-support-neighbors-yes"]').click();
     // sempre morou no estado (CA02)
     await page.locator('[data-testid="residence-time-state-always"]').check();
+    // tempo de moradia no município: 8 anos, DIGITADOS (CA01)
+    await page.locator('[data-testid="residence-time-city-years"]').fill('8');
     // ameaça: Sim (CA01)
     await page.locator('[data-testid="community-living-threat-yes"]').click();
     await page.locator('[data-testid="community-living-save"]').click();
@@ -67,6 +69,8 @@ test.describe('E2E-015 Convivência familiar e comunitária: registrar e \'sempr
     await expect(page.locator('[data-testid="residence-time-state-years"]')).toBeDisabled();
     // os anos foram zerados (CA02)
     await expect(page.locator('[data-testid="residence-time-state-years"]')).toHaveValue('');
+    // os anos digitados persistiram (CA01)
+    await expect(page.locator('[data-testid="residence-time-city-years"]')).toHaveValue('8');
     // ameaça: Sim persistiu (CA01)
     await expect(page.locator('[data-testid="community-living-threat-yes"]')).toBeChecked();
     // vizinhos: Sim persistiu (CA01)

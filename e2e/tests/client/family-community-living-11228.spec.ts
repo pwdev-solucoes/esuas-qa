@@ -16,8 +16,8 @@ import { dismissPlatformUpdates } from '../../helpers/platform-updates';
  * "sempre morou") e CA03 (família só de adultos). Aqui ficam os critérios
  * que ele não expressa, mais uma checagem de persistência de cada um:
  *
- *  - CA01/CA02: a gravação sobrevive ao recarregamento; "sempre morou"
- *    desabilita e zera os anos;
+ *  - CA01/CA02: a gravação (inclusive os anos DIGITADOS no município) sobrevive
+ *    ao recarregamento; "sempre morou" desabilita e zera os anos;
  *  - CA04: a família com bebê (…0f0402) é perguntada sobre o lazer;
  *  - CA05: "Sem informação" é gravado como `null`, nunca como "Não";
  *  - CA07: o atalho abre a anotação com o bloco pré-escolhido e a anotação
@@ -112,11 +112,17 @@ test.describe('US-CONV-01 — convivência familiar e comunitária (client)', ()
     const flipTo = (await neighborsYes.isChecked()) ? 'no' : 'yes';
     await page.getByTestId(`community-living-support-neighbors-${flipTo}`).check();
     await page.getByTestId('community-living-threat-yes').check();
+
+    // Tempo de moradia no município DIGITADO (anos): o CA01 registra o tempo.
+    const cityYears = page.getByTestId('residence-time-city-years');
+    await cityYears.fill('8');
+    await expect(cityYears).toHaveValue('8');
     await save(page);
 
     await openConvivencia(page, FAMILY_WITH_BABY);
     await expect(page.getByTestId('residence-time-state-always')).toBeChecked();
     await expect(page.getByTestId('residence-time-state-years')).toBeDisabled();
+    await expect(page.getByTestId('residence-time-city-years')).toHaveValue('8');
     await expect(page.getByTestId('community-living-threat-yes')).toBeChecked();
     await expect(page.getByTestId(`community-living-support-neighbors-${flipTo}`)).toBeChecked();
   });

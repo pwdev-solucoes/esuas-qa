@@ -123,6 +123,15 @@
           "note": "sempre morou no estado (CA02)"
         },
         {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"residence-time-city-years\"]"
+          },
+          "value": "8",
+          "note": "tempo de moradia no município: 8 anos, DIGITADOS (CA01)"
+        },
+        {
           "action": "click",
           "target": {
             "by": "css",
@@ -191,6 +200,15 @@
           },
           "value": "",
           "note": "os anos foram zerados (CA02)"
+        },
+        {
+          "expect": "value",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"residence-time-city-years\"]"
+          },
+          "value": "8",
+          "note": "os anos digitados persistiram (CA01)"
         },
         {
           "expect": "checked",
