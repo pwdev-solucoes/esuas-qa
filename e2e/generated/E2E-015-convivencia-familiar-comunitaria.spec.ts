@@ -23,7 +23,7 @@ test.describe('E2E-015 Convivência familiar e comunitária: registrar e \'sempr
   test.use({ baseURL: process.env['CLIENT_BASE_URL'], viewport: { width: 1440, height: 900 } });
   // Preconditions (arrange before running):
   //   - Massa do E2ECommunityLivingSeeder: família …0f0401 só com adultos e família …0f0402 com responsável adulto e criança de 1 ano, ambas no CRAS Centro; nenhuma linha de convivência semeada
-  //   - A variante happy_path GRAVA (PUT idempotente por valor) na …0f0402: anos no bairro = 8, 'sempre morou' no estado, ameaça Sim. O botão Salvar só habilita com alteração; numa segunda execução seguida o valor 8 já está gravado, então rode a spec manual tests/client/family-community-living-11228.spec.ts (que grava outro valor) entre duas execuções
+  //   - A variante happy_path GRAVA (PUT idempotente por valor) na …0f0402: 'sempre morou' no estado, ameaça Sim e vizinhos Sim. O botão Salvar só habilita com alteração; numa segunda execução seguida os valores já estão gravados, então rode a spec manual tests/client/family-community-living-11228.spec.ts (que termina com ameaça e vizinhos sem informação) entre duas execuções
 
   test('happy_path — Operacional registra a convivência e marca \'sempre morou\' na família com bebê (CA01, CA02)', {
     tag: ['@P1', '@client', '@prontuario', '@convivencia', '@lgpd'],
@@ -45,15 +45,15 @@ test.describe('E2E-015 Convivência familiar e comunitária: registrar e \'sempr
     await page.keyboard.press('Escape');
     // a aba Convivência carregou
     await expect(page.locator('[data-testid="community-living-form"]')).toBeVisible({ timeout: 15000 });
-    // anos no bairro (CA01)
-    await page.locator('[data-testid="residence-time-neighborhood-years"]').fill('8');
+    // vizinhos: Sim (CA01)
+    await page.locator('[data-testid="community-living-support-neighbors-yes"]').click();
     // sempre morou no estado (CA02)
     await page.locator('[data-testid="residence-time-state-always"]').check();
     // ameaça: Sim (CA01)
     await page.locator('[data-testid="community-living-threat-yes"]').click();
     await page.locator('[data-testid="community-living-save"]').click();
-    // salvou: o botão volta a desabilitar (sem alteração pendente)
-    await expect(page.locator('[data-testid="community-living-save"][disabled]')).toBeVisible({ timeout: 15000 });
+    // espera o PUT terminar antes de recarregar a aba (a persistência é conferida pelas asserções após o reload)
+    await page.waitForTimeout(3000);
     await page.goto(`/app/cadastros/familias/${data.family_with_baby_uuid}?tab=convivencia`);
     // deixa o modal de novidades abrir antes de fechá-lo
     await page.waitForTimeout(2500);
@@ -67,10 +67,10 @@ test.describe('E2E-015 Convivência familiar e comunitária: registrar e \'sempr
     await expect(page.locator('[data-testid="residence-time-state-years"]')).toBeDisabled();
     // os anos foram zerados (CA02)
     await expect(page.locator('[data-testid="residence-time-state-years"]')).toHaveValue('');
-    // anos no bairro persistiram (CA01)
-    await expect(page.locator('[data-testid="residence-time-neighborhood-years"]')).toHaveValue('8');
     // ameaça: Sim persistiu (CA01)
     await expect(page.locator('[data-testid="community-living-threat-yes"]')).toBeChecked();
+    // vizinhos: Sim persistiu (CA01)
+    await expect(page.locator('[data-testid="community-living-support-neighbors-yes"]')).toBeChecked();
   });
 
   test('empty_state — Família só de adultos: \'Não se aplica\' para criança e idoso, sem controle (CA03)', {

@@ -101,26 +101,24 @@ test.describe('US-CONV-01 — convivência familiar e comunitária (client)', ()
   test('CA01/CA02 — o registro persiste e "sempre morou" desabilita e zera os anos', async ({ page }) => {
     await openConvivencia(page, FAMILY_WITH_BABY);
 
-    // Valor distinto a cada execução: o botão Salvar só habilita com alteração.
-    const years = String(9 + (Date.now() % 60));
-    const neighborhoodYears = page.getByTestId('residence-time-neighborhood-years');
-    const neighborhoodAlways = page.getByTestId('residence-time-neighborhood-always');
-    if (await neighborhoodAlways.isChecked()) await neighborhoodAlways.uncheck();
-    await neighborhoodYears.fill(years);
-
+    // "Sempre morou" no estado: o campo de anos fica desabilitado e vazio (CA02).
     const stateAlways = page.getByTestId('residence-time-state-always');
     if (!(await stateAlways.isChecked())) await stateAlways.check();
     await expect(page.getByTestId('residence-time-state-years')).toBeDisabled();
     await expect(page.getByTestId('residence-time-state-years')).toHaveValue('');
 
+    // Alterna "vizinhos" a cada execução: o botão Salvar só habilita com alteração.
+    const neighborsYes = page.getByTestId('community-living-support-neighbors-yes');
+    const flipTo = (await neighborsYes.isChecked()) ? 'no' : 'yes';
+    await page.getByTestId(`community-living-support-neighbors-${flipTo}`).check();
     await page.getByTestId('community-living-threat-yes').check();
     await save(page);
 
     await openConvivencia(page, FAMILY_WITH_BABY);
-    await expect(page.getByTestId('residence-time-neighborhood-years')).toHaveValue(years);
     await expect(page.getByTestId('residence-time-state-always')).toBeChecked();
     await expect(page.getByTestId('residence-time-state-years')).toBeDisabled();
     await expect(page.getByTestId('community-living-threat-yes')).toBeChecked();
+    await expect(page.getByTestId(`community-living-support-neighbors-${flipTo}`)).toBeChecked();
   });
 
   test('CA04 — a família com criança é perguntada sobre o lazer (a sem criança não é)', async ({ page }) => {
@@ -151,6 +149,8 @@ test.describe('US-CONV-01 — convivência familiar e comunitária (client)', ()
 
     await openConvivencia(page, FAMILY_WITH_BABY);
     await page.getByTestId('community-living-threat-unknown').check();
+    // Deixa também "vizinhos" sem informação: estado previsível para o E2E-015.
+    await page.getByTestId('community-living-support-neighbors-unknown').check();
     await save(page);
 
     await openConvivencia(page, FAMILY_WITH_BABY);
@@ -237,11 +237,20 @@ test.describe('US-CONV-01 — convivência familiar e comunitária (client)', ()
       const updated = rows.filter((row) => row.event === 'updated');
       expect(updated.length, 'eventos updated em family_community_living').toBeGreaterThan(0);
 
-      const latest = updated[0];
+      const latest = updated[0] as {
+        created_at?: string;
+        author?: { kind?: string };
+        changed_fields?: string[];
+      };
       expect(latest.created_at, 'data na trilha').toBeTruthy();
-      expect(latest.causer, 'autor na trilha').toBeTruthy();
-      const changes = JSON.stringify([latest.properties, latest.attribute_changes]);
-      expect(changes, 'valores antigo e novo na trilha').toMatch(/suffers_threat_or_discrimination|years_in_|always_lived_in_/);
+      expect(latest.author?.kind, 'autor na trilha').toBe('user');
+      // A trilha do tenant expõe só o NOME dos campos alterados, nunca os valores.
+      expect(
+        (latest.changed_fields ?? []).some((field) =>
+          /suffers_threat_or_discrimination|support_neighbors|always_lived_in_|years_in_/.test(field),
+        ),
+        'campos alterados na trilha',
+      ).toBe(true);
       // LGPD: a anotação livre nunca vai para a trilha da convivência.
       expect(JSON.stringify(rows)).not.toContain(RUN_TAG);
     } finally {

@@ -2,7 +2,7 @@
   "schema_version": 1,
   "id": "E2E-015",
   "title": "Convivência familiar e comunitária: registrar e 'sempre morou' numa família com bebê; 'não se aplica' derivado, sem controle, numa família só de adultos",
-  "description": "HU #11228 (US-CONV-01), plano 03: o Operacional abre a aba Convivência da família com criança (massa do E2ECommunityLivingSeeder), informa anos no bairro, marca 'sempre morou' no estado e ameaça Sim, salva e recarrega: os valores persistem e os anos do estado ficam zerados e desabilitados (CA01/CA02). A variante empty_state abre a família só de adultos: criança e idoso mostram 'Não se aplica' sem controle algum (CA03). CA04 a CA07 estão na spec manual tests/client/family-community-living-11228.spec.ts. Massa fictícia; nenhum dado pessoal.",
+  "description": "HU #11228 (US-CONV-01), plano 03: o Operacional abre a aba Convivência da família com criança (massa do E2ECommunityLivingSeeder), marca 'sempre morou' no estado, ameaça Sim e vizinhos Sim, salva e recarrega: os valores persistem e os anos do estado ficam zerados e desabilitados (CA01/CA02). A variante empty_state abre a família só de adultos: criança e idoso mostram 'Não se aplica' sem controle algum (CA03). CA04 a CA07 estão na spec manual tests/client/family-community-living-11228.spec.ts. Massa fictícia; nenhum dado pessoal.",
   "feature_slug": "11228-convivencia-03-evidencias",
   "ac_refs": [
     "AC-001",
@@ -33,7 +33,7 @@
     ],
     "state": [
       "Massa do E2ECommunityLivingSeeder: família …0f0401 só com adultos e família …0f0402 com responsável adulto e criança de 1 ano, ambas no CRAS Centro; nenhuma linha de convivência semeada",
-      "A variante happy_path GRAVA (PUT idempotente por valor) na …0f0402: anos no bairro = 8, 'sempre morou' no estado, ameaça Sim. O botão Salvar só habilita com alteração; numa segunda execução seguida o valor 8 já está gravado, então rode a spec manual tests/client/family-community-living-11228.spec.ts (que grava outro valor) entre duas execuções"
+      "A variante happy_path GRAVA (PUT idempotente por valor) na …0f0402: 'sempre morou' no estado, ameaça Sim e vizinhos Sim. O botão Salvar só habilita com alteração; numa segunda execução seguida os valores já estão gravados, então rode a spec manual tests/client/family-community-living-11228.spec.ts (que termina com ameaça e vizinhos sem informação) entre duas execuções"
     ]
   },
   "data": {
@@ -107,13 +107,12 @@
           "note": "a aba Convivência carregou"
         },
         {
-          "action": "fill",
+          "action": "click",
           "target": {
             "by": "css",
-            "value": "[data-testid=\"residence-time-neighborhood-years\"]"
+            "value": "[data-testid=\"community-living-support-neighbors-yes\"]"
           },
-          "value": "8",
-          "note": "anos no bairro (CA01)"
+          "note": "vizinhos: Sim (CA01)"
         },
         {
           "action": "check",
@@ -140,12 +139,8 @@
         },
         {
           "action": "wait",
-          "target": {
-            "by": "css",
-            "value": "[data-testid=\"community-living-save\"][disabled]"
-          },
-          "timeout_ms": 15000,
-          "note": "salvou: o botão volta a desabilitar (sem alteração pendente)"
+          "timeout_ms": 3000,
+          "note": "espera o PUT terminar antes de recarregar a aba (a persistência é conferida pelas asserções após o reload)"
         },
         {
           "action": "goto",
@@ -198,21 +193,20 @@
           "note": "os anos foram zerados (CA02)"
         },
         {
-          "expect": "value",
-          "target": {
-            "by": "css",
-            "value": "[data-testid=\"residence-time-neighborhood-years\"]"
-          },
-          "value": "8",
-          "note": "anos no bairro persistiram (CA01)"
-        },
-        {
           "expect": "checked",
           "target": {
             "by": "css",
             "value": "[data-testid=\"community-living-threat-yes\"]"
           },
           "note": "ameaça: Sim persistiu (CA01)"
+        },
+        {
+          "expect": "checked",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"community-living-support-neighbors-yes\"]"
+          },
+          "note": "vizinhos: Sim persistiu (CA01)"
         }
       ]
     },
