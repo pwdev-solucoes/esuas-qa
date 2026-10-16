@@ -128,11 +128,13 @@ test.describe('E2E-019 Saúde completa: quem conduz o caso registra e lê o bloc
     await expect(page.locator('[data-testid="member-conditions-drawer"]')).toBeVisible({ timeout: 15000 });
     await expect(page.locator('[data-testid="member-pregnancy-block"]')).toBeVisible({ timeout: 15000 });
     await page.locator('[data-testid^="member-pregnancy-details-edit-"]').click();
+    // o formulário recusa na digitação: o botão Salvar detalhes fica desabilitado
     await page.locator('input[data-testid^="member-pregnancy-edit-months-"]').fill('11');
-    await page.locator('[data-testid^="member-pregnancy-edit-save-"]').click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
     // mensagem 'Informe de 1 a 10 meses.' no campo
     await expect(page.locator('[data-testid^="member-pregnancy-edit-months-invalid-"]')).toBeVisible();
     await expect(page.locator('[data-testid="member-pregnancy-block"]')).toContainText('Informe de 1 a 10 meses.');
+    // nada é enviado
+    await expect(page.locator('[data-testid^="member-pregnancy-edit-save-"]')).toBeDisabled();
   });
 });

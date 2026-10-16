@@ -485,18 +485,12 @@
             "by": "css",
             "value": "input[data-testid^=\"member-pregnancy-edit-months-\"]"
           },
-          "value": "11"
-        },
-        {
-          "action": "click",
-          "target": {
-            "by": "css",
-            "value": "[data-testid^=\"member-pregnancy-edit-save-\"]"
-          }
+          "value": "11",
+          "note": "o formulário recusa na digitação: o botão Salvar detalhes fica desabilitado"
         },
         {
           "action": "wait",
-          "timeout_ms": 1000
+          "timeout_ms": 500
         }
       ],
       "assertions": [
@@ -515,6 +509,14 @@
             "value": "[data-testid=\"member-pregnancy-block\"]"
           },
           "value": "Informe de 1 a 10 meses."
+        },
+        {
+          "expect": "disabled",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"member-pregnancy-edit-save-\"]"
+          },
+          "note": "nada é enviado"
         }
       ]
     }
