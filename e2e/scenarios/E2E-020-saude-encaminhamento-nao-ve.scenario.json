@@ -99,8 +99,10 @@
         {
           "action": "wait",
           "target": {
-            "by": "css",
-            "value": "button:text-is(\"Composição Familiar\")"
+            "by": "role",
+            "value": "tab",
+            "name": "Composição Familiar",
+            "exact": true
           },
           "timeout_ms": 15000,
           "note": "o prontuário abriu (eixo do encaminhamento recebido)"
@@ -110,15 +112,19 @@
         {
           "expect": "visible",
           "target": {
-            "by": "css",
-            "value": "button:text-is(\"Composição Familiar\")"
+            "by": "role",
+            "value": "tab",
+            "name": "Composição Familiar",
+            "exact": true
           }
         },
         {
           "expect": "count",
           "target": {
-            "by": "css",
-            "value": "button:text-is(\"Saúde\")"
+            "by": "role",
+            "value": "tab",
+            "name": "Saúde",
+            "exact": true
           },
           "value": 0,
           "note": "a evidência é a ausência da aba Saúde"

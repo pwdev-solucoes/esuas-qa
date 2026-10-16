@@ -43,10 +43,10 @@ test.describe('E2E-020 Saúde completa: o CRAS Rural, que só recebeu o encaminh
     // fecha o modal de novidades da plataforma, se estiver aberto
     await page.keyboard.press('Escape');
     // o prontuário abriu (eixo do encaminhamento recebido)
-    await expect(page.locator('button:text-is("Composição Familiar")')).toBeVisible({ timeout: 15000 });
-    await expect(page.locator('button:text-is("Composição Familiar")')).toBeVisible();
+    await expect(page.getByRole('tab', { name: 'Composição Familiar', exact: true })).toBeVisible({ timeout: 15000 });
+    await expect(page.getByRole('tab', { name: 'Composição Familiar', exact: true })).toBeVisible();
     // a evidência é a ausência da aba Saúde
-    await expect(page.locator('button:text-is("Saúde")')).toHaveCount(0);
+    await expect(page.getByRole('tab', { name: 'Saúde', exact: true })).toHaveCount(0);
     // nem o conteúdo, mesmo pedindo ?tab=saude
     await expect(page.locator('[data-testid="health-block"]')).toHaveCount(0);
   });

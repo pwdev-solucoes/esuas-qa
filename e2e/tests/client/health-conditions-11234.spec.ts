@@ -184,9 +184,9 @@ test.describe('US-DIAG2-05 — condições de saúde completas (client)', () => 
       timeout: 15_000,
     });
     await expect(rural.getByTestId('family-access-denied')).toHaveCount(0);
-    await expect(rural.locator('button:text-is("Composição Familiar")')).toBeVisible();
+    await expect(rural.getByRole('tab', { name: 'Composição Familiar', exact: true })).toBeVisible();
     // Ausência: nem a aba, nem o bloco, mesmo pedindo ?tab=saude.
-    await expect(rural.locator('button:text-is("Saúde")')).toHaveCount(0);
+    await expect(rural.getByRole('tab', { name: 'Saúde', exact: true })).toHaveCount(0);
     await expect(rural.getByTestId('health-block')).toHaveCount(0);
     await captureEvidence(rural, testInfo, EVIDENCE_SLUG, 'rural-sem-aba-saude');
   });
