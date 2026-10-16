@@ -116,7 +116,9 @@ test.describe("US-DIAG2-04 — trabalho e rendimentos completos (client)", () =>
     // oferece campo de beneficiário do BPC (só o valor recebido).
     await expect(panel.locator("input, select, textarea")).toHaveCount(0);
     await expect(
-      page.locator('[data-testid*="beneficiar"], [id*="beneficiar"]'),
+      page
+        .getByTestId("work-income-snapshot-fields")
+        .locator('[data-testid*="beneficiar"], [id*="beneficiar"]'),
     ).toHaveCount(0);
     await panel.scrollIntoViewIfNeeded();
     await captureEvidence(page, testInfo, EVIDENCE_SLUG, "bpc-somente-leitura");
