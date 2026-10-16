@@ -1,0 +1,168 @@
+{
+  "schema_version": 1,
+  "id": "E2E-017",
+  "title": "Quadro de vulnerabilidade educacional: o Operacional vê as seis faixas da Lima, calculadas e sem campo editável",
+  "description": "HU #11232 (US-DIAG2-03), plano 03: o Operacional com add-on abre a aba Composição da família 'E2E Lima Educação' (massa do E2EEducationVulnerabilitySeeder: Ana 4 fora da escola, Pedro 12 e Caio 14 fora da escola, Bia 15 sem informação, João 35 analfabeto) e vê o quadro com 1 em 0–5, 2 em 6–14, 1 em 18–59 e os seis rótulos, sem campo editável (CA01). CA02, CA03 e CA04 estão na spec manual tests/client/education-vulnerability-11232.spec.ts. Massa fictícia; nenhum dado pessoal.",
+  "feature_slug": "11232-educacao-completa-03-evidencias",
+  "ac_refs": [
+    "AC-002"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "prontuario",
+    "educacao",
+    "diagnostico",
+    "lgpd"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/login",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "users": [
+      {
+        "role": "operador",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_OPERADOR_CPF",
+          "password": "E2E_CLIENT_OPERADOR_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Massa do E2EEducationVulnerabilitySeeder: família 'E2E Lima Educação' (…000001123201) no CRAS Centro, 5 integrantes ativos e retrato de educação do dia 1 do mês",
+      "Operador com add-on lotado no CRAS Centro",
+      "A spec manual (CA03) desvincula Pedro; rode o seeder antes para reconstituir 6–14 = 2"
+    ]
+  },
+  "data": {
+    "family_lima_uuid": "00000000-0000-4000-8000-000001123201",
+    "unit_name": "E2E CRAS Centro"
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "Operacional vê o quadro da Lima com 1, 2 e 1 e os seis rótulos, sem campo editável (CA01)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_lima_uuid}?tab=composicao"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"education-vulnerability-card\"]"
+          },
+          "timeout_ms": 15000,
+          "note": "o quadro de vulnerabilidade educacional carregou"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"education-vulnerability-card\"]"
+          },
+          "note": "o quadro aparece na aba Composição (CA01)"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"education-band-out_of_school_0_5\"] dd"
+          },
+          "value": "1",
+          "note": "Ana, 4 anos, situação 4: 1 em 0–5 (CA01)"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"education-band-out_of_school_6_14\"] dd"
+          },
+          "value": "2",
+          "note": "Pedro e Caio na situação 3: 2 em 6–14 (CA01)"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"education-band-illiterate_18_59\"] dd"
+          },
+          "value": "1",
+          "note": "João, 35 anos, analfabeto: 1 em 18–59 (CA01)"
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"education-vulnerability-card\"] dt"
+          },
+          "value": 6,
+          "note": "seis rótulos de faixa (CA01)"
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"education-vulnerability-card\"] input, [data-testid=\"education-vulnerability-card\"] select, [data-testid=\"education-vulnerability-card\"] textarea"
+          },
+          "value": 0,
+          "note": "quadro calculado, sem campo editável (CA01)"
+        }
+      ]
+    }
+  ]
+}
