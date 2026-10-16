@@ -147,13 +147,25 @@
           }
         },
         {
-          "action": "click",
-          "target": {
-            "by": "role",
-            "value": "option",
-            "name": "4 — Empregado com carteira de trabalho assinada"
-          },
-          "note": "ocupação (lookup da #11230)"
+          "action": "press",
+          "key": "ArrowDown"
+        },
+        {
+          "action": "press",
+          "key": "ArrowDown"
+        },
+        {
+          "action": "press",
+          "key": "ArrowDown"
+        },
+        {
+          "action": "press",
+          "key": "ArrowDown"
+        },
+        {
+          "action": "press",
+          "key": "Enter",
+          "note": "ocupação 4 — Empregado com carteira assinada (teclado: o clique na opção oscila durante a animação da lista)"
         },
         {
           "action": "click",

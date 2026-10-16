@@ -53,8 +53,12 @@ test.describe('E2E-018 Trabalho e rendimentos: registrar renda e ocupação dos 
     // carteira: Sim
     await page.locator('[data-testid="member-work-work-card-yes"]').click();
     await page.locator('[data-testid="member-work-occupation"]').click();
-    // ocupação (lookup da #11230)
-    await page.getByRole('option', { name: '4 — Empregado com carteira de trabalho assinada' }).click();
+    await page.keyboard.press('ArrowDown');
+    await page.keyboard.press('ArrowDown');
+    await page.keyboard.press('ArrowDown');
+    await page.keyboard.press('ArrowDown');
+    // ocupação 4 — Empregado com carteira assinada (teclado: o clique na opção oscila durante a animação da lista)
+    await page.keyboard.press('Enter');
     // qualificação: Sim
     await page.locator('[data-testid="member-work-qualification-yes"]').click();
     await page.locator('[data-testid="member-work-qualification-text"]').fill('Pedreiro');
