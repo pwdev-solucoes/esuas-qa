@@ -1,0 +1,337 @@
+{
+  "schema_version": 1,
+  "id": "E2E-015",
+  "title": "Convivência familiar e comunitária: registrar e 'sempre morou' numa família com bebê; 'não se aplica' derivado, sem controle, numa família só de adultos",
+  "description": "HU #11228 (US-CONV-01), plano 03: o Operacional abre a aba Convivência da família com criança (massa do E2ECommunityLivingSeeder), marca 'sempre morou' no estado, ameaça Sim e vizinhos Sim, salva e recarrega: os valores persistem e os anos do estado ficam zerados e desabilitados (CA01/CA02). A variante empty_state abre a família só de adultos: criança e idoso mostram 'Não se aplica' sem controle algum (CA03). CA04 a CA07 estão na spec manual tests/client/family-community-living-11228.spec.ts. Massa fictícia; nenhum dado pessoal.",
+  "feature_slug": "11228-convivencia-03-evidencias",
+  "ac_refs": [
+    "AC-001",
+    "AC-002"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "prontuario",
+    "convivencia",
+    "lgpd"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/login",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "users": [
+      {
+        "role": "operador",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_OPERADOR_CPF",
+          "password": "E2E_CLIENT_OPERADOR_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Massa do E2ECommunityLivingSeeder: família …0f0401 só com adultos e família …0f0402 com responsável adulto e criança de 1 ano, ambas no CRAS Centro; nenhuma linha de convivência semeada",
+      "A variante happy_path GRAVA (PUT idempotente por valor) na …0f0402: 'sempre morou' no estado, ameaça Sim e vizinhos Sim. O botão Salvar só habilita com alteração; numa segunda execução seguida os valores já estão gravados, então rode a spec manual tests/client/family-community-living-11228.spec.ts (que termina com ameaça e vizinhos sem informação) entre duas execuções"
+    ]
+  },
+  "data": {
+    "family_adults_uuid": "00000000-0000-4000-8000-0000000f0401",
+    "family_with_baby_uuid": "00000000-0000-4000-8000-0000000f0402"
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "Operacional registra a convivência e marca 'sempre morou' na família com bebê (CA01, CA02)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_with_baby_uuid}?tab=convivencia"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"community-living-form\"]"
+          },
+          "timeout_ms": 15000,
+          "note": "a aba Convivência carregou"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"community-living-support-neighbors-yes\"]"
+          },
+          "note": "vizinhos: Sim (CA01)"
+        },
+        {
+          "action": "check",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"residence-time-state-always\"]"
+          },
+          "note": "sempre morou no estado (CA02)"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"residence-time-city-years\"]"
+          },
+          "value": "8",
+          "note": "tempo de moradia no município: 8 anos, DIGITADOS (CA01)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"community-living-threat-yes\"]"
+          },
+          "note": "ameaça: Sim (CA01)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"community-living-save\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 3000,
+          "note": "espera o PUT terminar antes de recarregar a aba (a persistência é conferida pelas asserções após o reload)"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_with_baby_uuid}?tab=convivencia"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"community-living-form\"]"
+          },
+          "timeout_ms": 15000,
+          "note": "a aba Convivência carregou"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "checked",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"residence-time-state-always\"]"
+          },
+          "note": "'sempre morou' persistiu (CA02)"
+        },
+        {
+          "expect": "disabled",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"residence-time-state-years\"]"
+          },
+          "note": "o campo de anos fica desabilitado (CA02)"
+        },
+        {
+          "expect": "value",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"residence-time-state-years\"]"
+          },
+          "value": "",
+          "note": "os anos foram zerados (CA02)"
+        },
+        {
+          "expect": "value",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"residence-time-city-years\"]"
+          },
+          "value": "8",
+          "note": "os anos digitados persistiram (CA01)"
+        },
+        {
+          "expect": "checked",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"community-living-threat-yes\"]"
+          },
+          "note": "ameaça: Sim persistiu (CA01)"
+        },
+        {
+          "expect": "checked",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"community-living-support-neighbors-yes\"]"
+          },
+          "note": "vizinhos: Sim persistiu (CA01)"
+        }
+      ]
+    },
+    {
+      "name": "empty_state",
+      "title": "Família só de adultos: 'Não se aplica' para criança e idoso, sem controle (CA03)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_adults_uuid}?tab=convivencia"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"community-living-form\"]"
+          },
+          "timeout_ms": 15000,
+          "note": "a aba Convivência carregou"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"leisure-children-not-applicable\"]"
+          },
+          "value": "Não se aplica — família sem criança/adolescente",
+          "note": "texto derivado, sem controle (CA03)"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"leisure-elderly-not-applicable\"]"
+          },
+          "value": "Não se aplica — família sem idoso",
+          "note": "texto derivado, sem controle (CA03)"
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"leisure-children-control-yes\"]"
+          },
+          "value": 0,
+          "note": "a ausência do controle é a evidência (CA03)"
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"leisure-elderly-control-yes\"]"
+          },
+          "value": 0,
+          "note": "idem para idoso (CA03)"
+        }
+      ]
+    }
+  ]
+}
