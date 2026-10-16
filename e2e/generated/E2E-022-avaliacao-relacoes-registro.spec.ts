@@ -56,7 +56,7 @@ test.describe('E2E-022 Avaliação técnica das relações: o CREAS registra e l
     await expect(page.getByTestId('relationship-assessment-notice')).toBeVisible({ timeout: 10000 });
     await page.getByTestId('relationship-assessment-submit').click();
     // aviso no toast (mesmo texto do servidor)
-    await expect(page.getByText('Este registro será lido apenas pela unidade pela qual você está registrando')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('[data-title]:has-text("Este registro será lido apenas pela unidade pela qual você está registrando")')).toBeVisible({ timeout: 10000 });
     // a avaliação aparece na relação conjugal
     await expect(page.locator('[data-testid="relationship-card-conjugal"] [data-testid="relationship-assessment-item"] >> nth=0')).toBeVisible();
     await expect(page.locator('[data-testid="relationship-card-conjugal"] [data-testid="relationship-assessment-item"] >> nth=0')).toContainText('Conflituoso, sem violência');
@@ -65,7 +65,7 @@ test.describe('E2E-022 Avaliação técnica das relações: o CREAS registra e l
     // data da avaliação
     await expect(page.locator('[data-testid="relationship-card-conjugal"] [data-testid="relationship-assessment-item"] >> nth=0')).toContainText('Avaliado em');
     // toast com o aviso
-    await expect(page.getByText('Este registro será lido apenas pela unidade pela qual você está registrando')).toBeVisible();
+    await expect(page.locator('[data-title]:has-text("Este registro será lido apenas pela unidade pela qual você está registrando")')).toBeVisible();
   });
 
   test('serie_retroativa — Nova avaliação conjugal com data retroativa não substitui a anterior: as avaliações aparecem em série, a mais recente primeiro (CA02)', {
