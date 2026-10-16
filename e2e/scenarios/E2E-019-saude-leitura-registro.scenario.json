@@ -1,0 +1,528 @@
+{
+  "schema_version": 1,
+  "id": "E2E-019",
+  "title": "Saúde completa: quem conduz o caso registra e lê o bloco (Centro e CREAS) e meses de gestação fora de 1–10 são recusados",
+  "description": "HU #11234 (US-DIAG2-05), plano 03. O operador do CRAS Centro registra para a 'E2E Silva Saúde' insegurança alimentar e álcool para José, vê o aviso de quem vai ler (CA01/CA07) e detalha a gestação de Ana com 5 meses e pré-natal (CA08). O operador do CREAS, com PAEFI vigente, abre a aba Saúde e lê os valores (CA02). Meses de gestação fora de 1–10 são recusados no campo (CT05). CA03, CA04 e CA05 estão no E2E-020 e na spec manual tests/client/health-conditions-11234.spec.ts; CA06, CA09 e CT01–CT09 no apêndice Pest. Massa fictícia; nenhum dado pessoal.",
+  "feature_slug": "11234-saude-completa-03-evidencias",
+  "ac_refs": [
+    "AC-002",
+    "AC-003",
+    "AC-004"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "prontuario",
+    "saude",
+    "diagnostico",
+    "lgpd"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/login",
+    "viewport": {
+      "width": 1440,
+      "height": 1600
+    },
+    "users": [
+      {
+        "role": "operador",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_OPERADOR_CPF",
+          "password": "E2E_CLIENT_OPERADOR_PASSWORD"
+        }
+      },
+      {
+        "role": "creas",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_CREAS_OPERADOR_CPF",
+          "password": "E2E_CLIENT_CREAS_OPERADOR_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Massa do E2EHealthVisibilitySeeder ('E2E Silva Saúde' …0f1234, PAEFI do CREAS vigente, retrato migrado de saúde, gestação de Ana sem meses). Rode o seeder antes de cada execução do happy_path (ele poda os retratos 'recorded' e zera meses/pré-natal)",
+      "Operador do CRAS Centro (lotado em duas unidades: a unidade é escolhida no formulário) e operador do CREAS (E2EBlockVisibilitySeeder)"
+    ]
+  },
+  "data": {
+    "family_uuid": "00000000-0000-4000-8000-0000000f1234",
+    "unit_name": "E2E CRAS Centro"
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "Operacional do Centro registra saúde, vê o aviso de leitores e detalha a gestação (CA01, CA07, CA08)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=saude"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"health-block\"] [data-testid^=\"snapshot-alter-\"]"
+          },
+          "timeout_ms": 15000
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"health-block\"] [data-testid^=\"snapshot-alter-\"] >> nth=0"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"snapshot-kind-update\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"health-snapshot-fields\"]"
+          },
+          "timeout_ms": 15000
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"health-food-insecurity-yes\"]"
+          },
+          "note": "insegurança alimentar: Sim"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid$=\"-alcohol-yes\"] >> nth=0"
+          },
+          "note": "José (1º integrante): álcool Sim"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"diagnosis-snapshot-unit-select\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "${data.unit_name}"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"diagnosis-snapshot-submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"health-saved-notice\"]"
+          },
+          "timeout_ms": 15000,
+          "note": "CA07: o aviso de quem vai ler segue na tela depois de salvar"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=composicao"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "tr[data-testid^=\"member-row-\"]:has-text(\"E2E Saúde Ana\") [data-testid^=\"member-conditions-\"]"
+          },
+          "timeout_ms": 15000
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "tr[data-testid^=\"member-row-\"]:has-text(\"E2E Saúde Ana\") [data-testid^=\"member-conditions-\"]"
+          },
+          "note": "drawer de Ana"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-conditions-drawer\"]"
+          },
+          "timeout_ms": 15000
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-pregnancy-block\"]"
+          },
+          "timeout_ms": 15000
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"member-pregnancy-details-edit-\"]"
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input[data-testid^=\"member-pregnancy-edit-months-\"]"
+          },
+          "value": "5"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"member-pregnancy-edit-prenatal-\"][data-testid$=\"-yes\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"member-pregnancy-edit-save-\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "espera o PATCH da gestação"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-pregnancy-block\"]"
+          }
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-pregnancy-block\"]"
+          },
+          "value": "5 meses",
+          "note": "CA08: meses salvos junto à gestação já registrada"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-pregnancy-block\"]"
+          },
+          "value": "Já iniciou pré-natal: Sim"
+        }
+      ]
+    },
+    {
+      "name": "creas_le",
+      "title": "Operador do CREAS com PAEFI vigente abre a aba Saúde e lê os valores (CA02)",
+      "as_user": "creas",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=saude"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"health-block\"] [data-testid=\"snapshot-series\"]"
+          },
+          "timeout_ms": 15000
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"health-block\"]"
+          }
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"health-block\"]"
+          },
+          "value": "álcool",
+          "note": "o CREAS lê alcohol_abuse (José)"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"health-block\"]"
+          },
+          "value": "Sim",
+          "note": "e a insegurança alimentar registrada pelo Centro"
+        }
+      ]
+    },
+    {
+      "name": "validation_error",
+      "title": "Meses de gestação fora de 1–10 são recusados no campo (CT05)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=composicao"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "tr[data-testid^=\"member-row-\"]:has-text(\"E2E Saúde Ana\") [data-testid^=\"member-conditions-\"]"
+          },
+          "timeout_ms": 15000
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "tr[data-testid^=\"member-row-\"]:has-text(\"E2E Saúde Ana\") [data-testid^=\"member-conditions-\"]"
+          },
+          "note": "drawer de Ana"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-conditions-drawer\"]"
+          },
+          "timeout_ms": 15000
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-pregnancy-block\"]"
+          },
+          "timeout_ms": 15000
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"member-pregnancy-details-edit-\"]"
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input[data-testid^=\"member-pregnancy-edit-months-\"]"
+          },
+          "value": "11",
+          "note": "o formulário recusa na digitação: o botão Salvar detalhes fica desabilitado"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 500
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"member-pregnancy-edit-months-invalid-\"]"
+          },
+          "note": "mensagem 'Informe de 1 a 10 meses.' no campo"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-pregnancy-block\"]"
+          },
+          "value": "Informe de 1 a 10 meses."
+        },
+        {
+          "expect": "disabled",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"member-pregnancy-edit-save-\"]"
+          },
+          "note": "nada é enviado"
+        }
+      ]
+    }
+  ],
+  "not_applicable": {
+    "forbidden": "A negativa de quem não conduz é o E2E-020 (CRAS Rural).",
+    "empty_state": "A massa sempre traz o retrato migrado; o estado vazio da série está coberto pelos testes Vitest da SaudeTab."
+  }
+}

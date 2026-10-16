@@ -1,0 +1,266 @@
+{
+  "schema_version": 1,
+  "id": "E2E-020",
+  "title": "Saúde completa: o CRAS Rural, que só recebeu o encaminhamento, abre o prontuário sem a aba Saúde, sem a seção de saúde e sem gestações",
+  "description": "HU #11234 (US-DIAG2-05), plano 03. O operador do CRAS Rural (lotação só no Rural; a família foi encaminhada a ele sem desfecho) abre o prontuário da 'E2E Silva Saúde': não existe a aba 'Saúde' (CA03) e as telas de Pedro e de Ana não têm a seção de saúde nem as gestações (CA04). A EVIDÊNCIA É A AUSÊNCIA. A marcação de deficiência sem o tipo (CA05) é conferida no payload na spec manual. Massa fictícia; nenhum dado pessoal.",
+  "feature_slug": "11234-saude-completa-03-evidencias",
+  "ac_refs": [
+    "AC-005"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "prontuario",
+    "saude",
+    "lgpd",
+    "visibilidade"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/login",
+    "viewport": {
+      "width": 1440,
+      "height": 1600
+    },
+    "users": [
+      {
+        "role": "rural",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_RURAL_CPF",
+          "password": "E2E_CLIENT_RURAL_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Massa do E2EHealthVisibilitySeeder: operador do CRAS Rural (lotação só no 'E2E CRAS Rural'), encaminhamento sem desfecho do Centro para o Rural, sem acompanhamento do Rural"
+    ]
+  },
+  "data": {
+    "family_uuid": "00000000-0000-4000-8000-0000000f1234",
+    "unit_name": "E2E CRAS Centro"
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "O prontuário abre no Rural e a aba Saúde não existe (CA03)",
+      "as_user": "rural",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_RURAL_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_RURAL_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=saude"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "role",
+            "value": "tab",
+            "name": "Composição Familiar",
+            "exact": true
+          },
+          "timeout_ms": 15000,
+          "note": "o prontuário abriu (eixo do encaminhamento recebido)"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "role",
+            "value": "tab",
+            "name": "Composição Familiar",
+            "exact": true
+          }
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "role",
+            "value": "tab",
+            "name": "Saúde",
+            "exact": true
+          },
+          "value": 0,
+          "note": "a evidência é a ausência da aba Saúde"
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"health-block\"]"
+          },
+          "value": 0,
+          "note": "nem o conteúdo, mesmo pedindo ?tab=saude"
+        }
+      ]
+    },
+    {
+      "name": "forbidden",
+      "title": "As telas de Pedro e de Ana não têm seção de saúde nem gestações (CA04)",
+      "as_user": "rural",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_RURAL_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_RURAL_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=composicao"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "tr[data-testid^=\"member-row-\"]:has-text(\"E2E Saúde Pedro\") [data-testid^=\"member-conditions-\"]"
+          },
+          "timeout_ms": 15000
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "tr[data-testid^=\"member-row-\"]:has-text(\"E2E Saúde Pedro\") [data-testid^=\"member-conditions-\"]"
+          },
+          "note": "drawer de Pedro"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-conditions-drawer\"]"
+          },
+          "timeout_ms": 15000
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-section-work_income_conditions\"]"
+          },
+          "timeout_ms": 15000,
+          "note": "o restante do drawer carregou"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-conditions-drawer\"]"
+          }
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-section-health_conditions\"]"
+          },
+          "value": 0,
+          "note": "a evidência é a ausência da seção de saúde"
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-pregnancy-block\"]"
+          },
+          "value": 0,
+          "note": "nem as gestações"
+        }
+      ]
+    }
+  ],
+  "not_applicable": {
+    "validation_error": "Quem não conduz não tem formulário de saúde para validar.",
+    "empty_state": "Não há estado vazio: a aba e a seção simplesmente não existem."
+  }
+}
