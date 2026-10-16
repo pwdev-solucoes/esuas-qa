@@ -1,0 +1,387 @@
+{
+  "schema_version": 1,
+  "id": "E2E-013",
+  "title": "Blocos entregues em série: primeiro retrato migrado, endereço com histórico e renda gerando retrato só de trabalho com a família inteira",
+  "description": "HU #11226 (US-SERIE-02), plano 03: o Operacional abre a família Silva E2E 11226 (massa do E2EDeliveredBlocksSeriesSeeder), vê o endereço migrado (CA01), atualiza o número e confere que o retrato anterior segue na série (CA02). Na composição, altera só a renda da pessoa de referência como atualização: o trabalho ganha um retrato com os três integrantes (CA03/CA04). A ausência de retrato novo de educação e saúde, o drawer reunido e a série de trabalho com Mudou ficam na spec manual tests/client/delivered-blocks-series-11226.spec.ts. Massa fictícia; nenhum dado pessoal.",
+  "feature_slug": "11226-serie-blocos-entregues-03-evidencias",
+  "ac_refs": [
+    "AC-002",
+    "AC-003"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "prontuario",
+    "diagnostico",
+    "serie",
+    "lgpd"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/login",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "users": [
+      {
+        "role": "operador",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_OPERADOR_CPF",
+          "password": "E2E_CLIENT_OPERADOR_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Massa do E2EDeliveredBlocksSeriesSeeder: Silva E2E 11226 no CRAS Centro com 3 integrantes, endereço e retratos de educação, trabalho e saúde migrados (rendas 1200.00, 0.00 e NULL)",
+      "Operador com add-on lotado no CRAS Centro (e no CRAS Sem MDS, por isso a unidade é escolhida no formulário)",
+      "A variante happy_path GRAVA retratos na Silva: reexecutar o seeder (ele recompõe os cinco blocos) antes de repetir ou de rodar a spec manual"
+    ]
+  },
+  "data": {
+    "family_silva_uuid": "00000000-0000-4000-8000-0000000f0301",
+    "unit_name": "E2E CRAS Centro"
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "Operacional: endereço migrado e atualizado com histórico; renda gera retrato só de trabalho com os três integrantes (CA01, CA02, CA03, CA04)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_silva_uuid}?tab=resumo"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"address-migrated-note\"]"
+          },
+          "timeout_ms": 15000,
+          "note": "CA01: o 1º retrato do endereço aparece como migrado"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"summary-address\"] [data-testid^=\"snapshot-column-\"]"
+          },
+          "timeout_ms": 15000,
+          "note": "série do endereço carregou"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"summary-address\"] [data-testid^=\"snapshot-alter-\"]"
+          },
+          "note": "Alterar no retrato mais recente do endereço"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"snapshot-change-kind-dialog\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"snapshot-kind-update\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"diagnosis-snapshot-form-sheet\"]"
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"family-address-number\"]"
+          },
+          "value": "20"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"diagnosis-snapshot-unit-select\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "${data.unit_name}"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"diagnosis-snapshot-submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"summary-address\"] [data-testid^=\"snapshot-column-\"] >> nth=1"
+          },
+          "timeout_ms": 15000,
+          "note": "CA02: o retrato anterior segue na série"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_silva_uuid}?tab=composicao"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-series-table\"]"
+          },
+          "timeout_ms": 15000,
+          "note": "séries dos integrantes carregaram"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[data-testid^=\"member-conditions-\"] >> nth=0"
+          },
+          "note": "abre o drawer do 1º integrante (referência)"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-own-income\"]"
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-own-income\"]"
+          },
+          "value": "150000",
+          "note": "máscara em centavos: 1.500,00"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-conditions-save\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"snapshot-change-kind-dialog\"]"
+          },
+          "note": "há retrato de trabalho: pergunta atualização ou correção"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"snapshot-kind-update\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-conditions-update-panel\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-conditions-unit\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "${data.unit_name}"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-conditions-confirm-update\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-conditions-update-panel\"]:hidden"
+          },
+          "timeout_ms": 15000,
+          "note": "o drawer fechou após salvar"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-series-tab-work_income_conditions\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-series-panel-work_income_conditions\"] [data-testid^=\"member-series-column-\"] >> nth=1"
+          },
+          "timeout_ms": 15000,
+          "note": "CA03: o trabalho ganhou o 2º retrato"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "count",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"summary-address\"] [data-testid^=\"snapshot-column-\"]"
+          },
+          "value": 2,
+          "note": "CA02: dois retratos de endereço, o anterior preservado"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"summary-address\"] [data-testid^=\"snapshot-column-\"] >> nth=1"
+          },
+          "value": "10",
+          "note": "CA02: o retrato anterior continua com o número 10"
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-series-panel-work_income_conditions\"] [data-testid^=\"member-series-column-\"]"
+          },
+          "value": 2,
+          "note": "CA03: dois retratos de trabalho"
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-series-panel-work_income_conditions\"] [data-testid^=\"member-series-row-\"]"
+          },
+          "value": 3,
+          "note": "CA04: o retrato é da família inteira: três integrantes"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-series-panel-work_income_conditions\"] [data-testid^=\"member-series-column-\"] >> nth=0"
+          },
+          "value": "Mais recente"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-series-panel-work_income_conditions\"]"
+          },
+          "value": "R$ 1.500,00",
+          "note": "CA03: a renda nova"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-series-panel-work_income_conditions\"]"
+          },
+          "value": "R$ 0,00",
+          "note": "CA04: o integrante com 0,00 foi copiado como 0,00"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-series-panel-work_income_conditions\"]"
+          },
+          "value": "Sem informação",
+          "note": "CA04: o integrante sem renda foi copiado como sem informação"
+        }
+      ]
+    }
+  ]
+}
