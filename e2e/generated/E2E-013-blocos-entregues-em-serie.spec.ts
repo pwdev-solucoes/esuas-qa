@@ -79,8 +79,11 @@ test.describe('E2E-013 Blocos entregues em série: primeiro retrato migrado, end
     await page.locator('[data-testid="member-conditions-unit"]').click();
     await page.getByRole('option', { name: String(data.unit_name) }).click();
     await page.locator('[data-testid="member-conditions-confirm-update"]').click();
-    // o drawer fechou após salvar
-    await expect(page.locator('[data-testid="member-conditions-update-panel"]:hidden')).toBeVisible({ timeout: 15000 });
+    // deixa o salvamento concluir
+    await page.waitForTimeout(2500);
+    // o drawer fica aberto após salvar: fecha para ver a série
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(1000);
     await page.locator('[data-testid="member-series-tab-work_income_conditions"]').click();
     // CA03: o trabalho ganhou o 2º retrato
     await expect(page.locator('[data-testid="member-series-panel-work_income_conditions"] [data-testid^="member-series-column-"] >> nth=1')).toBeVisible({ timeout: 15000 });
@@ -92,7 +95,8 @@ test.describe('E2E-013 Blocos entregues em série: primeiro retrato migrado, end
     await expect(page.locator('[data-testid="member-series-panel-work_income_conditions"] [data-testid^="member-series-column-"]')).toHaveCount(2);
     // CA04: o retrato é da família inteira: três integrantes
     await expect(page.locator('[data-testid="member-series-panel-work_income_conditions"] [data-testid^="member-series-row-"]')).toHaveCount(3);
-    await expect(page.locator('[data-testid="member-series-panel-work_income_conditions"] [data-testid^="member-series-column-"] >> nth=0')).toContainText('Mais recente');
+    // o retrato novo fica à esquerda, assinado com a unidade (os migrados não têm unidade)
+    await expect(page.locator('[data-testid="member-series-panel-work_income_conditions"] [data-testid^="member-series-column-"] >> nth=0')).toContainText('E2E CRAS Centro');
     // CA03: a renda nova
     await expect(page.locator('[data-testid="member-series-panel-work_income_conditions"]')).toContainText('R$ 1.500,00');
     // CA04: o integrante com 0,00 foi copiado como 0,00

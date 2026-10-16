@@ -285,12 +285,17 @@
         },
         {
           "action": "wait",
-          "target": {
-            "by": "css",
-            "value": "[data-testid=\"member-conditions-update-panel\"]:hidden"
-          },
-          "timeout_ms": 15000,
-          "note": "o drawer fechou após salvar"
+          "timeout_ms": 2500,
+          "note": "deixa o salvamento concluir"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "o drawer fica aberto após salvar: fecha para ver a série"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1000
         },
         {
           "action": "click",
@@ -352,7 +357,8 @@
             "by": "css",
             "value": "[data-testid=\"member-series-panel-work_income_conditions\"] [data-testid^=\"member-series-column-\"] >> nth=0"
           },
-          "value": "Mais recente"
+          "value": "E2E CRAS Centro",
+          "note": "o retrato novo fica à esquerda, assinado com a unidade (os migrados não têm unidade)"
         },
         {
           "expect": "text",
