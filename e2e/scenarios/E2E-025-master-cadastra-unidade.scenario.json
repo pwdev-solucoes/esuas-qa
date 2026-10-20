@@ -1,0 +1,290 @@
+{
+  "schema_version": 1,
+  "id": "E2E-025",
+  "title": "O Master cadastra e mantém unidades socioassistenciais, e nenhum papel do tenant exclui unidade, nem em lote",
+  "description": "HU #11158 (RN08, CA11, CA12), plano 00: depois do permissions:sync, o Master vê Nova Unidade e abre o formulário; o menu de ações da unidade traz Editar e Mudar status e não traz Excluir; a barra de lote não traz Excluir. A exclusão em lote responde 403 para Master e Operador (coberto na spec manual unidades-master-11158 e em SocialUnitMasterAccessTest). Massa fictícia; nenhum dado pessoal.",
+  "feature_slug": "11158-00-api-permissoes-unidades",
+  "ac_refs": [
+    "AC-004",
+    "AC-005",
+    "AC-007"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "unidades",
+    "permissoes",
+    "rbac"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/auth/login",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "users": [
+      {
+        "role": "master",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_MASTER_CPF",
+          "password": "E2E_CLIENT_MASTER_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "API com permissions:sync aplicado (HU #11158 plano 00)",
+      "Master do tenant com ao menos uma unidade cadastrada",
+      "Um login do Master por execução (throttle 6,1)"
+    ]
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "O Master vê Nova Unidade e abre o formulário de cadastro (CA11)",
+      "as_user": "master",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído"
+        },
+        {
+          "action": "goto",
+          "value": "/app/unidades"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Nova Unidade"
+          }
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "form#social-unit-form"
+          }
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "#su-name"
+          }
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Salvar"
+          }
+        }
+      ]
+    },
+    {
+      "name": "forbidden",
+      "title": "O menu de ações da unidade traz Editar e não traz Excluir (CA12)",
+      "as_user": "master",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído"
+        },
+        {
+          "action": "goto",
+          "value": "/app/unidades"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Mais ações"
+          }
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "role",
+            "value": "menuitem",
+            "name": "Editar"
+          }
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "role",
+            "value": "menuitem",
+            "name": "Excluir"
+          },
+          "value": 0,
+          "note": "ausência: o Master não exclui unidade"
+        }
+      ]
+    },
+    {
+      "name": "validation_error",
+      "title": "Salvar o formulário sem nome mostra a mensagem do campo",
+      "as_user": "master",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído"
+        },
+        {
+          "action": "goto",
+          "value": "/app/unidades"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Nova Unidade"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Salvar"
+          }
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "text",
+            "value": "Informe o nome da unidade."
+          }
+        }
+      ]
+    }
+  ],
+  "not_applicable": {
+    "empty_state": "A lista de unidades é do tenant e a massa E2E sempre tem unidades; o estado vazio não muda com a permissão do Master."
+  }
+}
