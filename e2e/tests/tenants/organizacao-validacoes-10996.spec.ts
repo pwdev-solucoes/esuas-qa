@@ -142,7 +142,7 @@ test.describe('US-10996-01 — organização no Painel Global', () => {
     await api.dispose();
   });
 
-  test('A-CA01 — Razão Social com pontuação usual é aceita e gravada como informada', async ({ page }) => {
+  test('CA01 — Razão Social com pontuação usual é aceita e gravada como informada', async ({ page }) => {
     const legalName = `Fundo Municipal de Assistência Social - FMAS / Pref. de Teste & Região ${suffix}`;
     const list = new TenantsListPage(page);
     const sheet = new TenantFormSheet(page);
@@ -173,7 +173,7 @@ test.describe('US-10996-01 — organização no Painel Global', () => {
     createdTenantIds.push(row.id);
   });
 
-  test('A-CA01b — Apóstrofo nas três formas é gravado sem normalização', async () => {
+  test('CA01b — Apóstrofo nas três formas é gravado sem normalização', async () => {
     for (const legalName of [`d'Água ${suffix}`, `D\`ÁGUA ${suffix}`, `d’Arca ${suffix}`]) {
       const res = await create({ legal_name: legalName });
       expect(res.status, `legal_name ${legalName}`).toBe(201);
@@ -181,24 +181,49 @@ test.describe('US-10996-01 — organização no Painel Global', () => {
     }
   });
 
-  test('A-CA01c — Sinal fora da lista é recusado com a lista dos sinais aceitos', async () => {
+  test('CA01c — Sinal fora da lista é recusado com a lista dos sinais aceitos', async () => {
     const res = await create({ legal_name: 'Secretaria de Assistência Social [Antiga]' });
     expect(res.status).toBe(422);
     expect(res.body.errors.legal_name[0]).toContain('aceita apenas letras, números, espaços e os sinais');
   });
 
-  test('A-CA02 / A-CA03 — Nome sem letras é recusado na tela e na API', async ({ page }) => {
-    // "@#$%" também fere a lista de sinais: o servidor recusa (422) com a mensagem dos sinais, que
-    // tem precedência sobre "precisa conter letras" (desvio do texto literal do CA, registrado no
-    // relatório). A mensagem de "sem letras" é conferida com um nome de caracteres permitidos.
-    const apiSymbols = await create({ legal_name: '@#$%' });
-    expect(apiSymbols.status).toBe(422);
-    expect(apiSymbols.body.errors.legal_name).toBeTruthy();
-
-    const apiLegal = await create({ legal_name: '123 - 456' });
+  test('CA02 — Razão Social sem letras é recusada na tela e na API', async ({ page }) => {
+    const apiLegal = await create({ legal_name: '123' });
     expect(apiLegal.status).toBe(422);
     expect(apiLegal.body.errors.legal_name[0]).toMatch(/precisa conter letras/i);
 
+    const list = new TenantsListPage(page);
+    const sheet = new TenantFormSheet(page);
+    await list.goto();
+    await dismissPlatformUpdates(page);
+    await list.openCreateForm();
+    await sheet.legalNameInput.fill('123');
+    await sheet.saveButton.click();
+
+    await expect(page.getByText('A razão social precisa conter letras.')).toBeVisible();
+    await expect(sheet.sheet).toBeVisible();
+    await page.screenshot({ path: evidencePath('CA02-razao-social-sem-letras.png') });
+  });
+
+  test('CA02b — Só sinais fora da lista mostra a mensagem dos sinais aceitos', async ({ page }) => {
+    const apiSymbols = await create({ legal_name: '@#$%' });
+    expect(apiSymbols.status).toBe(422);
+    expect(apiSymbols.body.errors.legal_name[0]).toContain('aceita apenas letras, números, espaços e os sinais');
+    expect(apiSymbols.body.errors.legal_name[0]).not.toMatch(/precisa conter letras/i);
+
+    const list = new TenantsListPage(page);
+    const sheet = new TenantFormSheet(page);
+    await list.goto();
+    await dismissPlatformUpdates(page);
+    await list.openCreateForm();
+    await sheet.legalNameInput.fill('@#$%');
+    await sheet.saveButton.click();
+
+    await expect(page.getByText(/aceita apenas letras, números, espaços e os sinais/)).toBeVisible();
+    await page.screenshot({ path: evidencePath('CA02b-razao-social-sinais.png') });
+  });
+
+  test('CA03 — Nome Fantasia sem letras é recusado na tela e na API', async ({ page }) => {
     const apiTrade = await create({ trade_name: '---' });
     expect(apiTrade.status).toBe(422);
     expect(apiTrade.body.errors.trade_name[0]).toMatch(/precisa conter letras/i);
@@ -208,25 +233,20 @@ test.describe('US-10996-01 — organização no Painel Global', () => {
     await list.goto();
     await dismissPlatformUpdates(page);
     await list.openCreateForm();
-    await sheet.legalNameInput.fill('123 - 456');
+    await sheet.legalNameInput.fill(`Fundo Teste ${suffix}`);
     await sheet.tradeNameInput.fill('---');
     await sheet.saveButton.click();
 
-    await expect(page.getByText('A razão social precisa conter letras.')).toBeVisible();
     await expect(page.getByText('O nome fantasia precisa conter letras.')).toBeVisible();
-    await expect(sheet.sheet).toBeVisible();
-    await page.screenshot({ path: evidencePath('A-CA02-nome-sem-letras.png') });
+    await page.screenshot({ path: evidencePath('CA03-nome-fantasia-sem-letras.png') });
   });
 
-  test('A-CA04 / A-CA04b — Telefone com caractere inválido ou quantidade errada é recusado', async ({ page }) => {
+  test('CA04 — Letras e símbolos não entram no telefone (tela) e a API recusa (defesa)', async ({ page }) => {
     for (const phone of ['(82) 9A999-0000', '82#999990000']) {
       const res = await create({ phone });
       expect(res.status, phone).toBe(422);
       expect(res.body.errors.phone[0]).toMatch(/apenas n[úu]meros/i);
     }
-    const short = await create({ phone: '123' });
-    expect(short.status).toBe(422);
-    expect(short.body.errors.phone).toBeTruthy();
 
     // Máscara é aceita e só os dígitos persistem.
     const fixo = await create({ phone: '(82) 3333-4444' });
@@ -236,26 +256,44 @@ test.describe('US-10996-01 — organização no Painel Global', () => {
     expect(celular.status).toBe(201);
     expect(celular.body.data.phone).toBe('82999990000');
 
-    // Tela: telefone curto é barrado localmente.
+    const list = new TenantsListPage(page);
+    const sheet = new TenantFormSheet(page);
+    await list.goto();
+    await dismissPlatformUpdates(page);
+    await list.openCreateForm();
+    await sheet.phoneInput.click();
+    await sheet.phoneInput.pressSequentially('abc-123');
+    const value = await sheet.phoneInput.inputValue();
+    expect(value).not.toMatch(/[A-Za-z]/);
+    expect(value.replace(/\D/g, '')).toBe('123');
+    expect(value).not.toContain('-');
+    await page.screenshot({ path: evidencePath('CA04-telefone-descarta-letras.png') });
+  });
+
+  test('CA04b — Telefone fora de 10 ou 11 dígitos é recusado', async ({ page }) => {
+    const short = await create({ phone: '123' });
+    expect(short.status).toBe(422);
+    expect(short.body.errors.phone).toBeTruthy();
+
     const list = new TenantsListPage(page);
     const sheet = new TenantFormSheet(page);
     await list.goto();
     await dismissPlatformUpdates(page);
     await list.openCreateForm();
     await sheet.legalNameInput.fill(`Fundo Teste ${suffix}`);
-    await sheet.phoneInput.fill('8299');
+    await sheet.phoneInput.fill('1234567');
     await sheet.saveButton.click();
     await expect(page.getByText('O telefone deve ter 10 ou 11 dígitos, com DDD.')).toBeVisible();
-    await page.screenshot({ path: evidencePath('A-CA04-telefone-invalido.png') });
+    await page.screenshot({ path: evidencePath('CA04b-telefone-invalido.png') });
   });
 
-  test('A-CA06 — CNPJ alfanumérico válido continua aceito', async () => {
+  test('CA06 — CNPJ alfanumérico válido continua aceito', async () => {
     const res = await create({ cnpj: generateCnpj(true), legal_name: `Fundo Alfa ${suffix}` });
     expect(res.status).toBe(201);
     expect(res.body.data.cnpj).toMatch(/[A-Z]/);
   });
 
-  test('A-CA07 — Vínculo de gestor conclui com organização de nome longo', async ({ page }) => {
+  test('CA07 — Vínculo de gestor conclui com organização de nome longo', async ({ page }) => {
     const longName =
       `Secretaria Municipal de Assistência Social, Trabalho e Direitos Humanos - Fundo Municipal (FMAS) / ` +
       `Gestão Integrada & Cooperação Intergovernamental da Rede Socioassistencial ${suffix}`;
@@ -307,7 +345,7 @@ test.describe('US-10996-01 — organização no Painel Global', () => {
     await page.screenshot({ path: evidencePath('A-CA07-vinculo-concluido.png') });
   });
 
-  test('A-CA08 — Data de nascimento futura sai em português, sem "today"', async ({ page }) => {
+  test('CA08 — Data de nascimento futura sai em português, sem "today"', async ({ page }) => {
     const amanha = today(1);
     const res = await send(api, 'POST', '/users', {
       full_name: `Gestor Futuro ${suffix}`,
@@ -327,5 +365,31 @@ test.describe('US-10996-01 — organização no Painel Global', () => {
     await page.getByRole('button', { name: /novo|nova|adicionar|cadastrar/i }).first().click();
     await expect(page.locator('#ou-birth-date')).toHaveAttribute('max', today());
     await page.screenshot({ path: evidencePath('A-CA08-nascimento-max.png') });
+  });
+});
+
+test.describe('CA08 — data futura digitada com navegador em inglês', () => {
+  test.use({ locale: 'en-US' });
+
+  test('CA08 — Novo usuário: a tela recusa a data de amanhã em português, sem requisição', async ({ page }) => {
+    const posts: string[] = [];
+    page.on('request', (r) => {
+      if (r.method() === 'POST' && /\/manager\/users/.test(r.url())) posts.push(r.url());
+    });
+
+    await page.goto('/app/usuarios-organizacoes');
+    await dismissPlatformUpdates(page);
+    await page.getByRole('button', { name: /novo|nova|adicionar|cadastrar/i }).first().click();
+    await page.locator('#ou-cpf').fill(generateCpf());
+    await expect(page.locator('#ou-birth-date')).toBeEditable({ timeout: 10_000 });
+    await page.locator('#ou-full-name').fill('Gestor Futuro Teste');
+    await page.locator('#ou-email').fill(`futuro-${Date.now()}@e2e.local`);
+    await page.locator('#ou-birth-date').fill(today(1));
+    await page.locator('button[type="submit"][form="org-user-form"]').click();
+
+    await expect(page.getByText('A data de nascimento deve ser anterior à data de hoje.')).toBeVisible();
+    await expect(page.locator('body')).not.toContainText(/Value must be|earlier|today/i);
+    expect(posts).toHaveLength(0);
+    await page.screenshot({ path: evidencePath('CA08-nascimento-futuro-en-US.png') });
   });
 });
