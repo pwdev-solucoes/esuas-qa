@@ -154,7 +154,7 @@ test.describe("US-VIOL-04 — Quadro 2: períodos com o CREAS (client)", () => {
     await cras.getByRole("option", { name: "2023", exact: true }).click();
     await cras.getByTestId("creas-period-form-creas-external").click();
     await cras.getByTestId("creas-period-external-name").fill(EXTERNAL_NAME);
-    await captureEvidence(cras, testInfo, EVIDENCE_SLUG, "formulario", TALL);
+    await captureEvidence(cras, testInfo, EVIDENCE_SLUG, "formulario");
     await cras.getByTestId("creas-period-form-submit").click();
 
     const registered = cras
