@@ -47,7 +47,9 @@ const MASTER = {
 };
 
 async function open(page: Page, tab?: string): Promise<void> {
-  await page.goto(`/app/cadastros/familias/${FAMILY}${tab ? `?tab=${tab}` : ""}`);
+  await page.goto(
+    `/app/cadastros/familias/${FAMILY}${tab ? `?tab=${tab}` : ""}`,
+  );
   await dismissPlatformUpdates(page);
   await expect(
     page.getByRole("tab", { name: "Composição Familiar", exact: true }),
@@ -69,17 +71,19 @@ async function api(
   const xsrf = decodeURIComponent(
     cookies.find((c) => c.name === "XSRF-TOKEN")?.value ?? "",
   );
-  return user.context().request[method](`${API_BASE}/api/client/families/${FAMILY}/${suffix}`, {
-    ...(method === "post" ? { data: {} } : {}),
-    headers: {
-      Accept: "application/json",
-      Origin: BASE!,
-      Referer: `${BASE}/app`,
-      "X-Requested-With": "XMLHttpRequest",
-      "X-Tenant-UUID": TENANT_UUID,
-      "X-XSRF-TOKEN": xsrf,
-    },
-  });
+  return user
+    .context()
+    .request[method](`${API_BASE}/api/client/families/${FAMILY}/${suffix}`, {
+      ...(method === "post" ? { data: {} } : {}),
+      headers: {
+        Accept: "application/json",
+        Origin: BASE!,
+        Referer: `${BASE}/app`,
+        "X-Requested-With": "XMLHttpRequest",
+        "X-Tenant-UUID": TENANT_UUID,
+        "X-XSRF-TOKEN": xsrf,
+      },
+    });
 }
 
 async function loginNew(
@@ -117,18 +121,29 @@ test.describe("US-MSE-01 — medidas socioeducativas do prontuário (client)", (
       await user?.close();
     });
 
-    test("CA10 — o Master lê as medidas e não tem Registrar medida nem Corrigir (a evidência é a ausência)", async ({}, testInfo) => {
+    test("Master — o Master lê as medidas e não tem Registrar medida nem Corrigir (a evidência é a ausência)", async ({}, testInfo) => {
       await open(user, "medidas-socioeducativas");
-      await expect(user.getByTestId("socio-educational-measure-block")).toBeVisible({
+      await expect(
+        user.getByTestId("socio-educational-measure-block"),
+      ).toBeVisible({
         timeout: 15_000,
       });
-      await expect(measureRow(user, PROCESS_LA_CLOSED)).toBeVisible({ timeout: 15_000 });
+      await expect(measureRow(user, PROCESS_LA_CLOSED)).toBeVisible({
+        timeout: 15_000,
+      });
       await expect(measureRow(user, PROCESS_INTERNMENT)).toBeVisible();
-      await expect(user.getByTestId("socio-educational-measure-register-action")).toHaveCount(0);
+      await expect(
+        user.getByTestId("socio-educational-measure-register-action"),
+      ).toHaveCount(0);
       await expect(
         user.locator('[data-testid^="socio-educational-measure-correct-"]'),
       ).toHaveCount(0);
-      await captureEvidence(user, testInfo, EVIDENCE_SLUG, "master-le-sem-acao");
+      await captureEvidence(
+        user,
+        testInfo,
+        EVIDENCE_SLUG,
+        "master-le-sem-acao",
+      );
     });
   });
 
@@ -145,19 +160,33 @@ test.describe("US-MSE-01 — medidas socioeducativas do prontuário (client)", (
 
     test("CA01 — o técnico do CREAS registra LA acompanhada e a medida mostra nome, função e data da anotação", async ({}, testInfo) => {
       await open(user, "medidas-socioeducativas");
-      await expect(user.getByTestId("socio-educational-measure-block")).toBeVisible({
+      await expect(
+        user.getByTestId("socio-educational-measure-block"),
+      ).toBeVisible({
         timeout: 15_000,
       });
-      await user.getByTestId("socio-educational-measure-register-action").click();
-      await expect(user.getByTestId("socio-educational-measure-form-sheet")).toBeVisible({
+      await user
+        .getByTestId("socio-educational-measure-register-action")
+        .click();
+      await expect(
+        user.getByTestId("socio-educational-measure-form-sheet"),
+      ).toBeVisible({
         timeout: 10_000,
       });
       await user.getByTestId("socio-educational-measure-form-member").click();
-      await user.getByRole("option", { name: "E2E Pedro MSE", exact: true }).click();
+      await user
+        .getByRole("option", { name: "E2E Pedro MSE", exact: true })
+        .click();
       await user.getByTestId("socio-educational-measure-form-type").click();
-      await user.getByRole("option", { name: "Liberdade assistida (LA)", exact: true }).click();
-      await user.getByTestId("socio-educational-measure-form-process").fill(PROCESS_NEW);
-      await user.getByTestId("socio-educational-measure-form-started-month").click();
+      await user
+        .getByRole("option", { name: "Liberdade assistida (LA)", exact: true })
+        .click();
+      await user
+        .getByTestId("socio-educational-measure-form-process")
+        .fill(PROCESS_NEW);
+      await user
+        .getByTestId("socio-educational-measure-form-started-month")
+        .click();
       await user.getByRole("option", { name: "Maio", exact: true }).click();
       await user.getByTestId("socio-educational-measure-creas-yes").click();
       await user.getByTestId("socio-educational-measure-form-submit").click();
@@ -165,19 +194,32 @@ test.describe("US-MSE-01 — medidas socioeducativas do prontuário (client)", (
       const row = measureRow(user, PROCESS_NEW);
       await expect(row).toBeVisible({ timeout: 10_000 });
       await expect(row).toContainText("Acompanhada pelo CREAS: Sim");
-      const signature = row.locator('[data-testid^="socio-educational-measure-signature-"]');
+      const signature = row.locator(
+        '[data-testid^="socio-educational-measure-signature-"]',
+      );
       await expect(signature).toContainText("Registrado por");
       await expect(signature).toContainText("Assistente social");
       await expect(signature).toContainText(/\d{2}\/\d{2}\/\d{4}/);
+      await expect(
+        user.getByTestId("socio-educational-measure-form-sheet"),
+      ).toBeHidden();
+      await user.waitForTimeout(1500);
       await captureEvidence(user, testInfo, EVIDENCE_SLUG, "registro-creas");
     });
 
     test("CA08 — a aba Acompanhamento segue sem acompanhamento e a API devolve lista vazia (a evidência é a ausência)", async ({}, testInfo) => {
       await open(user, "acompanhamento");
-      await expect(user.getByText("Esta família nunca foi acompanhada")).toBeVisible({
+      await expect(
+        user.getByText("Esta família nunca foi acompanhada"),
+      ).toBeVisible({
         timeout: 15_000,
       });
-      await captureEvidence(user, testInfo, EVIDENCE_SLUG, "sem-acompanhamento-paefi");
+      await captureEvidence(
+        user,
+        testInfo,
+        EVIDENCE_SLUG,
+        "sem-acompanhamento-paefi",
+      );
 
       const res = await api(user, "get", "follow-ups");
       expect(res.status(), "GET follow-ups").toBe(200);
@@ -198,11 +240,17 @@ test.describe("US-MSE-01 — medidas socioeducativas do prontuário (client)", (
 
     test("CA05 — o não técnico não vê a aba, a URL direta cai no resumo e a API devolve lista vazia e 403 no POST (a evidência é a ausência)", async ({}, testInfo) => {
       await open(user);
-      await expect(user.getByRole("tab", { name: TAB, exact: true })).toHaveCount(0);
+      await expect(
+        user.getByRole("tab", { name: TAB, exact: true }),
+      ).toHaveCount(0);
 
       await open(user, "medidas-socioeducativas");
-      await expect(user.getByTestId("socio-educational-measure-block")).toHaveCount(0);
-      await expect(user.getByRole("tab", { name: TAB, exact: true })).toHaveCount(0);
+      await expect(
+        user.getByTestId("socio-educational-measure-block"),
+      ).toHaveCount(0);
+      await expect(
+        user.getByRole("tab", { name: TAB, exact: true }),
+      ).toHaveCount(0);
       await captureEvidence(user, testInfo, EVIDENCE_SLUG, "aba-ausente");
 
       const list = await api(user, "get", "socio-educational-measures");
