@@ -72,9 +72,9 @@ test.describe('E2E-030 Registro obrigatório do CREAS (Quadro 3): registrar ind�
     // o selo de confirmação aparece no indício
     await expect(page.getByTestId('violence-record-confirmed-badge')).toBeVisible({ timeout: 10000 });
     // o indício continua listado depois de confirmado
-    await expect(page.locator('[data-testid="violence-record-item"]:has-text("Indício"):has-text("09/2026") >> nth=0')).toBeVisible();
-    await expect(page.locator('[data-testid="violence-record-item"]:has-text("Indício"):has-text("09/2026") >> nth=0')).toContainText('Violência psicológica');
-    await expect(page.locator('[data-testid="violence-record-item"]:has-text("Indício"):has-text("09/2026") >> nth=0')).toContainText('Confirmado em 10/2026');
+    await expect(page.locator('[data-testid="violence-record-item"]:has([data-testid="violence-record-confirmed-badge"]):has-text("09/2026") >> nth=0')).toBeVisible();
+    await expect(page.locator('[data-testid="violence-record-item"]:has([data-testid="violence-record-confirmed-badge"]):has-text("09/2026") >> nth=0')).toContainText('Violência psicológica');
+    await expect(page.locator('[data-testid="violence-record-item"]:has([data-testid="violence-record-confirmed-badge"]):has-text("09/2026") >> nth=0')).toContainText('Confirmado em 10/2026');
     await expect(page.locator('[data-testid="violence-record-item"]:has-text("Confirmada"):has-text("10/2026") >> nth=0')).toContainText('Confirma o indício de 09/2026');
     // nome, função e unidade gravados
     await expect(page.locator('[data-testid="violence-record-item"] [data-testid="violence-record-signature"] >> nth=0')).toContainText('E2E Operador CREAS · Assistente social');
@@ -139,7 +139,7 @@ test.describe('E2E-030 Registro obrigatório do CREAS (Quadro 3): registrar ind�
     // Quadro 3 carregado
     await expect(page.getByTestId('violence-records-section')).toBeVisible({ timeout: 15000 });
     // o registro semeado é legível
-    await expect(page.getByTestId('violence-person-card')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('[data-testid="violence-person-card"] >> nth=0')).toBeVisible({ timeout: 10000 });
     await expect(page.locator('[data-testid="violence-person-card"] >> nth=0')).toBeVisible();
     // sem Registrar situação
     await expect(page.getByTestId('violence-records-register')).toBeHidden();

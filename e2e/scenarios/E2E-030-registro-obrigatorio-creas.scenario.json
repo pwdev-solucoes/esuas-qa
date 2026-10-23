@@ -286,7 +286,7 @@
           "expect": "visible",
           "target": {
             "by": "css",
-            "value": "[data-testid=\"violence-record-item\"]:has-text(\"Indício\"):has-text(\"09/2026\") >> nth=0"
+            "value": "[data-testid=\"violence-record-item\"]:has([data-testid=\"violence-record-confirmed-badge\"]):has-text(\"09/2026\") >> nth=0"
           },
           "note": "o indício continua listado depois de confirmado"
         },
@@ -294,7 +294,7 @@
           "expect": "text",
           "target": {
             "by": "css",
-            "value": "[data-testid=\"violence-record-item\"]:has-text(\"Indício\"):has-text(\"09/2026\") >> nth=0"
+            "value": "[data-testid=\"violence-record-item\"]:has([data-testid=\"violence-record-confirmed-badge\"]):has-text(\"09/2026\") >> nth=0"
           },
           "value": "Violência psicológica"
         },
@@ -302,7 +302,7 @@
           "expect": "text",
           "target": {
             "by": "css",
-            "value": "[data-testid=\"violence-record-item\"]:has-text(\"Indício\"):has-text(\"09/2026\") >> nth=0"
+            "value": "[data-testid=\"violence-record-item\"]:has([data-testid=\"violence-record-confirmed-badge\"]):has-text(\"09/2026\") >> nth=0"
           },
           "value": "Confirmado em 10/2026"
         },
@@ -573,8 +573,8 @@
         {
           "action": "wait",
           "target": {
-            "by": "testid",
-            "value": "violence-person-card"
+            "by": "css",
+            "value": "[data-testid=\"violence-person-card\"] >> nth=0"
           },
           "timeout_ms": 10000,
           "note": "o registro semeado é legível"
