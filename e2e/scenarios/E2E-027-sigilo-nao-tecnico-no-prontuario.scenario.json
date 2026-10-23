@@ -1,0 +1,407 @@
+{
+  "schema_version": 1,
+  "id": "E2E-027",
+  "title": "Sigilo técnico: o não técnico abre o prontuário sem as abas Saúde e Acolhimento, sem a avaliação técnica e sem blocos sigilosos na anotação, com o aviso fixo",
+  "description": "HU #11289, plano 04. O usuário não técnico (lotação sem função técnica) abre o prontuário: o aviso fixo 'Parte deste prontuário é restrita à equipe técnica.' aparece no mesmo lugar em toda família (com e sem registro sigiloso); as abas Saúde e Acolhimento não existem; a Convivência não tem a seção de avaliação técnica; o formulário de nova anotação não lista os blocos sigilosos. A EVIDÊNCIA É A AUSÊNCIA. A recusa de unidade não técnica (422) é provada no Pest (ConfidentialRegistrationTest). Execução depois da massa do plano 05. Massa fictícia; nenhum dado pessoal.",
+  "feature_slug": "11289-sigilo-04-client",
+  "ac_refs": [
+    "AC-001",
+    "AC-002",
+    "AC-003",
+    "AC-004",
+    "AC-005"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "prontuario",
+    "sigilo",
+    "lgpd",
+    "visibilidade"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/login",
+    "viewport": {
+      "width": 1440,
+      "height": 1600
+    },
+    "users": [
+      {
+        "role": "nao_tecnico",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_ADMIN_STAFF_CPF",
+          "password": "E2E_CLIENT_ADMIN_STAFF_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Massa do plano 05 (HU #11289): usuário não técnico (lotação sem função técnica) com acesso à família com registro sigiloso e à família sem registro sigiloso"
+    ]
+  },
+  "data": {
+    "family_uuid": "00000000-0000-4000-8000-000011289001",
+    "empty_family_uuid": "00000000-0000-4000-8000-000011289004"
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "Abas sigilosas ausentes, aviso fixo visível e Convivência sem avaliação técnica (CA02, CA03, CA06, CA07)",
+      "as_user": "nao_tecnico",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_ADMIN_STAFF_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_ADMIN_STAFF_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "role",
+            "value": "tab",
+            "name": "Composição Familiar",
+            "exact": true
+          },
+          "timeout_ms": 15000,
+          "note": "o prontuário abriu"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"family-confidentiality-notice\"]"
+          }
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"family-confidentiality-notice\"]"
+          },
+          "value": "Parte deste prontuário é restrita à equipe técnica."
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "role",
+            "value": "tab",
+            "name": "Composição Familiar",
+            "exact": true
+          }
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "role",
+            "value": "tab",
+            "name": "Atendimentos",
+            "exact": true
+          }
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "role",
+            "value": "tab",
+            "name": "Encaminhamentos",
+            "exact": true
+          }
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "role",
+            "value": "tab",
+            "name": "Saúde",
+            "exact": true
+          },
+          "value": 0,
+          "note": "a evidência é a ausência da aba Saúde"
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "role",
+            "value": "tab",
+            "name": "Acolhimento",
+            "exact": true
+          },
+          "value": 0,
+          "note": "a evidência é a ausência da aba Acolhimento"
+        }
+      ]
+    },
+    {
+      "name": "empty_state",
+      "title": "A família sem registro sigiloso mostra o MESMO aviso, no mesmo lugar (CA03)",
+      "as_user": "nao_tecnico",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_ADMIN_STAFF_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_ADMIN_STAFF_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.empty_family_uuid}"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "role",
+            "value": "tab",
+            "name": "Composição Familiar",
+            "exact": true
+          },
+          "timeout_ms": 15000,
+          "note": "o prontuário abriu"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"family-confidentiality-notice\"]"
+          }
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"family-confidentiality-notice\"]"
+          },
+          "value": "Parte deste prontuário é restrita à equipe técnica."
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "role",
+            "value": "tab",
+            "name": "Saúde",
+            "exact": true
+          },
+          "value": 0
+        }
+      ]
+    },
+    {
+      "name": "forbidden",
+      "title": "O formulário de nova anotação não lista os blocos sigilosos (CA08)",
+      "as_user": "nao_tecnico",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_ADMIN_STAFF_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_ADMIN_STAFF_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=anotacoes"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "role",
+            "value": "tab",
+            "name": "Composição Familiar",
+            "exact": true
+          },
+          "timeout_ms": 15000,
+          "note": "o prontuário abriu"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"family-note-register-action\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"family-note-block-select\"]"
+          },
+          "note": "abre a lista de blocos"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Geral (família)",
+            "exact": true
+          },
+          "timeout_ms": 15000
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Geral (família)",
+            "exact": true
+          }
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Condições de saúde",
+            "exact": true
+          },
+          "value": 0
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Violência e violações de direitos",
+            "exact": true
+          },
+          "value": 0
+        }
+      ]
+    }
+  ],
+  "not_applicable": {
+    "validation_error": "A HU não muda validação de formulário no client; a recusa de unidade não técnica (422) é provada no Pest (ConfidentialRegistrationTest)."
+  }
+}
