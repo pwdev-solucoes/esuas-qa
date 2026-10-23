@@ -24,6 +24,7 @@ test.describe('E2E-012 Visibilidade restrita por bloco: o CREAS lê as anotaçõ
   //   - Massa do E2EBlockVisibilitySeeder: família referenciada no CRAS Centro, com PAEFI do CREAS vigente e quatro anotações do CREAS (violência antiga, violência de ontem, geral e saúde)
   //   - Operador do CREAS com add-on lotado no CREAS; operador do CRAS Centro com add-on lotado no CRAS Centro
   //   - API e client com os planos 01 e 02 da HU #11227
+  //   - HU #11289: o operador do CRAS Centro é técnico e lê a violência; o leitor que não lê é o assistente administrativo do CRAS Centro (E2EConfidentialitySeeder)
 
   test('happy_path — O operador do CREAS lê as duas anotações de violência que o CREAS registrou (CA01)', {
     tag: ['@P1', '@client', '@prontuario', '@anotacoes', '@visibilidade', '@lgpd'],
@@ -51,14 +52,14 @@ test.describe('E2E-012 Visibilidade restrita por bloco: o CREAS lê as anotaçõ
     await expect(page.locator('[data-testid="family-note-item"]:has-text("E2E 11227 — saúde") >> nth=0')).toBeVisible();
   });
 
-  test('forbidden — O operador do CRAS Centro filtra por violência e a lista fica vazia, sem indício de conteúdo restrito; Geral e Saúde seguem visíveis (CA02, CA04)', {
+  test('forbidden — O assistente administrativo (não técnico) do CRAS Centro não tem o bloco de violência no filtro e só vê a anotação geral; a evidência é a ausência (CA02, CA04, HU #11289)', {
     tag: ['@P1', '@client', '@prontuario', '@anotacoes', '@visibilidade', '@lgpd'],
-    annotation: [{ type: 'E2E', description: 'E2E-012' }, { type: 'AC', description: 'AC-002' }, { type: 'AC', description: 'AC-003' }, { type: 'user', description: 'operador' }],
+    annotation: [{ type: 'E2E', description: 'E2E-012' }, { type: 'AC', description: 'AC-002' }, { type: 'AC', description: 'AC-003' }, { type: 'user', description: 'nao_tecnico' }],
   }, async ({ page }) => {
     await page.goto('/login');
     await page.goto('/auth/login');
-    await page.locator('input#cpf').fill(env('E2E_CLIENT_OPERADOR_CPF'));
-    await page.locator('input#password').fill(env('E2E_CLIENT_OPERADOR_PASSWORD'));
+    await page.locator('input#cpf').fill(env('E2E_CLIENT_ADMIN_STAFF_CPF'));
+    await page.locator('input#password').fill(env('E2E_CLIENT_ADMIN_STAFF_PASSWORD'));
     await page.locator('button[type="submit"]').click();
     // login concluído: espera a URL autenticada em vez de tempo fixo
     await page.waitForURL(new RegExp(escapeRegExp('/app')));
@@ -72,14 +73,11 @@ test.describe('E2E-012 Visibilidade restrita por bloco: o CREAS lê as anotaçõ
     // Geral e Saúde carregaram: o total sem filtro já está na tela
     await expect(page.locator('[data-testid="family-note-item"]:has-text("E2E 11227 — geral") >> nth=0')).toBeVisible({ timeout: 10000 });
     await page.getByTestId('family-note-filter-block').click();
-    await page.getByRole('option', { name: 'Violência e violações de direitos', exact: true }).click();
-    // o filtro de violência termina no estado vazio
-    await expect(page.getByTestId('family-notes-empty-filtered')).toBeVisible({ timeout: 10000 });
-    await expect(page.getByTestId('family-notes-empty-filtered')).toBeVisible();
-    // nenhuma anotação de violência legível pelo CRAS Centro
-    await expect(page.getByTestId('family-notes-block')).toContainText('(0)');
-    // a evidência é a ausência: nem a recente nem a anterior aparecem
-    await expect(page.getByTestId('family-note-item')).toHaveCount(0);
+    // a evidência é a ausência: o filtro nem oferece o bloco de violência ao não técnico
+    await expect(page.getByRole('option', { name: 'Violência e violações de direitos', exact: true })).toHaveCount(0);
+    // só a anotação geral
+    await expect(page.getByTestId('family-notes-block')).toContainText('(1)');
+    await expect(page.getByTestId('family-note-item')).toHaveCount(1);
     await expect(page.getByTestId('family-notes-load-error')).toHaveCount(0);
   });
 });

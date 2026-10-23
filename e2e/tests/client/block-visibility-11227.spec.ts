@@ -12,10 +12,11 @@ import { captureEvidence, captureFinalEvidence } from "../../helpers/evidence";
  *
  * ## Arranjo (⚠️ sessão única, `throttle:6,1`)
  *
- * O login de um usuário derruba a sessão do outro; a ordem é fixa e há 2 logins
- * além da sessão herdada do `chromium-tenant`:
- *  1. sessão herdada (operador do CRAS Centro): CA02 e CA04 — a evidência é a
- *     AUSÊNCIA (nenhum texto, contagem ou aviso sugere conteúdo oculto);
+ * O login de um usuário derruba a sessão do outro; a ordem é fixa e há 3 logins
+ * (a sessão herdada do `chromium-tenant` é descartada pelo `loginAsTenantUser`):
+ *  1. assistente administrativo do CRAS Centro (HU #11289: não técnico): CA02 e
+ *     CA04 — só a anotação geral, total `(1)`; a evidência é a AUSÊNCIA (nenhum
+ *     texto, contagem ou aviso sugere conteúdo oculto);
  *  2. operador do CREAS: CA01 (lê as duas de violência) e CA05 (aviso restrito
  *     no lugar do geral, e o toast repete o aviso restrito ao salvar);
  *  3. Master: CA03 (lê todas) e CA07 ("Leitura de bloco restrito" na auditoria
@@ -41,6 +42,11 @@ const CREAS_CPF = process.env.E2E_CLIENT_CREAS_OPERADOR_CPF ?? "";
 const CREAS_PASSWORD = process.env.E2E_CLIENT_CREAS_OPERADOR_PASSWORD ?? "";
 const MASTER_CPF = process.env.E2E_CLIENT_MASTER_CPF ?? "";
 const MASTER_PASSWORD = process.env.E2E_CLIENT_MASTER_PASSWORD ?? "";
+// HU #11289: o operador do CRAS Centro passou a ser técnico e lê a violência do
+// CREAS; o leitor que NÃO lê é o assistente administrativo do CRAS Centro.
+const ADMIN_STAFF_CPF = process.env.E2E_CLIENT_ADMIN_STAFF_CPF ?? "99000150108";
+const ADMIN_STAFF_PASSWORD =
+  process.env.E2E_CLIENT_ADMIN_STAFF_PASSWORD ?? "senha123";
 
 const EVIDENCE_SLUG = "us-visib-01-visibilidade-bloco";
 const RUN_TAG = `E2E 11227 — registro da execução ${Date.now()}`;
@@ -52,8 +58,8 @@ const TEXT = {
   health: "E2E 11227 — saúde",
 };
 
-const RESTRICTED_NOTICE =
-  "lido apenas pela unidade pela qual você está registrando";
+// HU #11289 (D14): o aviso do formulário passou a falar da equipe técnica.
+const RESTRICTED_NOTICE = "equipe técnica";
 const VIOLENCE_LABEL = "Violência e violações de direitos";
 
 function note(page: Page, text: string) {
@@ -93,15 +99,17 @@ test.describe("US-VISIB-01 — visibilidade restrita por bloco (client)", () => 
     await captureFinalEvidence(page, testInfo, EVIDENCE_SLUG);
   });
 
-  test("CA02/CA04 — CRAS Centro: só Geral e Saúde, total (2), sem sinal de conteúdo restrito (a evidência é a ausência)", async ({
+  test("CA02/CA04 — CRAS Centro (não técnico): só Geral, total (1), sem sinal de conteúdo restrito (a evidência é a ausência)", async ({
     page,
   }, testInfo) => {
+    await loginAsTenantUser(page, ADMIN_STAFF_CPF, ADMIN_STAFF_PASSWORD);
     await openNotes(page);
 
     await expect(note(page, TEXT.general)).toBeVisible();
-    await expect(note(page, TEXT.health)).toBeVisible();
-    await expect(page.getByTestId("family-notes-block")).toContainText("(2)");
-    await expect(page.getByTestId("family-note-item")).toHaveCount(2);
+    // a anotação de saúde também é sigilosa agora (HU #11289): some para o não técnico
+    await expect(page.getByText(TEXT.health)).toHaveCount(0);
+    await expect(page.getByTestId("family-notes-block")).toContainText("(1)");
+    await expect(page.getByTestId("family-note-item")).toHaveCount(1);
 
     // CA04: a anotação de violência de 2026-09-20 (anterior à regra) também some.
     await expect(page.getByText(TEXT.violenceOld)).toHaveCount(0);
@@ -118,11 +126,12 @@ test.describe("US-VISIB-01 — visibilidade restrita por bloco (client)", () => 
     });
     await page.screenshot({ path: "test-results/visib01-ca02-ausencia.png" });
 
-    // CA02: o filtro de violência termina no estado vazio, como se nada existisse.
-    await pick(page, "family-note-filter-block", VIOLENCE_LABEL);
-    await expect(page.getByTestId("family-notes-empty-filtered")).toBeVisible();
-    await expect(page.getByTestId("family-note-item")).toHaveCount(0);
-    await expect(page.getByTestId("family-notes-block")).toContainText("(0)");
+    // CA02 (HU #11289): o filtro nem oferece o bloco de violência ao não técnico —
+    // a evidência é a ausência da opção.
+    await page.getByTestId("family-note-filter-block").click();
+    await expect(
+      page.getByRole("option", { name: VIOLENCE_LABEL, exact: true }),
+    ).toHaveCount(0);
     await captureEvidence(
       page,
       testInfo,

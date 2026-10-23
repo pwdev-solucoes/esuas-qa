@@ -301,8 +301,8 @@
             "by": "testid",
             "value": "family-note-block-notice"
           },
-          "value": "lido apenas pela unidade pela qual você está registrando",
-          "note": "texto do aviso restrito"
+          "value": "equipe técnica",
+          "note": "texto técnico do aviso restrito (HU #11289, D14)"
         }
       ]
     },

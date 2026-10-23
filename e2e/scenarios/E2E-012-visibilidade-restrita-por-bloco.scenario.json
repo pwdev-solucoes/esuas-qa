@@ -32,17 +32,18 @@
         }
       },
       {
-        "role": "operador",
+        "role": "nao_tecnico",
         "credentials_env": {
-          "cpf": "E2E_CLIENT_OPERADOR_CPF",
-          "password": "E2E_CLIENT_OPERADOR_PASSWORD"
+          "cpf": "E2E_CLIENT_ADMIN_STAFF_CPF",
+          "password": "E2E_CLIENT_ADMIN_STAFF_PASSWORD"
         }
       }
     ],
     "state": [
       "Massa do E2EBlockVisibilitySeeder: família referenciada no CRAS Centro, com PAEFI do CREAS vigente e quatro anotações do CREAS (violência antiga, violência de ontem, geral e saúde)",
       "Operador do CREAS com add-on lotado no CREAS; operador do CRAS Centro com add-on lotado no CRAS Centro",
-      "API e client com os planos 01 e 02 da HU #11227"
+      "API e client com os planos 01 e 02 da HU #11227",
+      "HU #11289: o operador do CRAS Centro é técnico e lê a violência; o leitor que não lê é o assistente administrativo do CRAS Centro (E2EConfidentialitySeeder)"
     ]
   },
   "data": {
@@ -141,8 +142,8 @@
     },
     {
       "name": "forbidden",
-      "title": "O operador do CRAS Centro filtra por violência e a lista fica vazia, sem indício de conteúdo restrito; Geral e Saúde seguem visíveis (CA02, CA04)",
-      "as_user": "operador",
+      "title": "O assistente administrativo (não técnico) do CRAS Centro não tem o bloco de violência no filtro e só vê a anotação geral; a evidência é a ausência (CA02, CA04, HU #11289)",
+      "as_user": "nao_tecnico",
       "steps": [
         {
           "action": "goto",
@@ -154,7 +155,7 @@
             "by": "css",
             "value": "input#cpf"
           },
-          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+          "value": "${env:E2E_CLIENT_ADMIN_STAFF_CPF}"
         },
         {
           "action": "fill",
@@ -162,7 +163,7 @@
             "by": "css",
             "value": "input#password"
           },
-          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+          "value": "${env:E2E_CLIENT_ADMIN_STAFF_PASSWORD}"
         },
         {
           "action": "click",
@@ -210,33 +211,19 @@
             "by": "testid",
             "value": "family-note-filter-block"
           }
-        },
+        }
+      ],
+      "assertions": [
         {
-          "action": "click",
+          "expect": "count",
           "target": {
             "by": "role",
             "value": "option",
             "name": "Violência e violações de direitos",
             "exact": true
-          }
-        },
-        {
-          "action": "wait",
-          "target": {
-            "by": "testid",
-            "value": "family-notes-empty-filtered"
           },
-          "timeout_ms": 10000,
-          "note": "o filtro de violência termina no estado vazio"
-        }
-      ],
-      "assertions": [
-        {
-          "expect": "visible",
-          "target": {
-            "by": "testid",
-            "value": "family-notes-empty-filtered"
-          }
+          "value": 0,
+          "note": "a evidência é a ausência: o filtro nem oferece o bloco de violência ao não técnico"
         },
         {
           "expect": "text",
@@ -244,8 +231,8 @@
             "by": "testid",
             "value": "family-notes-block"
           },
-          "value": "(0)",
-          "note": "nenhuma anotação de violência legível pelo CRAS Centro"
+          "value": "(1)",
+          "note": "só a anotação geral"
         },
         {
           "expect": "count",
@@ -253,8 +240,7 @@
             "by": "testid",
             "value": "family-note-item"
           },
-          "value": 0,
-          "note": "a evidência é a ausência: nem a recente nem a anterior aparecem"
+          "value": 1
         },
         {
           "expect": "count",
