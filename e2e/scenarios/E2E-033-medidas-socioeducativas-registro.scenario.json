@@ -1,0 +1,646 @@
+{
+  "schema_version": 1,
+  "id": "E2E-033",
+  "title": "Medidas socioeducativas: o técnico registra, só vê a pergunta do CREAS quando cabe, a PSC exige local e o aviso de idade não bloqueia",
+  "description": "HU #11295 (US-MSE-01), plano 02: na aba Medidas socioeducativas, o técnico do CRAS Centro (sessão herdada do chromium-tenant, sem login) registra Liberdade assistida para o adolescente de 16 anos e a medida aparece na lista; com Advertência a pergunta do CREAS não existe; na PSC, sem local e orientador a medida não salva; para o integrante de 24 anos a medida salva com o aviso de idade do servidor. CA01 (CREAS), CA05 (não técnico), Master e CA08 ficam na spec manual do plano 03. Massa fictícia do plano 03; nenhum dado pessoal.",
+  "feature_slug": "11295-mse-02-client",
+  "ac_refs": [
+    "AC-001",
+    "AC-002",
+    "AC-003",
+    "AC-006",
+    "AC-009"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "prontuario",
+    "medidas-socioeducativas",
+    "lgpd"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/app",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "users": [
+      {
+        "role": "operador",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_OPERADOR_CPF",
+          "password": "E2E_CLIENT_OPERADOR_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Sessão herdada do project chromium-tenant (técnico do CRAS Centro, massa do S10): nenhum login nas variantes",
+      "Massa do plano 03: família …11295001 referenciada no CRAS Centro, com os integrantes E2E Pedro MSE (16 anos) e E2E Irmão MSE (24 anos no mês corrente), sem medida registrada",
+      "As medidas registradas pelo cenário são removidas a cada rodada do seeder do plano 03",
+      "API e client com os planos 01 e 02 da HU #11295; o ano de início já vem no corrente"
+    ]
+  },
+  "data": {
+    "family_uuid": "00000000-0000-4000-8000-000011295001"
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "O técnico registra Liberdade assistida para o adolescente de 16 anos, responde que o CREAS acompanha, e a medida entra na lista com período, processo e assinatura (CA01/CA04)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=medidas-socioeducativas"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-block"
+          },
+          "timeout_ms": 15000,
+          "note": "aba Medidas socioeducativas carregada"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-register-action"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-form-sheet"
+          },
+          "timeout_ms": 10000
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-form-notice"
+          },
+          "timeout_ms": 10000,
+          "note": "aviso de sigilo do servidor (S4)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-form-member"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "E2E Pedro MSE",
+            "exact": true
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-form-type"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Liberdade assistida (LA)",
+            "exact": true
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-form-process"
+          },
+          "value": "0001234-75.2026.8.02.0001"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-form-started-month"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Janeiro",
+            "exact": true
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-creas"
+          },
+          "timeout_ms": 5000,
+          "note": "LA pergunta pelo CREAS"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-creas-yes"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-form-submit"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"socio-educational-measure-row-\"]:has-text(\"Liberdade assistida (LA)\"):has-text(\"0001234-75.2026.8.02.0001\")"
+          },
+          "timeout_ms": 10000,
+          "note": "a medida reaparece na lista do integrante"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"socio-educational-measure-row-\"]:has-text(\"Liberdade assistida (LA)\") >> nth=0"
+          },
+          "value": "em curso"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"socio-educational-measure-row-\"]:has-text(\"Liberdade assistida (LA)\") >> nth=0"
+          },
+          "value": "Acompanhada pelo CREAS: Sim"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"socio-educational-measure-row-\"]:has-text(\"Liberdade assistida (LA)\") [data-testid^=\"socio-educational-measure-signature-\"] >> nth=0"
+          },
+          "value": "Registrado por"
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-warnings"
+          },
+          "value": 0,
+          "note": "16 anos: sem aviso de idade"
+        }
+      ]
+    },
+    {
+      "name": "advertencia_sem_pergunta",
+      "title": "Com Advertência a pergunta do CREAS não existe; ao trocar de Liberdade assistida para Advertência ela some (CA02)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=medidas-socioeducativas"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-block"
+          },
+          "timeout_ms": 15000,
+          "note": "aba Medidas socioeducativas carregada"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-register-action"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-form-sheet"
+          },
+          "timeout_ms": 10000
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-form-notice"
+          },
+          "timeout_ms": 10000,
+          "note": "aviso de sigilo do servidor (S4)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-form-type"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Liberdade assistida (LA)",
+            "exact": true
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-creas"
+          },
+          "timeout_ms": 5000,
+          "note": "LA pergunta pelo CREAS"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-form-type"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Advertência",
+            "exact": true
+          }
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "count",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-creas"
+          },
+          "value": 0,
+          "note": "a pergunta do CREAS não existe no DOM com Advertência"
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-service-fields"
+          },
+          "value": 0
+        }
+      ]
+    },
+    {
+      "name": "validation_error",
+      "title": "Na prestação de serviços à comunidade, sem local e orientador a medida não salva e os campos apontam o erro (CA03)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=medidas-socioeducativas"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-block"
+          },
+          "timeout_ms": 15000,
+          "note": "aba Medidas socioeducativas carregada"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-register-action"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-form-sheet"
+          },
+          "timeout_ms": 10000
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-form-notice"
+          },
+          "timeout_ms": 10000,
+          "note": "aviso de sigilo do servidor (S4)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-form-member"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "E2E Pedro MSE",
+            "exact": true
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-form-type"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Prestação de serviços à comunidade (PSC)",
+            "exact": true
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-form-process"
+          },
+          "value": "0001234-75.2026.8.02.0001"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-form-started-month"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Janeiro",
+            "exact": true
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-service-fields"
+          },
+          "timeout_ms": 5000,
+          "note": "PSC pede local e orientador"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-creas-yes"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-form-submit"
+          }
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-service-fields"
+          }
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-service-fields"
+          },
+          "value": "Campo obrigatório."
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-form-sheet"
+          },
+          "note": "o Sheet segue aberto: nada foi salvo"
+        }
+      ]
+    },
+    {
+      "name": "aviso_idade",
+      "title": "Registrar a medida de um integrante com 24 anos salva e mostra o aviso de idade do servidor, sem bloquear (CA07)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=medidas-socioeducativas"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-block"
+          },
+          "timeout_ms": 15000,
+          "note": "aba Medidas socioeducativas carregada"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-register-action"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-form-sheet"
+          },
+          "timeout_ms": 10000
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-form-notice"
+          },
+          "timeout_ms": 10000,
+          "note": "aviso de sigilo do servidor (S4)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-form-member"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "E2E Irmão MSE",
+            "exact": true
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-form-type"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Advertência",
+            "exact": true
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-form-process"
+          },
+          "value": "0001234-75.2026.8.02.0001"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-form-started-month"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Janeiro",
+            "exact": true
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-form-submit"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-warnings"
+          },
+          "timeout_ms": 10000,
+          "note": "alerta persistente com o aviso do servidor"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-warnings"
+          },
+          "value": "tinha mais de 18 anos"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"socio-educational-measure-row-\"]:has-text(\"Advertência\") >> nth=0"
+          },
+          "note": "a medida entrou na lista mesmo com o aviso"
+        }
+      ]
+    }
+  ],
+  "not_applicable": {
+    "forbidden": "Não técnico (403 block_restricted, aba ausente) e Master (lê sem as ações) exigem outras sessões e ficam na spec manual do plano 03; a ausência da aba é coberta pelo UNIT-004 (VisualizarFamiliaPage.test.ts) e o 403 pelo Pest do plano 01.",
+    "empty_state": "A lista vazia ('Nenhuma medida registrada', sem contador) é coberta pelo UNIT-007 (MedidasSocioeducativasTab.test.ts) e pela spec manual do plano 03; o cenário parte de família sem medida e a exibe só até o primeiro registro."
+  }
+}
