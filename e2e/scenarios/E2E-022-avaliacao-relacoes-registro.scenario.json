@@ -174,7 +174,7 @@
           "action": "wait",
           "target": {
             "by": "css",
-            "value": "[data-title]:has-text(\"Este registro será lido apenas pela unidade pela qual você está registrando\")"
+            "value": "[data-title]:has-text(\"Este registro será lido apenas pela equipe técnica\")"
           },
           "timeout_ms": 10000,
           "note": "aviso no toast (mesmo texto do servidor)"
@@ -219,7 +219,7 @@
           "expect": "visible",
           "target": {
             "by": "css",
-            "value": "[data-title]:has-text(\"Este registro será lido apenas pela unidade pela qual você está registrando\")"
+            "value": "[data-title]:has-text(\"Este registro será lido apenas pela equipe técnica\")"
           },
           "note": "toast com o aviso"
         }

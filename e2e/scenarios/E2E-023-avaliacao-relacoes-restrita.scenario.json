@@ -33,16 +33,16 @@
         }
       },
       {
-        "role": "operador",
+        "role": "nao_tecnico",
         "credentials_env": {
-          "cpf": "E2E_CLIENT_OPERADOR_CPF",
-          "password": "E2E_CLIENT_OPERADOR_PASSWORD"
+          "cpf": "E2E_CLIENT_ADMIN_STAFF_CPF",
+          "password": "E2E_CLIENT_ADMIN_STAFF_PASSWORD"
         }
       }
     ],
     "state": [
       "Massa do E2ERelationshipAssessmentSeeder: família …0f0501 referenciada no CRAS Centro, com avaliações registradas só pelo CREAS",
-      "Operador do CRAS Centro com o add-on, lotado no CRAS Centro; Master sem lotação",
+      "Assistente administrativo do CRAS Centro (não técnico, HU #11289) com o add-on, lotado no CRAS Centro; Master sem lotação",
       "Ordem de execução por causa da sessão única: master_sem_lotacao antes de happy_path",
       "API e client com os planos 01 e 02 da HU #11229"
     ]
@@ -53,8 +53,8 @@
   "variants": [
     {
       "name": "happy_path",
-      "title": "O CRAS Centro vê Nenhuma avaliação registrada nas relações conjugal e dos irmãos, sem contador nem indício das avaliações do CREAS (CA05/CA06)",
-      "as_user": "operador",
+      "title": "O assistente administrativo (não técnico) do CRAS Centro abre a aba Convivência e a seção de avaliação técnica não existe, sem contador nem indício das avaliações do CREAS (CA05/CA06, HU #11289)",
+      "as_user": "nao_tecnico",
       "steps": [
         {
           "action": "goto",
@@ -66,7 +66,7 @@
             "by": "css",
             "value": "input#cpf"
           },
-          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+          "value": "${env:E2E_CLIENT_ADMIN_STAFF_CPF}"
         },
         {
           "action": "fill",
@@ -74,7 +74,7 @@
             "by": "css",
             "value": "input#password"
           },
-          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+          "value": "${env:E2E_CLIENT_ADMIN_STAFF_PASSWORD}"
         },
         {
           "action": "click",
@@ -111,37 +111,21 @@
           "action": "wait",
           "target": {
             "by": "testid",
-            "value": "relationship-assessments-section"
+            "value": "family-confidentiality-notice"
           },
           "timeout_ms": 15000,
-          "note": "seção da avaliação carregada"
-        },
-        {
-          "action": "wait",
-          "target": {
-            "by": "css",
-            "value": "[data-testid=\"relationship-card-conjugal\"] [data-testid=\"relationship-empty\"]"
-          },
-          "timeout_ms": 10000,
-          "note": "relação conjugal carregada, vazia"
+          "note": "o prontuário abriu na aba Convivência"
         }
       ],
       "assertions": [
         {
-          "expect": "text",
+          "expect": "count",
           "target": {
-            "by": "css",
-            "value": "[data-testid=\"relationship-card-conjugal\"] [data-testid=\"relationship-empty\"]"
+            "by": "testid",
+            "value": "relationship-assessments-section"
           },
-          "value": "Nenhuma avaliação registrada"
-        },
-        {
-          "expect": "text",
-          "target": {
-            "by": "css",
-            "value": "[data-testid=\"relationship-card-siblings\"] [data-testid=\"relationship-empty\"]"
-          },
-          "value": "Nenhuma avaliação registrada"
+          "value": 0,
+          "note": "a evidência é a ausência: a seção de avaliação técnica não existe para o não técnico"
         },
         {
           "expect": "count",
