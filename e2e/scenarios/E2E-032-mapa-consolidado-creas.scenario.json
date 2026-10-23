@@ -1,0 +1,282 @@
+{
+  "schema_version": 1,
+  "id": "E2E-032",
+  "title": "O técnico do CREAS lê o Mapa Consolidado por situação e mês, e quem não é da equipe técnica não vê o item nem abre a página",
+  "description": "HU #11294 (CA01, CA04, RN03), plano 02: o técnico do E2E CREAS Sul vê o item no menu e, em 10/2026, lê 3 indícios de Violência Psicológica e 1 confirmada de Violência Física; um usuário administrativo do CREAS não vê o item e, pela URL direta, recebe o estado negado; mês final antes do inicial mostra a mensagem do campo sem tabela. Depende da massa do seeder do plano 03. Massa fictícia; nenhum dado pessoal.",
+  "feature_slug": "11294-mapa-creas-02-client",
+  "ac_refs": [
+    "AC-001",
+    "AC-005",
+    "AC-007"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "creas",
+    "mapa-consolidado",
+    "violencia",
+    "rbac"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/auth/login",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "users": [
+      {
+        "role": "tecnico_creas_sul",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_CREAS_SUL_TECNICO_CPF",
+          "password": "E2E_CLIENT_CREAS_SUL_TECNICO_PASSWORD"
+        }
+      },
+      {
+        "role": "administrativo_creas",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_CREAS_ADMIN_STAFF_CPF",
+          "password": "E2E_CLIENT_CREAS_ADMIN_STAFF_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Seeder do plano 03 aplicado (E2E CREAS Sul com 3 indícios de Violência Psicológica e 1 confirmada de Violência Física em 10/2026)",
+      "Um login por usuário por execução (throttle 6,1)"
+    ]
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "O técnico do CREAS Sul lê o Mapa de outubro/2026 (CA01)",
+      "as_user": "tecnico_creas_sul",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_SUL_TECNICO_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_SUL_TECNICO_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído"
+        },
+        {
+          "action": "goto",
+          "value": "/app/protecao-especial/mapa-creas?start_month=2026-10&end_month=2026-10"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"creas-record-map-rule-notice\"]"
+          }
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"creas-record-map-unit-\"] caption"
+          }
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid$=\"-2026-10-2-suspected\"]"
+          },
+          "value": "3",
+          "note": "Violência Psicológica (código MDS 2): 3 indícios"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid$=\"-2026-10-1-confirmed\"]"
+          },
+          "value": "1",
+          "note": "Violência Física (código MDS 1): 1 confirmada"
+        }
+      ]
+    },
+    {
+      "name": "forbidden",
+      "title": "Usuário administrativo do CREAS não vê o item e a URL direta é negada (CA04)",
+      "as_user": "administrativo_creas",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_ADMIN_STAFF_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_ADMIN_STAFF_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído"
+        },
+        {
+          "action": "goto",
+          "value": "/app/protecao-especial/mapa-creas"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"creas-record-map-denied\"]"
+          }
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "role",
+            "value": "link",
+            "name": "Mapa Consolidado do CREAS"
+          },
+          "value": 0,
+          "note": "ausência: o item não aparece no menu"
+        }
+      ]
+    },
+    {
+      "name": "validation_error",
+      "title": "Mês final antes do inicial mostra a mensagem do campo, sem tabela",
+      "as_user": "tecnico_creas_sul",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_SUL_TECNICO_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_SUL_TECNICO_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído"
+        },
+        {
+          "action": "goto",
+          "value": "/app/protecao-especial/mapa-creas?start_month=2026-11&end_month=2026-10"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"creas-record-map-validation-error\"]"
+          }
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"creas-record-map-unit-\"]"
+          },
+          "value": 0
+        }
+      ]
+    }
+  ],
+  "not_applicable": {
+    "empty_state": "Zero é declarado na matriz; o estado sem unidade só ocorre num município sem CREAS, provado no Vitest (CreasRecordMapPage.test.ts)."
+  }
+}
