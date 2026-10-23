@@ -1,0 +1,351 @@
+{
+  "schema_version": 1,
+  "id": "E2E-028",
+  "title": "Sigilo técnico: o técnico lê a aba Saúde e a violência do CREAS pela unidade de acesso; a dupla função e o sem função não leem",
+  "description": "HU #11289, plano 05. Quem lê o sigilo é a equipe técnica da unidade de acesso do caso: o técnico do CRAS Centro lê a aba Saúde e a anotação de violência registrada pelo CREAS na família Silva; a dupla função (técnico no CREAS, não técnico no Rural) abre a família Rural SEM a aba Saúde; o usuário sem função abre a Silva sem a aba Saúde e com o aviso fixo. Nos negativos a EVIDÊNCIA É A AUSÊNCIA. Massa fictícia (E2EConfidentialitySeeder); nenhum dado pessoal.",
+  "feature_slug": "11289-sigilo-05-evidencias",
+  "ac_refs": [
+    "AC-004",
+    "AC-005"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "prontuario",
+    "sigilo",
+    "lgpd",
+    "visibilidade"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/login",
+    "viewport": {
+      "width": 1440,
+      "height": 1600
+    },
+    "users": [
+      {
+        "role": "operador",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_OPERADOR_CPF",
+          "password": "E2E_CLIENT_OPERADOR_PASSWORD"
+        }
+      },
+      {
+        "role": "dupla_funcao",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_DUAL_ROLE_CPF",
+          "password": "E2E_CLIENT_DUAL_ROLE_PASSWORD"
+        }
+      },
+      {
+        "role": "sem_funcao",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_NO_FUNCTION_CPF",
+          "password": "E2E_CLIENT_NO_FUNCTION_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Massa do plano 05 (HU #11289): operador técnico do CRAS Centro, dupla função (CREAS técnico + Rural não técnico) e usuário sem função; famílias Silva e Rural"
+    ]
+  },
+  "data": {
+    "family_uuid": "00000000-0000-4000-8000-000011289001",
+    "rural_family_uuid": "00000000-0000-4000-8000-000011289003"
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "O técnico do CRAS Centro lê a aba Saúde e a anotação de violência do CREAS na Silva (CA01, CA04)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=saude"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "role",
+            "value": "tab",
+            "name": "Composição Familiar",
+            "exact": true
+          },
+          "timeout_ms": 15000,
+          "note": "o prontuário abriu"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "role",
+            "value": "tab",
+            "name": "Saúde",
+            "exact": true
+          }
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"health-block\"]"
+          }
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"health-block\"]"
+          },
+          "value": "álcool"
+        }
+      ]
+    },
+    {
+      "name": "forbidden",
+      "title": "A dupla função abre a família Rural sem a aba Saúde (CA06)",
+      "as_user": "dupla_funcao",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_DUAL_ROLE_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_DUAL_ROLE_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          },
+          "value": "${env:E2E_CLIENT_DUAL_ROLE_PASSWORD}"
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.rural_family_uuid}?tab=saude"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "role",
+            "value": "tab",
+            "name": "Composição Familiar",
+            "exact": true
+          },
+          "timeout_ms": 15000,
+          "note": "o prontuário abriu"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "role",
+            "value": "tab",
+            "name": "Composição Familiar",
+            "exact": true
+          }
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "role",
+            "value": "tab",
+            "name": "Saúde",
+            "exact": true
+          },
+          "value": 0,
+          "note": "a evidência é a ausência da aba Saúde"
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"health-block\"]"
+          },
+          "value": 0,
+          "note": "a evidência é a ausência do bloco de saúde"
+        }
+      ]
+    },
+    {
+      "name": "sem_funcao",
+      "title": "O usuário sem função abre a Silva sem a aba Saúde e com o aviso fixo (CA07)",
+      "as_user": "sem_funcao",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_NO_FUNCTION_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_NO_FUNCTION_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          },
+          "value": "${env:E2E_CLIENT_NO_FUNCTION_PASSWORD}"
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=saude"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "role",
+            "value": "tab",
+            "name": "Composição Familiar",
+            "exact": true
+          },
+          "timeout_ms": 15000,
+          "note": "o prontuário abriu"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "count",
+          "target": {
+            "by": "role",
+            "value": "tab",
+            "name": "Saúde",
+            "exact": true
+          },
+          "value": 0,
+          "note": "a evidência é a ausência da aba Saúde"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"family-confidentiality-notice\"]"
+          },
+          "value": "Parte deste prontuário é restrita à equipe técnica."
+        }
+      ]
+    }
+  ],
+  "not_applicable": {
+    "validation_error": "Sem formulário: o cenário só lê o prontuário; a recusa de unidade não técnica (422) é provada no Pest (ConfidentialRegistrationTest).",
+    "empty_state": "O estado vazio (família sem registro sigiloso com o mesmo aviso) é o CA03 do E2E-027."
+  }
+}
