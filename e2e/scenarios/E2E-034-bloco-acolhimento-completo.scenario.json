@@ -436,9 +436,9 @@
           "expect": "visible",
           "target": {
             "by": "testid",
-            "value": "sheltering-group-form-sheet"
+            "value": "sheltering-custody-form-sheet"
           },
-          "note": "o Sheet segue aberto: nada foi salvo"
+          "note": "o Sheet da guarda segue aberto: nada foi salvo (o do grupo foi fechado pelo Escape)"
         },
         {
           "expect": "count",
