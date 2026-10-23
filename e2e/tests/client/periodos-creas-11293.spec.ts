@@ -70,6 +70,8 @@ async function openViolence(page: Page, family: string): Promise<void> {
   await dismissPlatformUpdates(page);
 }
 
+const TALL = { viewport: { width: 1440, height: 3200 } };
+
 const isListing = (url: string) =>
   url.includes("/creas-follow-up-periods") && !url.includes("/options");
 
@@ -120,7 +122,7 @@ test.describe("US-VIOL-04 — Quadro 2: períodos com o CREAS (client)", () => {
       cras.getByText("E2E 11293 avaliação que não pode aparecer"),
     ).toHaveCount(0);
     expect(body).not.toContain("avaliação que não pode aparecer");
-    await captureEvidence(cras, testInfo, EVIDENCE_SLUG, "derivado");
+    await captureEvidence(cras, testInfo, EVIDENCE_SLUG, "derivado", TALL);
   });
 
   test("CA02 — o CRAS vê o PAEFI vigente da família Souza como Em curso", async ({}, testInfo) => {
@@ -130,7 +132,7 @@ test.describe("US-VIOL-04 — Quadro 2: períodos com o CREAS (client)", () => {
       .first();
     await expect(inProgress).toBeVisible({ timeout: 20_000 });
     await expect(inProgress).toContainText("Em curso");
-    await captureEvidence(cras, testInfo, EVIDENCE_SLUG, "em-curso");
+    await captureEvidence(cras, testInfo, EVIDENCE_SLUG, "em-curso", TALL);
   });
 
   test("CA03 — o CRAS registra 02/2023 a 05/2023 num CREAS de outro município e o manual aparece como Registro manual", async ({}, testInfo) => {
@@ -152,7 +154,7 @@ test.describe("US-VIOL-04 — Quadro 2: períodos com o CREAS (client)", () => {
     await cras.getByRole("option", { name: "2023", exact: true }).click();
     await cras.getByTestId("creas-period-form-creas-external").click();
     await cras.getByTestId("creas-period-external-name").fill(EXTERNAL_NAME);
-    await captureEvidence(cras, testInfo, EVIDENCE_SLUG, "formulario");
+    await captureEvidence(cras, testInfo, EVIDENCE_SLUG, "formulario", TALL);
     await cras.getByTestId("creas-period-form-submit").click();
 
     const registered = cras
@@ -167,7 +169,7 @@ test.describe("US-VIOL-04 — Quadro 2: períodos com o CREAS (client)", () => {
     await expect(
       cras.getByTestId(`creas-period-origin-${MANUAL_UUID}`),
     ).toContainText("Registro manual");
-    await captureEvidence(cras, testInfo, EVIDENCE_SLUG, "manual");
+    await captureEvidence(cras, testInfo, EVIDENCE_SLUG, "manual", TALL);
   });
 
   test("CA04 — a linha derivada não tem ação e o PUT do uuid derivado é 404 (a evidência é a ausência)", async ({}, testInfo) => {
@@ -205,7 +207,7 @@ test.describe("US-VIOL-04 — Quadro 2: períodos com o CREAS (client)", () => {
       },
     );
     expect(response.status()).toBe(404);
-    await captureEvidence(cras, testInfo, EVIDENCE_SLUG, "sem-acao");
+    await captureEvidence(cras, testInfo, EVIDENCE_SLUG, "sem-acao", TALL);
   });
 
   test("CT-RN05a — o não técnico do CRAS vê a aba Violência só com o Quadro 2 e o aviso fixo", async ({
@@ -221,7 +223,7 @@ test.describe("US-VIOL-04 — Quadro 2: períodos com o CREAS (client)", () => {
       await expect(
         user.getByTestId(`creas-period-row-${DERIVED_UUID}`),
       ).toBeVisible();
-      await captureEvidence(user, testInfo, EVIDENCE_SLUG, "nao-tecnico");
+      await captureEvidence(user, testInfo, EVIDENCE_SLUG, "nao-tecnico", TALL);
     } finally {
       await user.close();
     }
@@ -241,7 +243,7 @@ test.describe("US-VIOL-04 — Quadro 2: períodos com o CREAS (client)", () => {
       await expect(
         user.locator('[data-testid^="creas-period-row-"]'),
       ).toHaveCount(0);
-      await captureEvidence(user, testInfo, EVIDENCE_SLUG, "creas");
+      await captureEvidence(user, testInfo, EVIDENCE_SLUG, "creas", TALL);
     } finally {
       await user.close();
     }
@@ -259,7 +261,7 @@ test.describe("US-VIOL-04 — Quadro 2: períodos com o CREAS (client)", () => {
       await expect(
         user.getByTestId(`creas-period-row-${DERIVED_UUID}`),
       ).toBeVisible();
-      await captureEvidence(user, testInfo, EVIDENCE_SLUG, "master-le");
+      await captureEvidence(user, testInfo, EVIDENCE_SLUG, "master-le", TALL);
     } finally {
       await user.close();
     }
