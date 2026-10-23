@@ -70,7 +70,7 @@ async function openViolence(page: Page, family: string): Promise<void> {
   await dismissPlatformUpdates(page);
 }
 
-const TALL = { viewport: { width: 1440, height: 3200 } };
+const TALL = { viewport: { width: 1440, height: 1900 } };
 
 const isListing = (url: string) =>
   url.includes("/creas-follow-up-periods") && !url.includes("/options");
