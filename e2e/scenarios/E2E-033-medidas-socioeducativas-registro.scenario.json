@@ -626,7 +626,7 @@
             "by": "testid",
             "value": "socio-educational-measure-warnings"
           },
-          "value": "tinha mais de 18 anos"
+          "value": "21"
         },
         {
           "expect": "visible",
