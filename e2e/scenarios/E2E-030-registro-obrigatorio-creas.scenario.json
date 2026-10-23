@@ -1,0 +1,710 @@
+{
+  "schema_version": 1,
+  "id": "E2E-030",
+  "title": "Registro obrigatório do CREAS (Quadro 3): registrar indício, confirmar, validar, leitura sem ação e vazio",
+  "description": "HU #11292 (US-VIOL-03), plano 02: na aba Violência, o operador do CREAS registra o indício de violência psicológica para a pessoa vitimada e depois o confirma (os dois continuam listados, com selo e assinatura), vê o lembrete do instrumento e o aviso de leitura do servidor e é barrado ao escolher \"Outra\" sem descrição. O técnico do CRAS lê o registro, mas não tem as ações de escrita. Família sem registro mostra a frase única. Massa fictícia (E2EViolenceRecordSeeder, plano 03); nenhum dado pessoal real.",
+  "feature_slug": "11292-quadro3-02-client",
+  "ac_refs": [
+    "AC-001",
+    "AC-002",
+    "AC-003",
+    "AC-006",
+    "AC-009"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "prontuario",
+    "violencia",
+    "creas",
+    "quadro-3",
+    "sigilo"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/login",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "users": [
+      {
+        "role": "operador_creas",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_CREAS_OPERADOR_CPF",
+          "password": "E2E_CLIENT_CREAS_OPERADOR_PASSWORD"
+        }
+      },
+      {
+        "role": "operador_cras",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_OPERADOR_CPF",
+          "password": "E2E_CLIENT_OPERADOR_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Massa do E2EViolenceRecordSeeder (plano 03): família …11292001 acompanhada pelo CREAS com a integrante \"E2E Quadro3 Ana\" e um registro semeado legível pelo CRAS Centro; família …11292002 sem registro",
+      "Operador do CREAS lotado no CREAS com a função Assistente social (nome E2E Operador CREAS); operador do CRAS Centro como técnico",
+      "Os registros extras da família são removidos a cada rodada do seeder; happy_path roda antes das demais variantes na mesma massa",
+      "API e client com os planos 01 e 02 da HU #11292; o mês 09/2026 é o indício e 10/2026 a confirmação (11/2026 é futuro na data da execução)"
+    ]
+  },
+  "data": {
+    "family_uuid": "00000000-0000-4000-8000-000011292001",
+    "empty_family_uuid": "00000000-0000-4000-8000-000011292002"
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "O CREAS registra o indício de violência psicológica para a pessoa vitimada e depois a confirma: os dois ficam listados, com selo e assinatura (CA01/CA02)",
+      "as_user": "operador_creas",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=violencia"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "violence-records-section"
+          },
+          "timeout_ms": 15000,
+          "note": "Quadro 3 carregado"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "violence-records-register"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "violence-record-form-sheet"
+          },
+          "timeout_ms": 10000
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "violence-record-member-select"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "E2E Quadro3 Ana",
+            "exact": true
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "violence-record-situation-select"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Violência psicológica",
+            "exact": true
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "violence-record-evidence-level"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Indício",
+            "exact": true
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "violence-record-month-select"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Setembro",
+            "exact": true
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "violence-record-reminder"
+          },
+          "timeout_ms": 10000,
+          "note": "lembrete do instrumento (texto do servidor)"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "violence-record-notice"
+          },
+          "timeout_ms": 10000,
+          "note": "aviso de quem vai ler (texto do servidor)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "violence-record-submit"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"violence-record-item\"]:has-text(\"Indício\"):has-text(\"09/2026\") >> nth=0"
+          },
+          "timeout_ms": 10000,
+          "note": "o indício reaparece no cartão da pessoa"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"violence-record-item\"]:has-text(\"Indício\"):has-text(\"09/2026\"):not(:has([data-testid=\"violence-record-confirmed-badge\"])) [data-testid=\"violence-record-confirm\"] >> nth=0"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "violence-record-form-sheet"
+          },
+          "timeout_ms": 10000
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "violence-record-month-select"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Outubro",
+            "exact": true
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "violence-record-submit"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "violence-record-confirmed-badge"
+          },
+          "timeout_ms": 10000,
+          "note": "o selo de confirmação aparece no indício"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"violence-record-item\"]:has-text(\"Indício\"):has-text(\"09/2026\") >> nth=0"
+          },
+          "note": "o indício continua listado depois de confirmado"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"violence-record-item\"]:has-text(\"Indício\"):has-text(\"09/2026\") >> nth=0"
+          },
+          "value": "Violência psicológica"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"violence-record-item\"]:has-text(\"Indício\"):has-text(\"09/2026\") >> nth=0"
+          },
+          "value": "Confirmado em 10/2026"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"violence-record-item\"]:has-text(\"Confirmada\"):has-text(\"10/2026\") >> nth=0"
+          },
+          "value": "Confirma o indício de 09/2026"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"violence-record-item\"] [data-testid=\"violence-record-signature\"] >> nth=0"
+          },
+          "value": "E2E Operador CREAS · Assistente social",
+          "note": "nome, função e unidade gravados"
+        }
+      ]
+    },
+    {
+      "name": "validation_error",
+      "title": "\"Outra\" sem descrição não é enviada: a tela pede a descrição no campo (RN03)",
+      "as_user": "operador_creas",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=violencia"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "violence-records-section"
+          },
+          "timeout_ms": 15000,
+          "note": "Quadro 3 carregado"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "violence-records-register"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "violence-record-form-sheet"
+          },
+          "timeout_ms": 10000
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "violence-record-member-select"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "E2E Quadro3 Ana",
+            "exact": true
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "violence-record-situation-select"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Outra",
+            "exact": true
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "violence-record-evidence-level"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Indício",
+            "exact": true
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "violence-record-month-select"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Setembro",
+            "exact": true
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "violence-record-other-description"
+          },
+          "timeout_ms": 10000,
+          "note": "a descrição aparece só para \"Outra\""
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "violence-record-submit"
+          }
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "violence-record-form-sheet"
+          },
+          "note": "o formulário continua aberto"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "violence-record-form-sheet"
+          },
+          "value": "Descreva a situação."
+        }
+      ]
+    },
+    {
+      "name": "forbidden",
+      "title": "O técnico do CRAS lê o registro do CREAS, mas não tem a ação de registrar (CA06)",
+      "as_user": "operador_cras",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=violencia"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "violence-records-section"
+          },
+          "timeout_ms": 15000,
+          "note": "Quadro 3 carregado"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "violence-person-card"
+          },
+          "timeout_ms": 10000,
+          "note": "o registro semeado é legível"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"violence-person-card\"] >> nth=0"
+          }
+        },
+        {
+          "expect": "hidden",
+          "target": {
+            "by": "testid",
+            "value": "violence-records-register"
+          },
+          "note": "sem Registrar situação"
+        },
+        {
+          "expect": "hidden",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"violence-record-confirm\"] >> nth=0"
+          },
+          "note": "sem Registrar confirmação"
+        },
+        {
+          "expect": "hidden",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"violence-record-correct\"] >> nth=0"
+          },
+          "note": "sem Corrigir"
+        }
+      ]
+    },
+    {
+      "name": "empty_state",
+      "title": "Família sem registro mostra a frase única, sem contador (CT12)",
+      "as_user": "operador_creas",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.empty_family_uuid}?tab=violencia"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "violence-records-section"
+          },
+          "timeout_ms": 15000,
+          "note": "Quadro 3 carregado"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "violence-records-empty"
+          },
+          "timeout_ms": 10000
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "violence-records-empty"
+          },
+          "value": "Nenhum registro obrigatório nesta família."
+        },
+        {
+          "expect": "hidden",
+          "target": {
+            "by": "testid",
+            "value": "violence-person-card"
+          }
+        }
+      ]
+    }
+  ]
+}
