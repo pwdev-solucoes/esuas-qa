@@ -189,15 +189,17 @@
         {
           "expect": "visible",
           "target": {
-            "by": "css",
-            "value": "[data-testid=\"creas-record-map-denied\"]"
-          }
+            "by": "role",
+            "value": "heading",
+            "name": "Acesso negado"
+          },
+          "note": "a guarda da rota barra antes da página (tela global de acesso negado)"
         },
         {
           "expect": "count",
           "target": {
             "by": "role",
-            "value": "link",
+            "value": "button",
             "name": "Mapa Consolidado do CREAS"
           },
           "value": 0,
