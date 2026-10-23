@@ -21,10 +21,10 @@ void data;
 test.describe('E2E-035 Acolhimento de qualquer integrante: o técnico do CREAS registra o acolhimento de um adulto, exige o motivo, e o não técnico não vê a aba', () => {
   test.use({ baseURL: process.env['CLIENT_BASE_URL'], viewport: { width: 1440, height: 900 } });
   // Preconditions (arrange before running):
-  //   - Massa do plano 02 (E2EAdultShelteringSeeder): família …11297001 referenciada no CREAS, com a integrante ativa E2E Joana Adulta (38 anos) e sem acolhimento registrado
+  //   - Massa do plano 02 (E2EAdultShelteringSeeder): família …11297001 referenciada no CREAS, com a integrante ativa E2E Joana (38 anos) e sem acolhimento registrado
   //   - Técnico do CREAS (add-on LGPD, lotado no CREAS) e assistente administrativo do CREAS (não técnico, HU #11289)
   //   - Um login do técnico por variante e um do não técnico (throttle 6,1); a variante forbidden troca de usuário e roda por último
-  //   - O acolhimento criado pelo cenário é removido a cada rodada do seeder do plano 02
+  //   - O seeder não apaga o acolhimento criado; o cenário lê a linha mais recente (nth=0)
   //   - API e client com o plano 01 da HU #11297
 
   test('happy_path — O técnico do CREAS registra o acolhimento da integrante adulta e a vê na lista (CA01)', {
@@ -51,15 +51,15 @@ test.describe('E2E-035 Acolhimento de qualquer integrante: o técnico do CREAS r
     await expect(page.getByTestId('sheltering-form-sheet')).toBeVisible({ timeout: 10000 });
     await page.getByTestId('sheltering-form-member').click();
     // a adulta é oferecida: qualquer integrante ativo
-    await page.getByRole('option', { name: 'E2E Joana Adulta' }).click();
+    await page.getByRole('option', { name: 'E2E Joana' }).click();
     await page.getByTestId('sheltering-form-started').fill('2026-07-10');
     await page.getByTestId('sheltering-form-modality-institutional').click();
     await page.getByTestId('sheltering-form-reason').fill('Situação de risco avaliada pela equipe técnica (massa fictícia).');
     await page.getByTestId('sheltering-form-submit').click();
     // o acolhimento reaparece na lista
-    await expect(page.locator('[data-testid^="sheltering-row-"]:has-text("E2E Joana Adulta")')).toBeVisible({ timeout: 10000 });
-    await expect(page.locator('[data-testid^="sheltering-row-"]:has-text("E2E Joana Adulta") >> nth=0')).toContainText('E2E Joana Adulta');
-    await expect(page.locator('[data-testid^="sheltering-row-"]:has-text("E2E Joana Adulta") >> nth=0')).toContainText('Em curso');
+    await expect(page.locator('[data-testid^="sheltering-row-"]:has-text("E2E Joana") >> nth=0')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('[data-testid^="sheltering-row-"]:has-text("E2E Joana") >> nth=0')).toContainText('E2E Joana');
+    await expect(page.locator('[data-testid^="sheltering-row-"]:has-text("E2E Joana") >> nth=0')).toContainText('Em curso');
   });
 
   test('validation_error — Sem motivo o acolhimento não é salvo e o formulário diz \'Informe o motivo do acolhimento.\' (CA04 herdado)', {
@@ -85,7 +85,7 @@ test.describe('E2E-035 Acolhimento de qualquer integrante: o técnico do CREAS r
     await page.getByTestId('sheltering-register-action').click();
     await expect(page.getByTestId('sheltering-form-sheet')).toBeVisible({ timeout: 10000 });
     await page.getByTestId('sheltering-form-member').click();
-    await page.getByRole('option', { name: 'E2E Joana Adulta' }).click();
+    await page.getByRole('option', { name: 'E2E Joana' }).click();
     await page.getByTestId('sheltering-form-started').fill('2026-07-10');
     await page.getByTestId('sheltering-form-modality-institutional').click();
     await page.getByTestId('sheltering-form-submit').click();
