@@ -86,8 +86,11 @@ async function readReport(
   const stale = (await staleLoc.count())
     ? Number((await staleLoc.first().innerText()).replace(/\D/g, ""))
     : 0;
+  await value.scrollIntoViewIfNeeded();
   return { profile, stale };
 }
+
+const WIDE = { viewport: { width: 2800, height: 1600 } };
 
 test.use({
   baseURL: BASE,
@@ -112,7 +115,13 @@ test.describe("US-ACOLH2-02 — acolhimento de qualquer integrante (client)", ()
     master = await loginNew(browser, MASTER);
     before = await readReport(master);
     expect(before.profile).toBeGreaterThanOrEqual(0);
-    await captureEvidence(master, testInfo, EVIDENCE_SLUG, "perfil-antes");
+    await captureEvidence(
+      master,
+      testInfo,
+      EVIDENCE_SLUG,
+      "perfil-antes",
+      WIDE,
+    );
   });
 
   test("CA01 — o técnico do CREAS registra o acolhimento de Joana (38 anos) e vê a linha Em curso assinada", async ({
@@ -167,7 +176,13 @@ test.describe("US-ACOLH2-02 — acolhimento de qualquer integrante (client)", ()
     expect(after.stale, "aviso de acolhimentos longos do CREAS").toBe(
       before.stale,
     );
-    await captureEvidence(master, testInfo, EVIDENCE_SLUG, "perfil-depois");
+    await captureEvidence(
+      master,
+      testInfo,
+      EVIDENCE_SLUG,
+      "perfil-depois",
+      WIDE,
+    );
   });
 
   test("RN04 — o Master lê o acolhimento de Joana", async ({}, testInfo) => {
