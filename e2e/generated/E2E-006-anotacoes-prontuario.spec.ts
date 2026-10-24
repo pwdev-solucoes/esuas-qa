@@ -89,8 +89,8 @@ test.describe('E2E-006 Anotações do prontuário: registro assinado, avisos de 
     // #11227 D10: com o bloco restrito o aviso geral some
     await expect(page.getByTestId('family-note-readers-notice')).toBeHidden();
     await expect(page.getByTestId('family-note-block-notice')).toBeVisible();
-    // texto do aviso restrito
-    await expect(page.getByTestId('family-note-block-notice')).toContainText('lido apenas pela unidade pela qual você está registrando');
+    // texto técnico do aviso restrito (HU #11289, D14)
+    await expect(page.getByTestId('family-note-block-notice')).toContainText('equipe técnica');
   });
 
   test('validation_error — Salvar sem referência e sem texto mostra o erro nos campos (validação)', {

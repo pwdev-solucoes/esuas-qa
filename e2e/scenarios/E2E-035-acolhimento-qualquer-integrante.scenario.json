@@ -1,0 +1,444 @@
+{
+  "schema_version": 1,
+  "id": "E2E-035",
+  "title": "Acolhimento de qualquer integrante: o técnico do CREAS registra o acolhimento de um adulto, exige o motivo, e o não técnico não vê a aba",
+  "description": "HU #11297 (US-ACOLH2-02), plano 01: na aba Acolhimento, o técnico do CREAS abre 'Registrar acolhimento' e escolhe a integrante adulta (38 anos) da família dedicada; o acolhimento aparece na lista com autor e data, sem restrição a criança ou adolescente. Sem motivo, o formulário recusa com 'Informe o motivo do acolhimento.'. O não técnico do CREAS não vê a aba. Massa fictícia; nenhum dado pessoal.",
+  "feature_slug": "11297-acolhimento-adulto-01-api-client",
+  "ac_refs": [
+    "AC-001",
+    "AC-009",
+    "AC-013"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "prontuario",
+    "acolhimento",
+    "lgpd"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/auth/login",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "users": [
+      {
+        "role": "operador_creas",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_CREAS_OPERADOR_CPF",
+          "password": "E2E_CLIENT_CREAS_OPERADOR_PASSWORD"
+        }
+      },
+      {
+        "role": "nao_tecnico_creas",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_CREAS_ADMIN_STAFF_CPF",
+          "password": "E2E_CLIENT_CREAS_ADMIN_STAFF_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Massa do plano 02 (E2EAdultShelteringSeeder): família …11297001 referenciada no CREAS, com a integrante ativa E2E Joana (38 anos) e sem acolhimento registrado",
+      "Técnico do CREAS (add-on LGPD, lotado no CREAS) e assistente administrativo do CREAS (não técnico, HU #11289)",
+      "Um login do técnico por variante e um do não técnico (throttle 6,1); a variante forbidden troca de usuário e roda por último",
+      "O seeder não apaga o acolhimento criado; o cenário lê a linha mais recente (nth=0)",
+      "API e client com o plano 01 da HU #11297"
+    ]
+  },
+  "data": {
+    "family_uuid": "00000000-0000-4000-8000-000011297001"
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "O técnico do CREAS registra o acolhimento da integrante adulta e a vê na lista (CA01)",
+      "as_user": "operador_creas",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=acolhimento"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-block"
+          },
+          "timeout_ms": 15000,
+          "note": "aba Acolhimento carregada"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-register-action"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-form-sheet"
+          },
+          "timeout_ms": 10000
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-form-member"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "E2E Joana"
+          },
+          "note": "a adulta é oferecida: qualquer integrante ativo"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-form-started"
+          },
+          "value": "2026-07-10"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-form-modality-institutional"
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-form-reason"
+          },
+          "value": "Situação de risco avaliada pela equipe técnica (massa fictícia)."
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-form-submit"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"sheltering-row-\"]:has-text(\"E2E Joana\") >> nth=0"
+          },
+          "timeout_ms": 10000,
+          "note": "o acolhimento reaparece na lista"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"sheltering-row-\"]:has-text(\"E2E Joana\") >> nth=0"
+          },
+          "value": "E2E Joana"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"sheltering-row-\"]:has-text(\"E2E Joana\") >> nth=0"
+          },
+          "value": "Em curso"
+        }
+      ]
+    },
+    {
+      "name": "validation_error",
+      "title": "Sem motivo o acolhimento não é salvo e o formulário diz 'Informe o motivo do acolhimento.' (CA04 herdado)",
+      "as_user": "operador_creas",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=acolhimento"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-block"
+          },
+          "timeout_ms": 15000,
+          "note": "aba Acolhimento carregada"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-register-action"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-form-sheet"
+          },
+          "timeout_ms": 10000
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-form-member"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "E2E Joana"
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-form-started"
+          },
+          "value": "2026-07-10"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-form-modality-institutional"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-form-submit"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-form-reason-error"
+          },
+          "timeout_ms": 5000
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-form-reason-error"
+          },
+          "value": "Informe o motivo do acolhimento."
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-form-sheet"
+          },
+          "note": "o Sheet segue aberto: nada foi salvo"
+        }
+      ]
+    },
+    {
+      "name": "forbidden",
+      "title": "O assistente administrativo (não técnico) do CREAS não vê a aba Acolhimento (RN04)",
+      "as_user": "nao_tecnico_creas",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_ADMIN_STAFF_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_ADMIN_STAFF_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=acolhimento"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "family-tab-resumo"
+          },
+          "timeout_ms": 15000,
+          "note": "prontuário carregado"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "count",
+          "target": {
+            "by": "testid",
+            "value": "family-tab-acolhimento"
+          },
+          "value": 0,
+          "note": "a evidência é a ausência da aba"
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-block"
+          },
+          "value": 0
+        }
+      ]
+    }
+  ],
+  "not_applicable": {
+    "empty_state": "A lista vazia ('Nenhum acolhimento registrado', sem contador) já é coberta pelo AcolhimentoTab.test.ts e pela spec manual da HU #10897; esta HU não muda o estado vazio, e a família dedicada parte sem acolhimento só até o primeiro registro."
+  }
+}

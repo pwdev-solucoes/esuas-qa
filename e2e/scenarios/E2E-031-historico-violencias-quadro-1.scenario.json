@@ -1,0 +1,464 @@
+{
+  "schema_version": 1,
+  "id": "E2E-031",
+  "title": "Histórico de violências vividas (Quadro 1): o técnico registra, a validação de Outra bloqueia e o não técnico não vê a seção",
+  "description": "HU #11291 (US-VIOL-02), plano 02: na aba Violência, o técnico do CRAS Centro registra a situação Violência psicológica como persistente no mês corrente e a linha passa a Vivida — persiste, com a assinatura; registrar Outra sem descrição é barrado e a linha segue Sem registro; o assistente administrativo (não técnico) não vê a seção nem a ação de registrar e recebe o aviso de sigilo, sem nenhum indício de registro oculto. O 403 block_restricted do POST é provado no Pest e na spec manual do plano 03. Massa fictícia, sem anotação na família; nenhum dado pessoal.",
+  "feature_slug": "11291-quadro1-02-client",
+  "ac_refs": [
+    "AC-001",
+    "AC-003",
+    "AC-004"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "prontuario",
+    "violencia",
+    "historico",
+    "visibilidade",
+    "lgpd"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/login",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "users": [
+      {
+        "role": "operador",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_OPERADOR_CPF",
+          "password": "E2E_CLIENT_OPERADOR_PASSWORD"
+        }
+      },
+      {
+        "role": "nao_tecnico",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_ADMIN_STAFF_CPF",
+          "password": "E2E_CLIENT_ADMIN_STAFF_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Massa do plano 03: família …11291002 referenciada no CRAS Centro, sem anotação do Quadro 1",
+      "Operador do CRAS Centro como técnico (assistente social); assistente administrativo do CRAS Centro como não técnico (S10)",
+      "happy_path roda antes de validation_error na mesma massa; as anotações extras são removidas a cada rodada do seeder",
+      "API e client com os planos 01 e 02 da HU #11291; o mês anotado é o corrente (padrão do formulário)"
+    ]
+  },
+  "data": {
+    "family_uuid": "00000000-0000-4000-8000-000011291002"
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "O técnico registra Violência psicológica como persistente e a linha passa a Vivida — persiste, com mês e assinatura (CA01)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=violencia"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "violence-history-section"
+          },
+          "timeout_ms": 15000,
+          "note": "Quadro 1 carregado"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "violence-history-register"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "violence-history-form"
+          },
+          "timeout_ms": 10000
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "violence-history-notice"
+          },
+          "timeout_ms": 10000,
+          "note": "aviso de quem vai ler (texto do servidor)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "violence-history-situation-select"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Violência psicológica",
+            "exact": true
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "violence-history-persists-yes"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "violence-history-submit"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"violence-history-row-\"]:has-text(\"Violência psicológica\"):has-text(\"Vivida — persiste\")"
+          },
+          "timeout_ms": 10000,
+          "note": "a linha da situação reaparece com o estado vigente"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"violence-history-row-\"]:has-text(\"Violência psicológica\") >> nth=0"
+          },
+          "value": "Vivida — persiste"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"violence-history-row-\"]:has-text(\"Violência psicológica\") [data-testid^=\"violence-history-month-\"] >> nth=0"
+          },
+          "value": "Mês anotado"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"violence-history-row-\"]:has-text(\"Violência psicológica\") [data-testid=\"violence-history-signature\"] >> nth=0"
+          },
+          "value": "CRAS Centro",
+          "note": "unidade gravada na assinatura"
+        }
+      ]
+    },
+    {
+      "name": "validation_error",
+      "title": "Outra sem descrição é barrado: o formulário continua aberto e a linha segue Sem registro (CA05)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=violencia"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "violence-history-section"
+          },
+          "timeout_ms": 15000,
+          "note": "Quadro 1 carregado"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "violence-history-register"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "violence-history-form"
+          },
+          "timeout_ms": 10000
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "violence-history-notice"
+          },
+          "timeout_ms": 10000,
+          "note": "aviso de quem vai ler (texto do servidor)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "violence-history-situation-select"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Outra",
+            "exact": true
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "violence-history-persists-yes"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "violence-history-description"
+          },
+          "timeout_ms": 10000,
+          "note": "a descrição aparece só para Outra"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "violence-history-submit"
+          }
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "violence-history-form"
+          },
+          "note": "o formulário continua aberto"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "violence-history-form"
+          },
+          "value": "Descreva a situação."
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"violence-history-row-\"]:has-text(\"Outra\") >> nth=0"
+          },
+          "value": "Sem registro",
+          "note": "nada foi gravado"
+        }
+      ]
+    },
+    {
+      "name": "forbidden",
+      "title": "O não técnico não vê o Quadro 1 nem a ação de registrar e recebe o aviso de sigilo (CA04)",
+      "as_user": "nao_tecnico",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_ADMIN_STAFF_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_ADMIN_STAFF_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=violencia"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "family-confidentiality-notice"
+          },
+          "timeout_ms": 15000,
+          "note": "o prontuário abriu e mostra o aviso de sigilo"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "family-confidentiality-notice"
+          }
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "testid",
+            "value": "violence-history-section"
+          },
+          "value": 0,
+          "note": "a evidência é a ausência: a seção não existe"
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "testid",
+            "value": "violence-history-register"
+          },
+          "value": 0,
+          "note": "ausência: sem a ação de registrar"
+        }
+      ]
+    }
+  ]
+}

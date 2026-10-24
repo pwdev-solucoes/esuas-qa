@@ -1,0 +1,675 @@
+{
+  "schema_version": 1,
+  "id": "E2E-036",
+  "title": "Quadro 2 — períodos de acompanhamento pelo CREAS: derivado sem ação, registro manual, validação, CREAS sem a seção e em curso",
+  "description": "HU #11293 (US-VIOL-04), plano 02: na aba Violência, o operador do CRAS Centro vê o período derivado do acompanhamento PAEFI (03/2026 a 07/2026) sem nenhuma ação e registra um período anterior ao sistema em outro município (selo \"Registro manual\" e \"Corrigir\" só nele); fim antes do início é barrado no campo; o operador do CREAS não vê o Quadro 2; família com o acompanhamento em curso mostra \"Em curso\" e nenhum manual. Massa fictícia (seeder do plano 03); nenhum dado pessoal real.",
+  "feature_slug": "11293-quadro2-02-client",
+  "ac_refs": [
+    "AC-001",
+    "AC-002",
+    "AC-003",
+    "AC-005",
+    "AC-006",
+    "AC-007"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "prontuario",
+    "violencia",
+    "creas",
+    "quadro-2",
+    "cras"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/login",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "users": [
+      {
+        "role": "operador_cras",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_OPERADOR_CPF",
+          "password": "E2E_CLIENT_OPERADOR_PASSWORD"
+        }
+      },
+      {
+        "role": "operador_creas",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_CREAS_OPERADOR_CPF",
+          "password": "E2E_CLIENT_CREAS_OPERADOR_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Massa do seeder do plano 03: família …11293001 com acompanhamento PAEFI no CREAS de 03/2026 a 07/2026 (derivado) e sem período manual; família …11293002 com acompanhamento PAEFI em curso e sem período manual",
+      "Operador do CRAS Centro como técnico, com uma única unidade de registro; operador do CREAS lotado no CREAS",
+      "Os períodos manuais extras são removidos a cada rodada do seeder; happy_path roda antes das demais variantes na mesma massa",
+      "A família é identificada pelo uuid fixo do seeder (padrão …000011293001), como nas demais HUs da sprint"
+    ]
+  },
+  "data": {
+    "family_uuid": "00000000-0000-4000-8000-000011293001",
+    "empty_family_uuid": "00000000-0000-4000-8000-000011293002"
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "O CRAS vê o derivado sem ação e registra um período de outro município: selo \"Registro manual\" e Corrigir só nele (CA01, CA03, CA04)",
+      "as_user": "operador_cras",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=violencia"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "creas-periods-section"
+          },
+          "timeout_ms": 15000,
+          "note": "seção carregada"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"creas-period-row-\"]:has-text(\"Do acompanhamento PAEFI\") >> nth=0"
+          },
+          "timeout_ms": 10000,
+          "note": "o período derivado do acompanhamento PAEFI aparece"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "creas-periods-register"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "creas-period-form"
+          },
+          "timeout_ms": 10000
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "creas-period-started-month"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Janeiro",
+            "exact": true
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "creas-period-started-year"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "2024",
+            "exact": true
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "creas-period-ended-month"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Junho",
+            "exact": true
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "creas-period-ended-year"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "2024",
+            "exact": true
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "creas-period-form-creas-external"
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "creas-period-external-name"
+          },
+          "value": "CREAS E2E de Outro Município"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "creas-period-form-submit"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"creas-period-row-\"]:has-text(\"CREAS E2E de Outro Município\") >> nth=0"
+          },
+          "timeout_ms": 10000,
+          "note": "o período manual reaparece na lista"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"creas-period-row-\"]:has-text(\"Do acompanhamento PAEFI\") >> nth=0"
+          },
+          "value": "03/2026"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"creas-period-row-\"]:has-text(\"Do acompanhamento PAEFI\") >> nth=0"
+          },
+          "value": "07/2026"
+        },
+        {
+          "expect": "hidden",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"creas-period-row-\"]:has-text(\"Do acompanhamento PAEFI\") button >> nth=0"
+          },
+          "note": "a linha derivada não tem nenhuma ação (CA04)"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"creas-period-row-\"]:has-text(\"CREAS E2E de Outro Município\") >> nth=0"
+          },
+          "value": "Registro manual"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"creas-period-row-\"]:has-text(\"CREAS E2E de Outro Município\") >> nth=0"
+          },
+          "value": "01/2024"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"creas-period-row-\"]:has-text(\"CREAS E2E de Outro Município\") [data-testid^=\"creas-period-correct-\"] >> nth=0"
+          },
+          "note": "Corrigir só na linha manual"
+        }
+      ]
+    },
+    {
+      "name": "validation_error",
+      "title": "Fim antes do início não é enviado: a tela avisa no campo (BR-006)",
+      "as_user": "operador_cras",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=violencia"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "creas-periods-section"
+          },
+          "timeout_ms": 15000,
+          "note": "seção carregada"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "creas-periods-register"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "creas-period-form"
+          },
+          "timeout_ms": 10000
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "creas-period-started-month"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Junho",
+            "exact": true
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "creas-period-started-year"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "2024",
+            "exact": true
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "creas-period-ended-month"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Janeiro",
+            "exact": true
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "creas-period-ended-year"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "2024",
+            "exact": true
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "creas-period-form-creas-external"
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "creas-period-external-name"
+          },
+          "value": "CREAS E2E de Outro Município"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "creas-period-form-submit"
+          }
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "creas-period-form"
+          },
+          "note": "o formulário continua aberto"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "creas-period-form"
+          },
+          "value": "O fim não pode ser anterior ao início."
+        }
+      ]
+    },
+    {
+      "name": "forbidden",
+      "title": "O operador do CREAS não vê o Quadro 2 e não há texto de oculto (CT-RN05b)",
+      "as_user": "operador_creas",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=violencia"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "violence-records-section"
+          },
+          "timeout_ms": 15000,
+          "note": "seção carregada"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "violence-records-section"
+          },
+          "note": "o Quadro 3 segue legível ao CREAS"
+        },
+        {
+          "expect": "hidden",
+          "target": {
+            "by": "testid",
+            "value": "creas-periods-section"
+          },
+          "note": "o Quadro 2 não aparece para o CREAS, sem texto de oculto (CT-RN05b)"
+        },
+        {
+          "expect": "hidden",
+          "target": {
+            "by": "testid",
+            "value": "creas-periods-register"
+          }
+        }
+      ]
+    },
+    {
+      "name": "empty_state",
+      "title": "Família sem período manual mostra só o derivado em curso (CA02)",
+      "as_user": "operador_cras",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.empty_family_uuid}?tab=violencia"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "creas-periods-section"
+          },
+          "timeout_ms": 15000,
+          "note": "seção carregada"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"creas-period-in-progress-\"] >> nth=0"
+          },
+          "timeout_ms": 10000,
+          "note": "o derivado em curso aparece"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"creas-period-row-\"] >> nth=0"
+          },
+          "value": "Em curso"
+        },
+        {
+          "expect": "hidden",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"creas-period-origin-\"]:has-text(\"Registro manual\") >> nth=0"
+          },
+          "note": "nenhum período manual"
+        },
+        {
+          "expect": "hidden",
+          "target": {
+            "by": "testid",
+            "value": "creas-periods-empty"
+          }
+        }
+      ]
+    }
+  ]
+}

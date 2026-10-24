@@ -1,0 +1,624 @@
+{
+  "schema_version": 1,
+  "id": "E2E-034",
+  "title": "Bloco de acolhimento completo: o técnico registra grupo familiar, guarda por terceiros e prisão, vê a internação derivada, e o não técnico não vê a aba",
+  "description": "HU #11296 (US-ACOLH2-01), plano 02: na aba Acolhimento, o técnico do CRAS Centro (sessão herdada do chromium-tenant) registra o acolhimento do grupo familiar, a guarda de uma criança por terceiros e marca a prisão de integrante adulto; o indicador 'Adolescente cumprindo internação' aparece só leitura quando há internação sem fim no bloco de medidas e não existe sem ela; o não técnico não vê a aba. Master e correção ficam na spec manual do plano 03. Massa fictícia do plano 03; nenhum dado pessoal.",
+  "feature_slug": "11296-acolhimento-02-client",
+  "ac_refs": [
+    "AC-001",
+    "AC-002",
+    "AC-004",
+    "AC-006"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "prontuario",
+    "acolhimento",
+    "lgpd"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/app",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "users": [
+      {
+        "role": "operador",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_OPERADOR_CPF",
+          "password": "E2E_CLIENT_OPERADOR_PASSWORD"
+        }
+      },
+      {
+        "role": "nao_tecnico",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_ADMIN_STAFF_CPF",
+          "password": "E2E_CLIENT_ADMIN_STAFF_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Sessão herdada do project chromium-tenant (técnico do CRAS Centro com uma só unidade): nenhum login nas variantes do operador",
+      "Massa do plano 03: família …11296001 referenciada no CRAS Centro, com o integrante E2E Lucas Guarda (menor de 18 anos em 03/2026), o integrante E2E Adulto Guarda e uma internação sem fim no bloco de medidas; sem registro das três situações novas",
+      "Massa do plano 03: família …11296002 referenciada no CRAS Centro, sem internação sem fim e sem registro das três situações novas",
+      "Assistente administrativo do CRAS Centro (não técnico, HU #11289); a variante forbidden troca de usuário e por isso roda por último (sessão única)",
+      "Os registros criados pelo cenário são removidos a cada rodada do seeder do plano 03",
+      "API e client com os planos 01 e 02 da HU #11296"
+    ]
+  },
+  "data": {
+    "family_uuid": "00000000-0000-4000-8000-000011296001",
+    "family_uuid_empty": "00000000-0000-4000-8000-000011296002"
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "O técnico registra o grupo familiar, a guarda de uma criança e a prisão (Sim com data), e vê o indicador de internação derivado sem campo (CA01/CA02/CA03/CA04)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=acolhimento"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-block"
+          },
+          "timeout_ms": 15000,
+          "note": "aba Acolhimento carregada"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-situations"
+          },
+          "timeout_ms": 15000,
+          "note": "seções do bloco 22 carregadas"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-group-register-action"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-group-form-sheet"
+          },
+          "timeout_ms": 10000
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-group-form-notice"
+          },
+          "timeout_ms": 10000,
+          "note": "aviso de sigilo do servidor (S4)"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-group-form-started"
+          },
+          "value": "2026-03"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-group-form-ended"
+          },
+          "value": "2026-06"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-group-form-reason"
+          },
+          "value": "Acolhimento institucional do grupo familiar (massa fictícia)."
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-group-form-submit"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"sheltering-group-row-\"]:has-text(\"03/2026 a 06/2026\")"
+          },
+          "timeout_ms": 10000,
+          "note": "o acolhimento do grupo reaparece na lista"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-custody-register-action"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-custody-form-sheet"
+          },
+          "timeout_ms": 10000
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-custody-form-started"
+          },
+          "value": "2026-03"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-custody-form-member"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "E2E Lucas Guarda",
+            "exact": true
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-custody-form-guardian"
+          },
+          "value": "Avó materna"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-custody-form-reason"
+          },
+          "value": "Guarda por terceiros (massa fictícia)."
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-custody-form-submit"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"sheltering-custody-row-\"]:has-text(\"E2E Lucas Guarda\"):has-text(\"Avó materna\")"
+          },
+          "timeout_ms": 10000,
+          "note": "a guarda reaparece na lista"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-incarceration-option-yes"
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-incarceration-date"
+          },
+          "value": "2026-09-01"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-incarceration-save"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"sheltering-incarceration-state\"][data-state=\"yes\"]"
+          },
+          "timeout_ms": 10000,
+          "note": "a marcação volta do servidor como Sim"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"sheltering-group-row-\"]:has-text(\"03/2026 a 06/2026\") [data-testid^=\"sheltering-group-signature-\"] >> nth=0"
+          },
+          "value": "Registrado por"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-incarceration-state"
+          },
+          "value": "Sim"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-derived-internment"
+          },
+          "note": "derivado do bloco de medidas (CA04): a família da massa tem internação sem fim"
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"sheltering-derived-internment\"] input, [data-testid=\"sheltering-derived-internment\"] button"
+          },
+          "value": 0,
+          "note": "sem campo nem ação (RN04)"
+        }
+      ]
+    },
+    {
+      "name": "validation_error",
+      "title": "Fim antes do início não salva no grupo familiar, e o integrante adulto não é oferecido na guarda (CA02)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=acolhimento"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-block"
+          },
+          "timeout_ms": 15000,
+          "note": "aba Acolhimento carregada"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-situations"
+          },
+          "timeout_ms": 15000,
+          "note": "seções do bloco 22 carregadas"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-group-register-action"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-group-form-sheet"
+          },
+          "timeout_ms": 10000
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-group-form-started"
+          },
+          "value": "2026-06"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-group-form-ended"
+          },
+          "value": "2026-03"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-group-form-reason"
+          },
+          "value": "Motivo de teste (massa fictícia)."
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-group-form-submit"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"sheltering-group-form-sheet\"] [role=\"alert\"]:has-text(\"O fim não pode ser anterior ao início\")"
+          },
+          "timeout_ms": 5000
+        },
+        {
+          "action": "press",
+          "key": "Escape"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-custody-register-action"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-custody-form-sheet"
+          },
+          "timeout_ms": 10000
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-custody-form-started"
+          },
+          "value": "2026-03"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-custody-form-member"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "E2E Lucas Guarda",
+            "exact": true
+          },
+          "timeout_ms": 5000,
+          "note": "a criança é oferecida"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-custody-form-sheet"
+          },
+          "note": "o Sheet da guarda segue aberto: nada foi salvo (o do grupo foi fechado pelo Escape)"
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "E2E Adulto Guarda",
+            "exact": true
+          },
+          "value": 0,
+          "note": "integrante adulto não é oferecido na guarda (CA02)"
+        }
+      ]
+    },
+    {
+      "name": "empty_state",
+      "title": "Família sem internação e sem registros: 'Nenhum registro' sem contador, prisão 'Não informado' e nenhum indicador de internação (CA05)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid_empty}?tab=acolhimento"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-block"
+          },
+          "timeout_ms": 15000,
+          "note": "aba Acolhimento carregada"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-situations"
+          },
+          "timeout_ms": 15000,
+          "note": "seções do bloco 22 carregadas"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "count",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-derived-internment"
+          },
+          "value": 0,
+          "note": "sem internação sem fim: o elemento não existe (CA05)"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-group-empty"
+          },
+          "value": "Nenhum registro"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-custody-empty"
+          },
+          "value": "Nenhum registro"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-incarceration-state"
+          },
+          "value": "Não informado"
+        }
+      ]
+    },
+    {
+      "name": "forbidden",
+      "title": "O assistente administrativo (não técnico) não vê a aba Acolhimento (CA06)",
+      "as_user": "nao_tecnico",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_ADMIN_STAFF_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_ADMIN_STAFF_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=acolhimento"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "family-tab-resumo"
+          },
+          "timeout_ms": 15000,
+          "note": "prontuário carregado"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "count",
+          "target": {
+            "by": "testid",
+            "value": "family-tab-acolhimento"
+          },
+          "value": 0,
+          "note": "a evidência é a ausência da aba (CA06)"
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-block"
+          },
+          "value": 0
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "testid",
+            "value": "sheltering-situations"
+          },
+          "value": 0
+        }
+      ]
+    }
+  ]
+}

@@ -14,7 +14,8 @@ import { captureEvidence, captureFinalEvidence } from '../../helpers/evidence';
  *
  *  1. CRAS Centro (referência da família): CA01, CA07, CA08;
  *  2. CREAS (PAEFI vigente): CA02;
- *  3. CRAS Rural (só encaminhamento recebido): CA03, CA04, CA05 — a evidência
+ *  3. Assistente administrativo do CRAS Centro (não técnico, HU #11289; variável
+ *     `rural` é mantida só como nome interno): CA03, CA04, CA05 — a evidência
  *     de CA03 e CA04 é a AUSÊNCIA da aba Saúde e da seção de saúde.
  *
  * ## Massa (E2EHealthVisibilitySeeder, api)
@@ -35,6 +36,8 @@ const FAMILY =
 const UNIT_NAME = process.env.E2E_CLIENT_UNIT_NAME ?? 'E2E CRAS Centro';
 const EVIDENCE_SLUG = '11234-condicoes-de-saude-completas';
 
+// Pendência HU #11289: o aviso de saúde do client (locales families.json) ainda
+// traz o texto antigo; o texto técnico vale para o aviso das anotações (D14).
 const NOTICE =
   'Este registro será lido apenas pela unidade de referência da família, pelas unidades que a acompanham e pelo gestor Master.';
 
@@ -44,7 +47,12 @@ const CREDENTIALS = {
     process.env.E2E_CLIENT_CREAS_OPERADOR_CPF,
     process.env.E2E_CLIENT_CREAS_OPERADOR_PASSWORD,
   ],
-  rural: [process.env.E2E_CLIENT_RURAL_CPF, process.env.E2E_CLIENT_RURAL_PASSWORD],
+  // HU #11289: quem não vê a saúde é o assistente administrativo do CRAS Centro
+  // (não técnico); o Rural, técnico, passou a ser coberto pelos cenários da #11289.
+  rural: [
+    process.env.E2E_CLIENT_ADMIN_STAFF_CPF ?? '99000150108',
+    process.env.E2E_CLIENT_ADMIN_STAFF_PASSWORD ?? 'senha123',
+  ],
 } as const;
 
 const configured =
@@ -176,7 +184,7 @@ test.describe('US-DIAG2-05 — condições de saúde completas (client)', () => 
     await captureEvidence(creas, testInfo, EVIDENCE_SLUG, 'creas-le');
   });
 
-  test('CA03 — o Rural abre o prontuário e a evidência é a AUSÊNCIA da aba Saúde', async ({}, testInfo) => {
+  test('CA03 — o não técnico (assistente administrativo do Centro) abre o prontuário e a evidência é a AUSÊNCIA da aba Saúde', async ({}, testInfo) => {
     active = rural;
     await open(rural, 'saude');
 
