@@ -112,7 +112,7 @@
           "action": "click",
           "target": {
             "by": "css",
-            "value": "[data-testid=\"snapshot-register\"]"
+            "value": "[data-testid=\"housing-condition-block\"] [data-testid=\"snapshot-register\"]"
           },
           "note": "série vazia: registrar o primeiro retrato"
         },
@@ -275,7 +275,7 @@
           "action": "click",
           "target": {
             "by": "css",
-            "value": "[data-testid=\"snapshot-register\"]"
+            "value": "[data-testid=\"housing-condition-block\"] [data-testid=\"snapshot-register\"]"
           },
           "note": "série vazia: registrar o primeiro retrato"
         },
@@ -453,7 +453,7 @@
           "action": "click",
           "target": {
             "by": "css",
-            "value": "[data-testid=\"snapshot-register\"]"
+            "value": "[data-testid=\"housing-condition-block\"] [data-testid=\"snapshot-register\"]"
           },
           "note": "série vazia: registrar o primeiro retrato"
         },
