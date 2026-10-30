@@ -297,8 +297,8 @@ test.describe('US-ANOT-01 — anotações qualitativas do prontuário (client)',
       await expect(item).toBeVisible();
       await expect(item.getByTestId('family-note-block-badge')).toHaveText(blockLabel);
       await expect(item.getByTestId('family-note-signature')).toContainText(OPERATOR_UNIT_NAME);
-      // Imutável: o card não tem nenhuma ação.
-      await expect(item.locator('button')).toHaveCount(0);
+      // Sem exclusão: a correção pelo autor existe desde a #11400.
+      await expect(item.getByTestId('family-note-delete')).toHaveCount(0);
     }
   });
 
