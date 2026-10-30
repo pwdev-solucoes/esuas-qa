@@ -142,7 +142,7 @@ test.describe("US-VISIB-02 — sigilo técnico no prontuário (client)", () => {
       await captureFinalEvidence(user, testInfo, EVIDENCE_SLUG);
     });
 
-    test("CA02 — o assistente administrativo vê Composição, Atendimentos e Encaminhamentos; sem Saúde, Acolhimento nem avaliações (a evidência é a ausência)", async ({}, testInfo) => {
+    test("CA02 — o assistente administrativo vê Composição, Atendimentos e Encaminhamentos; Saúde com aviso restrito (US-AJ-11 RN03); sem Acolhimento nem avaliações (a evidência é a ausência)", async ({}, testInfo) => {
       await open(user, FAMILY_SILVA);
 
       for (const name of [
@@ -154,9 +154,13 @@ test.describe("US-VISIB-02 — sigilo técnico no prontuário (client)", () => {
           user.getByRole("tab", { name, exact: true }),
         ).toBeVisible();
       }
+      // US-AJ-11 RN03 (#11408): a aba Saúde é visível com o aviso restrito.
       await expect(
         user.getByRole("tab", { name: "Saúde", exact: true }),
-      ).toHaveCount(0);
+      ).toBeVisible();
+      await user.getByRole("tab", { name: "Saúde", exact: true }).click();
+      await expect(user.getByTestId("health-restricted")).toBeVisible();
+      await expect(user.getByTestId("health-block")).toHaveCount(0);
       await expect(
         user.getByRole("tab", { name: "Acolhimento", exact: true }),
       ).toHaveCount(0);
@@ -313,12 +317,14 @@ test.describe("US-VISIB-02 — sigilo técnico no prontuário (client)", () => {
       await captureFinalEvidence(user, testInfo, EVIDENCE_SLUG);
     });
 
-    test("CA06 — a dupla função (técnico no CREAS, não técnico no Rural) abre a família Rural sem a aba Saúde (a evidência é a ausência)", async ({}, testInfo) => {
+    test("CA06 — a dupla função (técnico no CREAS, não técnico no Rural) abre a família Rural com a aba Saúde restrita (US-AJ-11 RN03; a evidência é a ausência do dado)", async ({}, testInfo) => {
       await open(user, FAMILY_RURAL, "saude");
       await expect(user.getByTestId("family-access-denied")).toHaveCount(0);
+      // US-AJ-11 RN03 (#11408): aba visível com aviso, sem dado de saúde.
       await expect(
         user.getByRole("tab", { name: "Saúde", exact: true }),
-      ).toHaveCount(0);
+      ).toBeVisible();
+      await expect(user.getByTestId("health-restricted")).toBeVisible();
       await expect(user.getByTestId("health-block")).toHaveCount(0);
       await captureEvidence(
         user,
@@ -352,11 +358,13 @@ test.describe("US-VISIB-02 — sigilo técnico no prontuário (client)", () => {
       await captureFinalEvidence(user, testInfo, EVIDENCE_SLUG);
     });
 
-    test("CA07 — o usuário sem função não vê a aba Saúde da Silva e vê o aviso (a evidência é a ausência)", async ({}, testInfo) => {
+    test("CA07 — o usuário sem função vê a aba Saúde da Silva só com o aviso restrito (US-AJ-11 RN03; a evidência é a ausência do dado)", async ({}, testInfo) => {
       await open(user, FAMILY_SILVA, "saude");
+      // US-AJ-11 RN03 (#11408): aba visível com aviso, sem dado de saúde.
       await expect(
         user.getByRole("tab", { name: "Saúde", exact: true }),
-      ).toHaveCount(0);
+      ).toBeVisible();
+      await expect(user.getByTestId("health-restricted")).toBeVisible();
       await expect(user.getByTestId("health-block")).toHaveCount(0);
       await expect(
         user.getByTestId("family-confidentiality-notice"),

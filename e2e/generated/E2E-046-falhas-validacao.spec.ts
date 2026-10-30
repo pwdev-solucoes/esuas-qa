@@ -37,9 +37,12 @@ test.describe('E2E-046 A Convivência salva dados e observação sem perder a te
     await page.waitForTimeout(2500);
     // fecha o modal de novidades da plataforma, se estiver aberto
     await page.keyboard.press('Escape');
-    await page.goto('/app/cadastros/familias');
-    // entra pela lista de famílias, não por ?tab=
-    await page.getByRole('link', { name: 'E2E Validação Convivência' }).click();
+    // lista de famílias (busca), não ?tab=
+    await page.goto('/app/cadastros/pesquisa-pessoas');
+    await page.locator('input#person-search-family-code').fill('E2EVALID11408');
+    await page.locator('main form button[type="submit"]').click();
+    // abre pela linha do responsável familiar
+    await page.locator('tr:has([data-testid="rf-badge"]) button[aria-label="Visualizar Família"]').click();
     // o prontuário abriu
     await expect(page.getByRole('tab', { name: 'Convivência', exact: true })).toBeVisible({ timeout: 15000 });
     await page.getByRole('tab', { name: 'Convivência', exact: true }).click();
@@ -76,8 +79,12 @@ test.describe('E2E-046 A Convivência salva dados e observação sem perder a te
     await page.waitForTimeout(2500);
     // fecha o modal de novidades da plataforma, se estiver aberto
     await page.keyboard.press('Escape');
-    await page.goto('/app/cadastros/familias');
-    await page.getByRole('link', { name: 'E2E Silva Saúde' }).click();
+    // lista de famílias (busca), não ?tab=
+    await page.goto('/app/cadastros/pesquisa-pessoas');
+    await page.locator('input#person-search-family-code').fill('E2E11234');
+    await page.locator('main form button[type="submit"]').click();
+    // abre pela linha do responsável familiar
+    await page.locator('tr:has([data-testid="rf-badge"]) button[aria-label="Visualizar Família"]').click();
     // o prontuário abriu
     await expect(page.getByRole('tab', { name: 'Composição Familiar', exact: true })).toBeVisible({ timeout: 15000 });
     await page.getByRole('tab', { name: 'Saúde', exact: true }).click();

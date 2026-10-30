@@ -93,17 +93,31 @@
         },
         {
           "action": "goto",
-          "value": "/app/cadastros/familias"
+          "value": "/app/cadastros/pesquisa-pessoas",
+          "note": "lista de famílias (busca), não ?tab="
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#person-search-family-code"
+          },
+          "value": "E2EVALID11408"
         },
         {
           "action": "click",
           "target": {
-            "by": "role",
-            "value": "link",
-            "name": "E2E Validação Convivência",
-            "exact": false
+            "by": "css",
+            "value": "main form button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "tr:has([data-testid=\"rf-badge\"]) button[aria-label=\"Visualizar Família\"]"
           },
-          "note": "entra pela lista de famílias, não por ?tab="
+          "note": "abre pela linha do responsável familiar"
         },
         {
           "action": "wait",
@@ -254,16 +268,31 @@
         },
         {
           "action": "goto",
-          "value": "/app/cadastros/familias"
+          "value": "/app/cadastros/pesquisa-pessoas",
+          "note": "lista de famílias (busca), não ?tab="
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#person-search-family-code"
+          },
+          "value": "E2E11234"
         },
         {
           "action": "click",
           "target": {
-            "by": "role",
-            "value": "link",
-            "name": "E2E Silva Saúde",
-            "exact": false
+            "by": "css",
+            "value": "main form button[type=\"submit\"]"
           }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "tr:has([data-testid=\"rf-badge\"]) button[aria-label=\"Visualizar Família\"]"
+          },
+          "note": "abre pela linha do responsável familiar"
         },
         {
           "action": "wait",

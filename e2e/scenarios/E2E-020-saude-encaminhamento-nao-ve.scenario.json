@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "id": "E2E-020",
-  "title": "Saúde completa: o assistente administrativo (não técnico) do CRAS Centro abre o prontuário sem a aba Saúde, sem a seção de saúde e sem gestações",
-  "description": "HU #11234 (US-DIAG2-05), plano 03. O assistente administrativo do CRAS Centro (lotação sem função técnica, HU #11289; a unidade é a de referência da família) abre o prontuário da 'E2E Silva Saúde': não existe a aba 'Saúde' (CA03) e as telas de Pedro e de Ana não têm a seção de saúde nem as gestações (CA04). A EVIDÊNCIA É A AUSÊNCIA. A marcação de deficiência sem o tipo (CA05) é conferida no payload na spec manual. Massa fictícia; nenhum dado pessoal.",
+  "title": "Saúde completa: o assistente administrativo (não técnico) do CRAS Centro abre o prontuário com a aba Saúde restrita, sem a seção de saúde e sem gestações",
+  "description": "HU #11234 (US-DIAG2-05), plano 03. O assistente administrativo do CRAS Centro (lotação sem função técnica, HU #11289; a unidade é a de referência da família) abre o prontuário da 'E2E Silva Saúde': não existe a aba 'Saúde' (CA03) e as telas de Pedro e de Ana não têm a seção de saúde nem as gestações (CA04). A EVIDÊNCIA É A AUSÊNCIA. A marcação de deficiência sem o tipo (CA05) é conferida no payload na spec manual. Massa fictícia; nenhum dado pessoal. Mudança de regra (US-AJ-11 RN03, #11408): a aba Saúde passa a aparecer, só com o aviso restrito; o conteúdo de saúde continua ausente.",
   "feature_slug": "11234-saude-completa-03-evidencias",
   "ac_refs": [
     "AC-005"
@@ -42,7 +42,7 @@
   "variants": [
     {
       "name": "happy_path",
-      "title": "O prontuário abre para o não técnico e a aba Saúde não existe (CA03)",
+      "title": "O prontuário abre para o não técnico e a aba Saúde aparece com o aviso restrito (CA03)",
       "as_user": "nao_tecnico",
       "steps": [
         {
@@ -119,15 +119,22 @@
           }
         },
         {
-          "expect": "count",
+          "expect": "visible",
           "target": {
             "by": "role",
             "value": "tab",
             "name": "Saúde",
             "exact": true
           },
-          "value": 0,
-          "note": "a evidência é a ausência da aba Saúde"
+          "note": "US-AJ-11 RN03 (#11408): a aba Saúde aparece, com o aviso restrito"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"health-restricted\"]"
+          },
+          "note": "US-AJ-11 RN03 (#11408): aviso fixo no lugar do conteúdo"
         },
         {
           "expect": "count",
