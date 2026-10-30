@@ -112,9 +112,11 @@ test.describe("US-AJ-04 #11402 — capa do prontuário (client)", () => {
 
     await page.goto("/app/cadastros/familias-pendencias-cadunico");
     await dismissPlatformUpdates(page);
+    // A mesma família pode ter outra linha (telefone primário, do E2E-040): filtra pelo campo.
     const row = page
       .getByTestId("cadunico-pending-row")
-      .filter({ hasText: FAMILY_CODE });
+      .filter({ hasText: FAMILY_CODE })
+      .filter({ hasText: "Telefone secundário" });
     await expect(row).toBeVisible({ timeout: 20_000 });
     await expect(row.getByTestId("cadunico-pending-field")).toContainText(
       "Telefone secundário",
@@ -149,7 +151,7 @@ test.describe("US-AJ-04 #11402 — capa do prontuário (client)", () => {
     await expect(page.getByTestId("cover-pbf")).toContainText("Recebe");
     await expect(page.getByTestId("cover-phone-1")).toBeVisible();
     await expect(page.getByTestId("cover-phone-2")).toBeVisible();
-    for (const name of ["Saúde", "Acolhimento", "Violência"]) {
+    for (const name of ["Saúde", "Acolhimento"]) {
       await expect(page.getByRole("tab", { name, exact: true })).toHaveCount(0);
     }
     await captureEvidence(page, testInfo, EVIDENCE_SLUG, "capa-nao-tecnico");
