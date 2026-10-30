@@ -44,7 +44,7 @@
   },
   "data": {
     "unit": "E2E CRAS Centro",
-    "plan_text": "Planejamento E2E-007: garantir a frequência escolar e inscrever a família no CadÚnico.",
+    "plan_objectives": "Planejamento E2E-007: garantir a frequência escolar e inscrever a família no CadÚnico.",
     "evolution_text": "Evolução E2E-007: a família retomou o contato com a escola."
   },
   "variants": [
@@ -206,9 +206,9 @@
           "action": "fill",
           "target": {
             "by": "testid",
-            "value": "follow-up-plan-content"
+            "value": "follow-up-plan-objectives"
           },
-          "value": "${data.plan_text}"
+          "value": "${data.plan_objectives}"
         },
         {
           "action": "click",
@@ -260,7 +260,7 @@
           "expect": "visible",
           "target": {
             "by": "css",
-            "value": "[data-testid^=\"follow-up-plan-text-\"]:has-text(\"Planejamento E2E-007\") >> nth=0"
+            "value": "[data-testid^=\"follow-up-plan-objectives-text-\"]:has-text(\"Planejamento E2E-007\") >> nth=0"
           },
           "note": "o planejamento aparece no card (CA01)"
         },
@@ -293,7 +293,7 @@
           "expect": "visible",
           "target": {
             "by": "css",
-            "value": "[data-testid^=\"follow-up-plan-text-\"]:has-text(\"Planejamento E2E-007\") >> nth=0"
+            "value": "[data-testid^=\"follow-up-plan-objectives-text-\"]:has-text(\"Planejamento E2E-007\") >> nth=0"
           },
           "note": "o planejamento segue o mesmo depois da evolução (CA10)"
         }
@@ -457,7 +457,7 @@
           "action": "fill",
           "target": {
             "by": "testid",
-            "value": "follow-up-plan-content"
+            "value": "follow-up-plan-objectives"
           },
           "value": "   "
         },
@@ -478,7 +478,7 @@
           "expect": "visible",
           "target": {
             "by": "text",
-            "value": "Escreva o planejamento."
+            "value": "Preencha ao menos um dos campos: Objetivos, Ações ou Estratégias."
           },
           "note": "erro no campo, sem envio"
         },

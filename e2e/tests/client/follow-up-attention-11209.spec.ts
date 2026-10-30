@@ -166,7 +166,7 @@ test.describe('US-EVOL-02 — acompanhamentos que pedem atenção (client)', () 
       `/api/client/families/${target.family.uuid}/follow-ups/${target.uuid}/plan`,
       {
         headers: { 'X-XSRF-TOKEN': xsrf },
-        data: { content: `E2E11209-${Date.now()} planejamento registrado pelo teste` },
+        data: { objectives: `E2E11209-${Date.now()} planejamento registrado pelo teste` },
       },
     );
     expect([200, 201], 'registro do planejamento').toContain(saved.status());
