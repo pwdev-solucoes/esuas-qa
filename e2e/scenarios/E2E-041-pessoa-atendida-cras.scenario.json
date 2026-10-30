@@ -198,7 +198,7 @@
           "expect": "visible",
           "target": {
             "by": "css",
-            "value": "[data-testid^=\"attendance-details-\"]:has-text(\"E2E Pessoa CRAS Referência\") >> nth=0"
+            "value": "[data-testid^=\"attendance-row-\"]:has-text(\"E2E Pessoa CRAS Referência\") >> nth=0"
           },
           "note": "a pessoa atendida consta no item salvo"
         }
@@ -492,6 +492,14 @@
           "action": "wait",
           "timeout_ms": 2000,
           "note": "aguarda o POST e o recarregamento do histórico"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"attendance-row-\"]:has-text(\"E2E CREAS\") [data-testid^=\"attendance-expand-\"] >> nth=0"
+          },
+          "note": "a descrição só aparece no detalhe do item"
         }
       ],
       "assertions": [
@@ -508,7 +516,7 @@
           "expect": "visible",
           "target": {
             "by": "css",
-            "value": "text=${data.creas_description_text} >> nth=0"
+            "value": "[data-testid^=\"attendance-details-\"]:has-text(\"${data.creas_description_text}\") >> nth=0"
           },
           "note": "o atendimento do CREAS foi salvo sem pessoa"
         }

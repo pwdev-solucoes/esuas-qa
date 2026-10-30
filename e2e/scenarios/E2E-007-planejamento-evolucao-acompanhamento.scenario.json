@@ -284,10 +284,10 @@
           "expect": "count",
           "target": {
             "by": "css",
-            "value": "[data-testid=\"follow-up-evolution-item\"] button"
+            "value": "[data-testid=\"follow-up-evolution-item\"] [data-testid=\"family-note-delete\"]"
           },
           "value": 0,
-          "note": "evolução sem editar nem excluir (CA09)"
+          "note": "evolução sem exclusão (CA09; a correção pelo autor existe desde a #11400)"
         },
         {
           "expect": "visible",
