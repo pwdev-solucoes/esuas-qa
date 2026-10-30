@@ -157,6 +157,14 @@
           "value": "${data.description_text}"
         },
         {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"attendance-person-\"] >> nth=0"
+          },
+          "note": "HU #11403: no CRAS a pessoa atendida é obrigatória; marca o primeiro integrante"
+        },
+        {
           "action": "fill",
           "target": {
             "by": "testid",

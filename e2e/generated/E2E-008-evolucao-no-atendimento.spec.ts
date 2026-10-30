@@ -56,6 +56,8 @@ test.describe('E2E-008 Evolução do acompanhamento no registro de atendimento: 
     await page.getByTestId('attendance-form-type').click();
     await page.locator('[role="option"] >> nth=0').click();
     await page.getByTestId('attendance-form-description').fill(String(data.description_text));
+    // HU #11403: no CRAS a pessoa atendida é obrigatória; marca o primeiro integrante
+    await page.locator('[data-testid^="attendance-person-"] >> nth=0').click();
     // o campo só existe com acompanhamento vigente na unidade (CA06)
     await page.getByTestId('attendance-form-evolution').fill(String(data.evolution_text));
     await page.getByTestId('attendance-form-submit').click();

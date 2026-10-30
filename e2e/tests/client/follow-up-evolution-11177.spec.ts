@@ -210,6 +210,8 @@ async function fillAndSubmit(page: Page, description: string, evolution?: string
   await page.getByTestId('attendance-form-type').click();
   await page.getByRole('option').first().click();
   await expect(page.getByTestId('attendance-form-responsible')).not.toContainText(/selecione/i);
+  // HU #11403: no CRAS a pessoa atendida é obrigatória.
+  await page.locator('[data-testid^="attendance-person-"]').first().click();
   await page.getByTestId('attendance-form-description').fill(description);
   if (evolution !== undefined) {
     await page.getByTestId('attendance-form-evolution').fill(evolution);
