@@ -1,0 +1,405 @@
+{
+  "schema_version": 1,
+  "id": "E2E-038",
+  "title": "Corrigir anotações e evoluções: correção pelo autor, versões anteriores e sem exclusão",
+  "description": "HU #11400 (US-AJ-02): o autor corrige o texto de uma anotação no Sheet de correção (contexto e assinatura original travados, aviso de que a versão anterior fica guardada), o card passa a mostrar 'Corrigida por' e 'Versões anteriores', e a anotação de outro técnico não oferece 'Corrigir'. Massa fictícia; nenhum dado pessoal.",
+  "feature_slug": "11400-correcao-notas-02-client",
+  "ac_refs": [
+    "AC-001",
+    "AC-002",
+    "AC-004",
+    "AC-005"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "prontuario",
+    "anotacoes",
+    "correcao",
+    "lgpd"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/login",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "users": [
+      {
+        "role": "operador",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_OPERADOR_CPF",
+          "password": "E2E_CLIENT_OPERADOR_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Massa do E2EFamilyNoteCorrectionSeeder (plano 03): família 00000000-0000-4000-8000-000011400001 com a anotação …000011400a01 do operador (texto fixo 'E2E correção — texto incompleto') e a …000011400a02 de outro técnico",
+      "Operador lotado no 'E2E CRAS Centro'; API e client com os planos 01 e 02 da HU #11400",
+      "O seeder restaura a a01 a cada rodada; as asserções usam o texto marcado da execução, nunca contagem"
+    ]
+  },
+  "data": {
+    "family_uuid": "00000000-0000-4000-8000-000011400001",
+    "original_text": "E2E correção — texto incompleto",
+    "corrected_text": "Correção E2E-038 com o texto completo da anotação"
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "Operador corrige a própria anotação e consulta a versão anterior (CA01, CA02)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=anotacoes"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"family-note-item\"]:has-text(\"E2E correção — texto incompleto\") [data-testid=\"family-note-correct\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 800,
+          "note": "aguarda o Sheet abrir"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "family-note-correction-content"
+          },
+          "value": "${data.corrected_text}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "family-note-correction-submit"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "aguarda o PUT e o recarregamento da lista"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"family-note-item\"]:has-text(\"${data.corrected_text}\") [data-testid=\"family-note-revisions\"] >> nth=0"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 800,
+          "note": "aguarda o diálogo de versões abrir"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"family-note-item\"]:has-text(\"${data.corrected_text}\") >> nth=0"
+          },
+          "note": "o card mostra o texto novo"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"family-note-item\"]:has-text(\"${data.corrected_text}\") [data-testid=\"family-note-revised\"] >> nth=0"
+          },
+          "note": "'Corrigida por … em …' no card"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "revision-history-dialog"
+          },
+          "note": "o diálogo de versões anteriores abre"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"revision-history-item\"] >> nth=0"
+          },
+          "note": "há ao menos uma versão guardada"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "revision-history-dialog"
+          },
+          "value": "substituída por",
+          "note": "a versão mostra quem a substituiu"
+        }
+      ]
+    },
+    {
+      "name": "validation_error",
+      "title": "Texto vazio não salva e mostra o erro no campo (D07)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=anotacoes"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"family-note-item\"]:has([data-testid=\"family-note-correct\"]) [data-testid=\"family-note-correct\"] >> nth=0"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 800,
+          "note": "aguarda o Sheet abrir"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "family-note-correction-content"
+          },
+          "value": ""
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "family-note-correction-submit"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 800,
+          "note": "aguarda a validação"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "family-note-correction-sheet"
+          },
+          "note": "o Sheet continua aberto"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "family-note-correction-content-error"
+          },
+          "value": "Informe o texto."
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "family-note-correction-notice"
+          },
+          "note": "o aviso fixo de versão anterior está presente"
+        }
+      ]
+    },
+    {
+      "name": "forbidden",
+      "title": "Anotação de outro técnico não oferece 'Corrigir' nem exclusão (CA03, CA04)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=anotacoes"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"family-note-item\"]:not(:has([data-testid=\"family-note-correct\"])) >> nth=0"
+          },
+          "note": "existe anotação sem 'Corrigir' (a de outro técnico)"
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"family-note-item\"]:not(:has([data-testid=\"family-note-correct\"])) button:has-text(\"Corrigir\")"
+          },
+          "value": 0,
+          "note": "sem pista nem botão desabilitado"
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "testid",
+            "value": "family-note-delete"
+          },
+          "value": 0,
+          "note": "nenhuma exclusão existe"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "family-notes-not-editable"
+          },
+          "value": "Anotações e evoluções não se apagam"
+        }
+      ]
+    }
+  ]
+}
