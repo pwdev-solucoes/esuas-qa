@@ -184,7 +184,7 @@ test.describe('US-DIAG2-05 — condições de saúde completas (client)', () => 
     await captureEvidence(creas, testInfo, EVIDENCE_SLUG, 'creas-le');
   });
 
-  test('CA03 — o não técnico (assistente administrativo do Centro) abre o prontuário e a evidência é a AUSÊNCIA da aba Saúde', async ({}, testInfo) => {
+  test('CA03 — o não técnico (assistente administrativo do Centro) abre o prontuário e a aba Saúde aparece só com o aviso restrito (US-AJ-11 RN03; a evidência é a ausência do dado)', async ({}, testInfo) => {
     active = rural;
     await open(rural, 'saude');
 
@@ -193,8 +193,9 @@ test.describe('US-DIAG2-05 — condições de saúde completas (client)', () => 
     });
     await expect(rural.getByTestId('family-access-denied')).toHaveCount(0);
     await expect(rural.getByRole('tab', { name: 'Composição Familiar', exact: true })).toBeVisible();
-    // Ausência: nem a aba, nem o bloco, mesmo pedindo ?tab=saude.
-    await expect(rural.getByRole('tab', { name: 'Saúde', exact: true })).toHaveCount(0);
+    // US-AJ-11 RN03 (#11408): a aba aparece com o aviso restrito; o bloco de dados, nunca.
+    await expect(rural.getByRole('tab', { name: 'Saúde', exact: true })).toBeVisible();
+    await expect(rural.getByTestId('health-restricted')).toBeVisible();
     await expect(rural.getByTestId('health-block')).toHaveCount(0);
     await captureEvidence(rural, testInfo, EVIDENCE_SLUG, 'rural-sem-aba-saude');
   });

@@ -1,0 +1,438 @@
+{
+  "schema_version": 1,
+  "id": "E2E-044",
+  "title": "Planejamento em três campos: registro com Objetivos, Ações e Estratégias, recusa sem nenhum campo e ausência da ação para quem não é técnico",
+  "description": "HU #11406 (US-AJ-09), plano 02: na aba Acompanhamento do prontuário, o operador do CRAS Centro abre o planejamento do acompanhamento da massa do E2EFollowUpPlanFieldsSeeder, é recusado ao enviar os três campos vazios (erro 'ao menos um') e registra os três campos, que aparecem rotulados no card com a assinatura. O assistente administrativo do mesmo CRAS não vê a ação de planejar. Execução no plano 03, depois do seeder; o happy_path roda por último. Massa fictícia; nenhum dado pessoal.",
+  "feature_slug": "11406-planejamento-02-client",
+  "ac_refs": [
+    "AC-001",
+    "AC-003",
+    "AC-006"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "prontuario",
+    "acompanhamento",
+    "planejamento",
+    "lgpd"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/login",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "users": [
+      {
+        "role": "operador",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_OPERADOR_CPF",
+          "password": "E2E_CLIENT_OPERADOR_PASSWORD"
+        }
+      },
+      {
+        "role": "assistente_administrativo",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_ADMIN_STAFF_CPF",
+          "password": "E2E_CLIENT_ADMIN_STAFF_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Massa do E2EFollowUpPlanFieldsSeeder (plano 03): família 00000000-0000-4000-8000-000011406001 e acompanhamento 00000000-0000-4000-8000-000011406f01 no CRAS Centro, sem planejamento",
+      "API e client da HU #11406 (planos 01 e 02)",
+      "Operador com função técnica e assistente administrativo, ambos lotados no CRAS Centro",
+      "Re-executável: o validation_error e o forbidden não dependem de o acompanhamento estar sem plano; o happy_path vira correção numa segunda execução"
+    ]
+  },
+  "data": {
+    "objectives": "Objetivos E2E-044: garantir a frequência escolar.",
+    "actions": "Ações E2E-044: inscrever a família no CadÚnico.",
+    "strategies": "Estratégias E2E-044: visitas quinzenais."
+  },
+  "variants": [
+    {
+      "name": "validation_error",
+      "title": "Enviar os três campos vazios é recusado com a mensagem de 'ao menos um' (CA03)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/00000000-0000-4000-8000-000011406001?tab=acompanhamento"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "follow-up-expand-00000000-0000-4000-8000-000011406f01"
+          },
+          "note": "expande o acompanhamento da massa do seeder"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1000,
+          "note": "aguarda o card expandir"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "follow-up-plan-action-00000000-0000-4000-8000-000011406f01"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1000,
+          "note": "aguarda o Sheet do planejamento abrir"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "follow-up-plan-objectives"
+          },
+          "value": " ",
+          "note": "limpa o campo (corrigindo, vem preenchido)"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "follow-up-plan-actions"
+          },
+          "value": " "
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "follow-up-plan-strategies"
+          },
+          "value": " "
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "follow-up-plan-submit"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 800,
+          "note": "a validação é local; nada é enviado"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "follow-up-plan-fields-error"
+          },
+          "note": "erro 'Preencha ao menos um dos campos' (CA03)"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "follow-up-plan-form-sheet"
+          },
+          "note": "o Sheet continua aberto"
+        }
+      ]
+    },
+    {
+      "name": "forbidden",
+      "title": "O assistente administrativo não vê a ação de planejar (D08/D16)",
+      "as_user": "assistente_administrativo",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_ADMIN_STAFF_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_ADMIN_STAFF_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/00000000-0000-4000-8000-000011406001?tab=acompanhamento"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "follow-up-expand-00000000-0000-4000-8000-000011406f01"
+          },
+          "note": "expande o acompanhamento da massa do seeder"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1000,
+          "note": "aguarda o card expandir"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "follow-up-plan-00000000-0000-4000-8000-000011406f01"
+          },
+          "note": "a seção do planejamento é exibida, somente leitura"
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"follow-up-plan-action-00000000-0000-4000-8000-000011406f01\"]"
+          },
+          "value": 0,
+          "note": "sem botão 'Registrar planejamento'/'Corrigir'"
+        }
+      ]
+    },
+    {
+      "name": "happy_path",
+      "title": "O operador registra os três campos e o card os mostra rotulados com a assinatura (CA01)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/00000000-0000-4000-8000-000011406001?tab=acompanhamento"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "follow-up-expand-00000000-0000-4000-8000-000011406f01"
+          },
+          "note": "expande o acompanhamento da massa do seeder"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1000,
+          "note": "aguarda o card expandir"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "follow-up-plan-action-00000000-0000-4000-8000-000011406f01"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1000,
+          "note": "aguarda o Sheet do planejamento abrir"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "follow-up-plan-objectives"
+          },
+          "value": "${data.objectives}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "follow-up-plan-actions"
+          },
+          "value": "${data.actions}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "follow-up-plan-strategies"
+          },
+          "value": "${data.strategies}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "follow-up-plan-submit"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2000,
+          "note": "aguarda o PUT e o recarregamento do bloco"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "follow-up-plan-objectives-text-00000000-0000-4000-8000-000011406f01"
+          },
+          "note": "Objetivos no card (CA01)"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "follow-up-plan-actions-text-00000000-0000-4000-8000-000011406f01"
+          },
+          "note": "Ações no card (CA01)"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "follow-up-plan-strategies-text-00000000-0000-4000-8000-000011406f01"
+          },
+          "note": "Estratégias no card (CA01)"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "follow-up-plan-signature-00000000-0000-4000-8000-000011406f01"
+          },
+          "note": "assinada e datada"
+        }
+      ]
+    }
+  ]
+}
