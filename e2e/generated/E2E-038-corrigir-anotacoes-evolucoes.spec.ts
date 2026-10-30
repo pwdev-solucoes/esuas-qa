@@ -85,7 +85,7 @@ test.describe('E2E-038 Corrigir anotações e evoluções: correção pelo autor
     await page.waitForTimeout(2500);
     // fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)
     await page.keyboard.press('Escape');
-    await page.locator('[data-testid="family-note-item"]:has-text("E2E correção — texto incompleto") [data-testid="family-note-correct"]').click();
+    await page.locator('[data-testid="family-note-item"]:has([data-testid="family-note-correct"]) [data-testid="family-note-correct"] >> nth=0').click();
     // aguarda o Sheet abrir
     await page.waitForTimeout(800);
     await page.getByTestId('family-note-correction-content').fill('');
