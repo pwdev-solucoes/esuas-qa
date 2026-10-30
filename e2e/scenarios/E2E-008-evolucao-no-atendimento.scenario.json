@@ -34,7 +34,7 @@
       }
     ],
     "state": [
-      "Operador lotado no CRAS Centro (E2EProntuarioSeeder); família de trabalho 00000000-0000-4000-8000-0000000f0008 com acompanhamento PAIF vigente no CRAS Centro, garantido por API pela spec manual tests/client/follow-up-evolution-11177.spec.ts (rodar ANTES)",
+      "Operador lotado no CRAS Centro (E2EProntuarioSeeder); família de trabalho 00000000-0000-4000-8000-0000000f0001 com acompanhamento PAIF vigente no CRAS Centro, garantido por API pela spec manual tests/client/follow-up-evolution-11177.spec.ts (rodar ANTES)",
       "Catálogo global de tipos de atendimento com ao menos um tipo ativo (a spec manual o semeia por API se vazio)",
       "Família 00000000-0000-4000-8000-0000000f0012 sem acompanhamento (empty_state)",
       "Re-executável: atendimentos se acumulam; evolução é imutável"
@@ -90,7 +90,7 @@
         },
         {
           "action": "goto",
-          "value": "/app/cadastros/familias/00000000-0000-4000-8000-0000000f0008?tab=atendimentos"
+          "value": "/app/cadastros/familias/00000000-0000-4000-8000-0000000f0001?tab=atendimentos"
         },
         {
           "action": "wait",

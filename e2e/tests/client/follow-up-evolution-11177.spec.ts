@@ -29,7 +29,7 @@ import { captureFinalEvidence } from '../../helpers/evidence';
  *
  * ## Massa
  *
- * Família de trabalho: a mesma do E2E-007 (…0f0008, CRAS Centro). O spec
+ * Família de trabalho: …0f0001 (CRAS Centro; HU #11403: precisa de integrante para marcar a pessoa atendida; antes …0f0008, sem integrantes). O spec
  * garante, por API, um acompanhamento vigente nela e NÃO o cancela no fim: o
  * E2E-008 `happy_path` depende dele.
  *
@@ -49,7 +49,7 @@ const TENANT_UUID =
   process.env.E2E_TENANT_UUID ?? '00000000-0000-4000-8000-0000000000c1';
 
 const FAMILY_WORK =
-  process.env.E2E_CLIENT_FAMILY_EVOLUTION_UUID ?? '00000000-0000-4000-8000-0000000f0008';
+  process.env.E2E_CLIENT_FAMILY_EVOLUTION_UUID ?? '00000000-0000-4000-8000-0000000f0001';
 const FAMILY_NEVER_FOLLOWED =
   process.env.E2E_CLIENT_FAMILY_NO_FOLLOW_UP_UUID ?? '00000000-0000-4000-8000-0000000f0012';
 const UNIT_UUID = process.env.E2E_CLIENT_UNIT_UUID;
