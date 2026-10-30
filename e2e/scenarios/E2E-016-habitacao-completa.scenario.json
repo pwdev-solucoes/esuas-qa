@@ -2,7 +2,7 @@
   "schema_version": 1,
   "id": "E2E-016",
   "title": "Habitação completa: registrar os onze itens na Silva, pessoas por dormitório 2,5 calculado, e dormitórios acima de cômodos recusado",
-  "description": "HU #11231 (US-DIAG2-02), plano 03: o Operacional abre a série de habitação da família 'E2E Silva Habitação' (massa do E2EHousingCompleteSeeder: 5 integrantes ativos e um retrato migrado só com os itens da F6), registra uma atualização preenchendo os onze itens e vê pessoas por dormitório = 2,5, calculado e sem campo editável (CA01/CA02). A variante validation_error informa 4 dormitórios para 3 cômodos e vê o erro no campo, sem gravar (CA04). CA03, CT05 e CA06 estão na spec manual tests/client/housing-conditions-complete-11231.spec.ts. Massa fictícia; nenhum dado pessoal.",
+  "description": "HU #11231 (US-DIAG2-02), plano 03: o Operacional abre a série de habitação da família 'E2E Silva Habitação' (massa do E2EHousingCompleteSeeder: 5 integrantes ativos e um retrato migrado só com os itens da F6), registra uma atualização preenchendo os onze itens e vê pessoas por dormitório = 2,5, calculado e sem campo editável (CA01/CA02). A variante validation_error informa 0 cômodos e vê o erro de faixa no campo, sem gravar (D04; a recusa de dormitórios acima de cômodos foi revogada pela HU #11407, que passou a avisar e pedir conferência). CA03, CT05 e CA06 estão na spec manual tests/client/housing-conditions-complete-11231.spec.ts. Massa fictícia; nenhum dado pessoal.",
   "feature_slug": "11231-habitacao-completa-03-evidencias",
   "ac_refs": [
     "AC-002",
@@ -366,7 +366,7 @@
     },
     {
       "name": "validation_error",
-      "title": "Dormitórios acima de cômodos é recusado no campo (CA04)",
+      "title": "Zero cômodos é recusado pela faixa no campo (D04)",
       "as_user": "operador",
       "steps": [
         {
@@ -567,7 +567,7 @@
             "by": "css",
             "value": "[data-testid=\"housing-rooms_count\"]"
           },
-          "value": "3",
+          "value": "0",
           "note": "h · cômodos"
         },
         {
@@ -576,7 +576,7 @@
             "by": "css",
             "value": "[data-testid=\"housing-bedrooms_count\"]"
           },
-          "value": "4",
+          "value": "0",
           "note": "i · dormitórios"
         },
         {
@@ -597,9 +597,9 @@
           "expect": "visible",
           "target": {
             "by": "css",
-            "value": "#housing-bedrooms_count ~ [role=\"alert\"]"
+            "value": "#housing-rooms_count ~ [role=\"alert\"]"
           },
-          "note": "a mensagem de erro aparece no campo de dormitórios (CA04). O texto em pt-BR é conferido na spec manual (a gerada roda com locale padrão e a API ainda não tem lang/en para esta chave)"
+          "note": "a mensagem de faixa aparece no campo de cômodos (D04). O texto em pt-BR é conferido na spec manual"
         },
         {
           "expect": "visible",
@@ -607,7 +607,7 @@
             "by": "css",
             "value": "[data-testid=\"diagnosis-snapshot-form-sheet\"]"
           },
-          "note": "o formulário segue aberto: nada foi gravado (CA04)"
+          "note": "o formulário segue aberto: nada foi gravado (D04)"
         }
       ]
     }

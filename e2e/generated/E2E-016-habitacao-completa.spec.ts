@@ -100,7 +100,7 @@ test.describe('E2E-016 Habitação completa: registrar os onze itens na Silva, p
     await expect(page.locator('[data-testid="housing-condition-block"] [data-testid^="snapshot-column-"] >> nth=1')).toBeVisible();
   });
 
-  test('validation_error — Dormitórios acima de cômodos é recusado no campo (CA04)', {
+  test('validation_error — Zero cômodos é recusado pela faixa no campo (D04)', {
     tag: ['@P1', '@client', '@prontuario', '@habitacao', '@diagnostico', '@lgpd'],
     annotation: [{ type: 'E2E', description: 'E2E-016' }, { type: 'AC', description: 'AC-002' }, { type: 'AC', description: 'AC-003' }, { type: 'user', description: 'operador' }],
   }, async ({ page }) => {
@@ -145,15 +145,15 @@ test.describe('E2E-016 Habitação completa: registrar os onze itens na Silva, p
     // g · lixo
     await page.getByRole('option', { name: 'Sim, coleta direta' }).click();
     // h · cômodos
-    await page.locator('[data-testid="housing-rooms_count"]').fill('3');
+    await page.locator('[data-testid="housing-rooms_count"]').fill('0');
     // i · dormitórios
-    await page.locator('[data-testid="housing-bedrooms_count"]').fill('4');
+    await page.locator('[data-testid="housing-bedrooms_count"]').fill('0');
     await page.locator('[data-testid="diagnosis-snapshot-submit"]').click();
     // espera a validação responder
     await page.waitForTimeout(2000);
-    // a mensagem de erro aparece no campo de dormitórios (CA04). O texto em pt-BR é conferido na spec manual (a gerada roda com locale padrão e a API ainda não tem lang/en para esta chave)
-    await expect(page.locator('#housing-bedrooms_count ~ [role="alert"]')).toBeVisible();
-    // o formulário segue aberto: nada foi gravado (CA04)
+    // a mensagem de faixa aparece no campo de cômodos (D04). O texto em pt-BR é conferido na spec manual
+    await expect(page.locator('#housing-rooms_count ~ [role="alert"]')).toBeVisible();
+    // o formulário segue aberto: nada foi gravado (D04)
     await expect(page.locator('[data-testid="diagnosis-snapshot-form-sheet"]')).toBeVisible();
   });
 });
