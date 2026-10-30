@@ -1,0 +1,269 @@
+{
+  "schema_version": 1,
+  "id": "E2E-040",
+  "title": "Capa do prontuário: CadÚnico com alerta, renda, Bolsa Família e edição do contato com selo de pendência",
+  "description": "HU #11402 (US-AJ-04), plano 02: o operador abre a família do seeder da capa e vê no topo a data do CadÚnico com o selo 'Cadastro A Vencer' ao lado, 'R$ 170,00' de renda per capita e 'Recebe' no Bolsa Família; edita o telefone primário pela capa e vê o selo 'Pendente no CadÚnico'; telefone com 9 dígitos mostra a mensagem no campo. Depende da massa do seeder do plano 03. Massa fictícia; nenhum dado pessoal.",
+  "feature_slug": "11402-capa-02-client",
+  "ac_refs": [
+    "AC-001",
+    "AC-002"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "prontuario",
+    "capa",
+    "cadunico",
+    "contato"
+  ],
+  "data": {
+    "family_uuid": "00000000-0000-4000-8000-000011402001",
+    "new_phone": "82999990001",
+    "short_phone": "829999900"
+  },
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/auth/login",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "users": [
+      {
+        "role": "operador",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_OPERADOR_CPF",
+          "password": "E2E_CLIENT_OPERADOR_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Massa do E2ERecordCoverSeeder (plano 03): família 00000000-0000-4000-8000-000011402001 no 'E2E CRAS Centro', CadÚnico atualizado há 20 meses (alerta 'a vencer'), renda per capita 170 e Bolsa Família 'recebe'",
+      "Operador lotado no 'E2E CRAS Centro'; API e client com os planos 01 e 02 da HU #11402",
+      "Um login por usuário por execução (throttle 6,1); o seeder restaura o contato a cada rodada"
+    ]
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "O topo da capa mostra o CadÚnico e a edição do contato gera o selo de pendência (CA01, CA02)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"cover-edit-contact\"]"
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"contact-input-phone-1\"]"
+          },
+          "value": "${data.new_phone}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"contact-submit\"]"
+          }
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"cover-cadunico-updated-at\"]"
+          }
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"registry-alert-banner\"]"
+          },
+          "value": "Cadastro A Vencer"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"cover-income-per-capita\"]"
+          },
+          "value": "170,00"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"cover-pbf\"]"
+          },
+          "value": "Recebe"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"cover-contact-pending-contact_phone_1\"]"
+          },
+          "note": "selo 'Pendente no CadÚnico' após salvar"
+        }
+      ]
+    },
+    {
+      "name": "validation_error",
+      "title": "Telefone com 9 dígitos mostra a mensagem no campo e não salva (CA02)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"cover-edit-contact\"]"
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"contact-input-phone-1\"]"
+          },
+          "value": "${data.short_phone}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"contact-submit\"]"
+          }
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"contact-error-phone-1\"]"
+          }
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"family-contact-dialog\"]"
+          },
+          "note": "o diálogo permanece aberto"
+        }
+      ]
+    }
+  ],
+  "not_applicable": {
+    "empty_state": "Capa sem dado é provada no Vitest (FamilyCoverFacts.test.ts); a relação de pendências tem estado vazio próprio em CadunicoPendingUpdatesPage.test.ts."
+  }
+}

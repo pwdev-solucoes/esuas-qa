@@ -346,7 +346,8 @@ test.describe('US-EVOL-01 — evolução do acompanhamento no atendimento (clien
     await item.first().scrollIntoViewIfNeeded();
     await expect(item).toBeVisible();
     await expect(item.getByTestId('follow-up-evolution-attendance')).toBeVisible();
-    await expect(item.getByRole('button')).toHaveCount(0);
+    // Sem exclusão: a correção pelo autor existe desde a #11400.
+    await expect(item.getByTestId('family-note-delete')).toHaveCount(0);
     await page.screenshot({ path: 'test-results/evol01-ca12-evolucao-no-acompanhamento.png' });
   });
 
