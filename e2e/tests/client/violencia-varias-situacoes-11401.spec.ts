@@ -13,7 +13,10 @@ import { captureEvidence } from "../../helpers/evidence";
  *    (lê as células de 09/2026, registra duas situações confirmadas num envio e
  *    relê: +1 em cada). Nunca asserção de valor absoluto.
  *
- * Massa: E2EViolenceMultiSituationSeeder (api; tudo fictício).
+ * Massa: E2EViolenceMultiSituationSeeder (api; tudo fictício). ATENÇÃO: o Mapa conta
+ * pessoa+situação uma vez por mês; o E2E-039 já registra "psicológica" para a Carla em
+ * 09/2026. Reponha a massa (`db:seed --class=E2EViolenceMultiSituationSeeder`) entre o
+ * E2E-039 e esta spec, senão a célula de psicológica não sobe (+0, não +1).
  */
 
 const BASE = process.env.CLIENT_BASE_URL;
