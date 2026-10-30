@@ -537,20 +537,20 @@ test.describe('US-ACOMP-03 — desligamento e avaliação de resultados (client)
     followUpUuid = await seedActiveFollowUp(FAMILY_WORK!, ADMITTED_ON);
   });
 
-  test('(c) os meses de acompanhamento são apresentados calculados e NÃO digitáveis', async ({
+  test('(c) o tempo de acompanhamento (em dias) é apresentado calculados e NÃO digitáveis', async ({
     page,
   }) => {
     await openFollowUpTab(page, FAMILY_WORK!);
     await page.getByTestId(`follow-up-discharge-${followUpUuid}`).click();
     await expect(page.getByTestId('discharge-form-sheet')).toBeVisible();
 
-    const months = page.getByTestId('discharge-form-months');
+    const months = page.getByTestId('discharge-form-days');
     await expect(months).toBeVisible();
     // O campo é derivado no servidor: readonly, fora da ordem de tabulação.
     await expect(months).toHaveAttribute('readonly', '');
     await expect(months).toHaveAttribute('aria-readonly', 'true');
     await expect(months).toHaveAttribute('tabindex', '-1');
-    await expect(months).toHaveValue(/\d+\s+meses/i);
+    await expect(months).toHaveValue(/\d+\s+dias?/i);
 
     // A orientação do instrumento sobre a participação da família está na tela.
     await expect(page.getByTestId('discharge-form-guidance')).toBeVisible();

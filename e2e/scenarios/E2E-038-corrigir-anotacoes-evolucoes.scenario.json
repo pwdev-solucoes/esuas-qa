@@ -251,7 +251,7 @@
           "action": "click",
           "target": {
             "by": "css",
-            "value": "[data-testid=\"family-note-item\"]:has-text(\"E2E correção — texto incompleto\") [data-testid=\"family-note-correct\"]"
+            "value": "[data-testid=\"family-note-item\"]:has([data-testid=\"family-note-correct\"]) [data-testid=\"family-note-correct\"] >> nth=0"
           }
         },
         {
