@@ -175,6 +175,30 @@
           }
         },
         {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"family-note-form-sheet\"]"
+          },
+          "note": "formulário da observação aberto"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"family-note-unit-select\"]"
+          },
+          "note": "o operador tem mais de uma lotação: a unidade não vem preenchida"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "E2E CRAS Centro"
+          }
+        },
+        {
           "action": "fill",
           "target": {
             "by": "css",
@@ -193,24 +217,42 @@
           "action": "wait",
           "timeout_ms": 2000,
           "note": "espera o envio da anotação"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"community-living-form\"]"
+          },
+          "note": "a aba Convivência segue visível depois da observação (sem tela em branco)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "tab",
+            "name": "Anotações",
+            "exact": true
+          },
+          "note": "confere que a observação foi gravada"
         }
       ],
       "assertions": [
         {
-          "expect": "visible",
+          "expect": "hidden",
           "target": {
             "by": "css",
-            "value": "[data-testid=\"community-living-block\"]"
+            "value": "[data-testid=\"family-note-form-sheet\"]"
           },
-          "note": "a aba segue visível após salvar"
+          "note": "o formulário fechou: a anotação foi aceita"
         },
         {
           "expect": "visible",
           "target": {
             "by": "css",
-            "value": "[data-testid=\"community-living-form\"]"
+            "value": "[data-testid=\"family-note-item\"]:has-text(\"Observação fictícia de validação da convivência.\") >> nth=0"
           },
-          "note": "o formulário segue visível"
+          "note": "a observação gravada aparece nas anotações (CA02)"
         },
         {
           "expect": "url",

@@ -52,14 +52,23 @@ test.describe('E2E-046 A Convivência salva dados e observação sem perder a te
     // espera a resposta do salvar
     await page.waitForTimeout(2000);
     await page.locator('[data-testid="community-living-note-shortcut"]').click();
+    // formulário da observação aberto
+    await expect(page.locator('[data-testid="family-note-form-sheet"]')).toBeVisible();
+    // o operador tem mais de uma lotação: a unidade não vem preenchida
+    await page.locator('[data-testid="family-note-unit-select"]').click();
+    await page.getByRole('option', { name: 'E2E CRAS Centro' }).click();
     await page.locator('[data-testid="family-note-content"]').fill('Observação fictícia de validação da convivência.');
     await page.locator('[data-testid="family-note-submit"]').click();
     // espera o envio da anotação
     await page.waitForTimeout(2000);
-    // a aba segue visível após salvar
-    await expect(page.locator('[data-testid="community-living-block"]')).toBeVisible();
-    // o formulário segue visível
+    // a aba Convivência segue visível depois da observação (sem tela em branco)
     await expect(page.locator('[data-testid="community-living-form"]')).toBeVisible();
+    // confere que a observação foi gravada
+    await page.getByRole('tab', { name: 'Anotações', exact: true }).click();
+    // o formulário fechou: a anotação foi aceita
+    await expect(page.locator('[data-testid="family-note-form-sheet"]')).toBeHidden();
+    // a observação gravada aparece nas anotações (CA02)
+    await expect(page.locator('[data-testid="family-note-item"]:has-text("Observação fictícia de validação da convivência.") >> nth=0')).toBeVisible();
     // a URL continua na família
     await expect(page).toHaveURL(new RegExp(escapeRegExp('/app/cadastros/familias/00000000-0000-4000-8000-000011408001')));
   });
