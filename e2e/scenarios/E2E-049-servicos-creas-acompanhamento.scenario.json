@@ -491,6 +491,19 @@
           "action": "wait",
           "timeout_ms": 2000,
           "note": "aguarda o registro e a recarga da aba"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"follow-up-expand-\"]"
+          },
+          "note": "expande o acompanhamento para ver planejamento e evolução"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "aguarda o detalhe expandido"
         }
       ],
       "assertions": [
