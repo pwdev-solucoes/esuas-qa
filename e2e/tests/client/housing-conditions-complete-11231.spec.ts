@@ -11,12 +11,13 @@ import { dismissPlatformUpdates } from '../../helpers/platform-updates';
 /**
  * US-DIAG2-02 (HU #11231) — condições habitacionais completas, no frontend do
  * TENANT (`client/`). Spec MANUAL. O cenário declarativo E2E-016 cobre CA01
- * (registrar os onze itens), CA02 (pessoas por dormitório 2,5) e CA04
- * (dormitórios acima de cômodos). Aqui ficam o que ele não expressa:
+ * (registrar os onze itens), CA02 (pessoas por dormitório 2,5) e D04
+ * (zero cômodos recusado pela faixa; a recusa por dormitórios acima de cômodos,
+ * RN03/CA04 da #11231, foi revogada pela #11407). Aqui ficam o que ele não expressa:
  *
  *  - CA03: sem dormitórios, pessoas por dormitório mostra "Sem informação"
  *    (a evidência é a AUSÊNCIA de valor, nunca zero);
- *  - CA04 (texto): a mensagem em pt-BR aparece no campo de dormitórios;
+ *  - D04 (faixa): zero cômodos mostra o erro de faixa no campo de cômodos;
  *  - CT05: a família importada do CadÚnico, sem retrato, abre o formulário com
  *    todos os itens vazios e nenhum selo "CadÚnico" (a evidência é a AUSÊNCIA
  *    do selo). O CA05 NÃO é demonstrável com a importação atual (D08/A1);
@@ -107,20 +108,20 @@ test.describe('US-DIAG2-02 — condições habitacionais completas (client)', ()
     await closeForm(page);
   });
 
-  test('CA04 (texto) — dormitórios acima de cômodos mostra a mensagem no campo', async ({ page }) => {
+  test('D04 (faixa) — zero cômodos mostra a mensagem de faixa no campo', async ({ page }) => {
     await openForm(page, FAMILY_SILVA);
 
-    await page.getByTestId('housing-rooms_count').fill('3');
-    await page.getByTestId('housing-bedrooms_count').fill('4');
+    await page.getByTestId('housing-rooms_count').fill('0');
+    await page.getByTestId('housing-bedrooms_count').fill('0');
     await page.getByTestId('diagnosis-snapshot-unit-select').click();
     await page.getByRole('option', { name: UNIT_NAME }).click();
     await page.getByTestId('diagnosis-snapshot-submit').click();
 
-    await expect(page.locator('#housing-bedrooms_count ~ [role="alert"]')).toHaveText(
-      'O número de dormitórios não pode ser maior que o número total de cômodos.',
-    );
+    // #11407 revogou a RN03/CA04 da #11231: dormitórios acima de cômodos agora
+    // avisa e pede conferência; a recusa que resta é a de faixa.
+    await expect(page.locator('#housing-rooms_count ~ [role="alert"]')).toBeVisible();
     await expect(page.getByTestId('diagnosis-snapshot-form-sheet')).toBeVisible();
-    await page.screenshot({ path: 'test-results/habitacao11231-ca04-recusado.png' });
+    await page.screenshot({ path: 'test-results/habitacao11231-d04-faixa.png' });
 
     await closeForm(page);
   });

@@ -1,0 +1,153 @@
+{
+  "schema_version": 1,
+  "id": "E2E-043",
+  "title": "Sinalização sem planejamento: marcos de 30, 45 e 75 dias na relação de acompanhamentos que pedem atenção",
+  "description": "HU #11405 (US-AJ-08), plano 01: o Operacional do CRAS Centro filtra Sem planejamento e vê, em cada linha da massa do E2EPlanMilestoneSeeder, o selo 'Marco de N dias' (30, 45, 75) e a legenda dos marcos. Asserções pela linha (uuid fixo da massa), nunca por contagem. Executado no plano 02, depois do seeder. Nenhum dado pessoal.",
+  "feature_slug": "11405-marcos-planejamento-01-api-client",
+  "ac_refs": [
+    "AC-006"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "prontuario",
+    "acompanhamento",
+    "atencao",
+    "marcos"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/login",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "users": [
+      {
+        "role": "operador",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_OPERADOR_CPF",
+          "password": "E2E_CLIENT_OPERADOR_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Massa do E2EPlanMilestoneSeeder (plano 02): follow-ups 00000000-0000-4000-8000-000011405a01 a a03 no CRAS Centro, sem planejamento, com 31, 46 e 76 dias",
+      "Operador com add-on lotado no CRAS Centro"
+    ]
+  },
+  "data": {
+    "unit_cras": "00000000-0000-4000-8000-0000000e0001"
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "Operacional: marcos 30, 45 e 75 e legenda (CA01)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/acompanhamentos-atencao?reason=without_plan&social_unit=00000000-0000-4000-8000-0000000e0001"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "aguarda a relação carregar"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"follow-up-attention-row-00000000-0000-4000-8000-000011405a01\"] [data-testid=\"attention-plan-milestone\"]"
+          },
+          "value": "Marco de 30 dias",
+          "note": "linha a01 com o marco de 30 dias (CA01)"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"follow-up-attention-row-00000000-0000-4000-8000-000011405a02\"] [data-testid=\"attention-plan-milestone\"]"
+          },
+          "value": "Marco de 45 dias",
+          "note": "linha a02 com o marco de 45 dias (CA01)"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"follow-up-attention-row-00000000-0000-4000-8000-000011405a03\"] [data-testid=\"attention-plan-milestone\"]"
+          },
+          "value": "Marco de 75 dias",
+          "note": "linha a03 com o marco de 75 dias (CA01)"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"follow-ups-attention-milestone-legend\"]"
+          },
+          "note": "legenda dos marcos (CA01)"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"follow-ups-attention-milestone-legend\"]"
+          },
+          "value": "Sem planejamento: sinalizado aos 30 dias e depois a cada 15 dias.",
+          "note": "legenda vinda de meta.thresholds"
+        }
+      ]
+    }
+  ]
+}

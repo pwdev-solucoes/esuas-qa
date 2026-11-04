@@ -23,7 +23,7 @@ void data;
 test.describe('E2E-008 Evolução do acompanhamento no registro de atendimento: campo oferecido só com acompanhamento vigente, evolução no histórico e ausência do campo sem acompanhamento', () => {
   test.use({ baseURL: process.env['CLIENT_BASE_URL'], viewport: { width: 1440, height: 900 } });
   // Preconditions (arrange before running):
-  //   - Operador lotado no CRAS Centro (E2EProntuarioSeeder); família de trabalho 00000000-0000-4000-8000-0000000f0008 com acompanhamento PAIF vigente no CRAS Centro, garantido por API pela spec manual tests/client/follow-up-evolution-11177.spec.ts (rodar ANTES)
+  //   - Operador lotado no CRAS Centro (E2EProntuarioSeeder); família de trabalho 00000000-0000-4000-8000-0000000f0001 com acompanhamento PAIF vigente no CRAS Centro, garantido por API pela spec manual tests/client/follow-up-evolution-11177.spec.ts (rodar ANTES)
   //   - Catálogo global de tipos de atendimento com ao menos um tipo ativo (a spec manual o semeia por API se vazio)
   //   - Família 00000000-0000-4000-8000-0000000f0012 sem acompanhamento (empty_state)
   //   - Re-executável: atendimentos se acumulam; evolução é imutável
@@ -41,7 +41,7 @@ test.describe('E2E-008 Evolução do acompanhamento no registro de atendimento: 
     await page.waitForURL(new RegExp(escapeRegExp('/app')));
     // fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)
     await page.keyboard.press('Escape');
-    await page.goto('/app/cadastros/familias/00000000-0000-4000-8000-0000000f0008?tab=atendimentos');
+    await page.goto('/app/cadastros/familias/00000000-0000-4000-8000-0000000f0001?tab=atendimentos');
     // deixa o modal de novidades abrir antes de fechá-lo
     await page.waitForTimeout(2500);
     // fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)
@@ -56,6 +56,8 @@ test.describe('E2E-008 Evolução do acompanhamento no registro de atendimento: 
     await page.getByTestId('attendance-form-type').click();
     await page.locator('[role="option"] >> nth=0').click();
     await page.getByTestId('attendance-form-description').fill(String(data.description_text));
+    // HU #11403: no CRAS a pessoa atendida é obrigatória; marca o primeiro integrante
+    await page.locator('[data-testid^="attendance-person-"] >> nth=0').click();
     // o campo só existe com acompanhamento vigente na unidade (CA06)
     await page.getByTestId('attendance-form-evolution').fill(String(data.evolution_text));
     await page.getByTestId('attendance-form-submit').click();

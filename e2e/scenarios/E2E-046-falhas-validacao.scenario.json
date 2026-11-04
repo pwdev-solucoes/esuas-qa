@@ -1,0 +1,369 @@
+{
+  "schema_version": 1,
+  "id": "E2E-046",
+  "title": "A Convivência salva dados e observação sem perder a tela, e quem não lê saúde vê a aba Saúde com o aviso restrito",
+  "description": "HU #11408 (CA01, CA02, CA05, CA06), plano 02: o operador do CRAS Centro entra na família pela lista, salva o tempo de moradia e uma observação e a aba continua visível; o assistente administrativo vê a aba Saúde com o aviso fixo, sem dado de saúde, e segue sem Medidas socioeducativas e Acolhimento. Depende da massa do seeder do plano 03. Massa fictícia; nenhum dado pessoal.",
+  "feature_slug": "11408-falhas-02-client",
+  "ac_refs": [
+    "AC-003",
+    "AC-006"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "convivencia",
+    "saude",
+    "rbac"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/auth/login",
+    "viewport": {
+      "width": 1440,
+      "height": 1600
+    },
+    "users": [
+      {
+        "role": "operador_cras_centro",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_OPERADOR_CPF",
+          "password": "E2E_CLIENT_OPERADOR_PASSWORD"
+        }
+      },
+      {
+        "role": "assistente_administrativo",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_ADMIN_STAFF_CPF",
+          "password": "E2E_CLIENT_ADMIN_STAFF_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Seeder do plano 03 aplicado (família E2E Validação Convivência no CRAS Centro; família E2E Silva Saúde da #11234)",
+      "Um login por usuário por execução (throttle 6,1)"
+    ]
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "O operador do CRAS Centro salva tempo de moradia e observação sem perder a tela (CA01, CA02)",
+      "as_user": "operador_cras_centro",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/pesquisa-pessoas",
+          "note": "lista de famílias (busca), não ?tab="
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#person-search-family-code"
+          },
+          "value": "E2EVALID11408"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "main form button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "tr:has([data-testid=\"rf-badge\"]) button[aria-label=\"Visualizar Família\"]"
+          },
+          "note": "abre pela linha do responsável familiar"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "role",
+            "value": "tab",
+            "name": "Convivência",
+            "exact": true
+          },
+          "timeout_ms": 15000,
+          "note": "o prontuário abriu"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "tab",
+            "name": "Convivência",
+            "exact": true
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"community-living-form\"]"
+          },
+          "timeout_ms": 15000
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"residence-time-city-years\"]"
+          },
+          "value": "8"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"community-living-save\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2000,
+          "note": "espera a resposta do salvar"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"community-living-note-shortcut\"]"
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"family-note-content\"]"
+          },
+          "value": "Observação fictícia de validação da convivência."
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"family-note-submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2000,
+          "note": "espera o envio da anotação"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"community-living-block\"]"
+          },
+          "note": "a aba segue visível após salvar"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"community-living-form\"]"
+          },
+          "note": "o formulário segue visível"
+        },
+        {
+          "expect": "url",
+          "value": "/app/cadastros/familias/00000000-0000-4000-8000-000011408001",
+          "note": "a URL continua na família"
+        }
+      ]
+    },
+    {
+      "name": "forbidden",
+      "title": "O assistente administrativo vê a aba Saúde com o aviso e sem dado de saúde (CA05, CA06)",
+      "as_user": "assistente_administrativo",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_ADMIN_STAFF_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_ADMIN_STAFF_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/pesquisa-pessoas",
+          "note": "lista de famílias (busca), não ?tab="
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#person-search-family-code"
+          },
+          "value": "E2E11234"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "main form button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "tr:has([data-testid=\"rf-badge\"]) button[aria-label=\"Visualizar Família\"]"
+          },
+          "note": "abre pela linha do responsável familiar"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "role",
+            "value": "tab",
+            "name": "Composição Familiar",
+            "exact": true
+          },
+          "timeout_ms": 15000,
+          "note": "o prontuário abriu"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "tab",
+            "name": "Saúde",
+            "exact": true
+          }
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "role",
+            "value": "tab",
+            "name": "Saúde",
+            "exact": true
+          }
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"health-restricted\"]"
+          },
+          "note": "aviso fixo; a evidência é a ausência de dado de saúde"
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"health-block\"]"
+          },
+          "value": 0
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "role",
+            "value": "tab",
+            "name": "Medidas socioeducativas",
+            "exact": true
+          },
+          "value": 0,
+          "note": "a evidência é a ausência da aba"
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "role",
+            "value": "tab",
+            "name": "Acolhimento",
+            "exact": true
+          },
+          "value": 0,
+          "note": "a evidência é a ausência da aba"
+        }
+      ]
+    }
+  ]
+}

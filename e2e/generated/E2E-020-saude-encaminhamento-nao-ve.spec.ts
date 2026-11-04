@@ -19,12 +19,12 @@ const data = {
 };
 void data;
 
-test.describe('E2E-020 Saúde completa: o assistente administrativo (não técnico) do CRAS Centro abre o prontuário sem a aba Saúde, sem a seção de saúde e sem gestações', () => {
+test.describe('E2E-020 Saúde completa: o assistente administrativo (não técnico) do CRAS Centro abre o prontuário com a aba Saúde restrita, sem a seção de saúde e sem gestações', () => {
   test.use({ baseURL: process.env['CLIENT_BASE_URL'], viewport: { width: 1440, height: 1600 } });
   // Preconditions (arrange before running):
   //   - Massa do E2EHealthVisibilitySeeder: assistente administrativo do CRAS Centro (CBO não técnico, E2EConfidentialitySeeder); a leitura do sigilo é da equipe técnica (HU #11289)
 
-  test('happy_path — O prontuário abre para o não técnico e a aba Saúde não existe (CA03)', {
+  test('happy_path — O prontuário abre para o não técnico e a aba Saúde aparece com o aviso restrito (CA03)', {
     tag: ['@P1', '@client', '@prontuario', '@saude', '@lgpd', '@visibilidade'],
     annotation: [{ type: 'E2E', description: 'E2E-020' }, { type: 'AC', description: 'AC-005' }, { type: 'user', description: 'nao_tecnico' }],
   }, async ({ page }) => {
@@ -45,8 +45,10 @@ test.describe('E2E-020 Saúde completa: o assistente administrativo (não técni
     // o prontuário abriu (eixo do encaminhamento recebido)
     await expect(page.getByRole('tab', { name: 'Composição Familiar', exact: true })).toBeVisible({ timeout: 15000 });
     await expect(page.getByRole('tab', { name: 'Composição Familiar', exact: true })).toBeVisible();
-    // a evidência é a ausência da aba Saúde
-    await expect(page.getByRole('tab', { name: 'Saúde', exact: true })).toHaveCount(0);
+    // US-AJ-11 RN03 (#11408): a aba Saúde aparece, com o aviso restrito
+    await expect(page.getByRole('tab', { name: 'Saúde', exact: true })).toBeVisible();
+    // US-AJ-11 RN03 (#11408): aviso fixo no lugar do conteúdo
+    await expect(page.locator('[data-testid="health-restricted"]')).toBeVisible();
     // nem o conteúdo, mesmo pedindo ?tab=saude
     await expect(page.locator('[data-testid="health-block"]')).toHaveCount(0);
   });

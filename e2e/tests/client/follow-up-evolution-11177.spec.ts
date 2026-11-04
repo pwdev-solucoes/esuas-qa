@@ -29,7 +29,7 @@ import { captureFinalEvidence } from '../../helpers/evidence';
  *
  * ## Massa
  *
- * Família de trabalho: a mesma do E2E-007 (…0f0008, CRAS Centro). O spec
+ * Família de trabalho: …0f0001 (CRAS Centro; HU #11403: precisa de integrante para marcar a pessoa atendida; antes …0f0008, sem integrantes). O spec
  * garante, por API, um acompanhamento vigente nela e NÃO o cancela no fim: o
  * E2E-008 `happy_path` depende dele.
  *
@@ -49,7 +49,7 @@ const TENANT_UUID =
   process.env.E2E_TENANT_UUID ?? '00000000-0000-4000-8000-0000000000c1';
 
 const FAMILY_WORK =
-  process.env.E2E_CLIENT_FAMILY_EVOLUTION_UUID ?? '00000000-0000-4000-8000-0000000f0008';
+  process.env.E2E_CLIENT_FAMILY_EVOLUTION_UUID ?? '00000000-0000-4000-8000-0000000f0001';
 const FAMILY_NEVER_FOLLOWED =
   process.env.E2E_CLIENT_FAMILY_NO_FOLLOW_UP_UUID ?? '00000000-0000-4000-8000-0000000f0012';
 const UNIT_UUID = process.env.E2E_CLIENT_UNIT_UUID;
@@ -210,6 +210,8 @@ async function fillAndSubmit(page: Page, description: string, evolution?: string
   await page.getByTestId('attendance-form-type').click();
   await page.getByRole('option').first().click();
   await expect(page.getByTestId('attendance-form-responsible')).not.toContainText(/selecione/i);
+  // HU #11403: no CRAS a pessoa atendida é obrigatória.
+  await page.locator('[data-testid^="attendance-person-"]').first().click();
   await page.getByTestId('attendance-form-description').fill(description);
   if (evolution !== undefined) {
     await page.getByTestId('attendance-form-evolution').fill(evolution);
@@ -346,7 +348,8 @@ test.describe('US-EVOL-01 — evolução do acompanhamento no atendimento (clien
     await item.first().scrollIntoViewIfNeeded();
     await expect(item).toBeVisible();
     await expect(item.getByTestId('follow-up-evolution-attendance')).toBeVisible();
-    await expect(item.getByRole('button')).toHaveCount(0);
+    // Sem exclusão: a correção pelo autor existe desde a #11400.
+    await expect(item.getByTestId('family-note-delete')).toHaveCount(0);
     await page.screenshot({ path: 'test-results/evol01-ca12-evolucao-no-acompanhamento.png' });
   });
 

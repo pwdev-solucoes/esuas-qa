@@ -187,10 +187,10 @@
           "expect": "count",
           "target": {
             "by": "css",
-            "value": "[data-testid=\"family-note-item\"] button"
+            "value": "[data-testid=\"family-note-item\"] [data-testid=\"family-note-delete\"]"
           },
           "value": 0,
-          "note": "sem editar nem excluir"
+          "note": "sem exclusão (a correção pelo autor existe desde a #11400)"
         }
       ]
     },

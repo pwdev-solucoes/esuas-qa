@@ -2,7 +2,7 @@
   "schema_version": 1,
   "id": "E2E-028",
   "title": "Sigilo técnico: o técnico lê a aba Saúde e a violência do CREAS pela unidade de acesso; a dupla função e o sem função não leem",
-  "description": "HU #11289, plano 05. Quem lê o sigilo é a equipe técnica da unidade de acesso do caso: o técnico do CRAS Centro lê a aba Saúde e a anotação de violência registrada pelo CREAS na família Silva; a dupla função (técnico no CREAS, não técnico no Rural) abre a família Rural SEM a aba Saúde; o usuário sem função abre a Silva sem a aba Saúde e com o aviso fixo. Nos negativos a EVIDÊNCIA É A AUSÊNCIA. Massa fictícia (E2EConfidentialitySeeder); nenhum dado pessoal.",
+  "description": "HU #11289, plano 05. Quem lê o sigilo é a equipe técnica da unidade de acesso do caso: o técnico do CRAS Centro lê a aba Saúde e a anotação de violência registrada pelo CREAS na família Silva; a dupla função (técnico no CREAS, não técnico no Rural) abre a família Rural SEM a aba Saúde; o usuário sem função abre a Silva sem a aba Saúde e com o aviso fixo. Nos negativos a EVIDÊNCIA É A AUSÊNCIA. Massa fictícia (E2EConfidentialitySeeder); nenhum dado pessoal. Mudança de regra (US-AJ-11 RN03, #11408): a aba Saúde passa a aparecer, só com o aviso restrito; o conteúdo de saúde continua ausente.",
   "feature_slug": "11289-sigilo-05-evidencias",
   "ac_refs": [
     "AC-004",
@@ -153,7 +153,7 @@
     },
     {
       "name": "forbidden",
-      "title": "A dupla função abre a família Rural sem a aba Saúde (CA06)",
+      "title": "A dupla função abre a família Rural com a aba Saúde restrita (CA06)",
       "as_user": "dupla_funcao",
       "steps": [
         {
@@ -231,15 +231,22 @@
           }
         },
         {
-          "expect": "count",
+          "expect": "visible",
           "target": {
             "by": "role",
             "value": "tab",
             "name": "Saúde",
             "exact": true
           },
-          "value": 0,
-          "note": "a evidência é a ausência da aba Saúde"
+          "note": "US-AJ-11 RN03 (#11408): a aba Saúde aparece, com o aviso restrito"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"health-restricted\"]"
+          },
+          "note": "US-AJ-11 RN03 (#11408): aviso fixo no lugar do conteúdo"
         },
         {
           "expect": "count",
@@ -254,7 +261,7 @@
     },
     {
       "name": "sem_funcao",
-      "title": "O usuário sem função abre a Silva sem a aba Saúde e com o aviso fixo (CA07)",
+      "title": "O usuário sem função abre a Silva com a aba Saúde restrita e com o aviso fixo (CA07)",
       "as_user": "sem_funcao",
       "steps": [
         {
@@ -323,15 +330,22 @@
       ],
       "assertions": [
         {
-          "expect": "count",
+          "expect": "visible",
           "target": {
             "by": "role",
             "value": "tab",
             "name": "Saúde",
             "exact": true
           },
-          "value": 0,
-          "note": "a evidência é a ausência da aba Saúde"
+          "note": "US-AJ-11 RN03 (#11408): a aba Saúde aparece, com o aviso restrito"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"health-restricted\"]"
+          },
+          "note": "US-AJ-11 RN03 (#11408): aviso fixo no lugar do conteúdo"
         },
         {
           "expect": "text",

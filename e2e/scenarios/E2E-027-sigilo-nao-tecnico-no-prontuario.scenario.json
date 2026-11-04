@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "id": "E2E-027",
-  "title": "Sigilo técnico: o não técnico abre o prontuário sem as abas Saúde e Acolhimento, sem a avaliação técnica e sem blocos sigilosos na anotação, com o aviso fixo",
-  "description": "HU #11289, plano 04. O usuário não técnico (lotação sem função técnica) abre o prontuário: o aviso fixo 'Parte deste prontuário é restrita à equipe técnica.' aparece no mesmo lugar em toda família (com e sem registro sigiloso); as abas Saúde e Acolhimento não existem; a Convivência não tem a seção de avaliação técnica; o formulário de nova anotação não lista os blocos sigilosos. A EVIDÊNCIA É A AUSÊNCIA. A recusa de unidade não técnica (422) é provada no Pest (ConfidentialRegistrationTest). Execução depois da massa do plano 05. Massa fictícia; nenhum dado pessoal.",
+  "title": "Sigilo técnico: o não técnico abre o prontuário com a aba Saúde restrita e sem a aba Acolhimento, sem a avaliação técnica e sem blocos sigilosos na anotação, com o aviso fixo",
+  "description": "HU #11289, plano 04. O usuário não técnico (lotação sem função técnica) abre o prontuário: o aviso fixo 'Parte deste prontuário é restrita à equipe técnica.' aparece no mesmo lugar em toda família (com e sem registro sigiloso); as abas Saúde e Acolhimento não existem; a Convivência não tem a seção de avaliação técnica; o formulário de nova anotação não lista os blocos sigilosos. A EVIDÊNCIA É A AUSÊNCIA. A recusa de unidade não técnica (422) é provada no Pest (ConfidentialRegistrationTest). Execução depois da massa do plano 05. Massa fictícia; nenhum dado pessoal. Mudança de regra (US-AJ-11 RN03, #11408): a aba Saúde passa a aparecer, só com o aviso restrito; o conteúdo de saúde continua ausente.",
   "feature_slug": "11289-sigilo-04-client",
   "ac_refs": [
     "AC-001",
@@ -156,15 +156,14 @@
           }
         },
         {
-          "expect": "count",
+          "expect": "visible",
           "target": {
             "by": "role",
             "value": "tab",
             "name": "Saúde",
             "exact": true
           },
-          "value": 0,
-          "note": "a evidência é a ausência da aba Saúde"
+          "note": "US-AJ-11 RN03 (#11408): a aba Saúde aparece, com o aviso restrito"
         },
         {
           "expect": "count",
@@ -264,14 +263,14 @@
           "value": "Parte deste prontuário é restrita à equipe técnica."
         },
         {
-          "expect": "count",
+          "expect": "visible",
           "target": {
             "by": "role",
             "value": "tab",
             "name": "Saúde",
             "exact": true
           },
-          "value": 0
+          "note": "US-AJ-11 RN03 (#11408): a aba Saúde aparece, com o aviso restrito"
         }
       ]
     },

@@ -1,0 +1,522 @@
+{
+  "schema_version": 1,
+  "id": "E2E-037",
+  "title": "Descrição sigilosa do atendimento: opção só para quem lê, selo para o autor e faixa no lugar do texto para quem não lê",
+  "description": "HU #11399 (US-AJ-01), plano 02: o operador do CREAS registra um atendimento marcando 'Descrição sigilosa' e vê o selo; marcar a opção sem descrição é barrado e a opção permanece marcada; o assistente administrativo do Centro vê a faixa 'Conteúdo restrito à equipe técnica.' no lugar da descrição do atendimento sigiloso e não tem a opção ao registrar. Massa fictícia (E2EConfidentialAttendanceSeeder, plano 03); nenhum dado pessoal real.",
+  "feature_slug": "11399-sigilo-desc-02-client",
+  "ac_refs": [
+    "AC-001",
+    "AC-002",
+    "AC-005",
+    "AC-007"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "prontuario",
+    "atendimento",
+    "sigilo",
+    "lgpd"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/login",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "users": [
+      {
+        "role": "operador_creas",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_CREAS_OPERADOR_CPF",
+          "password": "E2E_CLIENT_CREAS_OPERADOR_PASSWORD"
+        }
+      },
+      {
+        "role": "assistente_administrativo",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_ADMIN_STAFF_CPF",
+          "password": "E2E_CLIENT_ADMIN_STAFF_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Massa do E2EConfidentialAttendanceSeeder (plano 03): família 00000000-0000-4000-8000-000011399001 com atendimento sigiloso 00000000-0000-4000-8000-000011399101 do CREAS e atendimento não sigiloso …000011399102 do Centro",
+      "Operador do CREAS lotado no 'E2E CREAS' (lê sigiloso); assistente administrativo do Centro (não lê sigiloso)",
+      "API e client com os planos 01 e 02 da HU #11399; atendimentos registrados se acumulam, as asserções usam o texto único da execução"
+    ]
+  },
+  "data": {
+    "family_uuid": "00000000-0000-4000-8000-000011399001",
+    "unit": "E2E CREAS",
+    "description_text": "Relato E2E-037 sigiloso"
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "O operador do CREAS registra com a opção 'Descrição sigilosa' e vê o item com o selo (CA01)",
+      "as_user": "operador_creas",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=atendimentos"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "attendance-register-action"
+          },
+          "timeout_ms": 15000,
+          "note": "aba Atendimentos carregada"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "attendance-register-action"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1000,
+          "note": "aguarda o Sheet abrir e carregar as opções"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-unit"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "${data.unit}"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "aguarda a reconsulta de opções da unidade"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-type"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[role=\"option\"] >> nth=0"
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-description"
+          },
+          "value": "${data.description_text}"
+        },
+        {
+          "action": "check",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-description-confidential"
+          },
+          "note": "a opção nasce desmarcada (CA01)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-submit"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2000,
+          "note": "aguarda o POST e o recarregamento do histórico"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"attendance-expand-\"] >> nth=0"
+          },
+          "note": "expande o atendimento mais recente"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"attendance-details-\"]:has-text(\"Relato E2E-037 sigiloso\") [data-testid^=\"attendance-confidential-badge-\"] >> nth=0"
+          },
+          "note": "selo Descrição sigilosa no item da execução (CA01/CA03)"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"attendance-details-\"]:has-text(\"Relato E2E-037 sigiloso\") [data-testid^=\"attendance-confidential-badge-\"] >> nth=0"
+          },
+          "value": "Descrição sigilosa"
+        }
+      ]
+    },
+    {
+      "name": "validation_error",
+      "title": "Marcar a opção sem descrição é barrado e a opção permanece marcada",
+      "as_user": "operador_creas",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=atendimentos"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "attendance-register-action"
+          },
+          "timeout_ms": 15000,
+          "note": "aba Atendimentos carregada"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "attendance-register-action"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1000,
+          "note": "aguarda o Sheet abrir e carregar as opções"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-unit"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "${data.unit}"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "aguarda a reconsulta de opções da unidade"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-type"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[role=\"option\"] >> nth=0"
+          }
+        },
+        {
+          "action": "check",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-description-confidential"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-submit"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1000,
+          "note": "a validação roda no client; nada é enviado"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-sheet"
+          },
+          "note": "o formulário continua aberto"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-sheet"
+          },
+          "value": "Descreva sumariamente o que foi tratado."
+        },
+        {
+          "expect": "checked",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-description-confidential"
+          },
+          "note": "a opção permanece marcada"
+        }
+      ]
+    },
+    {
+      "name": "forbidden",
+      "title": "O assistente administrativo vê a faixa no lugar da descrição sigilosa e não tem a opção ao registrar (CA02/CA04)",
+      "as_user": "assistente_administrativo",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_ADMIN_STAFF_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_ADMIN_STAFF_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=atendimentos"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "attendance-register-action"
+          },
+          "timeout_ms": 15000,
+          "note": "aba Atendimentos carregada"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "attendance-expand-00000000-0000-4000-8000-000011399101"
+          },
+          "note": "expande o atendimento sigiloso do CREAS"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "attendance-description-restricted-00000000-0000-4000-8000-000011399101"
+          },
+          "timeout_ms": 10000
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "attendance-register-action"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-sheet"
+          },
+          "timeout_ms": 10000,
+          "note": "Sheet de registro aberto"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "deixa as opções do servidor carregarem"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "attendance-description-restricted-00000000-0000-4000-8000-000011399101"
+          },
+          "value": "Conteúdo restrito à equipe técnica."
+        },
+        {
+          "expect": "hidden",
+          "target": {
+            "by": "testid",
+            "value": "attendance-confidential-badge-00000000-0000-4000-8000-000011399101"
+          },
+          "note": "quem não lê não vê o selo"
+        },
+        {
+          "expect": "hidden",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-description-confidential"
+          },
+          "note": "sem a opção de sigilo (CA04)"
+        },
+        {
+          "expect": "hidden",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-confidential-notice"
+          }
+        }
+      ]
+    }
+  ],
+  "not_applicable": {
+    "empty_state": "A HU não cria lista nova; o vazio da aba Atendimentos é o da HU #10710."
+  }
+}

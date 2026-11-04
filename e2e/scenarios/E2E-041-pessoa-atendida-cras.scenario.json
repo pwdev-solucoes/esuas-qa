@@ -1,0 +1,637 @@
+{
+  "schema_version": 1,
+  "id": "E2E-041",
+  "title": "Pessoa atendida obrigatória no CRAS: marca de obrigatório, erro no campo sem pessoa, opcional no CREAS e correção de antigo sem pessoa",
+  "description": "HU #11403 (US-AJ-06), plano 01: no CRAS o operador só registra com ao menos uma pessoa atendida (CA01/CA02); no CREAS segue opcional (CA03); ao corrigir um atendimento antigo do CRAS sem pessoa o campo também é exigido (CT01). Massa fictícia do E2EAttendedPersonSeeder (plano 02); nenhum dado pessoal real.",
+  "feature_slug": "11403-pessoa-cras-01-api-client",
+  "ac_refs": [
+    "AC-007",
+    "AC-008",
+    "AC-009"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "prontuario",
+    "atendimento",
+    "cras",
+    "pessoa-atendida"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/login",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "users": [
+      {
+        "role": "operador",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_OPERADOR_CPF",
+          "password": "E2E_CLIENT_OPERADOR_PASSWORD"
+        }
+      },
+      {
+        "role": "operador_creas",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_CREAS_OPERADOR_CPF",
+          "password": "E2E_CLIENT_CREAS_OPERADOR_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "E2EAttendedPersonSeeder (plano 02): família 00000000-0000-4000-8000-000011403001 com RF 'E2E Pessoa CRAS Referência' e atendimento antigo do CRAS sem pessoa 00000000-0000-4000-8000-000011403101",
+      "Operador lotado no 'E2E CRAS Centro'; operador do CREAS lotado no 'E2E CREAS'",
+      "Catálogo global de tipos de atendimento com ao menos um tipo ativo",
+      "Re-executável: atendimentos se acumulam"
+    ]
+  },
+  "data": {
+    "cras_unit": "E2E CRAS Centro",
+    "creas_unit": "E2E CREAS",
+    "description_text": "Atendimento E2E-041 CRAS",
+    "creas_description_text": "Atendimento E2E-041 CREAS"
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "CRAS com a RF marcada salva e aparece no item (CA01)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/00000000-0000-4000-8000-000011403001?tab=atendimentos"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "attendance-register-action"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1000,
+          "note": "aguarda o Sheet abrir e carregar as opções"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-unit"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "${data.cras_unit}"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "aguarda a reconsulta de opções da unidade"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-type"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[role=\"option\"] >> nth=0"
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-description"
+          },
+          "value": "${data.description_text}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"attendance-person-\"] >> nth=0"
+          },
+          "note": "marca a RF (primeiro integrante)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-submit"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2000,
+          "note": "aguarda o POST e o recarregamento do histórico"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"attendance-expand-\"] >> nth=0"
+          },
+          "note": "expande o atendimento mais recente"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"attendance-row-\"]:has-text(\"E2E Pessoa CRAS Referência\") >> nth=0"
+          },
+          "note": "a pessoa atendida consta no item salvo"
+        }
+      ]
+    },
+    {
+      "name": "validation_error",
+      "title": "CRAS sem pessoa: marca de obrigatório e erro em Pessoas atendidas, nada salvo (CA02)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/00000000-0000-4000-8000-000011403001?tab=atendimentos"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "attendance-register-action"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1000,
+          "note": "aguarda o Sheet abrir e carregar as opções"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-unit"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "${data.cras_unit}"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "aguarda a reconsulta de opções da unidade"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-type"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[role=\"option\"] >> nth=0"
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-description"
+          },
+          "value": "${data.description_text}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-submit"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1000,
+          "note": "aguarda a validação"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-people-required"
+          },
+          "note": "campo marcado como obrigatório"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-people-error"
+          },
+          "note": "erro no campo Pessoas atendidas"
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "testid",
+            "value": "attendance-no-person-warning"
+          },
+          "value": 0,
+          "note": "sem o aviso de 'sem pessoa identificada'"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-submit"
+          },
+          "note": "o formulário continua aberto: nada foi salvo"
+        }
+      ]
+    },
+    {
+      "name": "creas_optional",
+      "title": "CREAS segue opcional: aviso atual e item salvo sem pessoa (CA03)",
+      "as_user": "operador_creas",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/00000000-0000-4000-8000-000011403001?tab=atendimentos"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "attendance-register-action"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1000,
+          "note": "aguarda o Sheet abrir e carregar as opções"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-unit"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "${data.creas_unit}"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "aguarda a reconsulta de opções da unidade"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-type"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[role=\"option\"] >> nth=0"
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-description"
+          },
+          "value": "${data.description_text}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-description"
+          },
+          "value": "${data.creas_description_text}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-submit"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2000,
+          "note": "aguarda o POST e o recarregamento do histórico"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"attendance-row-\"]:has-text(\"E2E CREAS\") [data-testid^=\"attendance-expand-\"] >> nth=0"
+          },
+          "note": "a descrição só aparece no detalhe do item"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "count",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-people-required"
+          },
+          "value": 0,
+          "note": "sem marca de obrigatório no CREAS"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"attendance-details-\"]:has-text(\"${data.creas_description_text}\") >> nth=0"
+          },
+          "note": "o atendimento do CREAS foi salvo sem pessoa"
+        }
+      ]
+    },
+    {
+      "name": "legacy_correction",
+      "title": "Corrigir antigo do CRAS sem pessoa: campo exigido (CT01)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/00000000-0000-4000-8000-000011403001?tab=atendimentos"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "attendance-expand-00000000-0000-4000-8000-000011403101"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "attendance-correct-00000000-0000-4000-8000-000011403101"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "aguarda o Sheet de correção carregar as opções"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-submit"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1000,
+          "note": "aguarda a validação"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-people-required"
+          },
+          "note": "campo obrigatório na correção"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-people-error"
+          },
+          "note": "erro no campo; o antigo não é gravado sem pessoa"
+        }
+      ]
+    }
+  ],
+  "not_applicable": {
+    "forbidden": "A HU não muda acesso nem permissão: a negativa de quem não registra atendimento é a existente.",
+    "empty_state": "A HU não muda a lista do histórico."
+  }
+}
