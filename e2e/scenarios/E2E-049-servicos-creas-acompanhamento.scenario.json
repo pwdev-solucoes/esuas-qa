@@ -1,0 +1,673 @@
+{
+  "schema_version": 1,
+  "id": "E2E-049",
+  "title": "Serviços do CREAS no ingresso do acompanhamento, com o integrante acompanhado",
+  "description": "HU #11409 (US-AJ-12), plano 02: o técnico do CREAS abre Registrar ingresso, vê os cinco serviços com rótulo 'sigla — nome', registra MSE (LA/PSC) para o adolescente e Situação de Rua para a pessoa, e o sem-integrante é barrado no campo. Massa do E2ECreasServicesSeeder (plano 03); executado no plano 03. Nenhum dado pessoal real.",
+  "feature_slug": "11409-servicos-creas-02-client",
+  "ac_refs": [
+    "AC-001",
+    "AC-002",
+    "AC-003",
+    "AC-004"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "prontuario",
+    "acompanhamento",
+    "creas",
+    "servicos"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/login",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "users": [
+      {
+        "role": "tecnico",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_CREAS_OPERADOR_CPF",
+          "password": "E2E_CLIENT_CREAS_OPERADOR_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Massa do E2ECreasServicesSeeder (plano 03): famílias 00000000-0000-4000-8000-000011409001 (PAEFI vigente, com adolescente) e 00000000-0000-4000-8000-000011409002 (pessoa em situação de rua, sem acompanhamento)",
+      "Técnico do CREAS com profissional ativo na unidade CREAS da massa",
+      "Nomes de unidade e de integrantes em data.* confirmados no plano 03 contra o seeder"
+    ]
+  },
+  "data": {
+    "unit_name": "E2E CREAS",
+    "adolescente_nome": "E2E Adolescente Serviços CREAS",
+    "pessoa_rua_nome": "E2E Pessoa em Situação de Rua"
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "CREAS lista os cinco serviços e registra MSE para o adolescente (CA01, CA04)",
+      "as_user": "tecnico",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/00000000-0000-4000-8000-000011409001?tab=acompanhamento"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"follow-up-register-action\"]"
+          },
+          "note": "abre Registrar ingresso"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "aguarda as opções do formulário"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"follow-up-form-unit\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "${data.unit_name}"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "reconsulta os serviços do tipo da unidade"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"follow-up-form-service\"]"
+          }
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "PAEFI —"
+          },
+          "note": "serviço listado: PAEFI (CA01)"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "MSE (LA/PSC) —"
+          },
+          "note": "serviço listado: MSE (LA/PSC) (CA01)"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "PcD e Idosos —"
+          },
+          "note": "serviço listado: PcD e Idosos (CA01)"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Abordagem Social —"
+          },
+          "note": "serviço listado: Abordagem Social (CA01)"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Situação de Rua —"
+          },
+          "note": "serviço listado: Situação de Rua (CA01)"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"follow-up-form-service\"]"
+          },
+          "note": "seletor de serviço aberto"
+        }
+      ]
+    },
+    {
+      "name": "happy_path_mse_adolescente",
+      "title": "Registrar MSE (LA/PSC) para o adolescente: dois acompanhamentos vigentes (CA04)",
+      "as_user": "tecnico",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/00000000-0000-4000-8000-000011409001?tab=acompanhamento"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"follow-up-register-action\"]"
+          },
+          "note": "abre Registrar ingresso"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "aguarda as opções do formulário"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"follow-up-form-unit\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "${data.unit_name}"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "reconsulta os serviços do tipo da unidade"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"follow-up-form-service\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "MSE (LA/PSC) —"
+          },
+          "note": "serviço individual"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"follow-up-form-member\"]"
+          },
+          "note": "o select do integrante aparece com o serviço individual"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "${data.adolescente_nome}"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"follow-up-form-submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2000,
+          "note": "aguarda o registro e a recarga da aba"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"follow-up-member\"]"
+          },
+          "value": "${data.adolescente_nome}",
+          "note": "aba mostra o integrante ao lado do serviço (CA04)"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"follow-up-row-\"]:has-text(\"PAEFI\")"
+          },
+          "note": "PAEFI segue vigente (CA04)"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"follow-up-row-\"]:has-text(\"MSE (LA/PSC)\")"
+          },
+          "note": "MSE (LA/PSC) vigente (CA04)"
+        }
+      ]
+    },
+    {
+      "name": "happy_path_situacao_de_rua",
+      "title": "Situação de Rua para a pessoa: planejamento e evolução disponíveis (CA02)",
+      "as_user": "tecnico",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/00000000-0000-4000-8000-000011409002?tab=acompanhamento"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"follow-up-register-action\"]"
+          },
+          "note": "abre Registrar ingresso"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "aguarda as opções do formulário"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"follow-up-form-unit\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "${data.unit_name}"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "reconsulta os serviços do tipo da unidade"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"follow-up-form-service\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Situação de Rua —"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"follow-up-form-member\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "${data.pessoa_rua_nome}"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"follow-up-form-submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2000,
+          "note": "aguarda o registro e a recarga da aba"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"follow-up-expand-\"]"
+          },
+          "note": "expande o acompanhamento para ver planejamento e evolução"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "aguarda o detalhe expandido"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"follow-up-member\"]"
+          },
+          "value": "${data.pessoa_rua_nome}",
+          "note": "Situação de Rua · pessoa (CA02)"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"follow-up-plan-action-\"]"
+          },
+          "note": "ação de planejamento disponível (CA02)"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"follow-up-evolution-register-\"]"
+          },
+          "note": "ação de registrar evolução disponível (CA02)"
+        }
+      ]
+    },
+    {
+      "name": "validation",
+      "title": "Situação de Rua sem integrante: erro no campo e nada gravado (CA02b)",
+      "as_user": "tecnico",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/00000000-0000-4000-8000-000011409002?tab=acompanhamento"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"follow-up-register-action\"]"
+          },
+          "note": "abre Registrar ingresso"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "aguarda as opções do formulário"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"follow-up-form-unit\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "${data.unit_name}"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "reconsulta os serviços do tipo da unidade"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"follow-up-form-service\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Situação de Rua —"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"follow-up-form-submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1000
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"follow-up-form-member-error\"]"
+          },
+          "note": "erro de integrante obrigatório (CA02b)"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"follow-up-form-sheet\"]"
+          },
+          "note": "o formulário segue aberto: nada foi gravado"
+        }
+      ]
+    }
+  ]
+}
