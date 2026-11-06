@@ -54,21 +54,17 @@ async function open(page: Page, family: string, tab?: string): Promise<void> {
     `/app/cadastros/familias/${family}${tab ? `?tab=${tab}` : ""}`,
   );
   await dismissPlatformUpdates(page);
-  await expect(
-    page.getByRole("tab", { name: "Composição Familiar", exact: true }),
-  ).toBeVisible({
+  // Abas em dois níveis: a Composição só existe no grupo Família; espera a navegação.
+  await expect(page.getByTestId("family-record-nav")).toBeVisible({
     timeout: 15_000,
   });
 }
 
-/** Rola a barra de abas até o fim, para o print mostrar as últimas abas. */
+/** Rola a navegação até o fim (as abas em dois níveis não rolam; mantido para o print). */
 async function showLastTabs(page: Page): Promise<void> {
-  await page
-    .getByTestId("family-tab-resumo")
-    .evaluate((tab) => {
-      const bar = tab.closest('[role="tablist"]') ?? tab.parentElement;
-      if (bar) bar.scrollLeft = bar.scrollWidth;
-    });
+  await page.getByTestId("family-record-nav").evaluate((nav) => {
+    nav.scrollLeft = nav.scrollWidth;
+  });
 }
 
 async function loggedPage(
