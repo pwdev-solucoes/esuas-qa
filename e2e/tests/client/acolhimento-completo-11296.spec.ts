@@ -41,9 +41,10 @@ const MASTER = {
 async function open(page: Page): Promise<void> {
   await page.goto(`/app/cadastros/familias/${FAMILY}?tab=acolhimento`);
   await dismissPlatformUpdates(page);
-  await expect(
-    page.getByRole("tab", { name: "Composição Familiar", exact: true }),
-  ).toBeVisible({ timeout: 15_000 });
+  // Abas em dois níveis: a Composição fica no grupo Família; espera a navegação.
+  await expect(page.getByTestId("family-record-nav")).toBeVisible({
+    timeout: 15_000,
+  });
 }
 
 async function api(
