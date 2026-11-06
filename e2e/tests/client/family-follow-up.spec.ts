@@ -1236,6 +1236,8 @@ test.describe('US-ACOMP-04 — acesso ao prontuário pela unidade que acompanha 
 
     // Não basta não negar: o prontuário tem de estar de fato na tela.
     await expect(axisPage.getByRole('heading', { name: /visualizar família/i })).toBeVisible();
+    // Navegação em dois níveis: a seção só existe no nível 2 do grupo dela.
+    await axisPage.getByTestId('family-tab-group-atendimento').click();
     await expect(axisPage.locator('#family-tab-acompanhamento')).toBeVisible();
 
     await axisPage.screenshot({ path: 'test-results/acomp04-a-acesso-concedido.png', fullPage: true });
@@ -1245,7 +1247,14 @@ test.describe('US-ACOMP-04 — acesso ao prontuário pela unidade que acompanha 
     await openRecord(axisPage);
 
     // Pelo `id` do botão, não pelo rótulo: o texto é traduzido e acentuado.
+    const groupOf: Record<string, string> = {
+      composicao: 'familia',
+      atendimentos: 'atendimento',
+      encaminhamentos: 'atendimento',
+    };
     for (const tabId of ['composicao', 'atendimentos', 'encaminhamentos']) {
+      // Abas em dois níveis: ativa o grupo antes de procurar a seção.
+      await axisPage.getByTestId(`family-tab-group-${groupOf[tabId]}`).click();
       const tab = axisPage.locator(`#family-tab-${tabId}`);
       await expect(tab, `aba ${tabId}`).toBeVisible();
       await tab.click();
