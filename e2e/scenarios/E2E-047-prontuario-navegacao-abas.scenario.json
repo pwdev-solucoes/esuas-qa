@@ -1,0 +1,352 @@
+{
+  "schema_version": 1,
+  "id": "E2E-047",
+  "title": "Prontuário: abas em dois níveis (grupos e seções), teclado e sigilo do grupo PSE",
+  "description": "Plano prontuario-ui-01: o prontuário abre por link direto com o grupo e a seção ativos; clicar num grupo ativa a primeira seção (ou a última visitada) e atualiza ?tab=; o teclado percorre as abas (setas, Enter); quem não lê nenhuma seção de Proteção Social Especial não vê o grupo. O modo celular (botão 'Seção' + lista agrupada) não cabe aqui porque o viewport do cenário é único (1440x900): é coberto por teste de componente e por playwright-cli em 390x844. Massa fictícia; nenhum dado pessoal. Na massa, o assistente administrativo lê ao menos uma seção de PSE (o grupo aparece só com as permitidas); a ausência do grupo inteiro é coberta por teste unitário (UNIT-007).",
+  "feature_slug": "prontuario-ui-01-navegacao-capa",
+  "ac_refs": [
+    "AC-001",
+    "AC-003",
+    "AC-004",
+    "AC-007"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "prontuario",
+    "navegacao",
+    "abas",
+    "a11y"
+  ],
+  "data": {
+    "family_uuid": "00000000-0000-4000-8000-000011296001"
+  },
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/auth/login",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "users": [
+      {
+        "role": "operador",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_OPERADOR_CPF",
+          "password": "E2E_CLIENT_OPERADOR_PASSWORD"
+        }
+      },
+      {
+        "role": "nao_tecnico",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_ADMIN_STAFF_CPF",
+          "password": "E2E_CLIENT_ADMIN_STAFF_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Massa do E2E (HU #11296): família …11296001 referenciada no 'E2E CRAS Centro'; o operador (técnico) e o assistente administrativo (não técnico) têm lotação nessa unidade",
+      "Um login por usuário por variante (throttle 6,1); a variante forbidden troca de usuário e por isso roda por último (sessão única)",
+      "Plano prontuario-ui-01 aplicado ao client (abas em dois níveis)"
+    ]
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "Link direto abre o grupo e a seção; trocar de grupo ativa a seção e atualiza ?tab= (AC-001, AC-003)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=atendimentos"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "family-record-nav"
+          },
+          "timeout_ms": 15000,
+          "note": "prontuário carregado"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "family-tab-group-diagnostico"
+          }
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"family-tab-group-diagnostico\"][aria-selected=\"true\"]"
+          }
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"family-tab-habitacao\"][aria-selected=\"true\"]"
+          },
+          "note": "primeira seção do grupo Diagnóstico (BR-004)"
+        },
+        {
+          "expect": "url",
+          "value": "tab=habitacao"
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "testid",
+            "value": "family-tab-atendimentos"
+          },
+          "value": 0,
+          "note": "o nível 2 só traz as seções do grupo ativo (BR-007)"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "#family-tabpanel-habitacao"
+          }
+        }
+      ]
+    },
+    {
+      "name": "keyboard",
+      "title": "Setas e Enter percorrem as abas do nível 2 (AC-004)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=resumo"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "family-record-nav"
+          },
+          "timeout_ms": 15000,
+          "note": "prontuário carregado"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "family-tab-resumo"
+          }
+        },
+        {
+          "action": "press",
+          "key": "ArrowRight",
+          "note": "move o foco para a próxima seção (Composição)"
+        },
+        {
+          "action": "press",
+          "key": "Enter",
+          "note": "ativa a seção focada"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"family-tab-composicao\"][aria-selected=\"true\"]"
+          }
+        },
+        {
+          "expect": "url",
+          "value": "tab=composicao"
+        }
+      ]
+    },
+    {
+      "name": "forbidden",
+      "title": "Quem não lê Acolhimento não vê a seção e a abertura por ?tab=acolhimento cai em Resumo (AC-007)",
+      "as_user": "nao_tecnico",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_ADMIN_STAFF_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_ADMIN_STAFF_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=acolhimento"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "family-record-nav"
+          },
+          "timeout_ms": 15000,
+          "note": "prontuário carregado"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "count",
+          "target": {
+            "by": "testid",
+            "value": "family-tab-acolhimento"
+          },
+          "value": 0
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"family-tab-resumo\"][aria-selected=\"true\"]"
+          },
+          "note": "leitura ausente: volta ao Resumo"
+        }
+      ]
+    }
+  ],
+  "not_applicable": {
+    "validation_error": "A navegação não tem formulário nem entrada que possa ser inválida.",
+    "empty_state": "A navegação sempre tem ao menos o grupo Família; não há estado vazio."
+  }
+}
