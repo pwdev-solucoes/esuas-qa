@@ -66,7 +66,8 @@ async function loginNew(
 async function openFamily(page: Page): Promise<void> {
   await page.goto(`/app/cadastros/familias/${FAMILY}?tab=acolhimento`);
   await dismissPlatformUpdates(page);
-  await expect(page.getByTestId("family-tab-resumo")).toBeVisible({
+  // Abas em dois níveis: com ?tab=acolhimento o Resumo não está no nível 2; espera a navegação.
+  await expect(page.getByTestId("family-record-nav")).toBeVisible({
     timeout: 15_000,
   });
 }
