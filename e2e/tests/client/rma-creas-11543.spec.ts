@@ -125,7 +125,7 @@ async function xsrf(api: APIRequestContext): Promise<string> {
 
 async function situation(api: APIRequestContext): Promise<{ uuid: string; rma_items: string[] }> {
   const res = await api.get("/api/violence-record-situations", { params: { per_page: 100 } });
-  expect(res.ok(), "GET violence-record-situations").toBe(true);
+  expect(res.ok(), `GET violence-record-situations (${res.status()})`).toBe(true);
   const body = (await res.json()) as { data: { uuid: string; code: string; rma_items: string[] }[] };
   const found = body.data.find((row) => row.code === SITUATION_CODE);
   expect(found, `situação ${SITUATION_CODE} do Quadro 3`).toBeTruthy();
