@@ -73,16 +73,17 @@ test.describe("US-AJ-04 #11402 — capa do prontuário (client)", () => {
     await dismissPlatformUpdates(page);
     await openFamily(page);
 
-    await expect(page.getByText("Referência Familiar:")).toContainText(
+    // Capa compacta (prontuario-ui-01): o nome da RF é o título da capa,
+    // sem o rótulo "Referência Familiar:".
+    await expect(page.getByTestId("family-record-responsible")).toContainText(
       "E2E Capa Nome Social",
     );
     await expect(page.getByTestId("cover-civil-name")).toContainText(
       "E2E Capa Civil Responsável",
     );
 
-    await page
-      .getByRole("tab", { name: "Composição Familiar", exact: true })
-      .click();
+    // A aba leva o contador de membros no nome acessível (prontuario-ui-01).
+    await page.getByTestId("family-tab-composicao").click();
     const civil = page.locator('[data-testid^="member-civil-name-"]');
     const nick = page.locator('[data-testid^="member-nickname-"]');
     await expect(civil.first()).toContainText("E2E Capa Civil Responsável", {
