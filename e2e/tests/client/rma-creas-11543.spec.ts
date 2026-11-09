@@ -97,6 +97,37 @@ async function evidence(target: Page | Locator, name: string): Promise<void> {
   }
 }
 
+/**
+ * Print de vários elementos empilhados num só PNG: tira o print de cada um e monta a
+ * composição numa página em branco (a rolagem do app é interna, então um recorte único
+ * por coordenadas não é confiável).
+ */
+async function evidenceRegion(page: Page, targets: Locator[], name: string): Promise<void> {
+  if (process.env.CAPTURE_EVIDENCE !== "1") return;
+  await fs.promises.mkdir(EVIDENCE_DIR, { recursive: true });
+  const images: string[] = [];
+  for (const target of targets) {
+    await target.scrollIntoViewIfNeeded();
+    const buffer = await target.screenshot();
+    images.push(`data:image/png;base64,${buffer.toString("base64")}`);
+  }
+  const composer = await page.context().newPage();
+  try {
+    await composer.setContent(
+      `<body style="margin:0;padding:12px;background:#fff;font:12px sans-serif">${images
+        .map((src) => `<img src="${src}" style="display:block;margin-bottom:12px" />`)
+        .join("")}</body>`,
+    );
+    await composer.setViewportSize({ width: 1100, height: 100 });
+    await composer.screenshot({
+      path: path.join(EVIDENCE_DIR, `${name}.png`),
+      fullPage: true,
+    });
+  } finally {
+    await composer.close();
+  }
+}
+
 function cell(page: Page, item: string, key: string): Locator {
   return page.getByTestId(`creas-rma-cell-${item}-${key}`);
 }
@@ -191,7 +222,11 @@ test.describe("US-RMA-01 #11543 — RMA do CREAS apurado do prontuário", () => 
     await expect(page.getByTestId("creas-rma-calculated-at")).toBeVisible();
     await expect(cell(page, "A-1", "total")).toHaveText("12");
     await expect(cell(page, "A-2", "total")).toHaveText("3");
-    await evidence(page.getByTestId("creas-rma-header"), "CA01-rma-do-mes");
+    await evidenceRegion(
+      page,
+      [page.getByTestId("creas-rma-header"), page.getByTestId("creas-rma-item-A-2")],
+      "CA01-rma-do-mes",
+    );
   });
 
   test("CA02 — perfis dos casos novos: duas famílias do Bolsa Família (B.1 = 2)", async () => {
@@ -204,7 +239,11 @@ test.describe("US-RMA-01 #11543 — RMA do CREAS apurado do prontuário", () => 
     test.skip(!shared, "sem sessão do técnico");
     await expect(cell(shared!, "B-6", "f_0_12")).toHaveText("1");
     await expect(cell(shared!, "C-2", "f_7_12")).toHaveText("1");
-    await evidence(shared!.getByTestId("creas-rma-item-B-6"), "CA03-vitima-sexo-idade");
+    await evidenceRegion(
+      shared!,
+      [shared!.getByTestId("creas-rma-item-B-6"), shared!.getByTestId("creas-rma-item-C-2")],
+      "CA03-vitima-sexo-idade",
+    );
   });
 
   test("CA04 — indício e confirmação da mesma pessoa contam uma vez (C.2 total = 1)", async () => {
