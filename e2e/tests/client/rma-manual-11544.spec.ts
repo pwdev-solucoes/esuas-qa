@@ -64,7 +64,9 @@ async function openRma(page: Page, month: string): Promise<void> {
 }
 
 async function save(page: Page): Promise<void> {
+  const saved = page.waitForResponse((r) => r.url().includes("/creas-rmas/manual-values") && r.request().method() === "PUT");
   await page.getByTestId("rma-save-manual").click();
+  expect((await saved).ok()).toBe(true);
   await expect(page.getByTestId("rma-save-manual")).toBeDisabled();
 }
 
@@ -91,7 +93,7 @@ test.describe("US-RMA-02 #11544 — digitação e impressão do RMA do CREAS", (
     reseed();
   });
 
-  test("técnico: CA03 (não oferta), CA05 (30 → 32), CA01/02/04/07 e CA06 (impressão)", async ({ browser }) => {
+  test("técnico: CA03 (não oferta), CA01/02/04/07, CA06 (impressão) e CA05 (30 → 32)", async ({ browser }) => {
     test.setTimeout(240_000);
     const context = await browser.newContext({ baseURL: BASE, locale: "pt-BR", viewport: { width: 1440, height: 1100 } });
     page = await context.newPage();
@@ -107,13 +109,6 @@ test.describe("US-RMA-02 #11544 — digitação e impressão do RMA do CREAS", (
     await shot(blockIv, "CA03-nao-ofertado");
     await page.getByTestId("rma-not-offered-IV").click();
     await save(page);
-
-    // CA05 — 2026-09: L.1 de 30 para 32.
-    await openRma(page, "2026-09");
-    await expect(page.getByTestId("rma-cell-L.1-total")).toHaveValue("30");
-    await fill(page, { "L.1-total": "32" });
-    await save(page);
-    await expect(page.getByTestId("rma-cell-L.1-total")).toHaveValue("32");
 
     // CA01/CA02/CA04/CA07/CA06 — 2026-10.
     await openRma(page, "2026-10");
@@ -140,6 +135,7 @@ test.describe("US-RMA-02 #11544 — digitação e impressão do RMA do CREAS", (
     const dialog = page.getByTestId("rma-print-pending-dialog");
     await expect(dialog).toBeVisible();
     await expect(page.getByTestId("rma-print-pending-item").first()).toContainText("B.5");
+    await page.waitForTimeout(900); // fim da animação do diálogo
     await shot(page, "CA07-aviso-pendencias");
     await page.getByTestId("rma-print-back").click();
     await expect(dialog).toBeHidden();
@@ -154,6 +150,13 @@ test.describe("US-RMA-02 #11544 — digitação e impressão do RMA do CREAS", (
     await download.saveAs(pdf);
     expect(fs.readFileSync(pdf).subarray(0, 5).toString()).toBe("%PDF-");
     execFileSync("pdftoppm", ["-png", "-r", "80", "-f", "1", "-l", "1", "-singlefile", pdf, path.join(SHOTS, "CA06-rma-impresso")]);
+
+    // CA05 — 2026-09 (por último: o evento tem de ser o mais recente da trilha, que pagina por -id): L.1 de 30 para 32.
+    await openRma(page, "2026-09");
+    await expect(page.getByTestId("rma-cell-L.1-total")).toHaveValue("30");
+    await fill(page, { "L.1-total": "32" });
+    await save(page);
+    await expect(page.getByTestId("rma-cell-L.1-total")).toHaveValue("32");
   });
 
   test("Master: CA05 na Auditoria (de 30 para 32)", async ({ browser }) => {
@@ -173,8 +176,10 @@ test.describe("US-RMA-02 #11544 — digitação e impressão do RMA do CREAS", (
       await rows.nth(i).getByTestId("tenant-audit-view-detail").click();
       const detail = page.getByTestId("tenant-audit-detail");
       await expect(detail).toBeVisible();
+      await detail.getByTestId("audit-value-changes").waitFor({ state: "visible", timeout: 6_000 }).catch(() => undefined);
       if (await detail.getByTestId("audit-value-change").filter({ hasText: "de 30 para 32" }).count()) {
         await expect(detail).toContainText("L.1 · 09/2026 · E2E CREAS RMA");
+        await page.waitForTimeout(900); // fim da animação do painel
         await shot(page, "CA05-auditoria-de-30-para-32");
         found = true;
       }
