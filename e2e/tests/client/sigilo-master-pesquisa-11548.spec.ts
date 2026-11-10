@@ -256,6 +256,12 @@ test.describe("US-AJ-13 #11548 — sigilo do Master e pesquisa por CPF", () => {
     browser,
   }, testInfo) => {
     const page = await startSession(browser, OPERADOR);
+    // CA04 (print): o técnico conduz a família e a ação de registrar aparece.
+    await openTab(page, "acolhimento");
+    await expect(page.getByTestId("sheltering-register-action")).toBeVisible({
+      timeout: 15_000,
+    });
+    await captureEvidence(page, testInfo, EVIDENCE_SLUG, "ca04-tecnico-registra");
     await openTab(page, "anotacoes");
     await page.getByTestId("family-note-register-action").click();
     await expect(page.getByTestId("family-note-form-sheet")).toBeVisible();
@@ -265,7 +271,18 @@ test.describe("US-AJ-13 #11548 — sigilo do Master e pesquisa por CPF", () => {
       .click();
     const notice = page.getByTestId("family-note-readers-notice");
     await expect(notice).toContainText(/todas as unidades/i);
+    await page.waitForTimeout(600);
     await captureEvidence(page, testInfo, EVIDENCE_SLUG);
+    // CA08 (print): referência sigilosa → aviso de equipe técnica.
+    await page.getByTestId("family-note-block-select").click();
+    await page
+      .getByRole("option", { name: "Condições de saúde", exact: true })
+      .click();
+    await expect(page.getByTestId("family-note-block-notice")).toContainText(
+      /equipe técnica/i,
+    );
+    await page.waitForTimeout(600);
+    await captureEvidence(page, testInfo, EVIDENCE_SLUG, "ca08-aviso-saude");
   });
 
   test("DoD — o auxiliar administrativo não lê nem registra o sigiloso da família (a evidência é a ausência)", async ({
