@@ -125,8 +125,8 @@ test.describe('E2E-050 RMA do CREAS apurado do prontuário, no desenho do formul
     await expect(page.getByTestId('creas-rma-header')).toBeVisible();
     // selo do item manual (RN02)
     await expect(page.getByTestId('creas-rma-source-B-5')).toContainText('Não informado');
-    // célula sem valor mostra '—', nunca 0 (RN02)
-    await expect(page.getByTestId('creas-rma-cell-B-5-total')).toContainText('—');
+    // B.5 é digitável na #11544: campo vazio (nunca 0) enquanto não informado (RN02)
+    await expect(page.getByTestId('rma-cell-B.5-total')).toHaveValue('');
   });
 
   test('permission — Técnico do CRAS Rural não vê o item e recebe acesso negado pela URL (CA10)', {

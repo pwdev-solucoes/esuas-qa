@@ -405,13 +405,13 @@
           "note": "selo do item manual (RN02)"
         },
         {
-          "expect": "text",
+          "expect": "value",
           "target": {
             "by": "testid",
-            "value": "creas-rma-cell-B-5-total"
+            "value": "rma-cell-B.5-total"
           },
-          "value": "—",
-          "note": "célula sem valor mostra '—', nunca 0 (RN02)"
+          "value": "",
+          "note": "B.5 é digitável na #11544: campo vazio (nunca 0) enquanto não informado (RN02)"
         }
       ]
     },
