@@ -305,10 +305,10 @@
           "expect": "text",
           "target": {
             "by": "css",
-            "value": "[data-testid=\"activity-report-line\"]:has-text(\"B.15\") [data-testid=\"activity-report-line-status\"]"
+            "value": "[data-testid=\"activity-report-line\"]:has-text(\"A.1\") [data-testid=\"activity-report-line-status\"]"
           },
           "value": "Não informado",
-          "note": "nada foi salvo"
+          "note": "o PUT recusado não gravou nada: A.1 segue sem valor (B.15 pode já ter o 6 do happy_path, a variante não depende da ordem)"
         }
       ]
     },
