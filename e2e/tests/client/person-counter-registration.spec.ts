@@ -166,6 +166,8 @@ test.describe('HU #10660 — balcao: localizar e cadastrar pessoa (client)', () 
     await page.getByTestId('global-person-link').click();
     await expect(page.getByTestId('confirm-identity-dialog')).toBeVisible();
 
+    // HU #11549: a localização da família abre em "Número do prontuário"; o código familiar é o modo alternativo.
+    await page.getByTestId('confirm-family-mode-family-code').check();
     await page.locator('#confirm-family-code').fill(FAMILY_CODE);
     await page.getByTestId('confirm-locate-family').click();
     await expect(page.getByTestId('confirm-family-found')).toBeVisible();
@@ -202,6 +204,8 @@ test.describe('HU #10660 — balcao: localizar e cadastrar pessoa (client)', () 
     await searchByCpf(page, OUTSIDE_CPF!);
 
     await page.getByTestId('global-person-link').click();
+    // HU #11549: a localização da família abre em "Número do prontuário"; o código familiar é o modo alternativo.
+    await page.getByTestId('confirm-family-mode-family-code').check();
     await page.locator('#confirm-family-code').fill(FAMILY_CODE);
     await page.getByTestId('confirm-locate-family').click();
     await expect(page.getByTestId('confirm-family-found')).toBeVisible();
