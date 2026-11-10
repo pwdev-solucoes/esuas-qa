@@ -160,6 +160,12 @@ test.describe("US-AJ-13 #11548 — sigilo do Master e pesquisa por CPF", () => {
         page.locator("main").getByRole("button", { name: REGISTER_ACTION }),
         `aba ${tab}`,
       ).toHaveCount(0);
+      if (tab === "convivencia") {
+        // O print precisa mostrar o bloco sigiloso (avaliação técnica das relações).
+        await page
+          .getByRole("heading", { name: /Relações intrafamiliares/i })
+          .scrollIntoViewIfNeeded();
+      }
       await captureEvidence(page, testInfo, EVIDENCE_SLUG, tab);
     }
     // P1: a anotação continua permitida ao Master.
