@@ -41,6 +41,8 @@ const FAMILY_WITH_HISTORY = process.env.E2E_CLIENT_FAMILY_WITH_HISTORY_UUID ?? F
 const FAMILY_WITH_DIVERGENCE = process.env.E2E_CLIENT_FAMILY_WITH_DIVERGENCE_UUID;
 const PERSON_IN_OTHER_FAMILY_CPF = process.env.E2E_CLIENT_PERSON_IN_OTHER_FAMILY_CPF;
 const PERSON_FREE_CPF = process.env.E2E_CLIENT_PERSON_FREE_CPF;
+// HU #11549: nascimento fictício da pessoa livre da massa (E2EProntuarioSeeder) para a confirmação de identidade.
+const PERSON_FREE_BIRTH_DATE = process.env.E2E_CLIENT_PERSON_FREE_BIRTH_DATE ?? '1995-11-30';
 
 const configured = Boolean(BASE && OPERADOR_CPF && OPERADOR_PASS && FAMILY_UUID);
 
@@ -151,23 +153,31 @@ test.describe('HU #10620 — composição familiar editável (client)', () => {
     await page.getByTestId('add-member-cpf-submit').click();
     await page.waitForLoadState('networkidle');
 
-    await page.getByTestId('add-member-select-person').first().click();
-    await expect(page.getByTestId('add-member-selected')).toBeVisible();
+    // HU #11549 — o painel deixou de listar resultados da Pesquisa de Pessoas: o CPF
+    // devolve um DESFECHO. A pessoa sem família que o município nunca cadastrou nem
+    // teve em família pede a confirmação de identidade (RN02) dentro do painel; se a
+    // rodada anterior já a incluiu aqui, o desfecho é "já integra esta família".
+    const jaAqui = page.getByTestId('add-member-already-here');
+    await expect(jaAqui.or(page.getByTestId('add-member-identity'))).toBeVisible();
+    if (!(await jaAqui.isVisible())) {
+      await expect(page.getByTestId('add-member-identity')).toBeVisible();
 
-    // CA09 — o parentesco é sempre EM RELAÇÃO à pessoa de referência.
-    await expect(page.getByTestId('add-member-drawer')).toContainText(
-      /parentesco com a pessoa de referência/i,
-    );
-    await page.getByTestId('add-member-kinship-trigger').click();
-    await page.getByRole('option').first().click();
+      // CA09 — o parentesco é sempre EM RELAÇÃO à pessoa de referência.
+      await expect(page.getByTestId('add-member-drawer')).toContainText(
+        /parentesco com a pessoa de referência/i,
+      );
+      await page.getByTestId('add-member-kinship-trigger').click();
+      await page.getByRole('option').first().click();
 
-    await page.getByTestId('add-member-submit').click();
-    await page.waitForLoadState('networkidle');
+      await page.getByTestId('add-member-confirm-value').fill(PERSON_FREE_BIRTH_DATE);
+      await page.getByTestId('add-member-confirm-submit').click();
+      await page.waitForLoadState('networkidle');
 
-    await expect(page.getByTestId('add-member-drawer')).toHaveCount(0);
+      await expect(page.getByTestId('add-member-drawer')).toHaveCount(0);
+    }
   });
 
-  test('CA04 — pessoa já em outra família: a tela INFORMA e CONDUZ, sem desvincular sozinha', async ({
+  test('CA04 — pessoa já em outra família: a tela INFORMA ANTES do clique, sem desvincular sozinha', async ({
     page,
   }) => {
     test.skip(!PERSON_IN_OTHER_FAMILY_CPF, 'Defina E2E_CLIENT_PERSON_IN_OTHER_FAMILY_CPF.');
@@ -180,24 +190,19 @@ test.describe('HU #10620 — composição familiar editável (client)', () => {
     await page.getByTestId('add-member-cpf-submit').click();
     await page.waitForLoadState('networkidle');
 
-    await page.getByTestId('add-member-select-person').first().click();
-    await page.getByTestId('add-member-kinship-trigger').click();
-    await page.getByRole('option').first().click();
-    await page.getByTestId('add-member-submit').click();
-    await page.waitForLoadState('networkidle');
-
-    const conflito = page.getByTestId('member-conflict-dialog');
-    await expect(conflito).toBeVisible();
-    await expect(page.getByTestId('conflict-requires-unlink')).toContainText(
-      /registre primeiro o desvínculo/i,
+    // HU #11549 (RN04/RN05) — muda de propósito: o aviso aparece IMEDIATAMENTE, antes de
+    // qualquer clique em "Incluir na composição" (que fica desabilitado). O 409 e o
+    // `MemberConflictDialog` seguem como rede de segurança, cobertos pelo Vitest.
+    await expect(page.getByTestId('add-member-conflict-notice')).toBeVisible();
+    await expect(page.getByTestId('add-member-conflict-notice')).toContainText(
+      /registre primeiro o desvínculo|desvínculo cabe à equipe/i,
     );
-    await expect(page.getByTestId('conflict-requires-unlink')).toContainText(
-      /não desvincula por conta própria/i,
-    );
+    await expect(page.getByTestId('add-member-submit')).toBeDisabled();
 
     // O CRITÉRIO da CA04: não existe, aqui, ação alguma que desvincule.
-    await expect(conflito.getByRole('button', { name: /desvincular/i })).toHaveCount(0);
-    await expect(conflito.getByRole('button', { name: /excluir/i })).toHaveCount(0);
+    const painel = page.getByTestId('add-member-drawer');
+    await expect(painel.getByRole('button', { name: /desvincular/i })).toHaveCount(0);
+    await expect(painel.getByRole('button', { name: /excluir/i })).toHaveCount(0);
 
     await page.screenshot({
       path: 'test-results/10620-ca04-conflito.png',
