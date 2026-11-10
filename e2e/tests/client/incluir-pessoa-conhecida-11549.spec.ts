@@ -88,19 +88,31 @@ async function pickFirstKinship(page: Page): Promise<void> {
   await expect(page.getByTestId("add-member-kinship-trigger")).not.toContainText(/Selecione/);
 }
 
-/** Redação do print: o CPF digitado vira bolinhas (a massa é fictícia, mas o dossiê não mostra CPF). */
-async function redactCpfFields(page: Page): Promise<void> {
-  await page
-    .locator('[data-testid="add-member-cpf-input"], #person-search-cpf')
-    .evaluateAll((els) => els.forEach((el) => ((el as HTMLInputElement).type = "password")));
+/**
+ * Redação do print: o CPF digitado vira bolinhas e os CPFs listados na composição viram
+ * máscara (a massa é fictícia, mas o dossiê não mostra CPF). O CA08 mantém o CPF da
+ * referência no Resumo, porque é justamente o que ele prova.
+ */
+async function redactCpfs(page: Page, keepListedCpf: boolean): Promise<void> {
+  await page.evaluate((keep) => {
+    document
+      .querySelectorAll<HTMLInputElement>('[data-testid="add-member-cpf-input"], #person-search-cpf')
+      .forEach((el) => (el.type = "password"));
+    if (keep) return;
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+      node.textContent = (node.textContent ?? "").replace(/\d{3}\.\d{3}\.\d{3}-\d{2}/g, "***.***.***-**");
+    }
+  }, keepListedCpf);
 }
 
 async function evidence(
   page: Page,
   testInfo: Parameters<typeof captureEvidence>[1],
   suffix?: string,
+  keepListedCpf = false,
 ): Promise<void> {
-  await redactCpfFields(page);
+  await redactCpfs(page, keepListedCpf);
   await captureEvidence(page, testInfo, EVIDENCE_SLUG, suffix);
 }
 
@@ -237,7 +249,7 @@ test.describe("US-AJ-14 #11549 — incluir pessoa conhecida pelo município", ()
     const bloco = page.getByTestId("summary-responsible");
     await expect(bloco).toBeVisible({ timeout: 15_000 });
     await expect(bloco).toContainText(/\d{3}\.\d{3}\.\d{3}-\d{2}/);
-    await evidence(page, testInfo);
+    await evidence(page, testInfo, undefined, true);
   });
 
   test("CA09 — técnico de uma só unidade não vê o botão Trocar unidade (a evidência é a ausência)", async ({}, testInfo) => {
