@@ -1,0 +1,377 @@
+{
+  "schema_version": 1,
+  "id": "E2E-054",
+  "title": "O Master lê o acolhimento sem registrar e o técnico registra, com aviso coerente na anotação de saúde",
+  "description": "HU #11548 (CA01, CA04, CA08), plano 03: o técnico do CRAS Centro registra um acolhimento e uma anotação de condições de saúde, vendo o aviso 'equipe técnica' no formulário e na confirmação; o Master lê o acolhimento e não tem 'Registrar acolhimento'. Massa fictícia; nenhum dado pessoal.",
+  "feature_slug": "11548-sigilo-master-03-evidencias",
+  "ac_refs": [
+    "AC-002"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "sigilo",
+    "master",
+    "acolhimento"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/auth/login",
+    "viewport": {
+      "width": 1440,
+      "height": 1600
+    },
+    "users": [
+      {
+        "role": "operador_cras_centro",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_OPERADOR_CPF",
+          "password": "E2E_CLIENT_OPERADOR_PASSWORD"
+        }
+      },
+      {
+        "role": "master",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_MASTER_CPF",
+          "password": "E2E_CLIENT_MASTER_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "E2ESigiloMasterPesquisaSeeder aplicado (família E2E Sigilo Master no CRAS Centro com um acolhimento)",
+      "Um login por usuário por execução (throttle 6,1)"
+    ]
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "O técnico registra acolhimento e anotação de saúde com aviso coerente (CA04, CA08)",
+      "as_user": "operador_cras_centro",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/00000000-0000-4000-8000-000011548001?tab=acolhimento",
+          "note": "CA04: o técnico abre o Acolhimento da família"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"sheltering-register-action\"]"
+          },
+          "timeout_ms": 15000,
+          "note": "CA04: 'Registrar acolhimento' visível para o técnico"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"sheltering-register-action\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"sheltering-form-sheet\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"sheltering-form-member\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "E2E Sigilo Master Criança"
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"sheltering-form-started\"]"
+          },
+          "value": "2026-09-01"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"sheltering-form-modality-institutional\"]"
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"sheltering-form-reason\"]"
+          },
+          "value": "Acolhimento fictício registrado pelo técnico (E2E-054)."
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"sheltering-form-submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"sheltering-row-\"]:has-text(\"Em curso\") >> nth=0"
+          },
+          "timeout_ms": 15000,
+          "note": "CA04: o registro do técnico foi gravado"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/00000000-0000-4000-8000-000011548001?tab=anotacoes",
+          "note": "CA08: anotação de saúde"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"family-note-register-action\"]"
+          },
+          "timeout_ms": 15000
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"family-note-register-action\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"family-note-readers-pending\"]"
+          },
+          "note": "CA08: antes de escolher a referência o aviso é neutro"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"family-note-unit-select\"]"
+          },
+          "note": "o operador tem mais de uma lotação"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "E2E CRAS Centro"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"family-note-block-select\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Condições de saúde",
+            "exact": true
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"family-note-block-notice\"]"
+          },
+          "note": "CA08: aviso do bloco mostra 'equipe técnica'"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"family-note-content\"]"
+          },
+          "value": "Anotação fictícia de saúde (E2E-054)."
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"family-note-submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "text",
+            "value": "equipe técnica"
+          },
+          "timeout_ms": 8000,
+          "note": "CA08: o aviso do toast é o mesmo do formulário"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "hidden",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"family-note-form-sheet\"]"
+          },
+          "note": "o formulário fechou: a anotação foi aceita"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"family-note-item\"]:has-text(\"Anotação fictícia de saúde (E2E-054).\") >> nth=0"
+          },
+          "note": "a anotação aparece na lista"
+        }
+      ]
+    },
+    {
+      "name": "forbidden",
+      "title": "O Master lê o acolhimento e não vê 'Registrar acolhimento' (CA01)",
+      "as_user": "master",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/00000000-0000-4000-8000-000011548001?tab=acolhimento",
+          "note": "CA01: o Master abre o Acolhimento"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"sheltering-block\"]"
+          },
+          "timeout_ms": 15000
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"sheltering-row-\"] >> nth=0"
+          },
+          "timeout_ms": 15000,
+          "note": "CA01: o Master lê o registro"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"sheltering-block\"]"
+          }
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"sheltering-register-action\"]"
+          },
+          "value": 0,
+          "note": "a evidência é a ausência: sem 'Registrar acolhimento'"
+        }
+      ]
+    }
+  ]
+}
