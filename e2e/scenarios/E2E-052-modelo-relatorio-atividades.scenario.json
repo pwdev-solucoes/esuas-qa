@@ -2,7 +2,7 @@
   "schema_version": 1,
   "id": "E2E-052",
   "title": "Modelo do Relatório de Atividades: o Master monta, ativa e pré-visualiza",
-  "description": "HU #11545 (US-RAT-01), plano 02: o Master cria o modelo de Pilar do CREAS com dois blocos, linha digitada, linha com subitens (cesta básica do sistema e gás digitada) e B.6 do sistema, ativa e vê 'Ativo'; pré-visualiza B.6 calculada para a unidade 'E2E CREAS RMA' em 2026-10; e a linha de sistema sem código é barrada no campo. Massa do plano 03; executado no plano 03. Nenhum dado pessoal real.",
+  "description": "HU #11545 (US-RAT-01), plano 02: o Master cria o modelo de Pilar do CREAS com dois blocos, linha digitada, linha com subitens (cesta básica do sistema e gás digitada) e B.6 do sistema, ativa e vê 'Ativo'; pré-visualiza B.6 calculada para a unidade 'E2E CREAS RMA' em 2026-10; e a linha de sistema sem código é barrada no campo. Massa do plano 03; executado no plano 03. Nenhum dado pessoal real. Os selects nativos recebem o VALUE (código '002' do tipo CREAS; uuid da unidade 'E2E CREAS RMA'), não o rótulo.",
   "feature_slug": "11545-rat-modelo-02-client",
   "ac_refs": [
     "AC-001",
@@ -41,7 +41,7 @@
   },
   "data": {
     "template_title": "Relatório das Atividades – CREAS (E2E-052)",
-    "unit_type": "CREAS",
+    "unit_type": "002",
     "block1_title": "Bloco 1 – Atividades de acompanhamento",
     "block2_title": "Bloco 2 – Encaminhamentos",
     "line_a1": "Famílias em acompanhamento (digitada)",
@@ -49,7 +49,7 @@
     "sub_cesta": "Cesta básica",
     "sub_gas": "Auxílio gás (digitada)",
     "line_b6": "Encaminhamentos realizados",
-    "unit_name": "E2E CREAS RMA",
+    "unit_name": "00000000-0000-4000-8000-000011543051",
     "month": "2026-10"
   },
   "variants": [
@@ -460,8 +460,8 @@
         {
           "expect": "text",
           "target": {
-            "by": "testid",
-            "value": "art-line-source"
+            "by": "css",
+            "value": "[data-testid=\"art-line\"] >> nth=0"
           },
           "value": "Digitada pela equipe",
           "note": "CA04: linha digitada marcada"
@@ -590,11 +590,13 @@
           "note": "CA02: B.6 com selo Calculada"
         },
         {
-          "expect": "visible",
+          "expect": "text",
           "target": {
-            "by": "testid",
-            "value": "art-preview-value"
-          }
+            "by": "css",
+            "value": "[data-testid=\"art-preview-line\"]:has-text(\"B.6\") [data-testid=\"art-preview-value\"]"
+          },
+          "value": "4",
+          "note": "CA02: B.6 da E2E CREAS RMA em 2026-10 = 4 encaminhamentos código 14 (massa do plano 03)"
         }
       ]
     },
