@@ -1,0 +1,434 @@
+{
+  "schema_version": 1,
+  "id": "E2E-056",
+  "title": "Violência e medidas: o CRAS identifica e o CREAS conduz",
+  "description": "HU #11550 (US-AJ-15), plano 04: o técnico do CRAS Centro registra uma situação no Quadro 3 de uma família sem vínculo com o CREAS (a assinatura mostra \"(CRAS)\" e o formulário lembra de encaminhar ao CREAS); volta a registrar depois do retorno do encaminhamento; e não registra medida socioeducativa (só lê). Massa fictícia (E2EViolenceCrasCreasSeeder); nenhum dado pessoal real.",
+  "feature_slug": "11550-violencia-creas-04-evidencias",
+  "ac_refs": [
+    "AC-002"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "prontuario",
+    "violencia",
+    "quadro-3",
+    "creas",
+    "medidas-socioeducativas"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/login",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "users": [
+      {
+        "role": "operador_cras",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_OPERADOR_CPF",
+          "password": "E2E_CLIENT_OPERADOR_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Massa do E2EViolenceCrasCreasSeeder: famílias …11550001 (sem vínculo com o CREAS, com adolescente e uma medida LA do CRAS) e …11550003 (encaminhamento com retorno)",
+      "Técnico do CRAS Centro (E2E_CLIENT_OPERADOR_*)",
+      "happy_path registra no Quadro 3 da …11550001; o seeder remove esse registro a cada rodada"
+    ]
+  },
+  "data": {
+    "family_1_uuid": "00000000-0000-4000-8000-000011550001",
+    "family_3_uuid": "00000000-0000-4000-8000-000011550003",
+    "measure_uuid": "00000000-0000-4000-8000-000011550a01"
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "O CRAS registra uma situação no Quadro 3 e a assinatura mostra \"(CRAS)\" com o lembrete do CREAS (CA01)",
+      "as_user": "operador_cras",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_1_uuid}?tab=violencia"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "violence-records-section"
+          },
+          "timeout_ms": 15000,
+          "note": "Quadro 3 carregado"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "violence-records-register"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "violence-record-form-sheet"
+          },
+          "timeout_ms": 10000
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "violence-record-member-select"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "E2E 11550 Adolescente 1",
+            "exact": true
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"violence-record-situation-row\"][data-index=\"0\"] [data-testid=\"violence-record-situation-select\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Violência psicológica",
+            "exact": true
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"violence-record-situation-row\"][data-index=\"0\"] [data-testid=\"violence-record-evidence-level\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Indício",
+            "exact": true
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "violence-record-month-select"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Setembro",
+            "exact": true
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "violence-creas-referral-reminder"
+          },
+          "timeout_ms": 10000,
+          "note": "o lembrete de encaminhar ao CREAS aparece no formulário da unidade CRAS (RN04)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "violence-record-submit"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"violence-record-item\"]:has-text(\"09/2026\") >> nth=0"
+          },
+          "timeout_ms": 10000,
+          "note": "o registro entra no cartão"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"violence-record-item\"]:has-text(\"09/2026\") [data-testid=\"violence-record-signature\"] >> nth=0"
+          },
+          "value": "(CRAS)",
+          "note": "a assinatura mostra o tipo da unidade (RN05)"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"violence-record-item\"]:has-text(\"09/2026\") >> nth=0"
+          },
+          "value": "Indício"
+        }
+      ]
+    },
+    {
+      "name": "retorno",
+      "title": "Com o retorno do encaminhamento, o CRAS volta a ver as ações de registrar nos Quadros 1 e 3 (CA04)",
+      "as_user": "operador_cras",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_3_uuid}?tab=violencia"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "violence-records-section"
+          },
+          "timeout_ms": 15000,
+          "note": "Quadro 3 carregado"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "violence-history-section"
+          },
+          "timeout_ms": 15000,
+          "note": "Quadro 1 carregado"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "violence-records-register"
+          },
+          "note": "Quadro 3: volta a registrar depois do retorno (RN03)"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "violence-history-register"
+          },
+          "note": "Quadro 1: volta a registrar"
+        },
+        {
+          "expect": "hidden",
+          "target": {
+            "by": "testid",
+            "value": "violence-register-reason"
+          },
+          "note": "sem linha de motivo"
+        }
+      ]
+    },
+    {
+      "name": "medidas_cras",
+      "title": "O CRAS lê a medida socioeducativa mas não tem Registrar medida nem Corrigir (CA06)",
+      "as_user": "operador_cras",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_1_uuid}?tab=medidas-socioeducativas"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-tab"
+          },
+          "timeout_ms": 15000,
+          "note": "aba de medidas carregada"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-row-${data.measure_uuid}"
+          },
+          "timeout_ms": 15000,
+          "note": "a medida registrada pelo CRAS é legível"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-row-${data.measure_uuid}"
+          }
+        },
+        {
+          "expect": "hidden",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-register-action"
+          },
+          "note": "sem Registrar medida (RN07) — a evidência é a ausência"
+        },
+        {
+          "expect": "hidden",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-correct-${data.measure_uuid}"
+          },
+          "note": "sem Corrigir"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "measure-register-reason"
+          },
+          "note": "a linha informa que o registro cabe ao CREAS"
+        }
+      ]
+    }
+  ]
+}
