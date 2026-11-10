@@ -1,0 +1,799 @@
+{
+  "schema_version": 1,
+  "id": "E2E-052",
+  "title": "Modelo do Relatório de Atividades: o Master monta, ativa e pré-visualiza",
+  "description": "HU #11545 (US-RAT-01), plano 02: o Master cria o modelo de Pilar do CREAS com dois blocos, linha digitada, linha com subitens (cesta básica do sistema e gás digitada) e B.6 do sistema, ativa e vê 'Ativo'; pré-visualiza B.6 calculada para a unidade 'E2E CREAS RMA' em 2026-10; e a linha de sistema sem código é barrada no campo. Massa do plano 03; executado no plano 03. Nenhum dado pessoal real.",
+  "feature_slug": "11545-rat-modelo-02-client",
+  "ac_refs": [
+    "AC-001",
+    "AC-002",
+    "AC-005"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "configuracoes",
+    "relatorio-atividades",
+    "master"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/login",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "users": [
+      {
+        "role": "master",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_MASTER_CPF",
+          "password": "E2E_CLIENT_MASTER_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Master do tenant E2E com a permissão activity-report-templates.index (permissions:sync) e migrations da #11545 aplicadas",
+      "beforeAll (plano 03, harness/spec manual): inativa qualquer modelo CREAS ATIVO do tenant, pois a massa da #11546 semeia um; afterAll restaura o estado anterior (spec §15 / A3 da #11546). Sem isso a ativação do happy_path devolve 422 active_exists",
+      "Unidade 'E2E CREAS RMA' (massa da #11543) com registros em 2026-10 e encaminhamentos computáveis para o código 14",
+      "O happy_path 2 reabre o modelo criado pelo happy_path (ordem do arquivo); título contém 'E2E-052'"
+    ]
+  },
+  "data": {
+    "template_title": "Relatório das Atividades – CREAS (E2E-052)",
+    "unit_type": "CREAS",
+    "block1_title": "Bloco 1 – Atividades de acompanhamento",
+    "block2_title": "Bloco 2 – Encaminhamentos",
+    "line_a1": "Famílias em acompanhamento (digitada)",
+    "line_a5": "Benefícios eventuais concedidos",
+    "sub_cesta": "Cesta básica",
+    "sub_gas": "Auxílio gás (digitada)",
+    "line_b6": "Encaminhamentos realizados",
+    "unit_name": "E2E CREAS RMA",
+    "month": "2026-10"
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "Master monta o modelo de Pilar do CREAS e o ativa (CA01, CA03, CA04)",
+      "as_user": "master",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/configuracoes/modelos-relatorio-atividades"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "art-page"
+          },
+          "note": "lista de modelos carregada"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "art-new"
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "art-template-title"
+          },
+          "value": "${data.template_title}"
+        },
+        {
+          "action": "select",
+          "target": {
+            "by": "testid",
+            "value": "art-template-type"
+          },
+          "value": "${data.unit_type}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "art-template-save"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "art-editor"
+          },
+          "note": "criar leva ao editor do rascunho"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "art-add-block"
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "art-block-label"
+          },
+          "value": "Bloco 1"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "art-block-title"
+          },
+          "value": "${data.block1_title}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "art-block-save"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "art-add-block"
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "art-block-label"
+          },
+          "value": "Bloco 2"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "art-block-title"
+          },
+          "value": "${data.block2_title}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "art-block-save"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"art-add-line\"] >> nth=0"
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "art-line-number"
+          },
+          "value": "A.1"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "art-line-text"
+          },
+          "value": "${data.line_a1}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "art-line-source-type-manual"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "art-line-save"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"art-add-line\"] >> nth=0"
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "art-line-number"
+          },
+          "value": "A.5"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "art-line-text"
+          },
+          "value": "${data.line_a5}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "art-line-source-type-group"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "art-line-save"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "art-add-subitem"
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "art-line-number"
+          },
+          "value": "A.5.1"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "art-line-text"
+          },
+          "value": "${data.sub_cesta}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "art-line-source-type-system"
+          }
+        },
+        {
+          "action": "select",
+          "target": {
+            "by": "testid",
+            "value": "art-line-source-kind"
+          },
+          "value": "eventual_benefits"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "art-line-code-4"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "art-line-save"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "art-add-subitem"
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "art-line-number"
+          },
+          "value": "A.5.2"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "art-line-text"
+          },
+          "value": "${data.sub_gas}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "art-line-source-type-manual"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "art-line-save"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"art-add-line\"] >> nth=1"
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "art-line-number"
+          },
+          "value": "B.6"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "art-line-text"
+          },
+          "value": "${data.line_b6}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "art-line-source-type-system"
+          }
+        },
+        {
+          "action": "select",
+          "target": {
+            "by": "testid",
+            "value": "art-line-source-kind"
+          },
+          "value": "referrals"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "art-line-code-14"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "art-line-save"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "art-activate"
+          },
+          "note": "ativar o modelo"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "art-status"
+          },
+          "value": "Ativo",
+          "note": "CA01: o modelo fica Ativo"
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "testid",
+            "value": "art-block"
+          },
+          "value": 2
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "art-line-source"
+          },
+          "value": "Digitada pela equipe",
+          "note": "CA04: linha digitada marcada"
+        }
+      ]
+    },
+    {
+      "name": "happy_path_preview",
+      "title": "Pré-visualização de B.6 para a unidade e o mês (CA02)",
+      "as_user": "master",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/configuracoes/modelos-relatorio-atividades"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "art-page"
+          },
+          "note": "lista de modelos carregada"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"art-row\"]:has-text(\"E2E-052\") >> text=Editar >> nth=0"
+          },
+          "note": "abre o modelo ativo criado no happy_path"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "art-preview"
+          }
+        },
+        {
+          "action": "select",
+          "target": {
+            "by": "testid",
+            "value": "art-preview-unit"
+          },
+          "value": "${data.unit_name}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "art-preview-month"
+          },
+          "value": "${data.month}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "art-preview-run"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "art-preview-result"
+          },
+          "note": "números calculados pela API"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "art-preview-result"
+          },
+          "value": "Calculada",
+          "note": "CA02: B.6 com selo Calculada"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "art-preview-value"
+          }
+        }
+      ]
+    },
+    {
+      "name": "validation",
+      "title": "Linha do sistema sem código é barrada no campo (AC-005)",
+      "as_user": "master",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/configuracoes/modelos-relatorio-atividades"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "art-page"
+          },
+          "note": "lista de modelos carregada"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "art-new"
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "art-template-title"
+          },
+          "value": "${data.template_title}"
+        },
+        {
+          "action": "select",
+          "target": {
+            "by": "testid",
+            "value": "art-template-type"
+          },
+          "value": "${data.unit_type}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "art-template-save"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "art-editor"
+          },
+          "note": "criar leva ao editor do rascunho"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "art-add-block"
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "art-block-label"
+          },
+          "value": "Bloco 1"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "art-block-title"
+          },
+          "value": "${data.block1_title}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "art-block-save"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"art-add-line\"] >> nth=0"
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "art-line-number"
+          },
+          "value": "B.6"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "art-line-text"
+          },
+          "value": "${data.line_b6}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "art-line-source-type-system"
+          }
+        },
+        {
+          "action": "select",
+          "target": {
+            "by": "testid",
+            "value": "art-line-source-kind"
+          },
+          "value": "referrals"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "art-line-save"
+          }
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "art-line-codes-error"
+          },
+          "note": "sem código, o erro cai no campo de códigos"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "art-line-form"
+          },
+          "note": "o formulário continua aberto: nada foi salvo"
+        }
+      ]
+    }
+  ]
+}
