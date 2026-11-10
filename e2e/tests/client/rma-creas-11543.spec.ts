@@ -286,7 +286,12 @@ test.describe("US-RMA-01 #11543 — RMA do CREAS apurado do prontuário", () => 
 
     const res = await clientApi(shared!, `reference_month=${MONTH}&social_unit_uuid=${UNIT_SUL}`);
     expect(res.status()).toBe(422);
-    await evidence(shared!, "CA11-so-a-propria-unidade");
+    // Tela no topo (nome da unidade fixo, sem seletor de unidade), só a janela visível.
+    await shared!.getByTestId("creas-rma-header").scrollIntoViewIfNeeded();
+    if (process.env.CAPTURE_EVIDENCE === "1") {
+      await fs.promises.mkdir(EVIDENCE_DIR, { recursive: true });
+      await shared!.screenshot({ path: path.join(EVIDENCE_DIR, "CA11-so-a-propria-unidade.png") });
+    }
   });
 
   test("CA09 (admin) — sem a ligação 9 → H.1 o formulário do Painel Global mostra H.1 desmarcado", async ({
