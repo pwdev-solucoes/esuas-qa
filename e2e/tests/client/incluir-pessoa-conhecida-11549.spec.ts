@@ -83,6 +83,25 @@ async function searchCpf(page: Page, cpf: string): Promise<void> {
 async function pickFirstKinship(page: Page): Promise<void> {
   await page.getByTestId("add-member-kinship-trigger").click();
   await page.locator('[role="option"]').first().click();
+  // O print só sai com a lista fechada e o parentesco gravado no campo.
+  await expect(page.getByRole("listbox")).toHaveCount(0);
+  await expect(page.getByTestId("add-member-kinship-trigger")).not.toContainText(/Selecione/);
+}
+
+/** Redação do print: o CPF digitado vira bolinhas (a massa é fictícia, mas o dossiê não mostra CPF). */
+async function redactCpfFields(page: Page): Promise<void> {
+  await page
+    .locator('[data-testid="add-member-cpf-input"], #person-search-cpf')
+    .evaluateAll((els) => els.forEach((el) => ((el as HTMLInputElement).type = "password")));
+}
+
+async function evidence(
+  page: Page,
+  testInfo: Parameters<typeof captureEvidence>[1],
+  suffix?: string,
+): Promise<void> {
+  await redactCpfFields(page);
+  await captureEvidence(page, testInfo, EVIDENCE_SLUG, suffix);
 }
 
 test.describe.configure({ mode: "serial" });
@@ -109,10 +128,11 @@ test.describe("US-AJ-14 #11549 — incluir pessoa conhecida pelo município", ()
     await expect(page.getByTestId("add-member-known-hint")).toBeVisible({ timeout: 15_000 });
     await expect(page.getByTestId("add-member-identity")).toHaveCount(0);
     await pickFirstKinship(page);
-    await captureEvidence(page, testInfo, EVIDENCE_SLUG);
+    await evidence(page, testInfo);
     await page.getByTestId("add-member-submit").click();
     await expect(page.getByTestId("add-member-drawer")).toBeHidden({ timeout: 15_000 });
     await expect(page.getByText(NAME_P).first()).toBeVisible({ timeout: 15_000 });
+    await evidence(page, testInfo, "incluida");
   });
 
   test("CA06 — pessoa ativa em outra família: aviso antes do clique, com o número do prontuário", async ({}, testInfo) => {
@@ -124,7 +144,7 @@ test.describe("US-AJ-14 #11549 — incluir pessoa conhecida pelo município", ()
     await expect(page.getByTestId("add-member-conflict-open-family")).toBeVisible();
     await expect(page.getByTestId("add-member-submit")).toBeDisabled();
     await expect(page.getByRole("button", { name: /desvincular/i })).toHaveCount(0);
-    await captureEvidence(page, testInfo, EVIDENCE_SLUG);
+    await evidence(page, testInfo);
   });
 
   test("CA02 — pessoa cadastrada pelo município sem família é incluída sem confirmação de identidade", async ({}, testInfo) => {
@@ -134,10 +154,11 @@ test.describe("US-AJ-14 #11549 — incluir pessoa conhecida pelo município", ()
     await expect(page.getByTestId("add-member-known-hint")).toBeVisible({ timeout: 15_000 });
     await expect(page.getByTestId("add-member-identity")).toHaveCount(0);
     await pickFirstKinship(page);
-    await captureEvidence(page, testInfo, EVIDENCE_SLUG);
+    await evidence(page, testInfo);
     await page.getByTestId("add-member-submit").click();
     await expect(page.getByTestId("add-member-drawer")).toBeHidden({ timeout: 15_000 });
     await expect(page.getByText(NAME_Q).first()).toBeVisible({ timeout: 15_000 });
+    await evidence(page, testInfo, "incluida");
   });
 
   test("CA04 — confirmação que não coincide não inclui e não revela a data correta", async ({}, testInfo) => {
@@ -154,7 +175,7 @@ test.describe("US-AJ-14 #11549 — incluir pessoa conhecida pelo município", ()
     expect(html).not.toContain(OUTSIDE_BIRTH);
     expect(html).not.toContain(OUTSIDE_BIRTH.split("-").reverse().join("/"));
     expect(html).not.toContain(NAME_R);
-    await captureEvidence(page, testInfo, EVIDENCE_SLUG);
+    await evidence(page, testInfo);
   });
 
   test("CA03 — pessoa de outro município confirma a identidade no painel e é incluída com o parentesco", async ({}, testInfo) => {
@@ -164,10 +185,11 @@ test.describe("US-AJ-14 #11549 — incluir pessoa conhecida pelo município", ()
     await expect(page.getByTestId("add-member-identity")).toBeVisible({ timeout: 15_000 });
     await pickFirstKinship(page);
     await page.getByTestId("add-member-confirm-value").fill(OUTSIDE_BIRTH);
-    await captureEvidence(page, testInfo, EVIDENCE_SLUG);
+    await evidence(page, testInfo);
     await page.getByTestId("add-member-confirm-submit").click();
     await expect(page.getByTestId("add-member-drawer")).toBeHidden({ timeout: 15_000 });
     await expect(page.getByText(NAME_R).first()).toBeVisible({ timeout: 15_000 });
+    await evidence(page, testInfo, "incluida");
   });
 
   test("CA05 — vincular pela Pesquisa de Pessoas informando o número do prontuário da família", async ({}, testInfo) => {
@@ -182,11 +204,12 @@ test.describe("US-AJ-14 #11549 — incluir pessoa conhecida pelo município", ()
     await page.getByTestId("confirm-locate-family").click();
     await expect(page.getByTestId("confirm-family-found")).toBeVisible({ timeout: 15_000 });
     await page.getByTestId("confirm-value").fill(OUTSIDE_BIRTH);
-    await captureEvidence(page, testInfo, EVIDENCE_SLUG);
+    await evidence(page, testInfo);
     await page.getByTestId("confirm-identity-submit").click();
     await expect(page.getByTestId("confirm-identity-dialog")).toHaveCount(0, { timeout: 15_000 });
     await page.goto(`/app/cadastros/familias/${F5}?tab=composicao`);
     await expect(page.getByText(NAME_R2).first()).toBeVisible({ timeout: 15_000 });
+    await evidence(page, testInfo, "incluida");
   });
 
   test("CA07 — pessoa de família que o técnico não acessa: aviso genérico, sem número, nome nem unidade (a evidência é a ausência)", async ({}, testInfo) => {
@@ -204,7 +227,7 @@ test.describe("US-AJ-14 #11549 — incluir pessoa conhecida pelo município", ()
     expect(html).not.toContain("Pessoa Em Unidade Fechada");
     expect(html).not.toContain("00000000-0000-4000-8000-000011549004");
     expect(html).not.toMatch(/E2E CRAS Centro/);
-    await captureEvidence(page, testInfo, EVIDENCE_SLUG);
+    await evidence(page, testInfo);
   });
 
   test("CA08 — o Resumo mostra o CPF da referência (mascarado como hoje) em família sem CPF importado", async ({}, testInfo) => {
@@ -214,7 +237,7 @@ test.describe("US-AJ-14 #11549 — incluir pessoa conhecida pelo município", ()
     const bloco = page.getByTestId("summary-responsible");
     await expect(bloco).toBeVisible({ timeout: 15_000 });
     await expect(bloco).toContainText(/\d{3}\.\d{3}\.\d{3}-\d{2}/);
-    await captureEvidence(page, testInfo, EVIDENCE_SLUG);
+    await evidence(page, testInfo);
   });
 
   test("CA09 — técnico de uma só unidade não vê o botão Trocar unidade (a evidência é a ausência)", async ({}, testInfo) => {
@@ -226,7 +249,7 @@ test.describe("US-AJ-14 #11549 — incluir pessoa conhecida pelo município", ()
     await expect(capa.getByTestId("family-reference-unit")).toBeVisible();
     await page.waitForLoadState("networkidle");
     await expect(page.getByTestId("family-change-unit")).toHaveCount(0);
-    await captureEvidence(page, testInfo, EVIDENCE_SLUG);
+    await evidence(page, testInfo);
   });
 
   test("CA10 — o Master continua vendo o botão Trocar unidade", async ({ browser }, testInfo) => {
@@ -236,6 +259,6 @@ test.describe("US-AJ-14 #11549 — incluir pessoa conhecida pelo município", ()
     const capa = page.getByTestId("family-record-cover");
     await expect(capa).toBeVisible({ timeout: 15_000 });
     await expect(page.getByTestId("family-change-unit")).toBeVisible({ timeout: 15_000 });
-    await captureEvidence(page, testInfo, EVIDENCE_SLUG);
+    await evidence(page, testInfo);
   });
 });
