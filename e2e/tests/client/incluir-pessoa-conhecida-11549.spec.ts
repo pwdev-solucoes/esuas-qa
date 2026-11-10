@@ -221,6 +221,7 @@ test.describe("US-AJ-14 #11549 — incluir pessoa conhecida pelo município", ()
     await expect(page.getByTestId("confirm-identity-dialog")).toHaveCount(0, { timeout: 15_000 });
     await page.goto(`/app/cadastros/familias/${F5}?tab=composicao`);
     await expect(page.getByText(NAME_R2).first()).toBeVisible({ timeout: 15_000 });
+    await page.getByText(NAME_R2).first().scrollIntoViewIfNeeded();
     await evidence(page, testInfo, "incluida");
   });
 
