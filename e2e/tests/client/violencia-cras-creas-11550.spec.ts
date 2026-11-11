@@ -148,6 +148,9 @@ test.describe("US-AJ-15 #11550 — o CRAS identifica, o CREAS conduz", () => {
     await fillRecord(page, "E2E 11550 Adolescente 1");
     await chooseUnitIfNeeded(page, "violence-record-unit-select", "CRAS Centro");
     await expect(page.getByTestId("violence-creas-referral-reminder")).toBeVisible({ timeout: 10_000 });
+    await expect(page.getByRole("option", { name: "Janeiro", exact: true })).toHaveCount(0, { timeout: 10_000 });
+    await page.getByRole("heading", { name: "Registrar situação de violência" }).click();
+    await page.waitForTimeout(800);
     await captureEvidence(page, testInfo, EVIDENCE_SLUG, "formulario-lembrete");
     await page.getByTestId("violence-record-submit").click();
     const item = page.locator('[data-testid="violence-record-item"]:has-text("09/2026")').first();
@@ -265,9 +268,12 @@ test.describe("US-AJ-15 #11550 — o CRAS identifica, o CREAS conduz", () => {
     await expect(page.getByTestId("violence-records-section")).toHaveCount(0);
     await expect(page.getByTestId("violence-history-section")).toHaveCount(0);
     await expect(page.getByTestId("violence-records-register")).toHaveCount(0);
+    await page.getByRole("tab", { name: "Proteção Social Especial", exact: true }).click();
+    await expect(page.getByRole("tab", { name: "Quadros de violência" })).toHaveCount(0);
+    await page.waitForTimeout(600);
+    await captureEvidence(page, testInfo, EVIDENCE_SLUG);
     await open(page, F1, "medidas-socioeducativas");
     await expect(page.getByTestId("socio-educational-measure-block")).toHaveCount(0);
-    await captureEvidence(page, testInfo, EVIDENCE_SLUG);
   });
 
   test("RN09 — o Master lê o Quadro 3 da família encaminhada sem as ações de registrar (sentinela da #11548)", async ({ browser }, testInfo) => {
