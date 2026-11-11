@@ -38,10 +38,13 @@ const FAMILY_UUID =
   process.env.E2E_CLIENT_FAMILY_BLOCK_VISIBILITY_UUID ??
   "00000000-0000-4000-8000-0000000f0015";
 
-const CREAS_CPF = process.env.E2E_CLIENT_CREAS_OPERADOR_CPF ?? "";
-const CREAS_PASSWORD = process.env.E2E_CLIENT_CREAS_OPERADOR_PASSWORD ?? "";
-const MASTER_CPF = process.env.E2E_CLIENT_MASTER_CPF ?? "";
-const MASTER_PASSWORD = process.env.E2E_CLIENT_MASTER_PASSWORD ?? "";
+// harness: defaults = padrões fictícios dos seeders (E2EBlockVisibilitySeeder / E2ESeeder),
+// para a spec rodar sem variáveis de credencial.
+const CREAS_CPF = process.env.E2E_CLIENT_CREAS_OPERADOR_CPF ?? "99000140064";
+const CREAS_PASSWORD =
+  process.env.E2E_CLIENT_CREAS_OPERADOR_PASSWORD ?? "senha123";
+const MASTER_CPF = process.env.E2E_CLIENT_MASTER_CPF ?? "52998224725";
+const MASTER_PASSWORD = process.env.E2E_CLIENT_MASTER_PASSWORD ?? "senha123";
 // HU #11289: o operador do CRAS Centro passou a ser técnico e lê a violência do
 // CREAS; o leitor que NÃO lê é o assistente administrativo do CRAS Centro.
 const ADMIN_STAFF_CPF = process.env.E2E_CLIENT_ADMIN_STAFF_CPF ?? "99000150108";
