@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { resetTenantSession } from '../../fixtures/tenant-auth';
+import { loginAsTenantUser } from '../../fixtures/tenant-auth';
 
 /**
  * E2E da abertura do prontuário e da unidade de referência (HU #10618 —
@@ -57,23 +57,15 @@ const configured = Boolean(BASE && OPERADOR_CPF && OPERADOR_PASS);
 
 /** Login por CPF + senha; seleciona o primeiro tenant quando solicitado. */
 async function login(page: Page, cpf: string, password: string): Promise<void> {
-  // Zera a sessão herdada do project `chromium-tenant` (storageState do
-  // operador): sem isso o guard `redirectIfAuthenticated` desvia
-  // /auth/login para /app e o formulário nunca aparece.
-  await resetTenantSession(page);
-  await page.locator('input#cpf, input[name="cpf"]').first().fill(cpf);
-  await page.locator('input[type="password"]').first().fill(password);
-  await page.locator('button[type="submit"]').first().click();
-  await page.waitForLoadState('networkidle');
-
-  if (page.url().includes('select-tenant')) {
-    await page
-      .getByRole('button', { name: /entrar|continuar|acessar|confirmar/i })
-      .first()
-      .click()
-      .catch(() => {});
+  // O operador já vem logado do storageState do project `chromium-tenant`: logar de novo estoura o
+  // throttle `6,1` de /auth/* (7 logins no arquivo) e derruba os casos do Master, que vêm por último.
+  if (cpf === OPERADOR_CPF) {
+    await page.goto('/app');
     await page.waitForLoadState('networkidle');
+    return;
   }
+  // loginAsTenantUser zera a sessão herdada, espera /app ou a seleção de tenant e escolhe o tenant da massa.
+  await loginAsTenantUser(page, cpf, password);
 }
 
 async function openPendingList(page: Page): Promise<void> {
