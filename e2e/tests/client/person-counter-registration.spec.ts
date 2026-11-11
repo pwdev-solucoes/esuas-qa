@@ -270,19 +270,32 @@ test.describe('HU #10660 — balcao: localizar e cadastrar pessoa (client)', () 
     await searchByCpf(page, UNKNOWN_CPF!);
     await page.getByTestId('global-person-create').click();
 
-    // "Pessoa nao tem CPF" e declaracao explicita, nao campo esquecido.
-    await page.getByTestId('without-cpf').click();
-    await expect(page.locator('#create-cpf')).toBeDisabled();
+    // harness: independente do CA05 — o CA08 prepara o PRÓPRIO estado. Preenche o cadastro sem CPF;
+    // se ainda não existe pessoa homônima, o 1º envio grava (semente) e o formulário é reaberto e
+    // reenviado para disparar os semelhantes; se já existe (execução anterior), o alerta aparece direto.
+    const fillWithoutCpf = async (): Promise<void> => {
+      // "Pessoa nao tem CPF" e declaracao explicita, nao campo esquecido.
+      await page.getByTestId('without-cpf').click();
+      await expect(page.locator('#create-cpf')).toBeDisabled();
 
-    // Mesmo nome e nascimento da pessoa cadastrada no teste anterior —
-    // e o que dispara a busca de semelhantes.
-    await page.locator('#create-full-name').fill('E2E Pessoa Balcao');
-    await page.locator('#create-birth-date').fill('1990-06-10');
-    await page.locator('#create-mother-name').fill('E2E Mae do Balcao');
-    await page.getByTestId('create-sex-trigger').click();
-    await page.getByRole('option').first().click();
-    await page.getByTestId('create-submit').click();
-    await page.waitForLoadState('networkidle');
+      // Mesmo nome e nascimento: e o que dispara a busca de semelhantes.
+      await page.locator('#create-full-name').fill('E2E Pessoa Balcao');
+      await page.locator('#create-birth-date').fill('1990-06-10');
+      await page.locator('#create-mother-name').fill('E2E Mae do Balcao');
+      await page.getByTestId('create-sex-trigger').click();
+      await page.getByRole('option').first().click();
+      await page.getByTestId('create-submit').click();
+      await page.waitForLoadState('networkidle');
+    };
+
+    await fillWithoutCpf();
+    if ((await page.getByTestId('similar-persons-alert').count()) === 0) {
+      // Semente gravada: reabre o cadastro e repete para provocar a duplicidade.
+      await expect(page.getByTestId('person-create-form')).toHaveCount(0);
+      await searchByCpf(page, UNKNOWN_CPF!);
+      await page.getByTestId('global-person-create').click();
+      await fillWithoutCpf();
+    }
 
     const alerta = page.getByTestId('similar-persons-alert');
     await expect(alerta).toBeVisible();
