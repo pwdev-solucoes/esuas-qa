@@ -250,15 +250,15 @@ test.describe("US-AJ-19 — auditoria com identidade, português e correção (c
     await expect(row.getByTestId("tenant-audit-fields")).toContainText(
       "Renda própria",
     );
+    // CA02: a trilha registra o integrante (api 2cb1e3d8) e o rótulo sai em português.
+    await expect(
+      row.getByTestId("tenant-audit-fields").getByText("Integrante", { exact: true }),
+    ).toBeVisible();
 
     await row.getByTestId("tenant-audit-view-detail").click();
     const detail = master.getByTestId("tenant-audit-detail");
     await expect(detail).toBeVisible({ timeout: 15_000 });
-    // O fluxo real grava a condição como "Registro criado", sem o campo do integrante entre os
-    // alterados; o rótulo "Integrante" fica provado pelo Pest TenantAuditLabelsTest (observação no dossiê).
     await expect(detail).toContainText("Condição de trabalho do integrante");
-    // TODO reativar após fix da API (rótulo "Integrante" no detalhe da condição):
-    // await expect(detail).toContainText("Integrante");
     await expect(
       master.getByTestId("tenant-audit-detail-channel"),
     ).toContainText("Painel do Tenant");
