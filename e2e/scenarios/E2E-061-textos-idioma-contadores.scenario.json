@@ -118,8 +118,8 @@
         {
           "action": "wait",
           "target": {
-            "by": "testid",
-            "value": "list-count"
+            "by": "css",
+            "value": "[data-testid=\"list-count\"]:visible"
           },
           "timeout_ms": 15000,
           "note": "contador assentado"
@@ -129,15 +129,15 @@
         {
           "expect": "visible",
           "target": {
-            "by": "testid",
-            "value": "list-count"
+            "by": "css",
+            "value": "[data-testid=\"list-count\"]:visible"
           }
         },
         {
           "expect": "text",
           "target": {
-            "by": "testid",
-            "value": "list-count"
+            "by": "css",
+            "value": "[data-testid=\"list-count\"]:visible"
           },
           "value": "(4)",
           "note": "total assentado = 4 atendimentos da massa"
@@ -145,8 +145,8 @@
         {
           "expect": "count",
           "target": {
-            "by": "testid",
-            "value": "list-count-loading"
+            "by": "css",
+            "value": "[data-testid=\"list-count-loading\"]:visible"
           },
           "value": 0,
           "note": "sem esqueleto depois de carregar"

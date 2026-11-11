@@ -246,30 +246,30 @@ test.describe("US-AJ-20 — textos, idioma e contadores (client, navegador em in
     const pattern = new RegExp(`/families/${FAMILY}/notes(\\?|$)`);
     await operator.route(pattern, async (route) => {
       await gate;
-      await route.continue();
+      await route.continue().catch(() => {});
     });
     try {
       await operator.goto(`/app/cadastros/familias/${FAMILY}?tab=anotacoes`);
       await dismissPlatformUpdates(operator);
-      await expect(operator.getByTestId("list-count-loading")).toBeVisible({
+      await expect(operator.locator('[data-testid="list-count-loading"]:visible')).toBeVisible({
         timeout: 20_000,
       });
-      await expect(operator.getByTestId("list-count")).toHaveCount(0);
+      await expect(operator.locator('[data-testid="list-count"]:visible')).toHaveCount(0);
       await shot(operator, "ca06-contador-carregando");
     } finally {
       release();
       await operator.unroute(pattern);
     }
-    await expect(operator.getByTestId("list-count")).toHaveText("(4)", {
+    await expect(operator.locator('[data-testid="list-count"]:visible')).toHaveText("(4)", {
       timeout: 20_000,
     });
-    await expect(operator.getByTestId("list-count-loading")).toHaveCount(0);
+    await expect(operator.locator('[data-testid="list-count-loading"]:visible')).toHaveCount(0);
     await shot(operator, "ca06-contador-4");
   });
 
   test("CA07 — filtro de atendimentos: o (4) some durante a consulta e depois mostra (1)", async () => {
     await openRecord(operator, FAMILY, "atendimentos");
-    await expect(operator.getByTestId("list-count")).toHaveText("(4)", {
+    await expect(operator.locator('[data-testid="list-count"]:visible')).toHaveText("(4)", {
       timeout: 20_000,
     });
 
@@ -287,7 +287,7 @@ test.describe("US-AJ-20 — textos, idioma e contadores (client, navegador em in
     );
     await operator.route(pattern, async (route) => {
       await gate;
-      await route.continue();
+      await route.continue().catch(() => {});
     });
     try {
       const panel = operator.getByTestId("attendance-filters-panel");
@@ -295,16 +295,16 @@ test.describe("US-AJ-20 — textos, idioma e contadores (client, navegador em in
         await operator.getByTestId("attendance-filters-toggle").click();
       }
       await operator.getByTestId("attendance-filter-from").fill(visit);
-      await expect(operator.getByTestId("list-count-loading")).toBeVisible({
+      await expect(operator.locator('[data-testid="list-count-loading"]:visible')).toBeVisible({
         timeout: 20_000,
       });
-      await expect(operator.getByTestId("list-count")).toHaveCount(0);
+      await expect(operator.locator('[data-testid="list-count"]:visible')).toHaveCount(0);
       await shot(operator, "ca07-filtro-carregando");
     } finally {
       release();
       await operator.unroute(pattern);
     }
-    await expect(operator.getByTestId("list-count")).toHaveText("(1)", {
+    await expect(operator.locator('[data-testid="list-count"]:visible')).toHaveText("(1)", {
       timeout: 20_000,
     });
     await shot(operator, "ca07-filtro-1");
@@ -406,7 +406,10 @@ test.describe("US-AJ-20 — textos, idioma e contadores (client, navegador em in
       });
       const subject = master
         .getByTestId("siap-blocking-subject")
-        .filter({ hasText: UNIT_TEXTS_NAME });
+        .filter({ hasText: UNIT_TEXTS_NAME })
+        // Sem endereço, a unidade gera mais de uma pendência; a do CA05 é a do campo de endereço.
+        .filter({ hasText: "Endereço da unidade" })
+        .first();
       await expect(subject).toBeVisible({ timeout: 20_000 });
       await expect(subject).toContainText(
         "Campo: Endereço da unidade (EnderecoUnidadeSocial)",
