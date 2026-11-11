@@ -1380,7 +1380,9 @@ test.describe('US-ACOMP-04 — acesso ao prontuário pela unidade que acompanha 
     const followUpUuid = ((await created.json()) as { data: { uuid: string } }).data.uuid;
 
     // Razão de desligamento: o `code` é estável, o uuid é gerado pelo seeder.
-    const evaluationOptions = await masterApi.get(
+    // O desligamento é ato do técnico (RN de sigilo do desfecho): o Master recebe 403. Sessão de API do Operador.
+    const op = await openSessionFor(OPERADOR_CPF!, OPERADOR_PASSWORD!);
+    const evaluationOptions = await op.api.get(
       `/api/client/families/${FAMILY_OTHER_UNIT}/follow-ups/${followUpUuid}/evaluations/options`,
     );
     expect(evaluationOptions.status(), 'options da avaliação').toBe(200);
@@ -1389,10 +1391,10 @@ test.describe('US-ACOMP-04 — acesso ao prontuário pela unidade que acompanha 
     }).data.exit_reasons[0];
     expect(exitReason?.uuid, 'catálogo de razões de desligamento').toBeTruthy();
 
-    const discharged = await masterApi.post(
+    const discharged = await op.api.post(
       `/api/client/families/${FAMILY_OTHER_UNIT}/follow-ups/${followUpUuid}/discharge`,
       {
-        headers: { 'X-XSRF-TOKEN': xsrf },
+        headers: { 'X-XSRF-TOKEN': op.xsrf },
         data: {
           discharged_on: todayIso(),
           follow_up_exit_reason_uuid: exitReason!.uuid,
@@ -1453,19 +1455,22 @@ test.describe('US-ACOMP-04 — acesso ao prontuário pela unidade que acompanha 
 let reportPage: Page;
 
 
-/** Chaves dos perfis que dependem das fases F6/F7 — sempre indisponíveis aqui. */
-const UNAVAILABLE_PROFILES = [
-  'profile_bf_noncompliance',
-  'profile_school_dropout',
-  'profile_teen_pregnancy',
-  'profile_sheltering',
-];
-/** Chaves dos perfis efetivamente apurados nesta entrega. */
+/**
+ * Perfis do 15.7 ainda SEM fonte. As fases F6/F7 (US-DIAG-05, US-PSE-02) acenderam os quatro que restavam
+ * (`SiapNewFamilyProfile::available()` devolve true para todos): a regra mudou de propósito, nenhum perfil
+ * fica pendente — o teste (b) passa a provar que NENHUM tem selo de fase.
+ */
+const UNAVAILABLE_PROFILES: string[] = [];
+/** Chaves dos perfis efetivamente apurados — hoje, os oito. */
 const AVAILABLE_PROFILES = [
   'profile_extreme_poverty',
   'profile_bolsa_familia',
   'profile_child_labor',
   'profile_bpc',
+  'profile_bf_noncompliance',
+  'profile_school_dropout',
+  'profile_teen_pregnancy',
+  'profile_sheltering',
 ];
 
 test.describe('US-ACOMP-05 — contadores de acompanhamento na apuração (client)', () => {
@@ -1515,7 +1520,7 @@ test.describe('US-ACOMP-05 — contadores de acompanhamento na apuração (clien
     });
   });
 
-  test('(b) os quatro perfis indisponíveis são IDENTIFICADOS com a fase de que dependem', async () => {
+  test('(b) os oito perfis estão apurados — nenhum carrega selo de fase pendente', async () => {
     const profile = reportPage.getByTestId(`new-families-profile-${UNIT_UUID}`);
     await expect(profile).toBeVisible();
 
