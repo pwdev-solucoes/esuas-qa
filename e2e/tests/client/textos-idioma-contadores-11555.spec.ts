@@ -235,6 +235,12 @@ test.describe("US-AJ-20 — textos, idioma e contadores (client, navegador em in
     await openRecord(operator, FAMILY, "ingresso");
     const block = operator.getByText("Bolsa Família").first();
     await expect(block).toBeVisible({ timeout: 20_000 });
+    // Rola até a LISTA de programas sociais (a linha do Bolsa Família), não o cabeçalho.
+    const pbfRow = operator
+      .getByTestId("social-programs-block")
+      .getByTestId("social-program-pbf-row");
+    await expect(pbfRow).toContainText("Bolsa Família");
+    await pbfRow.scrollIntoViewIfNeeded();
     await shot(operator, "ca03-bolsa-familia");
   });
 
@@ -414,6 +420,7 @@ test.describe("US-AJ-20 — textos, idioma e contadores (client, navegador em in
       await expect(subject).toContainText(
         "Campo: Endereço da unidade (EnderecoUnidadeSocial)",
       );
+      await subject.scrollIntoViewIfNeeded();
       await shot(master, "ca05-pendencia-siap");
     } finally {
       await restoreAddress(master);
