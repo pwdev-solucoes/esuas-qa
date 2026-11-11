@@ -49,9 +49,25 @@ import { resetTenantSession } from '../../fixtures/tenant-auth';
 const BASE = process.env.CLIENT_BASE_URL;
 const OPERADOR_CPF = process.env.E2E_CLIENT_OPERADOR_CPF;
 const OPERADOR_PASS = process.env.E2E_CLIENT_OPERADOR_PASSWORD;
-const NEW_PERSON_CPF = process.env.E2E_MANUAL_FAMILY_CPF;
-const NEW_PERSON_MOTHER = process.env.E2E_MANUAL_FAMILY_MOTHER_NAME ?? 'Maria de Souza E2E';
-const RESPONSIBLE_WITH_FAMILY_CPF = process.env.E2E_MANUAL_FAMILY_RESPONSIBLE_WITH_FAMILY_CPF;
+/** CPF fictício VÁLIDO (dígitos verificadores), novo a cada rodada — nunca existe no repositório. */
+function fictitiousCpf(): string {
+  for (;;) {
+    const base = Array.from({ length: 9 }, () => Math.floor(Math.random() * 10));
+    if (new Set(base).size === 1) continue;
+    const digit = (len: number) => {
+      const sum = base.slice(0, len).reduce((acc, n, i) => acc + n * (len + 1 - i), 0);
+      const rest = (sum * 10) % 11;
+      return rest === 10 ? 0 : rest;
+    };
+    base.push(digit(9));
+    return [...base, digit(10)].join('');
+  }
+}
+const NEW_PERSON_CPF = process.env.E2E_MANUAL_FAMILY_CPF ?? fictitiousCpf();
+const NEW_PERSON_MOTHER = process.env.E2E_MANUAL_FAMILY_MOTHER_NAME ?? 'E2E Mãe Cadastro Manual';
+// Default = responsável com CPF que o E2EProntuarioSeeder faz encabeçar uma família.
+const RESPONSIBLE_WITH_FAMILY_CPF =
+  process.env.E2E_MANUAL_FAMILY_RESPONSIBLE_WITH_FAMILY_CPF ?? '99000000726';
 
 const configured = Boolean(BASE && OPERADOR_CPF && OPERADOR_PASS);
 
@@ -209,6 +225,6 @@ test.describe('HU #10661 — cadastrar família fora do CadÚnico (client)', () 
     await openExisting.click();
 
     await page.waitForLoadState('networkidle');
-    expect(page.url()).toMatch(/\/app\/cadastros\/familias\/[0-9a-f-]{36}$/);
+    await expect(page).toHaveURL(/\/app\/cadastros\/familias\/[0-9a-f-]{36}(\?.*)?$/, { timeout: 10_000 });
   });
 });
