@@ -191,11 +191,16 @@ test.beforeAll(async ({ browser }) => {
   expect(created.length, 'linhas family_note/created na trilha').toBeGreaterThan(0);
   expect(JSON.stringify(rows), 'a trilha não carrega o texto da anotação').not.toContain(RUN_TAG);
   expect(created[0].created_at, 'data na trilha').toBeTruthy();
-  expect(created[0].causer, 'autor na trilha').toBeTruthy();
+  // harness: o contrato atual devolve o autor em `author` ({kind,id,name,login_identity}), não em `causer`.
+  const author = created[0].author as { kind?: string; id?: number | null; name?: string | null } | undefined;
+  expect(author?.kind, 'autor na trilha (kind)').toBe('user');
+  expect(author?.id, 'autor na trilha (id)').toBeTruthy();
+  expect(author?.name, 'autor na trilha (nome)').toBeTruthy();
   expect(
-    JSON.stringify([created[0].properties, created[0].attribute_changes]),
+    // harness: `properties`/`attribute_changes` não saem na API (LGPD); o bloco aparece em `changed_fields`/`value_changes`.
+    JSON.stringify([created[0].changed_fields, created[0].changed_field_labels, created[0].value_changes]),
     'bloco na trilha',
-  ).toMatch(/health_conditions|housing_conditions|general/);
+  ).toMatch(/block|bloco|health_conditions|housing_conditions|general/i);
 
   // SÓ AGORA o operador entra: o login do Master derrubaria a sessão dele.
   operatorPage = await browser.newPage({ baseURL: BASE, locale: 'pt-BR' });

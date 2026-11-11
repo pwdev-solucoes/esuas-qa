@@ -437,7 +437,11 @@ test.describe('US-EVOL-01 — evolução do acompanhamento no atendimento (clien
       expect(created.length, 'linhas family_note/created na trilha').toBeGreaterThan(0);
       expect(JSON.stringify(trail), 'a trilha não carrega o texto').not.toContain(RUN_TAG);
       expect(created[0].created_at, 'data na trilha').toBeTruthy();
-      expect(created[0].causer, 'autor na trilha').toBeTruthy();
+      // harness: o contrato atual devolve o autor em `author` ({kind,id,name,login_identity}), não em `causer`.
+      const author = created[0].author as { kind?: string; id?: number | null; name?: string | null } | undefined;
+      expect(author?.kind, 'autor na trilha (kind)').toBe('user');
+      expect(author?.id, 'autor na trilha (id)').toBeTruthy();
+      expect(author?.name, 'autor na trilha (nome)').toBeTruthy();
     } finally {
       await master.dispose();
     }
