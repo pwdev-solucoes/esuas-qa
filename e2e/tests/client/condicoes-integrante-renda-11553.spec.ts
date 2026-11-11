@@ -63,6 +63,8 @@ function credential(name: string): string {
 async function shot(page: Page, name: string): Promise<void> {
   if (process.env.CAPTURE_EVIDENCE !== "1") return;
   await fs.promises.mkdir(SHOTS, { recursive: true });
+  // Espera as animações de abrir/fechar diálogo e drawer terminarem antes do print.
+  await page.waitForTimeout(700);
   await page.screenshot({
     path: path.join(SHOTS, `${name}.png`),
     fullPage: true,

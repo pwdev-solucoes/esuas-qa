@@ -113,7 +113,9 @@ test.describe("US-SERIE-01 — diagnóstico como série (client)", () => {
     await expect(
       page.locator('[data-testid^="snapshot-alter-"]:visible'),
     ).toHaveCount(0);
-    await expect(page.getByTestId("snapshot-register")).toBeHidden();
+    await expect(
+      page.locator('[data-testid="snapshot-register"]:visible'),
+    ).toHaveCount(0);
     await page.screenshot({
       path: "test-results/serie11225-ca08-composicao-ausencia.png",
     });
