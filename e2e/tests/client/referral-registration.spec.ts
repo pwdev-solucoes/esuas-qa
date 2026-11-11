@@ -312,6 +312,8 @@ test.describe('HU #10713 — registrar encaminhamento no prontuário (client)', 
   test('CA13 — a negativa por unidade declara o motivo sem nomear unidade alguma', async ({
     page,
   }) => {
+    // harness: resíduo de acompanhamento/encaminhamento em …0f0002 abre o prontuário; reaplique
+    // `E2EProntuarioSeeder` antes da rodada (ele remove esse resíduo).
     // Família referenciada em OUTRA unidade: nada é criado aqui, só a leitura
     // da negativa (o spec `family-follow-up` depende de ela seguir inacessível).
     await page.goto(`/app/cadastros/familias/${FAMILY_OTHER_UNIT}`);
