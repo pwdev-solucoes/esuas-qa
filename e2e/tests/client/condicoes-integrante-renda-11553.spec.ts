@@ -19,9 +19,9 @@ import { dismissPlatformUpdates } from "../../helpers/platform-updates";
  * Spec MANUAL. O cenário E2E-059 cobre CA01, CA02, CA03, CA05, CA06 (happy_path) e CA04 (validation).
  * Aqui ficam o que ele não expressa, com 3 logins em ordem fixa (throttle `6,1` do login):
  *
- *  1. técnico de UMA unidade: CA01b (série + renda do integrante B → "corrigir" desabilitado com o
+ *  1. técnico de UMA unidade: CA01b (série (com retrato) + saúde (sem retrato) do integrante B → "corrigir" desabilitado com o
  *     motivo), CA07 (`1500,50` → API `own_income = 1500.5`), CA07b (bloco familiar: renda declarada 1500 e
- *     Bolsa Família 600), CA07c (`0` → "Renda declarada" e R$ 0,00), CA08 (Convivência: ameaça/
+ *     outros programas 600), CA07c (`0` → "Renda declarada" e R$ 0,00), CA08 (Convivência: ameaça/
  *     discriminação em "Perguntas ainda sem resposta"), CA09 (aba e título "Trabalho e rendimentos");
  *  2. técnico de DUAS unidades: CA04 (sem unidade → campo e rodapé indicados; nenhum retrato novo);
  *  3. auxiliar administrativo (não técnico): abre o drawer sem a seção de saúde (sigilo, DoD do épico)
@@ -168,7 +168,10 @@ test.describe("US-AJ-18 — condições do integrante e renda em reais (client)"
     await openDrawer(page, "Integrante B");
 
     await pickGrade(page, /9º ano/);
-    await page.getByTestId("member-own-income").fill("700");
+    // O retrato é do bloco da família: a seção SEM retrato na massa é a de saúde (a de trabalho
+    // e rendimentos já tem o retrato do integrante A). Marcar "abuso de álcool" a altera (o tipo
+    // de deficiência só aparece para quem tem deficiência).
+    await page.getByTestId("member-alcohol-yes").click();
     await page.getByTestId("member-conditions-save").click();
 
     await expect(page.getByTestId("snapshot-change-kind-dialog")).toBeVisible();
@@ -226,7 +229,8 @@ test.describe("US-AJ-18 — condições do integrante e renda em reais (client)"
     await page.keyboard.press("Escape");
   });
 
-  test("CA07b — bloco familiar em reais: renda declarada 1500 e Bolsa Família 600", async () => {
+  // A família da massa não recebe Bolsa Família: só a linha "Outros" é oferecida.
+  test("CA07b — bloco familiar em reais: renda declarada 1500 e outros programas 600", async () => {
     await page.goto(`/app/cadastros/familias/${FAMILY}?tab=trabalho-renda`);
     await dismissPlatformUpdates(page);
     const block = page.getByTestId("work-income-block");
@@ -245,8 +249,11 @@ test.describe("US-AJ-18 — condições do integrante e renda em reais (client)"
     });
     await page.getByTestId("work-income-declared_total_income").fill("1500");
     await page
-      .getByTestId("work-income-program-bolsa_familia-amount")
+      .getByTestId("work-income-program-other-amount")
       .fill("600");
+    await page
+      .getByTestId("work-income-program-other-description")
+      .fill("Auxílio municipal");
     await page.getByTestId("diagnosis-snapshot-unit-select").click();
     await page.getByRole("option", { name: UNIT_NAME }).click();
     await page.getByTestId("diagnosis-snapshot-submit").click();
