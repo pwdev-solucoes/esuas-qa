@@ -1,5 +1,4 @@
 import { expect, test, type Page } from '@playwright/test';
-import { resetTenantSession } from '../../fixtures/tenant-auth';
 
 /**
  * E2E do bloco de INGRESSO e PROGRAMAS SOCIAIS do prontuário (HU #10619 —
@@ -52,12 +51,17 @@ const FORM_WITHOUT_AGENCY =
 
 const configured = Boolean(BASE && OPERADOR_CPF && OPERADOR_PASS);
 
-/** Login por CPF + senha; seleciona o primeiro tenant quando solicitado. */
+/**
+ * harness: usa a sessão HERDADA do project `chromium-tenant` (storageState do operador).
+ * Logar de novo a cada teste dispara a sessão única (EnforceSingleSessionAction), que
+ * derruba a sessão do teste anterior/setup e manda CA05-CA07 para /auth/login.
+ * Só entra pelo formulário se, por algum motivo, a sessão herdada não estiver ativa.
+ */
 async function login(page: Page, cpf: string, password: string): Promise<void> {
-  // Zera a sessão herdada do project `chromium-tenant` (storageState do
-  // operador): sem isso o guard `redirectIfAuthenticated` desvia
-  // /auth/login para /app e o formulário nunca aparece.
-  await resetTenantSession(page);
+  await page.goto('/app');
+  await page.waitForLoadState('networkidle');
+  if (!page.url().includes('/auth/login')) return;
+
   await page.locator('input#cpf, input[name="cpf"]').first().fill(cpf);
   await page.locator('input[type="password"]').first().fill(password);
   await page.locator('button[type="submit"]').first().click();
@@ -179,6 +183,8 @@ test.describe('HU #10619 — ingresso e programas sociais no prontuário (client
     await page.screenshot({ path: 'test-results/10619-ca01-ingresso-registrado.png', fullPage: true });
   });
 
+  // HU #11554: a correção do ingresso passou a constar na auditoria como "Correção" (evento `corrected`,
+  // antes "Registro atualizado"). Este teste não lê a trilha — o evento é provado em auditoria-identidade-11554.spec.ts.
   test('CA07 — bloco já preenchido só oferece CORRIGIR, nunca um segundo ingresso', async ({
     page,
   }) => {
@@ -231,19 +237,21 @@ test.describe('HU #10619 — ingresso e programas sociais no prontuário (client
     await expect(page.getByTestId('social-program-beneficiaries-bpc')).toBeVisible();
 
     // Primeiro beneficiário.
-    await page.getByTestId('social-program-beneficiary-bpc-0').click();
+    // O Select do beneficiário não repassa o data-testid ao DOM (raiz sem elemento): usa o combobox do bloco.
+    const beneficiaries = page.getByTestId('social-program-beneficiaries-bpc');
+    await beneficiaries.getByRole('combobox').nth(0).click();
     await page.getByRole('option').first().click();
 
     // Segundo beneficiário — o BPC admite mais de um por família (P5/CA06).
     await page.getByTestId('social-program-add-beneficiary-bpc').click();
-    await page.getByTestId('social-program-beneficiary-bpc-1').click();
+    await beneficiaries.getByRole('combobox').nth(1).click();
     await page.getByRole('option').nth(1).click();
 
     await page.getByTestId('social-programs-submit').click();
 
     // Sem erro de beneficiário e as duas linhas continuam na tela após a relê.
     await expect(page.getByTestId('social-program-error-bpc')).toHaveCount(0);
-    await expect(page.getByTestId('social-program-beneficiary-bpc-1')).toBeVisible();
+    await expect(beneficiaries.getByRole('combobox')).toHaveCount(2);
 
     await page.screenshot({ path: 'test-results/10619-ca06-dois-bpc.png', fullPage: true });
   });

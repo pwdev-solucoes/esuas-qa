@@ -42,9 +42,10 @@ test.describe('E2E-020 Saúde completa: o assistente administrativo (não técni
     await page.waitForTimeout(2500);
     // fecha o modal de novidades da plataforma, se estiver aberto
     await page.keyboard.press('Escape');
-    // o prontuário abriu (eixo do encaminhamento recebido)
-    await expect(page.getByRole('tab', { name: 'Composição Familiar', exact: true })).toBeVisible({ timeout: 15000 });
-    await expect(page.getByRole('tab', { name: 'Composição Familiar', exact: true })).toBeVisible();
+    // harness: o prontuário abriu (navegação em grupos, #11547; a Composição é sub-aba do grupo Família e não aparece com ?tab=saude)
+    await expect(page.getByRole('tablist', { name: 'Grupos do prontuário' })).toBeVisible({ timeout: 15000 });
+    // harness: o prontuário abriu para o não técnico (Composição fica no grupo Família, fora do grupo ativo)
+    await expect(page.getByRole('tablist', { name: 'Grupos do prontuário' })).toBeVisible();
     // US-AJ-11 RN03 (#11408): a aba Saúde aparece, com o aviso restrito
     await expect(page.getByRole('tab', { name: 'Saúde', exact: true })).toBeVisible();
     // US-AJ-11 RN03 (#11408): aviso fixo no lugar do conteúdo

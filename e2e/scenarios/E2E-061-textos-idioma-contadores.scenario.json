@@ -1,0 +1,259 @@
+{
+  "schema_version": 1,
+  "id": "E2E-061",
+  "title": "Textos em português, contadores sem número provisório e nomes inteiros no menu e nas abas",
+  "description": "HU #11555 (plano 02 client). Cobre o contador da lista (sem número provisório; ao carregar mostra o total), o menu e as abas sem reticências em 1920 px e o botão 'Painel' nas páginas de erro. O atraso controlado da lista (CA06/CA07) e o campo SIAP legível são cobertos por testes de unidade (a linguagem declarativa não tem interceptação de rede). Massa fictícia (E2ETextsCountersSeeder: família …11555001 com 4 atendimentos e 4 anotações); nenhum dado pessoal.",
+  "feature_slug": "11555-textos-03-evidencias",
+  "ac_refs": [
+    "AC-001",
+    "AC-004",
+    "AC-006"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "prontuario",
+    "contadores",
+    "textos"
+  ],
+  "data": {
+    "family_uuid": "00000000-0000-4000-8000-000011555001"
+  },
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/auth/login",
+    "viewport": {
+      "width": 1920,
+      "height": 1080
+    },
+    "users": [
+      {
+        "role": "operador",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_OPERADOR_CPF",
+          "password": "E2E_CLIENT_OPERADOR_PASSWORD"
+        }
+      },
+      {
+        "role": "nao_tecnico",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_ADMIN_STAFF_CPF",
+          "password": "E2E_CLIENT_ADMIN_STAFF_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Massa do E2ETextsCountersSeeder (HU #11555): família …11555001 com 4 atendimentos e 4 anotações no 'E2E CRAS Centro'; reaplicar o seeder antes de rodar",
+      "Operador lotado no 'E2E CRAS Centro'; assistente administrativo da massa da #11289",
+      "Plano 11555-textos-02-client aplicado ao client",
+      "Um login por usuário por variante (throttle 6,1)"
+    ]
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "Contador carregado mostra '(n)' e o menu e as abas aparecem inteiros em 1920 px (CA06, CA08)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades, se aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=atendimentos"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades, se aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "family-record-nav"
+          },
+          "timeout_ms": 15000,
+          "note": "prontuário carregado"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"list-count\"]:visible"
+          },
+          "timeout_ms": 15000,
+          "note": "contador assentado"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"list-count\"]:visible"
+          }
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"list-count\"]:visible"
+          },
+          "value": "(4)",
+          "note": "total assentado = 4 atendimentos da massa"
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"list-count-loading\"]:visible"
+          },
+          "value": 0,
+          "note": "sem esqueleto depois de carregar"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "text",
+            "value": "Acompanhamentos com Atenção"
+          },
+          "note": "nome inteiro no menu em 1920 px"
+        }
+      ]
+    },
+    {
+      "name": "permission",
+      "title": "Página inexistente mostra o botão 'Painel' que leva a /app (CA04)",
+      "as_user": "nao_tecnico",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_ADMIN_STAFF_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_ADMIN_STAFF_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades, se aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/rota-que-nao-existe-11555"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades, se aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Painel"
+          },
+          "timeout_ms": 15000
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Painel"
+          }
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "url",
+          "value": "/app"
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "text",
+            "value": "Dashboard"
+          },
+          "value": 0
+        }
+      ]
+    }
+  ],
+  "not_applicable": {
+    "validation_error": "Sem formulário; só leitura de textos e contadores.",
+    "empty_state": "O contador com lista vazia é coberto por teste unitário (ListCount com 0).",
+    "forbidden": "A variante permission cobre a negativa/erro; sem outro perfil bloqueado neste escopo."
+  }
+}

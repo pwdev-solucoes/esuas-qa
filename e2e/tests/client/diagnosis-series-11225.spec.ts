@@ -1,3 +1,4 @@
+// harness: abas do prontuário ficam montadas e escondidas (#11547); todo testid usa :visible.
 import {
   expect,
   test,
@@ -64,7 +65,7 @@ async function openFamilyTab(
 }
 
 async function chooseUnit(page: Page): Promise<void> {
-  await page.getByTestId("diagnosis-snapshot-unit-select").click();
+  await page.locator('[data-testid="diagnosis-snapshot-unit-select"]:visible').click();
   await page.getByRole("option", { name: UNIT_NAME }).click();
 }
 
@@ -113,7 +114,9 @@ test.describe("US-SERIE-01 — diagnóstico como série (client)", () => {
     await expect(
       page.locator('[data-testid^="snapshot-alter-"]:visible'),
     ).toHaveCount(0);
-    await expect(page.getByTestId("snapshot-register")).toBeHidden();
+    await expect(
+      page.locator('[data-testid="snapshot-register"]:visible'),
+    ).toHaveCount(0);
     await page.screenshot({
       path: "test-results/serie11225-ca08-composicao-ausencia.png",
     });
@@ -125,20 +128,20 @@ test.describe("US-SERIE-01 — diagnóstico como série (client)", () => {
     expect((await seriesMeta(FAMILY_S2)).total, "S2 nasce sem retrato").toBe(0);
 
     await openFamilyTab(page, FAMILY_S2, "habitacao");
-    await expect(page.getByTestId("snapshot-series-empty")).toBeVisible();
+    await expect(page.locator('[data-testid="snapshot-series-empty"]:visible')).toBeVisible();
 
-    await page.getByTestId("snapshot-register").click();
+    await page.locator('[data-testid="snapshot-register"]:visible').click();
     // Sem retrato não há o que corrigir: nada de pergunta, o formulário abre direto.
-    await expect(page.getByTestId("snapshot-change-kind-dialog")).toHaveCount(
+    await expect(page.locator('[data-testid="snapshot-change-kind-dialog"]:visible')).toHaveCount(
       0,
     );
-    const sheet = page.getByTestId("diagnosis-snapshot-form-sheet");
+    const sheet = page.locator('[data-testid="diagnosis-snapshot-form-sheet"]:visible');
     await expect(sheet).toBeVisible();
     await expect(
-      page.getByTestId("housing-condition-residence-type"),
+      page.locator('[data-testid="housing-condition-residence-type"]:visible'),
     ).toContainText(/sem informa/i);
     await expect(
-      page.getByTestId("housing-condition-risk-area-unknown"),
+      page.locator('[data-testid="housing-condition-risk-area-unknown"]:visible'),
     ).toBeVisible();
     await page.screenshot({
       path: "test-results/serie11225-ca02-s2-primeiro-registro.png",
@@ -156,30 +159,30 @@ test.describe("US-SERIE-01 — diagnóstico como série (client)", () => {
     expect(before.total, "S1 tem ao menos um retrato").toBeGreaterThan(0);
 
     await openFamilyTab(page, FAMILY_S1, "habitacao");
-    await expect(page.getByTestId("snapshot-series")).toBeVisible();
+    await expect(page.locator('[data-testid="snapshot-series"]:visible')).toBeVisible();
 
-    const latest = page.locator('[data-testid^="snapshot-column-"]').first();
+    const latest = page.locator('[data-testid^="snapshot-column-"]:visible').first();
     const typeBefore = await latest
       .getByTestId("snapshot-value-residence_type_uuid")
       .innerText();
 
-    await page.locator('[data-testid^="snapshot-alter-"]').click();
-    await expect(page.getByTestId("snapshot-change-kind-dialog")).toBeVisible();
-    await page.getByTestId("snapshot-kind-correct").click();
+    await page.locator('[data-testid^="snapshot-alter-"]:visible').click();
+    await expect(page.locator('[data-testid="snapshot-change-kind-dialog"]:visible')).toBeVisible();
+    await page.locator('[data-testid="snapshot-kind-correct"]:visible').click();
 
     await expect(
-      page.getByTestId("diagnosis-snapshot-correct-notice"),
+      page.locator('[data-testid="diagnosis-snapshot-correct-notice"]:visible'),
     ).toBeVisible();
     // Troca o tipo para uma opção diferente da atual.
-    await page.getByTestId("housing-condition-residence-type").click();
+    await page.locator('[data-testid="housing-condition-residence-type"]:visible').click();
     const options = page.getByRole("option");
     await expect(options.first()).toBeVisible();
     const target = typeBefore.includes("Alugada") ? "Cedida" : "Alugada";
     await options.filter({ hasText: target }).first().click();
-    await page.getByTestId("diagnosis-snapshot-submit").click();
+    await page.locator('[data-testid="diagnosis-snapshot-submit"]:visible').click();
 
     await expect(
-      page.getByTestId("diagnosis-snapshot-form-sheet"),
+      page.locator('[data-testid="diagnosis-snapshot-form-sheet"]:visible'),
     ).toBeHidden();
     await expect(
       latest.getByTestId("snapshot-signature-correction"),
@@ -202,12 +205,12 @@ test.describe("US-SERIE-01 — diagnóstico como série (client)", () => {
     const target = minusDays(today, 60);
 
     await openFamilyTab(page, FAMILY_S1, "habitacao");
-    await expect(page.getByTestId("snapshot-series")).toBeVisible();
+    await expect(page.locator('[data-testid="snapshot-series"]:visible')).toBeVisible();
 
-    await page.locator('[data-testid^="snapshot-alter-"]').click();
-    await page.getByTestId("snapshot-kind-update").click();
+    await page.locator('[data-testid^="snapshot-alter-"]:visible').click();
+    await page.locator('[data-testid="snapshot-kind-update"]:visible').click();
     await expect(
-      page.getByTestId("diagnosis-snapshot-form-sheet"),
+      page.locator('[data-testid="diagnosis-snapshot-form-sheet"]:visible'),
     ).toBeVisible();
 
     await page.locator("#diagnosis-snapshot-taken-on").click();
@@ -218,13 +221,13 @@ test.describe("US-SERIE-01 — diagnóstico como série (client)", () => {
       .locator(`[data-reka-calendar-cell-trigger][data-value="${target}"]`)
       .click();
     await chooseUnit(page);
-    await page.getByTestId("diagnosis-snapshot-submit").click();
+    await page.locator('[data-testid="diagnosis-snapshot-submit"]:visible').click();
 
     await expect(
-      page.getByTestId("diagnosis-snapshot-form-sheet"),
+      page.locator('[data-testid="diagnosis-snapshot-form-sheet"]:visible'),
     ).toBeHidden();
     const [year, month] = target.split("-");
-    const banner = page.getByTestId("housing-condition-remittance-warning");
+    const banner = page.locator('[data-testid="housing-condition-remittance-warning"]:visible');
     await expect(banner).toBeVisible();
     await expect(banner).toContainText(`${month}/${year}`);
     await page.screenshot({ path: "test-results/serie11225-ct02-aviso.png" });

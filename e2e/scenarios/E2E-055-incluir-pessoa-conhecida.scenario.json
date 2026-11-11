@@ -1,0 +1,299 @@
+{
+  "schema_version": 1,
+  "id": "E2E-055",
+  "title": "O técnico inclui direto a pessoa conhecida pelo município e é avisado antes do clique quando ela está em outra família",
+  "description": "HU #11549 (CA01, CA06), plano 02: no painel Incluir integrante da F2 (sem Código Familiar), a pessoa desvinculada entra sem 2º dado nem código familiar; a pessoa ativa na F3 gera aviso imediato com o número do prontuário, com Incluir na composição desabilitado e sem Desvincular. Depende da massa do seeder do plano 03. Massa fictícia; nenhum dado pessoal.",
+  "feature_slug": "11549-incluir-pessoa-03-evidencias",
+  "ac_refs": [
+    "AC-002",
+    "AC-003"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "composicao",
+    "incluir-integrante"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/auth/login",
+    "viewport": {
+      "width": 1440,
+      "height": 1600
+    },
+    "users": [
+      {
+        "role": "tecnico_cras_s0",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_OPERADOR_CPF",
+          "password": "E2E_CLIENT_OPERADOR_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Seeder do plano 03 aplicado (F1..F4, P desvinculada da F1, P2 ativa na F3)",
+      "CPFs das pessoas fictícias lidos de variáveis de ambiente, nunca escritos aqui",
+      "Um login por execução (throttle 6,1)"
+    ]
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "Pessoa conhecida entra direto na F2, sem 2º dado (CA01)",
+      "as_user": "tecnico_cras_s0",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades, se aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/00000000-0000-4000-8000-000011549002?tab=composicao",
+          "note": "F2, sem Código Familiar"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Incluir integrante"
+          },
+          "note": "abre o painel"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"add-member-drawer\"]"
+          },
+          "timeout_ms": 15000
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"add-member-cpf-input\"]"
+          },
+          "value": "${env:E2E_CLIENT_PERSON_UNLINKED_CPF}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"add-member-cpf-submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"add-member-known-hint\"]"
+          },
+          "timeout_ms": 15000,
+          "note": "desfecho conhecida: sem pedir 2º dado"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"add-member-kinship-trigger\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[role=\"option\"] >> nth=0"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"add-member-submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 3000,
+          "note": "espera a inclusão"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "hidden",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"add-member-drawer\"]"
+          },
+          "note": "o painel fechou: inclusão aceita"
+        },
+        {
+          "expect": "url",
+          "value": "/app/cadastros/familias/00000000-0000-4000-8000-000011549002",
+          "note": "segue na F2 (P aparece na composição)"
+        }
+      ]
+    },
+    {
+      "name": "validation",
+      "title": "Pessoa ativa na F3: aviso antes do clique, sem desvincular (CA06)",
+      "as_user": "tecnico_cras_s0",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades, se aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/00000000-0000-4000-8000-000011549002?tab=composicao",
+          "note": "F2, sem Código Familiar"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Incluir integrante"
+          },
+          "note": "abre o painel"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"add-member-drawer\"]"
+          },
+          "timeout_ms": 15000
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"add-member-cpf-input\"]"
+          },
+          "value": "${env:E2E_CLIENT_PERSON_OTHER_FAMILY_CPF}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"add-member-cpf-submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"add-member-conflict-notice\"]"
+          },
+          "timeout_ms": 15000,
+          "note": "aviso imediato"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"add-member-conflict-family\"]"
+          },
+          "note": "número do prontuário da F3"
+        },
+        {
+          "expect": "disabled",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"add-member-submit\"]"
+          },
+          "note": "Incluir na composição desabilitado"
+        },
+        {
+          "expect": "hidden",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Desvincular"
+          },
+          "note": "sem desvincular no painel"
+        }
+      ]
+    }
+  ]
+}

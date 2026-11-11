@@ -196,6 +196,37 @@
           "action": "wait",
           "target": {
             "by": "css",
+            "value": "tr[data-testid^=\"member-row-\"]:has-text(\"${data.member_one}\") [data-testid^=\"member-conditions-\"]"
+          },
+          "timeout_ms": 15000,
+          "note": "US-AJ-18 RN05: o painel fecha ao gravar; reabre o drawer do integrante para conferir"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "tr[data-testid^=\"member-row-\"]:has-text(\"${data.member_one}\") [data-testid^=\"member-conditions-\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-conditions-drawer\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-school-grade\"]"
+          },
+          "timeout_ms": 15000
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
             "value": "[data-testid=\"member-schooling-source\"]:has-text(\"Derivada da série informada\")"
           },
           "timeout_ms": 15000,
@@ -287,6 +318,37 @@
           "action": "wait",
           "timeout_ms": 2500,
           "note": "espera a gravação"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "tr[data-testid^=\"member-row-\"]:has-text(\"${data.member_one}\") [data-testid^=\"member-conditions-\"]"
+          },
+          "timeout_ms": 15000,
+          "note": "US-AJ-18 RN05: reabre o drawer depois da 2ª gravação"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "tr[data-testid^=\"member-row-\"]:has-text(\"${data.member_one}\") [data-testid^=\"member-conditions-\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-conditions-drawer\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-school-grade\"]"
+          },
+          "timeout_ms": 15000
         }
       ],
       "assertions": [

@@ -66,11 +66,19 @@ async function open(page: Page, family: string, tab?: string): Promise<void> {
     `/app/cadastros/familias/${family}${tab ? `?tab=${tab}` : ""}`,
   );
   await dismissPlatformUpdates(page);
+  // harness: a navegação é em dois níveis (#11547) e os nomes das abas têm contador;
+  // o prontuário "abriu" quando a lista de grupos aparece.
   await expect(
-    page.getByRole("tab", { name: "Composição Familiar", exact: true }),
+    page.getByRole("tablist", { name: "Grupos do prontuário" }),
   ).toBeVisible({
     timeout: 15_000,
   });
+}
+
+/** harness: abre o grupo (nível 1) e confere a seção (nível 2) pelo data-testid estável. */
+async function sectionTab(page: Page, group: string, section: string) {
+  await page.getByTestId(`family-tab-group-${group}`).click();
+  return page.getByTestId(`family-tab-${section}`);
 }
 
 test.describe("US-VISIB-02 — sigilo técnico no prontuário (client)", () => {
@@ -145,20 +153,18 @@ test.describe("US-VISIB-02 — sigilo técnico no prontuário (client)", () => {
     test("CA02 — o assistente administrativo vê Composição, Atendimentos e Encaminhamentos; Saúde com aviso restrito (US-AJ-11 RN03); sem Acolhimento nem avaliações (a evidência é a ausência)", async ({}, testInfo) => {
       await open(user, FAMILY_SILVA);
 
-      for (const name of [
-        "Composição Familiar",
-        "Atendimentos",
-        "Encaminhamentos",
+      // harness: cada seção vive em um grupo; abre o grupo antes de conferir a aba.
+      for (const [group, section] of [
+        ["familia", "composicao"],
+        ["atendimento", "atendimentos"],
+        ["atendimento", "encaminhamentos"],
       ]) {
-        await expect(
-          user.getByRole("tab", { name, exact: true }),
-        ).toBeVisible();
+        await expect(await sectionTab(user, group, section)).toBeVisible();
       }
       // US-AJ-11 RN03 (#11408): a aba Saúde é visível com o aviso restrito.
-      await expect(
-        user.getByRole("tab", { name: "Saúde", exact: true }),
-      ).toBeVisible();
-      await user.getByRole("tab", { name: "Saúde", exact: true }).click();
+      const saudeTab = await sectionTab(user, "diagnostico", "saude");
+      await expect(saudeTab).toBeVisible();
+      await saudeTab.click();
       await expect(user.getByTestId("health-restricted")).toBeVisible();
       await expect(user.getByTestId("health-block")).toHaveCount(0);
       await expect(

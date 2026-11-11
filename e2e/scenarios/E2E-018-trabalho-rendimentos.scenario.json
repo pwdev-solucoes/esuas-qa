@@ -128,8 +128,8 @@
             "by": "css",
             "value": "[data-testid=\"member-own-income\"]"
           },
-          "value": "40000",
-          "note": "renda própria em centavos (máscara)"
+          "value": "400",
+          "note": "renda própria em reais (US-AJ-18 RN07)"
         },
         {
           "action": "click",
@@ -262,8 +262,8 @@
             "by": "css",
             "value": "[data-testid=\"member-own-income\"]"
           },
-          "value": "80000",
-          "note": "renda própria em centavos (máscara)"
+          "value": "800",
+          "note": "renda própria em reais (US-AJ-18 RN07)"
         },
         {
           "action": "click",
@@ -321,8 +321,8 @@
             "by": "css",
             "value": "[data-testid=\"member-own-income\"]"
           },
-          "value": "000",
-          "note": "renda própria em centavos (máscara)"
+          "value": "0",
+          "note": "renda própria em reais (US-AJ-18 RN07)"
         },
         {
           "action": "click",
@@ -408,7 +408,7 @@
             "by": "css",
             "value": "[data-testid=\"work-income-declared_total_income\"]"
           },
-          "value": "150000",
+          "value": "1500",
           "note": "declarado R$ 1.500,00 (CA01)"
         },
         {
@@ -417,7 +417,7 @@
             "by": "css",
             "value": "[data-testid=\"work-income-program-bolsa_familia-amount\"]"
           },
-          "value": "60000",
+          "value": "600",
           "note": "Bolsa Família R$ 600,00 (CA04)"
         },
         {
@@ -578,7 +578,7 @@
             "by": "css",
             "value": "[data-testid=\"work-income-program-other-amount\"]"
           },
-          "value": "10000",
+          "value": "100",
           "note": "Outros R$ 100,00 sem dizer qual programa"
         },
         {

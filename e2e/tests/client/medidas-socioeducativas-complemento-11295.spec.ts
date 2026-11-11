@@ -7,8 +7,8 @@ import { captureEvidence } from "../../helpers/evidence";
  * US-MSE-01 (HU #11295) — complemento do `medidas-socioeducativas-11295.spec.ts`
  * com a persona e a tela exatas do ticket:
  *
- *  - CA04: uma PSICÓLOGA do CRAS Centro (o principal usa a assistente social;
- *    a psicóloga só estava no Pest) registra uma medida e ela é salva;
+ *  - CA04: uma PSICÓLOGA do CRAS Centro vê o bloco de medidas e NÃO tem
+ *    "Registrar medida" (a condução é do CREAS — US-AJ-15 #11550, RN07);
  *  - CA06: um técnico abre o bloco de acolhimento e vê "adolescente cumprindo
  *    internação" derivado da internação em curso de Pedro (o principal provava
  *    só a regra, no Pest; a tela é entregue pela #11296).
@@ -42,7 +42,7 @@ async function open(page: Page, tab: string): Promise<void> {
   await page.goto(`/app/cadastros/familias/${FAMILY}?tab=${tab}`);
   await dismissPlatformUpdates(page);
   await expect(
-    page.getByRole("tab", { name: "Composição Familiar", exact: true }),
+    page.getByRole("tablist", { name: "Grupos do prontuário" }),
   ).toBeVisible({ timeout: 15_000 });
 }
 
@@ -72,40 +72,16 @@ test.describe("US-MSE-01 — medidas socioeducativas, persona e tela do ticket (
     await user?.close();
   });
 
-  test("CA04 — a psicóloga do CRAS Centro registra uma medida e ela é salva", async ({}, testInfo) => {
+  test("CA04 — a psicóloga do CRAS Centro vê as medidas, mas não registra: a condução é do CREAS (US-AJ-15 RN07)", async ({}, testInfo) => {
     await open(user, "medidas-socioeducativas");
     await expect(user.getByTestId("socio-educational-measure-block")).toBeVisible({
       timeout: 15_000,
     });
-    await user.getByTestId("socio-educational-measure-register-action").click();
+    // A evidência é a ausência: o CRAS só identifica; registrar a medida cabe ao CREAS.
     await expect(
-      user.getByTestId("socio-educational-measure-form-sheet"),
-    ).toBeVisible({ timeout: 10_000 });
-    await user.getByTestId("socio-educational-measure-form-member").click();
-    await user.getByRole("option", { name: "E2E Pedro MSE", exact: true }).click();
-    await user.getByTestId("socio-educational-measure-form-type").click();
-    await user.getByRole("option", { name: "Advertência", exact: true }).click();
-    await user
-      .getByTestId("socio-educational-measure-form-process")
-      .fill(PROCESS_PSYCHOLOGIST);
-    await user.getByTestId("socio-educational-measure-form-started-month").click();
-    await user.getByRole("option", { name: "Maio", exact: true }).click();
-    await user.getByTestId("socio-educational-measure-form-submit").click();
-
-    const row = user
-      .locator('[data-testid^="socio-educational-measure-row-"]')
-      .filter({ hasText: PROCESS_PSYCHOLOGIST });
-    await expect(row).toBeVisible({ timeout: 10_000 });
-    const signature = row.locator(
-      '[data-testid^="socio-educational-measure-signature-"]',
-    );
-    await expect(signature).toContainText("Registrado por");
-    await expect(signature).toContainText("Psicólogo");
-    await expect(
-      user.getByTestId("socio-educational-measure-form-sheet"),
-    ).toBeHidden();
-    await row.scrollIntoViewIfNeeded();
-    await captureEvidence(user, testInfo, EVIDENCE_SLUG, "psicologa-cras-registra");
+      user.getByTestId("socio-educational-measure-register-action"),
+    ).toHaveCount(0);
+    await captureEvidence(user, testInfo, EVIDENCE_SLUG, "psicologa-cras-sem-registrar");
   });
 
   test("CA06 — o técnico abre o acolhimento e vê \"adolescente cumprindo internação\" sem marcação à parte", async ({}, testInfo) => {

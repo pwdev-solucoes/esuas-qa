@@ -229,8 +229,8 @@
             "by": "css",
             "value": "[data-testid=\"member-own-income\"]"
           },
-          "value": "150000",
-          "note": "máscara em centavos: 1.500,00"
+          "value": "1500",
+          "note": "valor em reais (US-AJ-18 RN07): 1.500,00"
         },
         {
           "action": "click",
@@ -291,7 +291,7 @@
         {
           "action": "press",
           "key": "Escape",
-          "note": "o drawer fica aberto após salvar: fecha para ver a série"
+          "note": "US-AJ-18 RN05: o drawer já fechou ao salvar; o Escape é inofensivo"
         },
         {
           "action": "wait",

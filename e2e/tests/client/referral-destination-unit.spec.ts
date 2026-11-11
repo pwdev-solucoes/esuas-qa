@@ -81,6 +81,9 @@ const SEED_HINT =
 let api: APIRequestContext;
 /** uuid do encaminhamento criado no CA04 — pré-requisito do CA08 e do CA-extra-C. */
 let createdReferralUuid = '';
+/** harness: tipo exigido pelo código interno e unidades de destino lidos das options (beforeAll). */
+let requiredTypeUuid = '';
+let destinationUnits: Array<{ uuid: string; name: string; type_uuid: string }> = [];
 
 type Options = {
   data: {
@@ -106,6 +109,8 @@ test.beforeAll(async () => {
 
   const internal = data.codes.find((item) => item.code === INTERNAL_CODE);
   expect(internal?.destination_unit_type_uuid, SEED_HINT).toBeTruthy();
+  requiredTypeUuid = internal!.destination_unit_type_uuid!;
+  destinationUnits = data.destination_units;
 
   const destinations = data.destination_units.map((unit) => unit.name);
   expect(destinations, SEED_HINT).toContain(DESTINATION_UNIT_NAME);
@@ -125,7 +130,7 @@ async function openReferralsTab(page: Page): Promise<void> {
 /** Escolhe uma opção de um Select (shadcn) pelo testid do gatilho. */
 async function choose(page: Page, triggerTestId: string, optionName: string | RegExp) {
   await page.getByTestId(triggerTestId).click();
-  await page.getByRole('option', { name: optionName }).click();
+  await page.getByRole('option', { name: optionName, exact: typeof optionName === 'string' }).click();
 }
 
 /** Abre o formulário de registro já com a origem e o código escolhidos. */
@@ -169,9 +174,17 @@ test.describe('US-ACOMP-07 — unidade de destino no encaminhamento de trânsito
     await page.getByTestId('referral-form-destination-unit').click();
     const offered = await page.getByRole('option').allInnerTexts();
 
-    expect(offered.map((text) => text.trim())).toEqual([DESTINATION_UNIT_NAME]);
-    // A própria origem nunca é ofertada — aqui o filtro de tipo já a exclui.
-    expect(offered.join(' ')).not.toContain(ORIGIN_UNIT_NAME);
+    // harness: a massa tem outras unidades do mesmo tipo (E2E CREAS RMA/Sul…); o CA é
+    // "só do tipo exigido e nunca a origem", não "lista com uma única unidade".
+    const names = offered.map((text) => text.trim());
+    expect(names, 'o destino da massa é ofertado').toContain(DESTINATION_UNIT_NAME);
+    for (const name of names) {
+      const unit = destinationUnits.find((candidate) => candidate.name === name);
+      expect(unit, `opção "${name}" existe nas options da API`).toBeTruthy();
+      expect(unit?.type_uuid, `opção "${name}" é do tipo exigido`).toBe(requiredTypeUuid);
+    }
+    // A própria origem nunca é ofertada.
+    expect(names).not.toContain(ORIGIN_UNIT_NAME);
 
     await page.keyboard.press('Escape');
     await page.getByTestId('referral-form-sheet').press('Escape');

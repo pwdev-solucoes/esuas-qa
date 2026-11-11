@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { resetTenantSession } from '../../fixtures/tenant-auth';
+import { loginAsTenantUser } from '../../fixtures/tenant-auth';
 
 /**
  * E2E da abertura do prontuário e da unidade de referência (HU #10618 —
@@ -37,16 +37,19 @@ import { resetTenantSession } from '../../fixtures/tenant-auth';
  */
 
 const BASE = process.env.CLIENT_BASE_URL;
-const OPERADOR_CPF = process.env.E2E_CLIENT_OPERADOR_CPF;
-const OPERADOR_PASS = process.env.E2E_CLIENT_OPERADOR_PASSWORD;
-const PENDING_FAMILY_NAME = process.env.E2E_CLIENT_PENDING_FAMILY_NAME;
-const UNIT_NAME = process.env.E2E_CLIENT_UNIT_NAME;
-const UNIT_WITHOUT_MDS_NAME = process.env.E2E_CLIENT_UNIT_WITHOUT_MDS_NAME;
-const UNIT_NOT_ASSIGNED_NAME = process.env.E2E_CLIENT_UNIT_NOT_ASSIGNED_NAME;
-const MASTER_CPF = process.env.E2E_CLIENT_MASTER_CPF;
-const MASTER_PASS = process.env.E2E_CLIENT_MASTER_PASSWORD;
-const FAMILY_IN_UNIT = process.env.E2E_CLIENT_FAMILY_IN_UNIT_UUID;
-const CHANGE_TO_UNIT_NAME = process.env.E2E_CLIENT_CHANGE_TO_UNIT_NAME;
+// harness: defaults = massa fictícia dos seeders (E2ESeeder + E2EProntuarioSeeder), para a spec
+// rodar sem variáveis de ambiente. As variáveis, se definidas, prevalecem.
+const OPERADOR_CPF = process.env.E2E_CLIENT_OPERADOR_CPF ?? '11144477735';
+const OPERADOR_PASS = process.env.E2E_CLIENT_OPERADOR_PASSWORD ?? 'senha123';
+const PENDING_FAMILY_NAME = process.env.E2E_CLIENT_PENDING_FAMILY_NAME ?? 'E2E Família Sem Unidade';
+const UNIT_NAME = process.env.E2E_CLIENT_UNIT_NAME ?? 'E2E CRAS Centro';
+const UNIT_WITHOUT_MDS_NAME = process.env.E2E_CLIENT_UNIT_WITHOUT_MDS_NAME ?? 'E2E CRAS Sem MDS';
+const UNIT_NOT_ASSIGNED_NAME = process.env.E2E_CLIENT_UNIT_NOT_ASSIGNED_NAME ?? 'E2E CREAS';
+const MASTER_CPF = process.env.E2E_CLIENT_MASTER_CPF ?? '52998224725';
+const MASTER_PASS = process.env.E2E_CLIENT_MASTER_PASSWORD ?? 'senha123';
+const FAMILY_IN_UNIT =
+  process.env.E2E_CLIENT_FAMILY_IN_UNIT_UUID ?? '00000000-0000-4000-8000-0000000f0001';
+const CHANGE_TO_UNIT_NAME = process.env.E2E_CLIENT_CHANGE_TO_UNIT_NAME ?? 'E2E CREAS';
 
 const PENDING_LIST_PATH = '/app/cadastros/familias-sem-unidade';
 
@@ -54,23 +57,15 @@ const configured = Boolean(BASE && OPERADOR_CPF && OPERADOR_PASS);
 
 /** Login por CPF + senha; seleciona o primeiro tenant quando solicitado. */
 async function login(page: Page, cpf: string, password: string): Promise<void> {
-  // Zera a sessão herdada do project `chromium-tenant` (storageState do
-  // operador): sem isso o guard `redirectIfAuthenticated` desvia
-  // /auth/login para /app e o formulário nunca aparece.
-  await resetTenantSession(page);
-  await page.locator('input#cpf, input[name="cpf"]').first().fill(cpf);
-  await page.locator('input[type="password"]').first().fill(password);
-  await page.locator('button[type="submit"]').first().click();
-  await page.waitForLoadState('networkidle');
-
-  if (page.url().includes('select-tenant')) {
-    await page
-      .getByRole('button', { name: /entrar|continuar|acessar|confirmar/i })
-      .first()
-      .click()
-      .catch(() => {});
+  // O operador já vem logado do storageState do project `chromium-tenant`: logar de novo estoura o
+  // throttle `6,1` de /auth/* (7 logins no arquivo) e derruba os casos do Master, que vêm por último.
+  if (cpf === OPERADOR_CPF) {
+    await page.goto('/app');
     await page.waitForLoadState('networkidle');
+    return;
   }
+  // loginAsTenantUser zera a sessão herdada, espera /app ou a seleção de tenant e escolhe o tenant da massa.
+  await loginAsTenantUser(page, cpf, password);
 }
 
 async function openPendingList(page: Page): Promise<void> {

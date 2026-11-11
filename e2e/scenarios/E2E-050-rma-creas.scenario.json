@@ -1,0 +1,504 @@
+{
+  "schema_version": 1,
+  "id": "E2E-050",
+  "title": "RMA do CREAS apurado do prontuário, no desenho do formulário",
+  "description": "HU #11543 (US-RMA-01), plano 03: o técnico do CREAS abre 'RMA do CREAS', escolhe o mês 2026-10 e vê o cabeçalho da unidade, os Blocos I a IV com as células por sexo e faixa, o selo de origem de cada item e o item manual como 'Não informado' (nunca 0). O técnico do CRAS Rural não vê o item no menu e, pela URL, vê o estado de acesso negado. Massa do plano 04 (unidade 'E2E CREAS RMA'); executado no plano 04. Nenhum dado pessoal real.",
+  "feature_slug": "11543-rma-03-client",
+  "ac_refs": [
+    "AC-001",
+    "AC-002",
+    "AC-003",
+    "AC-004",
+    "AC-006"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "creas",
+    "rma",
+    "protecao-especial"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/login",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "users": [
+      {
+        "role": "tecnico",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_CREAS_RMA_TECNICO_CPF",
+          "password": "E2E_CLIENT_CREAS_RMA_TECNICO_PASSWORD"
+        }
+      },
+      {
+        "role": "rural",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_RURAL_CPF",
+          "password": "E2E_CLIENT_OPERADOR_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Massa do plano 04 (11543-rma-04): unidade 'E2E CREAS RMA' (MDS-E2E-11543) com o técnico E2E_CLIENT_CREAS_RMA_TECNICO_* e registros no mês 2026-10",
+      "Técnico do CRAS Rural (E2E_CLIENT_RURAL_CPF) sem lotação no CREAS e fora do Master; senha E2E_CLIENT_OPERADOR_PASSWORD (conferir no plano 04)",
+      "M.3 não é afirmado: a massa da #11546 grava encaminhamentos código 14 na mesma unidade e mês; o M.3 é provado pelo Pest"
+    ]
+  },
+  "data": {
+    "unit_name": "E2E CREAS RMA",
+    "mds_number": "MDS-E2E-11543",
+    "reference_month": "2026-10"
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "Técnico do CREAS vê cabeçalho e Bloco I com os números da massa (CA01, CA02, CA03)",
+      "as_user": "tecnico",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_RMA_TECNICO_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_RMA_TECNICO_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/protecao-especial/rma-creas?mes=2026-10"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "creas-rma-header"
+          },
+          "note": "RMA carregado"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "creas-rma-unit-name"
+          },
+          "value": "${data.unit_name}",
+          "note": "cabeçalho: nome da unidade (CA01)"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "creas-rma-mds-number"
+          },
+          "value": "${data.mds_number}",
+          "note": "cabeçalho: número MDS (CA01)"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "creas-rma-calculated-at"
+          },
+          "note": "'Apurado em' visível (RN03)"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "creas-rma-block-I"
+          },
+          "note": "Bloco I presente"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "creas-rma-cell-A-1-total"
+          },
+          "value": "12",
+          "note": "A.1 = 12 (CA02)"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "creas-rma-cell-A-2-total"
+          },
+          "value": "3",
+          "note": "A.2 = 3 (CA02)"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "creas-rma-cell-B-1-total"
+          },
+          "value": "2",
+          "note": "B.1 = 2 (CA03)"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "creas-rma-cell-C-2-f_7_12"
+          },
+          "value": "1",
+          "note": "C.2 feminino 7–12 = 1 (CA03)"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "creas-rma-cell-B-6-f_0_12"
+          },
+          "value": "1",
+          "note": "B.6 feminino 0–12 = 1 (CA03)"
+        }
+      ]
+    },
+    {
+      "name": "happy_path_atendimentos",
+      "title": "Blocos II e III com os atendimentos da massa (CA05, CA07, CA08)",
+      "as_user": "tecnico",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_RMA_TECNICO_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_RMA_TECNICO_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/protecao-especial/rma-creas?mes=2026-10"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "creas-rma-header"
+          },
+          "note": "RMA carregado"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "creas-rma-block-II"
+          },
+          "note": "Bloco II presente"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "creas-rma-block-III"
+          },
+          "note": "Bloco III presente"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "creas-rma-cell-M-1-total"
+          },
+          "value": "5",
+          "note": "M.1 = 5 (CA05)"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "creas-rma-cell-M-4-total"
+          },
+          "value": "0",
+          "note": "M.4 = 0 computado, aparece como 0 (CA05)"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "creas-rma-cell-J-1-total"
+          },
+          "value": "1",
+          "note": "J.1 = 1 (CA07)"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "creas-rma-cell-J-2-total"
+          },
+          "value": "1",
+          "note": "J.2 = 1 (CA08)"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "creas-rma-cell-J-3-total"
+          },
+          "value": "1",
+          "note": "J.3 = 1 (CA08)"
+        }
+      ]
+    },
+    {
+      "name": "manual_items",
+      "title": "Item manual sem valor: 'Não informado' e célula sem 0 (CA09)",
+      "as_user": "tecnico",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_RMA_TECNICO_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_RMA_TECNICO_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/protecao-especial/rma-creas?mes=2026-10"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "creas-rma-header"
+          },
+          "note": "RMA carregado"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "creas-rma-source-B-5"
+          },
+          "value": "Não informado",
+          "note": "selo do item manual (RN02)"
+        },
+        {
+          "expect": "value",
+          "target": {
+            "by": "testid",
+            "value": "rma-cell-B.5-total"
+          },
+          "value": "",
+          "note": "B.5 é digitável na #11544: campo vazio (nunca 0) enquanto não informado (RN02)"
+        }
+      ]
+    },
+    {
+      "name": "permission",
+      "title": "Técnico do CRAS Rural não vê o item e recebe acesso negado pela URL (CA10)",
+      "as_user": "rural",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_RURAL_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/protecao-especial/rma-creas"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "creas-rma-denied"
+          },
+          "note": "estado de acesso negado"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "creas-rma-denied"
+          },
+          "note": "403 creas_rma_denied vira o estado negado (CA10)"
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "css",
+            "value": "a[href=\"/app/protecao-especial/rma-creas\"]"
+          },
+          "value": 0,
+          "note": "sem o item 'RMA do CREAS' no menu (CA10)"
+        }
+      ]
+    }
+  ]
+}

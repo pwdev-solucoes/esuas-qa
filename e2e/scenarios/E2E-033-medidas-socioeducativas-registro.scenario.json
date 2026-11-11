@@ -2,7 +2,7 @@
   "schema_version": 1,
   "id": "E2E-033",
   "title": "Medidas socioeducativas: o técnico registra, só vê a pergunta do CREAS quando cabe, a PSC exige local e o aviso de idade não bloqueia",
-  "description": "HU #11295 (US-MSE-01), plano 02: na aba Medidas socioeducativas, o técnico do CRAS Centro (sessão herdada do chromium-tenant, sem login) registra Liberdade assistida para o adolescente de 16 anos e a medida aparece na lista; com Advertência a pergunta do CREAS não existe; na PSC, sem local e orientador a medida não salva; para o integrante de 24 anos a medida salva com o aviso de idade do servidor. CA01 (CREAS), CA05 (não técnico), Master e CA08 ficam na spec manual do plano 03. Massa fictícia do plano 03; nenhum dado pessoal.",
+  "description": "HU #11295 (US-MSE-01), plano 02: na aba Medidas socioeducativas, o técnico do CREAS (login por variante; o CRAS só identifica, US-AJ-15 #11550) registra Liberdade assistida para o adolescente de 16 anos e a medida aparece na lista; com Advertência a pergunta do CREAS não existe; na PSC, sem local e orientador a medida não salva; para o integrante de 24 anos a medida salva com o aviso de idade do servidor. CA01 (CREAS), CA05 (não técnico), Master e CA08 ficam na spec manual do plano 03. Massa fictícia do plano 03; nenhum dado pessoal.",
   "feature_slug": "11295-mse-02-client",
   "ac_refs": [
     "AC-001",
@@ -20,22 +20,22 @@
   ],
   "preconditions": {
     "base_url_env": "CLIENT_BASE_URL",
-    "start_path": "/app",
+    "start_path": "/login",
     "viewport": {
       "width": 1440,
       "height": 900
     },
     "users": [
       {
-        "role": "operador",
+        "role": "tecnico_creas",
         "credentials_env": {
-          "cpf": "E2E_CLIENT_OPERADOR_CPF",
-          "password": "E2E_CLIENT_OPERADOR_PASSWORD"
+          "cpf": "E2E_CLIENT_CREAS_OPERADOR_CPF",
+          "password": "E2E_CLIENT_CREAS_OPERADOR_PASSWORD"
         }
       }
     ],
     "state": [
-      "Sessão herdada do project chromium-tenant (técnico do CRAS Centro, massa do S10): nenhum login nas variantes",
+      "Técnico do CREAS (E2E_CLIENT_CREAS_OPERADOR_*), login por variante: com a US-AJ-15 (#11550) o CRAS não registra medida; a família …11295001 tem encaminhamento aberto ao CREAS",
       "Massa do plano 03: família …11295001 referenciada no CRAS Centro, com os integrantes E2E Pedro MSE (16 anos) e E2E Irmão MSE (24 anos no mês corrente), sem medida registrada",
       "As medidas registradas pelo cenário são removidas a cada rodada do seeder do plano 03",
       "API e client com os planos 01 e 02 da HU #11295; o ano de início já vem no corrente"
@@ -48,8 +48,40 @@
     {
       "name": "happy_path",
       "title": "O técnico registra Liberdade assistida para o adolescente de 16 anos, responde que o CREAS acompanha, e a medida entra na lista com período, processo e assinatura (CA01/CA04)",
-      "as_user": "operador",
+      "as_user": "tecnico_creas",
       "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
         {
           "action": "goto",
           "value": "/app/cadastros/familias/${data.family_uuid}?tab=medidas-socioeducativas"
@@ -225,8 +257,40 @@
     {
       "name": "advertencia_sem_pergunta",
       "title": "Com Advertência a pergunta do CREAS não existe; ao trocar de Liberdade assistida para Advertência ela some (CA02)",
-      "as_user": "operador",
+      "as_user": "tecnico_creas",
       "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
         {
           "action": "goto",
           "value": "/app/cadastros/familias/${data.family_uuid}?tab=medidas-socioeducativas"
@@ -339,8 +403,40 @@
     {
       "name": "validation_error",
       "title": "Na prestação de serviços à comunidade, sem local e orientador a medida não salva e os campos apontam o erro (CA03)",
-      "as_user": "operador",
+      "as_user": "tecnico_creas",
       "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
         {
           "action": "goto",
           "value": "/app/cadastros/familias/${data.family_uuid}?tab=medidas-socioeducativas"
@@ -497,8 +593,40 @@
     {
       "name": "aviso_idade",
       "title": "Registrar a medida de um integrante com 24 anos salva e mostra o aviso de idade do servidor, sem bloquear (CA07)",
-      "as_user": "operador",
+      "as_user": "tecnico_creas",
       "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
         {
           "action": "goto",
           "value": "/app/cadastros/familias/${data.family_uuid}?tab=medidas-socioeducativas"

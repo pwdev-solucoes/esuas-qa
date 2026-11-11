@@ -35,9 +35,12 @@ import { dismissPlatformUpdates } from '../../helpers/platform-updates';
  */
 
 const BASE = process.env.CLIENT_BASE_URL;
-const FAMILY_WORK = process.env.E2E_CLIENT_FAMILY_IN_UNIT_UUID;
-const FAMILY_OTHER_UNIT = process.env.E2E_CLIENT_FAMILY_OTHER_UNIT_UUID;
-const UNIT_UUID = process.env.E2E_CLIENT_UNIT_UUID;
+// harness: defaults = uuids fixos da massa fictícia do E2EProntuarioSeeder (rodam sem variáveis).
+const FAMILY_WORK =
+  process.env.E2E_CLIENT_FAMILY_IN_UNIT_UUID ?? '00000000-0000-4000-8000-0000000f0001';
+const FAMILY_OTHER_UNIT =
+  process.env.E2E_CLIENT_FAMILY_OTHER_UNIT_UUID ?? '00000000-0000-4000-8000-0000000f0002';
+const UNIT_UUID = process.env.E2E_CLIENT_UNIT_UUID ?? '00000000-0000-4000-8000-0000000e0001';
 const UNIT_NAME = process.env.E2E_CLIENT_UNIT_NAME ?? 'E2E CRAS Centro';
 const UNIT_NOT_ASSIGNED_NAME = process.env.E2E_CLIENT_UNIT_NOT_ASSIGNED_NAME ?? 'E2E CREAS';
 
@@ -158,7 +161,16 @@ test.beforeAll(async () => {
   xsrf = decodeURIComponent(state.cookies.find((c) => c.name === 'XSRF-TOKEN')?.value ?? '');
   expect(xsrf, 'XSRF-TOKEN da sessão de tenant').not.toBe('');
 
-  const response = await api.get(`/api/client/families/${FAMILY_WORK}/follow-ups/options`);
+  let response = await api.get(`/api/client/families/${FAMILY_WORK}/follow-ups/options`);
+  // harness: a sessão única (EnforceSingleSessionAction) derruba o storageState do setup quando
+  // outro login do Operador acontece antes deste arquivo (401). Reabre UMA sessão de API própria.
+  if (response.status() === 401 && OPERADOR_CPF && OPERADOR_PASSWORD && TENANT_UUID) {
+    await api.dispose();
+    const fresh = await openSessionFor(OPERADOR_CPF, OPERADOR_PASSWORD);
+    api = fresh.api;
+    xsrf = fresh.xsrf;
+    response = await api.get(`/api/client/families/${FAMILY_WORK}/follow-ups/options`);
+  }
   expect(response.status(), 'options do acompanhamento').toBe(200);
   const body = (await response.json()) as {
     data: { services: Array<{ uuid: string; code: string | null }> };
@@ -180,6 +192,9 @@ test.beforeAll(async () => {
     [REPORT_FAMILY_STALE, monthsAgoIso(6)],
     [REPORT_FAMILY_NEW, todayIso()],
   ] as const) {
+    // harness: acompanhamento vigente de uma rodada anterior (admitido em OUTRO mês) faria o POST
+    // devolver 409 e `new_families` ficar 0 — cancela antes para que o ingresso de hoje seja novo.
+    await cancelActiveFollowUps(familyUuid);
     const created = await api.post(`/api/client/families/${familyUuid}/follow-ups`, {
       headers: { 'X-XSRF-TOKEN': xsrf },
       data: {
@@ -1060,11 +1075,12 @@ test.describe('US-SCFV-02 — participação em serviços no prontuário (client
 });
 
 const API_BASE = process.env.E2E_API_BASE_URL ?? 'http://localhost:8090';
-const TENANT_UUID = process.env.E2E_TENANT_UUID;
-const OPERADOR_CPF = process.env.E2E_CLIENT_OPERADOR_CPF;
-const OPERADOR_PASSWORD = process.env.E2E_CLIENT_OPERADOR_PASSWORD;
-const MASTER_CPF = process.env.E2E_CLIENT_MASTER_CPF;
-const MASTER_PASSWORD = process.env.E2E_CLIENT_MASTER_PASSWORD;
+// harness: padrões fictícios dos seeders (E2ESeeder / E2EProntuarioSeeder).
+const TENANT_UUID = process.env.E2E_TENANT_UUID ?? '00000000-0000-4000-8000-0000000000c1';
+const OPERADOR_CPF = process.env.E2E_CLIENT_OPERADOR_CPF ?? '11144477735';
+const OPERADOR_PASSWORD = process.env.E2E_CLIENT_OPERADOR_PASSWORD ?? 'senha123';
+const MASTER_CPF = process.env.E2E_CLIENT_MASTER_CPF ?? '52998224725';
+const MASTER_PASSWORD = process.env.E2E_CLIENT_MASTER_PASSWORD ?? 'senha123';
 
 const axisConfigured = Boolean(
   configured && TENANT_UUID && FAMILY_OTHER_UNIT && OPERADOR_CPF && OPERADOR_PASSWORD && MASTER_CPF && MASTER_PASSWORD,
@@ -1125,6 +1141,14 @@ async function openRecord(page: Page): Promise<{ denied: boolean; message: strin
  * Operador e a tela cairia no login no meio do cenário.
  */
 async function openMasterSession(): Promise<{ api: APIRequestContext; xsrf: string }> {
+  return openSessionFor(MASTER_CPF!, MASTER_PASSWORD!);
+}
+
+/** harness: sessão de API (cookie + XSRF) em contexto limpo para um usuário do tenant. */
+async function openSessionFor(
+  cpf: string,
+  password: string,
+): Promise<{ api: APIRequestContext; xsrf: string }> {
   const api = await playwrightRequest.newContext({
     baseURL: API_BASE,
     extraHTTPHeaders: {
@@ -1144,9 +1168,9 @@ async function openMasterSession(): Promise<{ api: APIRequestContext; xsrf: stri
 
   const login = await api.post('/api/client/auth/login', {
     headers: { 'X-XSRF-TOKEN': await readXsrf() },
-    data: { cpf: MASTER_CPF, password: MASTER_PASSWORD, tenant_uuid: TENANT_UUID },
+    data: { cpf, password, tenant_uuid: TENANT_UUID },
   });
-  expect(login.status(), 'login do Master via API').toBe(200);
+  expect(login.status(), 'login via API').toBe(200);
 
   return { api, xsrf: await readXsrf() };
 }
@@ -1356,7 +1380,9 @@ test.describe('US-ACOMP-04 — acesso ao prontuário pela unidade que acompanha 
     const followUpUuid = ((await created.json()) as { data: { uuid: string } }).data.uuid;
 
     // Razão de desligamento: o `code` é estável, o uuid é gerado pelo seeder.
-    const evaluationOptions = await masterApi.get(
+    // O desligamento é ato do técnico (RN de sigilo do desfecho): o Master recebe 403. Sessão de API do Operador.
+    const op = await openSessionFor(OPERADOR_CPF!, OPERADOR_PASSWORD!);
+    const evaluationOptions = await op.api.get(
       `/api/client/families/${FAMILY_OTHER_UNIT}/follow-ups/${followUpUuid}/evaluations/options`,
     );
     expect(evaluationOptions.status(), 'options da avaliação').toBe(200);
@@ -1365,10 +1391,10 @@ test.describe('US-ACOMP-04 — acesso ao prontuário pela unidade que acompanha 
     }).data.exit_reasons[0];
     expect(exitReason?.uuid, 'catálogo de razões de desligamento').toBeTruthy();
 
-    const discharged = await masterApi.post(
+    const discharged = await op.api.post(
       `/api/client/families/${FAMILY_OTHER_UNIT}/follow-ups/${followUpUuid}/discharge`,
       {
-        headers: { 'X-XSRF-TOKEN': xsrf },
+        headers: { 'X-XSRF-TOKEN': op.xsrf },
         data: {
           discharged_on: todayIso(),
           follow_up_exit_reason_uuid: exitReason!.uuid,
@@ -1429,19 +1455,22 @@ test.describe('US-ACOMP-04 — acesso ao prontuário pela unidade que acompanha 
 let reportPage: Page;
 
 
-/** Chaves dos perfis que dependem das fases F6/F7 — sempre indisponíveis aqui. */
-const UNAVAILABLE_PROFILES = [
-  'profile_bf_noncompliance',
-  'profile_school_dropout',
-  'profile_teen_pregnancy',
-  'profile_sheltering',
-];
-/** Chaves dos perfis efetivamente apurados nesta entrega. */
+/**
+ * Perfis do 15.7 ainda SEM fonte. As fases F6/F7 (US-DIAG-05, US-PSE-02) acenderam os quatro que restavam
+ * (`SiapNewFamilyProfile::available()` devolve true para todos): a regra mudou de propósito, nenhum perfil
+ * fica pendente — o teste (b) passa a provar que NENHUM tem selo de fase.
+ */
+const UNAVAILABLE_PROFILES: string[] = [];
+/** Chaves dos perfis efetivamente apurados — hoje, os oito. */
 const AVAILABLE_PROFILES = [
   'profile_extreme_poverty',
   'profile_bolsa_familia',
   'profile_child_labor',
   'profile_bpc',
+  'profile_bf_noncompliance',
+  'profile_school_dropout',
+  'profile_teen_pregnancy',
+  'profile_sheltering',
 ];
 
 test.describe('US-ACOMP-05 — contadores de acompanhamento na apuração (client)', () => {
@@ -1491,7 +1520,7 @@ test.describe('US-ACOMP-05 — contadores de acompanhamento na apuração (clien
     });
   });
 
-  test('(b) os quatro perfis indisponíveis são IDENTIFICADOS com a fase de que dependem', async () => {
+  test('(b) os oito perfis estão apurados — nenhum carrega selo de fase pendente', async () => {
     const profile = reportPage.getByTestId(`new-families-profile-${UNIT_UUID}`);
     await expect(profile).toBeVisible();
 

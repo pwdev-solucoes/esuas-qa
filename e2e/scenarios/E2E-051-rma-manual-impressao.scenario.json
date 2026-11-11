@@ -1,0 +1,634 @@
+{
+  "schema_version": 1,
+  "id": "E2E-051",
+  "title": "RMA do CREAS: digitação do Bloco IV e do B.5, alerta L.1 × K.1 e impressão com aviso de pendências",
+  "description": "HU #11544 (US-RMA-02), plano 02: o técnico do CREAS preenche K.1 (sexo × faixa), K.2–K.6 e L.1 na página do RMA, salva e vê o selo 'Informado pela equipe' (B.5 segue 'Não informado'); com K.1 = 20 e L.1 = 15 vê o alerta l1_lt_k1; ao imprimir com B.5 vazio vê o diálogo de pendências listando B.5. O download do PDF não é assertado (sem ação de download no esquema): coberto pelo Vitest e pelo Pest. Massa do E2ECreasRmaManualSeeder (plano 03); executado no plano 03. Nenhum dado pessoal real.",
+  "feature_slug": "11544-rma-manual-02-client",
+  "ac_refs": [
+    "AC-001",
+    "AC-002",
+    "AC-004",
+    "AC-007"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "creas",
+    "rma",
+    "protecao-especial"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/login",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "users": [
+      {
+        "role": "tecnico",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_CREAS_RMA_TECNICO_CPF",
+          "password": "E2E_CLIENT_CREAS_RMA_TECNICO_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Massa da #11543/#11544 (plano 03): unidade 'E2E CREAS RMA' com o técnico E2E_CLIENT_CREAS_RMA_TECNICO_*, mês 2026-10, sem valores manuais gravados no início de cada variante",
+      "K.1 com total 20: m=(1,1,2,2) e f=(2,2,5,5) — conferir no plano 03 se a massa já tiver valores computados"
+    ]
+  },
+  "data": {
+    "unit_name": "E2E CREAS RMA",
+    "reference_month": "2026-10"
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "Equipe digita K.1, K.2–K.6 e L.1, salva e vê o selo 'Informado pela equipe'; B.5 segue 'Não informado' (CA01, CA02)",
+      "as_user": "tecnico",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_RMA_TECNICO_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_RMA_TECNICO_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/protecao-especial/rma-creas?mes=2026-10"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "creas-rma-header"
+          },
+          "note": "RMA carregado"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "rma-cell-K.1-m_0_12"
+          },
+          "value": "1"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "rma-cell-K.1-m_13_17"
+          },
+          "value": "1"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "rma-cell-K.1-m_18_59"
+          },
+          "value": "2"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "rma-cell-K.1-m_60p"
+          },
+          "value": "2"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "rma-cell-K.1-f_0_12"
+          },
+          "value": "2"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "rma-cell-K.1-f_13_17"
+          },
+          "value": "2"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "rma-cell-K.1-f_18_59"
+          },
+          "value": "5"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "rma-cell-K.1-f_60p"
+          },
+          "value": "5"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "rma-cell-K.2-total"
+          },
+          "value": "2"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "rma-cell-K.3-total"
+          },
+          "value": "3"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "rma-cell-K.4-total"
+          },
+          "value": "4"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "rma-cell-K.5-total"
+          },
+          "value": "5"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "rma-cell-K.6-total"
+          },
+          "value": "6"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "rma-cell-L.1-total"
+          },
+          "value": "20"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "rma-save-manual"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "rma-informed-badge-K.1"
+          },
+          "note": "salvo: selo aparece"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "rma-informed-badge-K.1"
+          },
+          "note": "selo do K.1 (CA01)"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "rma-informed-badge-L.1"
+          },
+          "note": "selo do L.1 (CA01)"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "creas-rma-source-B-5"
+          },
+          "value": "Não informado",
+          "note": "B.5 continua não informado (CA02)"
+        },
+        {
+          "expect": "disabled",
+          "target": {
+            "by": "testid",
+            "value": "rma-save-manual"
+          },
+          "note": "sem alteração pendente após salvar"
+        }
+      ]
+    },
+    {
+      "name": "validation",
+      "title": "K.1 com total 20 e L.1 = 15 mostra o alerta l1_lt_k1 (CA04)",
+      "as_user": "tecnico",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_RMA_TECNICO_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_RMA_TECNICO_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/protecao-especial/rma-creas?mes=2026-10"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "creas-rma-header"
+          },
+          "note": "RMA carregado"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "rma-cell-K.1-m_0_12"
+          },
+          "value": "1"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "rma-cell-K.1-m_13_17"
+          },
+          "value": "1"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "rma-cell-K.1-m_18_59"
+          },
+          "value": "2"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "rma-cell-K.1-m_60p"
+          },
+          "value": "2"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "rma-cell-K.1-f_0_12"
+          },
+          "value": "2"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "rma-cell-K.1-f_13_17"
+          },
+          "value": "2"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "rma-cell-K.1-f_18_59"
+          },
+          "value": "5"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "rma-cell-K.1-f_60p"
+          },
+          "value": "5"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "rma-cell-L.1-total"
+          },
+          "value": "15"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "rma-save-manual"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "rma-alert-l1_lt_k1"
+          },
+          "note": "alerta após salvar"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "rma-alert-l1_lt_k1"
+          },
+          "note": "L.1 menor que o total de K.1 (CA04)"
+        }
+      ]
+    },
+    {
+      "name": "edge",
+      "title": "Imprimir RMA com B.5 vazio avisa a pendência e 'Imprimir mesmo assim' segue (CA07)",
+      "as_user": "tecnico",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_RMA_TECNICO_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_RMA_TECNICO_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/protecao-especial/rma-creas?mes=2026-10"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "creas-rma-header"
+          },
+          "note": "RMA carregado"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "rma-print"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "rma-print-pending-dialog"
+          },
+          "note": "diálogo de pendências"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "rma-print-pending-dialog"
+          }
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "rma-print-pending-item"
+          },
+          "value": "B.5",
+          "note": "lista o item pendente (CA07)"
+        }
+      ]
+    },
+    {
+      "name": "edge_confirm",
+      "title": "'Imprimir mesmo assim' fecha o diálogo e segue para o download (CA07)",
+      "as_user": "tecnico",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_RMA_TECNICO_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_RMA_TECNICO_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/protecao-especial/rma-creas?mes=2026-10"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "creas-rma-header"
+          },
+          "note": "RMA carregado"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "rma-print"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "rma-print-pending-dialog"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "rma-print-confirm"
+          }
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "hidden",
+          "target": {
+            "by": "testid",
+            "value": "rma-print-pending-dialog"
+          },
+          "note": "diálogo fecha ao confirmar; o PDF é baixado (provado no Vitest)"
+        }
+      ]
+    }
+  ]
+}

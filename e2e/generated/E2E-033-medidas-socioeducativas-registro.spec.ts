@@ -21,16 +21,22 @@ void data;
 test.describe('E2E-033 Medidas socioeducativas: o técnico registra, só vê a pergunta do CREAS quando cabe, a PSC exige local e o aviso de idade não bloqueia', () => {
   test.use({ baseURL: process.env['CLIENT_BASE_URL'], viewport: { width: 1440, height: 900 } });
   // Preconditions (arrange before running):
-  //   - Sessão herdada do project chromium-tenant (técnico do CRAS Centro, massa do S10): nenhum login nas variantes
+  //   - Técnico do CREAS (E2E_CLIENT_CREAS_OPERADOR_*), login por variante: com a US-AJ-15 (#11550) o CRAS não registra medida; a família …11295001 tem encaminhamento aberto ao CREAS
   //   - Massa do plano 03: família …11295001 referenciada no CRAS Centro, com os integrantes E2E Pedro MSE (16 anos) e E2E Irmão MSE (24 anos no mês corrente), sem medida registrada
   //   - As medidas registradas pelo cenário são removidas a cada rodada do seeder do plano 03
   //   - API e client com os planos 01 e 02 da HU #11295; o ano de início já vem no corrente
 
   test('happy_path — O técnico registra Liberdade assistida para o adolescente de 16 anos, responde que o CREAS acompanha, e a medida entra na lista com período, processo e assinatura (CA01/CA04)', {
     tag: ['@P1', '@client', '@prontuario', '@medidas-socioeducativas', '@lgpd'],
-    annotation: [{ type: 'E2E', description: 'E2E-033' }, { type: 'AC', description: 'AC-001' }, { type: 'AC', description: 'AC-002' }, { type: 'AC', description: 'AC-003' }, { type: 'AC', description: 'AC-006' }, { type: 'AC', description: 'AC-009' }, { type: 'user', description: 'operador' }],
+    annotation: [{ type: 'E2E', description: 'E2E-033' }, { type: 'AC', description: 'AC-001' }, { type: 'AC', description: 'AC-002' }, { type: 'AC', description: 'AC-003' }, { type: 'AC', description: 'AC-006' }, { type: 'AC', description: 'AC-009' }, { type: 'user', description: 'tecnico_creas' }],
   }, async ({ page }) => {
-    await page.goto('/app');
+    await page.goto('/login');
+    await page.goto('/auth/login');
+    await page.locator('input#cpf').fill(env('E2E_CLIENT_CREAS_OPERADOR_CPF'));
+    await page.locator('input#password').fill(env('E2E_CLIENT_CREAS_OPERADOR_PASSWORD'));
+    await page.locator('button[type="submit"]').click();
+    // login concluído: espera a URL autenticada em vez de tempo fixo
+    await page.waitForURL(new RegExp(escapeRegExp('/app')));
     await page.goto(`/app/cadastros/familias/${data.family_uuid}?tab=medidas-socioeducativas`);
     // deixa o modal de novidades abrir antes de fechá-lo
     await page.waitForTimeout(2500);
@@ -64,9 +70,15 @@ test.describe('E2E-033 Medidas socioeducativas: o técnico registra, só vê a p
 
   test('advertencia_sem_pergunta — Com Advertência a pergunta do CREAS não existe; ao trocar de Liberdade assistida para Advertência ela some (CA02)', {
     tag: ['@P1', '@client', '@prontuario', '@medidas-socioeducativas', '@lgpd'],
-    annotation: [{ type: 'E2E', description: 'E2E-033' }, { type: 'AC', description: 'AC-001' }, { type: 'AC', description: 'AC-002' }, { type: 'AC', description: 'AC-003' }, { type: 'AC', description: 'AC-006' }, { type: 'AC', description: 'AC-009' }, { type: 'user', description: 'operador' }],
+    annotation: [{ type: 'E2E', description: 'E2E-033' }, { type: 'AC', description: 'AC-001' }, { type: 'AC', description: 'AC-002' }, { type: 'AC', description: 'AC-003' }, { type: 'AC', description: 'AC-006' }, { type: 'AC', description: 'AC-009' }, { type: 'user', description: 'tecnico_creas' }],
   }, async ({ page }) => {
-    await page.goto('/app');
+    await page.goto('/login');
+    await page.goto('/auth/login');
+    await page.locator('input#cpf').fill(env('E2E_CLIENT_CREAS_OPERADOR_CPF'));
+    await page.locator('input#password').fill(env('E2E_CLIENT_CREAS_OPERADOR_PASSWORD'));
+    await page.locator('button[type="submit"]').click();
+    // login concluído: espera a URL autenticada em vez de tempo fixo
+    await page.waitForURL(new RegExp(escapeRegExp('/app')));
     await page.goto(`/app/cadastros/familias/${data.family_uuid}?tab=medidas-socioeducativas`);
     // deixa o modal de novidades abrir antes de fechá-lo
     await page.waitForTimeout(2500);
@@ -91,9 +103,15 @@ test.describe('E2E-033 Medidas socioeducativas: o técnico registra, só vê a p
 
   test('validation_error — Na prestação de serviços à comunidade, sem local e orientador a medida não salva e os campos apontam o erro (CA03)', {
     tag: ['@P1', '@client', '@prontuario', '@medidas-socioeducativas', '@lgpd'],
-    annotation: [{ type: 'E2E', description: 'E2E-033' }, { type: 'AC', description: 'AC-001' }, { type: 'AC', description: 'AC-002' }, { type: 'AC', description: 'AC-003' }, { type: 'AC', description: 'AC-006' }, { type: 'AC', description: 'AC-009' }, { type: 'user', description: 'operador' }],
+    annotation: [{ type: 'E2E', description: 'E2E-033' }, { type: 'AC', description: 'AC-001' }, { type: 'AC', description: 'AC-002' }, { type: 'AC', description: 'AC-003' }, { type: 'AC', description: 'AC-006' }, { type: 'AC', description: 'AC-009' }, { type: 'user', description: 'tecnico_creas' }],
   }, async ({ page }) => {
-    await page.goto('/app');
+    await page.goto('/login');
+    await page.goto('/auth/login');
+    await page.locator('input#cpf').fill(env('E2E_CLIENT_CREAS_OPERADOR_CPF'));
+    await page.locator('input#password').fill(env('E2E_CLIENT_CREAS_OPERADOR_PASSWORD'));
+    await page.locator('button[type="submit"]').click();
+    // login concluído: espera a URL autenticada em vez de tempo fixo
+    await page.waitForURL(new RegExp(escapeRegExp('/app')));
     await page.goto(`/app/cadastros/familias/${data.family_uuid}?tab=medidas-socioeducativas`);
     // deixa o modal de novidades abrir antes de fechá-lo
     await page.waitForTimeout(2500);
@@ -124,9 +142,15 @@ test.describe('E2E-033 Medidas socioeducativas: o técnico registra, só vê a p
 
   test('aviso_idade — Registrar a medida de um integrante com 24 anos salva e mostra o aviso de idade do servidor, sem bloquear (CA07)', {
     tag: ['@P1', '@client', '@prontuario', '@medidas-socioeducativas', '@lgpd'],
-    annotation: [{ type: 'E2E', description: 'E2E-033' }, { type: 'AC', description: 'AC-001' }, { type: 'AC', description: 'AC-002' }, { type: 'AC', description: 'AC-003' }, { type: 'AC', description: 'AC-006' }, { type: 'AC', description: 'AC-009' }, { type: 'user', description: 'operador' }],
+    annotation: [{ type: 'E2E', description: 'E2E-033' }, { type: 'AC', description: 'AC-001' }, { type: 'AC', description: 'AC-002' }, { type: 'AC', description: 'AC-003' }, { type: 'AC', description: 'AC-006' }, { type: 'AC', description: 'AC-009' }, { type: 'user', description: 'tecnico_creas' }],
   }, async ({ page }) => {
-    await page.goto('/app');
+    await page.goto('/login');
+    await page.goto('/auth/login');
+    await page.locator('input#cpf').fill(env('E2E_CLIENT_CREAS_OPERADOR_CPF'));
+    await page.locator('input#password').fill(env('E2E_CLIENT_CREAS_OPERADOR_PASSWORD'));
+    await page.locator('button[type="submit"]').click();
+    // login concluído: espera a URL autenticada em vez de tempo fixo
+    await page.waitForURL(new RegExp(escapeRegExp('/app')));
     await page.goto(`/app/cadastros/familias/${data.family_uuid}?tab=medidas-socioeducativas`);
     // deixa o modal de novidades abrir antes de fechá-lo
     await page.waitForTimeout(2500);
