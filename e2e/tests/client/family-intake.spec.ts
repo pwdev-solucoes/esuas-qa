@@ -1,5 +1,4 @@
 import { expect, test, type Page } from '@playwright/test';
-import { resetTenantSession } from '../../fixtures/tenant-auth';
 
 /**
  * E2E do bloco de INGRESSO e PROGRAMAS SOCIAIS do prontuário (HU #10619 —
@@ -52,12 +51,17 @@ const FORM_WITHOUT_AGENCY =
 
 const configured = Boolean(BASE && OPERADOR_CPF && OPERADOR_PASS);
 
-/** Login por CPF + senha; seleciona o primeiro tenant quando solicitado. */
+/**
+ * harness: usa a sessão HERDADA do project `chromium-tenant` (storageState do operador).
+ * Logar de novo a cada teste dispara a sessão única (EnforceSingleSessionAction), que
+ * derruba a sessão do teste anterior/setup e manda CA05-CA07 para /auth/login.
+ * Só entra pelo formulário se, por algum motivo, a sessão herdada não estiver ativa.
+ */
 async function login(page: Page, cpf: string, password: string): Promise<void> {
-  // Zera a sessão herdada do project `chromium-tenant` (storageState do
-  // operador): sem isso o guard `redirectIfAuthenticated` desvia
-  // /auth/login para /app e o formulário nunca aparece.
-  await resetTenantSession(page);
+  await page.goto('/app');
+  await page.waitForLoadState('networkidle');
+  if (!page.url().includes('/auth/login')) return;
+
   await page.locator('input#cpf, input[name="cpf"]').first().fill(cpf);
   await page.locator('input[type="password"]').first().fill(password);
   await page.locator('button[type="submit"]').first().click();
