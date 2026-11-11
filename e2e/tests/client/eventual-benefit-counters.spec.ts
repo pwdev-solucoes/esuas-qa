@@ -118,7 +118,7 @@ let page: Page;
 /** Próxima leitura da apuração — encadeie ANTES da navegação que a dispara. */
 function waitForAttendanceReport(p: Page) {
   return p.waitForResponse(
-    (res) => res.url().includes('/attendance-reports') && res.request().method() === 'GET',
+    (res) => res.url().includes('/api/client/attendance-reports') && res.request().method() === 'GET',
     { timeout: 15_000 },
   );
 }
@@ -130,7 +130,7 @@ function waitForAttendanceReport(p: Page) {
 async function openApuracao(p: Page): Promise<AttendanceReportBody> {
   // harness: o GET volta 304 pelo cache ETag do navegador (sem corpo); força resposta 200
   // sem validadores condicionais. `page.route` também desliga o cache HTTP da página.
-  await p.route('**/attendance-reports**', async (route) => {
+  await p.route('**/api/client/attendance-reports**', async (route) => {
     const { 'if-none-match': _etag, 'if-modified-since': _since, ...headers } = route.request().headers();
     await route.continue({ headers: { ...headers, 'cache-control': 'no-cache', pragma: 'no-cache' } });
   });
