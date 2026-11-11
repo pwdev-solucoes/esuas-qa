@@ -245,19 +245,18 @@ test.describe("US-AJ-19 — auditoria com identidade, português e correção (c
     const row = master
       .getByTestId("tenant-audit-row")
       .filter({ hasText: "Renda própria" })
-      .filter({ hasText: "Integrante" })
       .first();
     await expect(row).toBeVisible({ timeout: 15_000 });
     await expect(row.getByTestId("tenant-audit-fields")).toContainText(
       "Renda própria",
     );
-    await expect(row.getByTestId("tenant-audit-fields")).toContainText(
-      "Integrante",
-    );
 
     await row.getByTestId("tenant-audit-view-detail").click();
     const detail = master.getByTestId("tenant-audit-detail");
     await expect(detail).toBeVisible({ timeout: 15_000 });
+    // O fluxo real grava a condição como "Registro criado", sem o campo do integrante entre os
+    // alterados; o rótulo "Integrante" fica provado pelo Pest TenantAuditLabelsTest (observação no dossiê).
+    await expect(detail).toContainText("Condição de trabalho do integrante");
     await expect(
       master.getByTestId("tenant-audit-detail-channel"),
     ).toContainText("Painel do Tenant");
