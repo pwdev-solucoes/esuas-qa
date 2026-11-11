@@ -198,7 +198,10 @@ test.describe('HU #10713 — registrar encaminhamento no prontuário (client)', 
     await openSheet(page);
 
     // O campo declara o teto; é o que impede a requisição de sair.
-    const today = new Date().toISOString().slice(0, 10);
+    // US-AJ-17 #11552: data LOCAL (o `max` do campo é local; em UTC o teste falhava à noite no Brasil).
+    const now = new Date();
+    const pad = (n: number) => String(n).padStart(2, '0');
+    const today = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
     await expect(page.getByTestId('referral-form-date')).toHaveAttribute('max', today);
   });
 
