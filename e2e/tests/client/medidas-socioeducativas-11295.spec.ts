@@ -52,7 +52,7 @@ async function open(page: Page, tab?: string): Promise<void> {
   );
   await dismissPlatformUpdates(page);
   await expect(
-    page.getByRole("tab", { name: "Composição Familiar", exact: true }),
+    page.getByRole("tablist", { name: "Grupos do prontuário" }),
   ).toBeVisible({ timeout: 15_000 });
 }
 
