@@ -279,7 +279,7 @@ test.describe('US-EVOL-01 — evolução do acompanhamento no atendimento (clien
     await page.keyboard.press('Escape');
   });
 
-  test('CA06/CA07 — com acompanhamento o campo aparece com as duas ajudas; salvar sem evolução não cria evolução', async ({
+  test('CA06/CA07 — com acompanhamento o campo aparece com as duas ajudas; salvar sem evolução é recusado no campo (US-AJ-16 RN01)', async ({
     page,
   }) => {
     await openAttendancesTab(page, FAMILY_WORK);
@@ -291,15 +291,20 @@ test.describe('US-EVOL-01 — evolução do acompanhamento no atendimento (clien
     await expect(page.getByTestId('attendance-form-evolution-signature-hint')).toBeVisible();
     await page.screenshot({ path: 'test-results/evol01-ca06-campo-evolucao.png' });
 
-    const uuid = await fillAndSubmit(page, TEXT.plain);
+    // US-AJ-16 RN01 (mudou de propósito): na família acompanhada a evolução é obrigatória.
+    // Sem ela o formulário recusa, indica o campo e não envia nada.
+    await page.getByTestId('attendance-form-type').click();
+    await page.getByRole('option').first().click();
+    await page.locator('[data-testid^="attendance-person-"]').first().click();
+    await page.getByTestId('attendance-form-description').fill(TEXT.plain);
+    await page.getByTestId('attendance-form-submit').click();
 
-    const row = (await listAttendances(FAMILY_WORK)).find((item) => item.uuid === uuid);
-    expect(row, 'atendimento sem evolução no histórico').toBeTruthy();
-    expect(row!.evolution, 'sem evolução criada').toBeNull();
-
-    await page.getByTestId(`attendance-expand-${uuid}`).click();
-    await expect(page.getByTestId(`attendance-details-${uuid}`)).toContainText(TEXT.plain);
-    await expect(page.getByTestId(`attendance-evolution-${uuid}`)).toHaveCount(0);
+    await expect(page.getByTestId('attendance-form-evolution-required')).toBeVisible();
+    await expect(
+      page.locator('[data-testid="attendance-form-evolution-block"] [role="alert"]'),
+    ).toBeVisible();
+    await expect(page.getByTestId('attendance-form-sheet')).toBeVisible();
+    await page.keyboard.press('Escape');
   });
 
   test('CA09/CA12 — atendimento com evolução: histórico, aba Acompanhamento e edição só leitura', async ({
