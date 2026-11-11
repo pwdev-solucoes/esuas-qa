@@ -237,19 +237,21 @@ test.describe('HU #10619 — ingresso e programas sociais no prontuário (client
     await expect(page.getByTestId('social-program-beneficiaries-bpc')).toBeVisible();
 
     // Primeiro beneficiário.
-    await page.getByTestId('social-program-beneficiary-bpc-0').click();
+    // O Select do beneficiário não repassa o data-testid ao DOM (raiz sem elemento): usa o combobox do bloco.
+    const beneficiaries = page.getByTestId('social-program-beneficiaries-bpc');
+    await beneficiaries.getByRole('combobox').nth(0).click();
     await page.getByRole('option').first().click();
 
     // Segundo beneficiário — o BPC admite mais de um por família (P5/CA06).
     await page.getByTestId('social-program-add-beneficiary-bpc').click();
-    await page.getByTestId('social-program-beneficiary-bpc-1').click();
+    await beneficiaries.getByRole('combobox').nth(1).click();
     await page.getByRole('option').nth(1).click();
 
     await page.getByTestId('social-programs-submit').click();
 
     // Sem erro de beneficiário e as duas linhas continuam na tela após a relê.
     await expect(page.getByTestId('social-program-error-bpc')).toHaveCount(0);
-    await expect(page.getByTestId('social-program-beneficiary-bpc-1')).toBeVisible();
+    await expect(beneficiaries.getByRole('combobox')).toHaveCount(2);
 
     await page.screenshot({ path: 'test-results/10619-ca06-dois-bpc.png', fullPage: true });
   });
