@@ -66,7 +66,7 @@ async function open(page: Page, family: string, tab?: string): Promise<void> {
   );
   await dismissPlatformUpdates(page);
   await expect(
-    page.getByRole("tab", { name: "Composição Familiar", exact: true }),
+    page.getByRole("tablist", { name: "Grupos do prontuário" }),
   ).toBeVisible({ timeout: 15_000 });
 }
 
@@ -74,12 +74,18 @@ function row(page: Page, code: string) {
   return page.getByTestId(`violence-history-row-${code}`);
 }
 
-async function chooseUnitIfNeeded(page: Page): Promise<void> {
+async function chooseUnitIfNeeded(
+  page: Page,
+  unit: string | null = "CRAS Centro",
+): Promise<void> {
   const select = page.getByTestId("violence-history-unit-select");
   if (await select.isVisible().catch(() => false)) {
     if (/Selecione a unidade/.test(await select.innerText())) {
       await select.click();
-      await page.getByRole("option", { name: "CRAS Centro" }).first().click();
+      const options = unit
+        ? page.getByRole("option", { name: unit })
+        : page.getByRole("option");
+      await options.first().click();
     }
   }
 }
@@ -174,56 +180,27 @@ test.describe("US-VIOL-02 — histórico de violências vividas, Quadro 1 (clien
       await captureEvidence(page, testInfo, EVIDENCE_SLUG, "registro");
     });
 
-    test("CA02 — a atualização da Violência física no mês corrente não altera o Trabalho infantil e a de 09/2026 fica em ver anteriores", async ({
+    test("CA02 — com a família conduzida pelo CREAS, o técnico do CRAS lê o Quadro 1 e o aviso de condução, sem Registrar nem Alterar (a evidência é a ausência)", async ({
       page,
     }, testInfo) => {
+      // US-AJ-15 RN02: enquanto o CREAS conduz a família, o Quadro 1 é do CREAS.
       await open(page, FAMILY_A, "violencia");
       await expect(row(page, PHYSICAL)).toContainText("Vivida — persiste", {
         timeout: 15_000,
       });
       await expect(row(page, CHILD_LABOR)).toContainText("Vivida — persiste");
-
-      await page.getByTestId(`violence-history-alter-${PHYSICAL}`).click();
       await expect(
-        page.getByTestId("violence-history-change-dialog"),
-      ).toBeVisible({ timeout: 10_000 });
-      await captureEvidence(page, testInfo, EVIDENCE_SLUG, "dialogo-alterar");
-      await page.getByTestId("violence-history-change-update").click();
-      await expect(page.getByTestId("violence-history-form")).toBeVisible({
-        timeout: 10_000,
-      });
-      await chooseUnitIfNeeded(page);
-      await page.getByTestId("violence-history-persists-no").click();
-      // O mês do PO (11/2026) é futuro na data da execução: usa o mês corrente
-      // informado pelo servidor (`max` do campo).
-      const month = page.getByTestId("violence-history-month-input");
-      const current = await month.getAttribute("max");
-      expect(current, "mês corrente do servidor").toMatch(/^\d{4}-\d{2}$/);
-      await month.fill(current!);
-      await page.getByTestId("violence-history-submit").click();
-
-      await expect(row(page, PHYSICAL)).toContainText(
-        "Vivida — não persiste mais",
-        { timeout: 10_000 },
+        page
+          .getByTestId("violence-history-section")
+          .getByTestId("violence-register-reason"),
+      ).toContainText("A família está com o CREAS");
+      await expect(page.getByTestId("violence-history-register")).toHaveCount(
+        0,
       );
-      await row(page, PHYSICAL)
-        .getByTestId(`violence-history-history-toggle-${PHYSICAL}`)
-        .click();
       await expect(
-        row(page, PHYSICAL)
-          .getByTestId("violence-history-item")
-          .filter({ hasText: "09/2026" })
-          .filter({ hasText: "Vivida — persiste" }),
-      ).toBeVisible();
-      // Trabalho infantil: mesma anotação de 09/2026, sem anterior.
-      await expect(row(page, CHILD_LABOR)).toContainText("Vivida — persiste");
-      await expect(
-        page.getByTestId(`violence-history-month-${CHILD_LABOR}`),
-      ).toContainText("09/2026");
-      await expect(
-        page.getByTestId(`violence-history-history-toggle-${CHILD_LABOR}`),
+        page.locator('[data-testid^="violence-history-alter-"]'),
       ).toHaveCount(0);
-      await captureEvidence(page, testInfo, EVIDENCE_SLUG, "atualizacao");
+      await captureEvidence(page, testInfo, EVIDENCE_SLUG, "cras-so-le");
     });
 
     test("CA06 — o técnico do CRAS Centro lê a anotação do bloco Violência e violações registrada pelo CREAS", async ({
@@ -270,6 +247,57 @@ test.describe("US-VIOL-02 — histórico de violências vividas, Quadro 1 (clien
       ).toContainText("CRAS Centro");
       await captureEvidence(user, testInfo, EVIDENCE_SLUG, "creas-le");
     });
+
+    test("CA02 — como técnico do CREAS (condutor), a atualização da Violência física no mês corrente não altera o Trabalho infantil e a de 09/2026 fica em ver anteriores", async ({}, testInfo) => {
+      const page = user;
+      await open(page, FAMILY_A, "violencia");
+      await expect(row(page, PHYSICAL)).toContainText("Vivida — persiste", {
+        timeout: 15_000,
+      });
+      await expect(row(page, CHILD_LABOR)).toContainText("Vivida — persiste");
+
+      await page.getByTestId(`violence-history-alter-${PHYSICAL}`).click();
+      await expect(
+        page.getByTestId("violence-history-change-dialog"),
+      ).toBeVisible({ timeout: 10_000 });
+      await captureEvidence(page, testInfo, EVIDENCE_SLUG, "dialogo-alterar");
+      await page.getByTestId("violence-history-change-update").click();
+      await expect(page.getByTestId("violence-history-form")).toBeVisible({
+        timeout: 10_000,
+      });
+      await chooseUnitIfNeeded(page, null);
+      await page.getByTestId("violence-history-persists-no").click();
+      // O mês do PO (11/2026) é futuro na data da execução: usa o mês corrente
+      // informado pelo servidor (`max` do campo).
+      const month = page.getByTestId("violence-history-month-input");
+      const current = await month.getAttribute("max");
+      expect(current, "mês corrente do servidor").toMatch(/^\d{4}-\d{2}$/);
+      await month.fill(current!);
+      await page.getByTestId("violence-history-submit").click();
+
+      await expect(row(page, PHYSICAL)).toContainText(
+        "Vivida — não persiste mais",
+        { timeout: 10_000 },
+      );
+      await row(page, PHYSICAL)
+        .getByTestId(`violence-history-history-toggle-${PHYSICAL}`)
+        .click();
+      await expect(
+        row(page, PHYSICAL)
+          .getByTestId("violence-history-item")
+          .filter({ hasText: "09/2026" })
+          .filter({ hasText: "Vivida — persiste" }),
+      ).toBeVisible();
+      // Trabalho infantil: mesma anotação de 09/2026, sem anterior.
+      await expect(row(page, CHILD_LABOR)).toContainText("Vivida — persiste");
+      await expect(
+        page.getByTestId(`violence-history-month-${CHILD_LABOR}`),
+      ).toContainText("09/2026");
+      await expect(
+        page.getByTestId(`violence-history-history-toggle-${CHILD_LABOR}`),
+      ).toHaveCount(0);
+      await captureEvidence(page, testInfo, EVIDENCE_SLUG, "atualizacao");
+    });
   });
 
   test.describe("não técnico do CRAS Centro", () => {
@@ -300,9 +328,9 @@ test.describe("US-VIOL-02 — histórico de violências vividas, Quadro 1 (clien
       // Mesmo endereço da aba: a tela volta ao resumo, sem o Quadro 1.
       await open(user, FAMILY_A, "violencia");
       await expect(user.getByTestId("violence-history-section")).toHaveCount(0);
-      await expect(user.locator('[data-testid^="violence-history-row-"]')).toHaveCount(
-        0,
-      );
+      await expect(
+        user.locator('[data-testid^="violence-history-row-"]'),
+      ).toHaveCount(0);
     });
 
     test("CA06 — a anotação do bloco Violência e violações não aparece para o não técnico e o POST do Quadro 1 é recusado (a evidência é a ausência)", async ({}, testInfo) => {
