@@ -1,0 +1,423 @@
+{
+  "schema_version": 1,
+  "id": "E2E-058",
+  "title": "Responsável técnico só com função técnica, data futura sem derrubar as opções e retorno direto da linha do encaminhamento",
+  "description": "HU #11552 (US-AJ-17), plano 04: no Centro a lista de responsável técnico mostra a equipe técnica e não o profissional administrativo (CA01); data futura recusa só a data e mantém unidade e opções (CA03); o técnico do CREAS registra o retorno pela linha da aba Encaminhamentos, sem expandir (CA04). Massa fictícia (E2EAttendanceReferralAdjustmentsSeeder); nenhum dado pessoal. Data futura fixa (2099-01-01) no lugar de 'amanhã'.",
+  "feature_slug": "11552-atend-encam-04-evidencias",
+  "ac_refs": [
+    "AC-002"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "prontuario",
+    "atendimento",
+    "encaminhamento",
+    "responsavel-tecnico",
+    "lgpd"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/login",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "users": [
+      {
+        "role": "operador",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_OPERADOR_CPF",
+          "password": "E2E_CLIENT_OPERADOR_PASSWORD"
+        }
+      },
+      {
+        "role": "operador_creas",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_CREAS_OPERADOR_CPF",
+          "password": "E2E_CLIENT_CREAS_OPERADOR_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Unidade E2E CRAS Centro com assistente social, psicóloga e profissional administrativo lotados (E2EConfidentialitySeeder)",
+      "Família 00000000-0000-4000-8000-000011552001 na Centro e encaminhamento 00000000-0000-4000-8000-000011552101 da Centro ao E2E CREAS, aguardando retorno (E2EAttendanceReferralAdjustmentsSeeder)",
+      "Re-executável: a massa é reposta a cada rodada do seeder"
+    ]
+  },
+  "data": {
+    "unit": "E2E CRAS Centro",
+    "future_date": "2099-01-01",
+    "return_note": "Retorno E2E-058: família atendida pelo CREAS."
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "A lista de responsável técnico no Centro traz a equipe técnica e não o administrativo (CA01)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/00000000-0000-4000-8000-000011552001?tab=atendimentos"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "attendance-register-action"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1000,
+          "note": "aguarda o Sheet abrir e carregar as opções"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-unit"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "${data.unit}"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "aguarda a reconsulta de opções da unidade"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-responsible"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 500
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "E2E Sigilo Psicóloga Centro"
+          },
+          "note": "psicóloga lotada no Centro aparece"
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "E2E Sigilo Administrativo"
+          },
+          "value": 0,
+          "note": "o administrativo não aparece como responsável técnico"
+        }
+      ]
+    },
+    {
+      "name": "ca03_data_futura",
+      "title": "Data futura: só a recusa da data, unidade e opções continuam (CA03)",
+      "as_user": "operador",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/00000000-0000-4000-8000-000011552001?tab=atendimentos"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "attendance-register-action"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1000,
+          "note": "aguarda o Sheet abrir e carregar as opções"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-unit"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "${data.unit}"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "aguarda a reconsulta de opções da unidade"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-date"
+          },
+          "value": "${data.future_date}"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "dá tempo de uma reconsulta indevida das opções (o defeito derrubava a unidade)"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "text",
+            "value": "Não se registra atendimento que ainda não aconteceu"
+          },
+          "note": "só a recusa da data"
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "text",
+            "value": "Não foi possível carregar as opções do formulário"
+          },
+          "value": 0
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-unit"
+          },
+          "value": "E2E CRAS Centro",
+          "note": "a unidade escolhida continua"
+        }
+      ]
+    },
+    {
+      "name": "ca04_retorno_linha",
+      "title": "O técnico do CREAS registra o retorno pela linha, sem expandir (CA04)",
+      "as_user": "operador_creas",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/00000000-0000-4000-8000-000011552001?tab=encaminhamentos"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "aguarda a lista de encaminhamentos"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "referral-row-return-00000000-0000-4000-8000-000011552101"
+          },
+          "note": "ação na linha, SEM expandir (RN05)"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "counter-reference-note"
+          },
+          "value": "${data.return_note}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "counter-reference-outcome"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[role=\"option\"]:has-text(\"Atendido\"):not(:has-text(\"Não\"))"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "register-counter-reference-confirm"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2000,
+          "note": "aguarda o POST e o recarregamento da lista"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "referral-outcome-badge-00000000-0000-4000-8000-000011552101"
+          },
+          "value": "Atendido",
+          "note": "o desfecho mudou para Atendido"
+        }
+      ]
+    }
+  ]
+}
