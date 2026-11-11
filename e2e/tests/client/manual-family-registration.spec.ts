@@ -108,7 +108,8 @@ test.describe('HU #10661 — cadastrar família fora do CadÚnico (client)', () 
     await expect(page.getByTestId('manual-family-form')).toBeVisible();
 
     // Nenhum campo de snapshot do CadÚnico (RN09/CA07).
-    const body = (await page.locator('body').innerText()).toLowerCase();
+    // harness: só o formulário — o menu lateral tem o item "Especificidade Pendente".
+    const body = (await page.getByTestId('manual-family-form').innerText()).toLowerCase();
     for (const forbidden of [
       'renda',
       'per capita',
