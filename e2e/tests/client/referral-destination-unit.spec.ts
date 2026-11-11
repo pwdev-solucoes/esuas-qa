@@ -130,7 +130,7 @@ async function openReferralsTab(page: Page): Promise<void> {
 /** Escolhe uma opção de um Select (shadcn) pelo testid do gatilho. */
 async function choose(page: Page, triggerTestId: string, optionName: string | RegExp) {
   await page.getByTestId(triggerTestId).click();
-  await page.getByRole('option', { name: optionName }).click();
+  await page.getByRole('option', { name: optionName, exact: typeof optionName === 'string' }).click();
 }
 
 /** Abre o formulário de registro já com a origem e o código escolhidos. */
