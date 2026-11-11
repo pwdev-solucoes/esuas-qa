@@ -1,0 +1,209 @@
+{
+  "schema_version": 1,
+  "id": "E2E-060",
+  "title": "Auditoria da organização com identidade de quem agiu, rótulos em português e correção do ingresso",
+  "description": "HU #11554 (US-AJ-19), plano 02: o Master abre /app/auditoria e vê nome e CPF mascarado de quem agiu (CA01), abre o detalhe da correção do ingresso com 'Correção' e 'Demanda espontânea → Encaminhamento da Saúde' (CA03) e a descrição de atendimento corrigida como '(conteúdo não exibido)' sem texto (CA04). Massa: E2EAuditIdentitySeeder (família …11554001, \"E2E Auditoria Família C\"); as ações do técnico (corrigir ingresso 01→05 e a descrição do atendimento) são feitas pela spec manual auditoria-identidade-11554.spec.ts, que roda ANTES deste cenário, com o seeder reaplicado entre eles. Nenhum dado pessoal real.",
+  "feature_slug": "11554-auditoria-03-evidencias",
+  "ac_refs": [
+    "AC-002"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "auditoria",
+    "identidade",
+    "rotulos"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/login",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "users": [
+      {
+        "role": "master",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_MASTER_CPF",
+          "password": "E2E_CLIENT_MASTER_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Seeder E2EAuditIdentitySeeder aplicado (família …11554001, atendimento …11554011)",
+      "Antes deste cenário, o técnico da massa (E2E_CLIENT_AUDIT_TECH_*) abriu o prontuário, corrigiu o ingresso (Demanda espontânea → Encaminhamento da Saúde, órgão e contato fictícios) e a descrição do atendimento (feito pela spec manual, sem reaplicar o seeder)",
+      "Master com profissional ativo no tenant"
+    ]
+  },
+  "data": {
+    "intake_change": "Demanda espontânea → Encaminhamento da Saúde"
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "Linha com nome e CPF mascarado; detalhe da correção do ingresso (CA01, CA03)",
+      "as_user": "master",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades, se aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/auditoria"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": ":nth-match([data-testid=\"tenant-audit-row\"]:has-text(\"Correção\") [data-testid=\"tenant-audit-view-detail\"], 1)"
+          },
+          "note": "abre o detalhe da correção do ingresso"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"tenant-audit-detail\"] [data-testid=\"tenant-audit-author-identity\"]"
+          },
+          "note": "nome e CPF mascarado de quem agiu (CA01)"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"tenant-audit-detail-event\"]"
+          },
+          "value": "Correção",
+          "note": "evento Correção (CA03)"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"audit-value-changes\"]"
+          },
+          "value": "${data.intake_change}",
+          "note": "antes e depois (CA03)"
+        }
+      ]
+    },
+    {
+      "name": "edge_case",
+      "title": "Descrição do atendimento corrigida sem conteúdo (CA04)",
+      "as_user": "master",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades, se aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/auditoria"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": ":nth-match([data-testid=\"tenant-audit-fields\"]:has-text(\"Descrição do atendimento (conteúdo não exibido)\"), 1)"
+          },
+          "value": "Descrição do atendimento (conteúdo não exibido)",
+          "note": "marcador sem texto (CA04)"
+        }
+      ]
+    }
+  ]
+}
