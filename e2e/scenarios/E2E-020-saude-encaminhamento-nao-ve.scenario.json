@@ -100,12 +100,11 @@
           "action": "wait",
           "target": {
             "by": "role",
-            "value": "tab",
-            "name": "Composição Familiar",
-            "exact": true
+            "value": "tablist",
+            "name": "Grupos do prontuário"
           },
           "timeout_ms": 15000,
-          "note": "o prontuário abriu (eixo do encaminhamento recebido)"
+          "note": "harness: o prontuário abriu (navegação em grupos, #11547; a Composição é sub-aba do grupo Família e não aparece com ?tab=saude)"
         }
       ],
       "assertions": [
@@ -113,10 +112,10 @@
           "expect": "visible",
           "target": {
             "by": "role",
-            "value": "tab",
-            "name": "Composição Familiar",
-            "exact": true
-          }
+            "value": "tablist",
+            "name": "Grupos do prontuário"
+          },
+          "note": "harness: o prontuário abriu para o não técnico (Composição fica no grupo Família, fora do grupo ativo)"
         },
         {
           "expect": "visible",
