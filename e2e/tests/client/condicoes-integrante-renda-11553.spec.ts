@@ -190,6 +190,21 @@ test.describe("US-AJ-18 — condições do integrante e renda em reais (client)"
     ).toBeNull();
   });
 
+  test("CA03 — técnico de uma lotação: a unidade já vem escolhida na conferência", async () => {
+    await openDrawer(page, "Integrante A");
+    await page.getByTestId("member-own-income").fill("900");
+    await page.getByTestId("member-conditions-save").click();
+    await page.getByTestId("snapshot-kind-update").click();
+    const panel = page.getByTestId("member-conditions-update-panel");
+    await expect(panel).toBeVisible();
+    await expect(page.getByTestId("member-conditions-unit")).toContainText(
+      UNIT_NAME,
+    );
+    await panel.scrollIntoViewIfNeeded();
+    await shot(page, "CA03-unidade-ja-escolhida");
+    // Nada gravado: o painel é descartado ao recarregar a tela.
+  });
+
   test("CA07 — renda com centavos: 1500,50 grava R$ 1.500,50", async () => {
     await openDrawer(page, "Integrante A");
     await page.getByTestId("member-own-income").fill("1500,50");
@@ -202,6 +217,14 @@ test.describe("US-AJ-18 — condições do integrante e renda em reais (client)"
     await expect(page.getByTestId("member-conditions-drawer")).toBeHidden({
       timeout: 15_000,
     });
+    // CA05 — o painel fechou e a confirmação (toast) está à vista.
+    await expect(
+      page
+        .locator("[data-sonner-toast]")
+        .filter({ hasText: "Condições do integrante salvas" })
+        .first(),
+    ).toBeVisible({ timeout: 10_000 });
+    await shot(page, "CA05-painel-fecha-confirmacao");
 
     await expect.poll(() => memberOwnIncome(MEMBER_A)).toBe(1500.5);
     await page.getByTestId("member-series-tab-work_income_conditions").click();
@@ -209,6 +232,71 @@ test.describe("US-AJ-18 — condições do integrante e renda em reais (client)"
       page.getByTestId("member-series-panel-work_income_conditions"),
     ).toContainText("R$ 1.500,50");
     await shot(page, "CA07-renda-1500-50");
+  });
+
+  test("CA06 — renda 1500: grava R$ 1.500,00 no histórico", async () => {
+    await openDrawer(page, "Integrante A");
+    await page.getByTestId("member-own-income").fill("1500");
+    await page.getByTestId("member-conditions-save").click();
+    // Mesmo dia do retrato criado no CA07: a correção está habilitada.
+    await page.getByTestId("snapshot-kind-correct").click();
+    await expect(page.getByTestId("member-conditions-drawer")).toBeHidden({
+      timeout: 15_000,
+    });
+
+    await expect.poll(() => memberOwnIncome(MEMBER_A)).toBe(1500);
+    await page.getByTestId("member-series-tab-work_income_conditions").click();
+    const panel = page.getByTestId("member-series-panel-work_income_conditions");
+    await expect(panel).toContainText("R$ 1.500,00");
+    await panel.scrollIntoViewIfNeeded();
+    await shot(page, "CA06-renda-1500");
+  });
+
+  test("CA01 — corrigir um erro: sem etapa de data e unidade, o retrato mantém ambas", async () => {
+    await openComposition(page);
+    const column = page
+      .locator(
+        '[data-testid="member-series-panel-education_conditions"] [data-testid^="member-series-column-"]',
+      )
+      .first();
+    await expect(column).toBeVisible({ timeout: 15_000 });
+    const signatureBefore = await column.innerText();
+
+    await memberButton(page, "Integrante A").click();
+    await expect(page.getByTestId("member-conditions-drawer")).toBeVisible({
+      timeout: 15_000,
+    });
+    await expect(page.getByTestId("member-school-grade")).toBeVisible({
+      timeout: 15_000,
+    });
+    await pickGrade(page, /9º ano/);
+    await page.getByTestId("member-conditions-save").click();
+    await expect(page.getByTestId("snapshot-change-kind-dialog")).toBeVisible();
+    await page.getByTestId("snapshot-kind-correct").click();
+
+    await expect(page.getByTestId("member-conditions-drawer")).toBeHidden({
+      timeout: 15_000,
+    });
+    await expect(
+      page.getByTestId("member-conditions-update-panel"),
+    ).toHaveCount(0);
+    await expect(
+      page
+        .locator("[data-sonner-toast]")
+        .filter({ hasText: /Correção registrada|Condições do integrante/ })
+        .first(),
+    ).toBeVisible({ timeout: 10_000 });
+    // Retrato corrigido no lugar: mesma data e mesma unidade na série de educação.
+    const educationPanel = page.getByTestId(
+      "member-series-panel-education_conditions",
+    );
+    await page.getByTestId("member-series-tab-education_conditions").click();
+    await expect(educationPanel).toBeVisible();
+    await expect(
+      educationPanel.locator('[data-testid^="member-series-column-"]').first(),
+    ).toHaveText(signatureBefore);
+    await educationPanel.scrollIntoViewIfNeeded();
+    await shot(page, "CA01-corrigir-sem-data-unidade");
   });
 
   test('CA07c — zero continua resposta: R$ 0,00 e selo "Renda declarada"', async () => {
@@ -227,8 +315,21 @@ test.describe("US-AJ-18 — condições do integrante e renda em reais (client)"
       "Renda declarada",
     );
     await expect(page.getByTestId("member-own-income-unknown")).toHaveCount(0);
-    await shot(page, "CA07c-zero-renda-declarada");
+    // Selo "Renda declarada" com o drawer aberto.
+    await page.getByTestId("member-own-income-declared").scrollIntoViewIfNeeded();
+    await shot(page, "CA07c-zero-renda-declarada-selo");
     await page.keyboard.press("Escape");
+    await expect(page.getByTestId("member-conditions-drawer")).toBeHidden({
+      timeout: 15_000,
+    });
+    // Drawer fechado: o valor R$ 0,00 na série de trabalho e rendimentos.
+    await page.getByTestId("member-series-tab-work_income_conditions").click();
+    const workPanel = page.getByTestId(
+      "member-series-panel-work_income_conditions",
+    );
+    await expect(workPanel).toContainText("R$ 0,00");
+    await workPanel.scrollIntoViewIfNeeded();
+    await shot(page, "CA07c-zero-renda-declarada");
   });
 
   // A família da massa não recebe Bolsa Família: só a linha "Outros" é oferecida.
