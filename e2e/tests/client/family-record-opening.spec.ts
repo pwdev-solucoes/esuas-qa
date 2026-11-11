@@ -37,16 +37,19 @@ import { resetTenantSession } from '../../fixtures/tenant-auth';
  */
 
 const BASE = process.env.CLIENT_BASE_URL;
-const OPERADOR_CPF = process.env.E2E_CLIENT_OPERADOR_CPF;
-const OPERADOR_PASS = process.env.E2E_CLIENT_OPERADOR_PASSWORD;
-const PENDING_FAMILY_NAME = process.env.E2E_CLIENT_PENDING_FAMILY_NAME;
-const UNIT_NAME = process.env.E2E_CLIENT_UNIT_NAME;
-const UNIT_WITHOUT_MDS_NAME = process.env.E2E_CLIENT_UNIT_WITHOUT_MDS_NAME;
-const UNIT_NOT_ASSIGNED_NAME = process.env.E2E_CLIENT_UNIT_NOT_ASSIGNED_NAME;
-const MASTER_CPF = process.env.E2E_CLIENT_MASTER_CPF;
-const MASTER_PASS = process.env.E2E_CLIENT_MASTER_PASSWORD;
-const FAMILY_IN_UNIT = process.env.E2E_CLIENT_FAMILY_IN_UNIT_UUID;
-const CHANGE_TO_UNIT_NAME = process.env.E2E_CLIENT_CHANGE_TO_UNIT_NAME;
+// harness: defaults = massa fictícia dos seeders (E2ESeeder + E2EProntuarioSeeder), para a spec
+// rodar sem variáveis de ambiente. As variáveis, se definidas, prevalecem.
+const OPERADOR_CPF = process.env.E2E_CLIENT_OPERADOR_CPF ?? '11144477735';
+const OPERADOR_PASS = process.env.E2E_CLIENT_OPERADOR_PASSWORD ?? 'senha123';
+const PENDING_FAMILY_NAME = process.env.E2E_CLIENT_PENDING_FAMILY_NAME ?? 'E2E Família Sem Unidade';
+const UNIT_NAME = process.env.E2E_CLIENT_UNIT_NAME ?? 'E2E CRAS Centro';
+const UNIT_WITHOUT_MDS_NAME = process.env.E2E_CLIENT_UNIT_WITHOUT_MDS_NAME ?? 'E2E CRAS Sem MDS';
+const UNIT_NOT_ASSIGNED_NAME = process.env.E2E_CLIENT_UNIT_NOT_ASSIGNED_NAME ?? 'E2E CREAS';
+const MASTER_CPF = process.env.E2E_CLIENT_MASTER_CPF ?? '52998224725';
+const MASTER_PASS = process.env.E2E_CLIENT_MASTER_PASSWORD ?? 'senha123';
+const FAMILY_IN_UNIT =
+  process.env.E2E_CLIENT_FAMILY_IN_UNIT_UUID ?? '00000000-0000-4000-8000-0000000f0001';
+const CHANGE_TO_UNIT_NAME = process.env.E2E_CLIENT_CHANGE_TO_UNIT_NAME ?? 'E2E CREAS';
 
 const PENDING_LIST_PATH = '/app/cadastros/familias-sem-unidade';
 
