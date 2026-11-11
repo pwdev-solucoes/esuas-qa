@@ -292,9 +292,14 @@ test.describe("US-AJ-18 — condições do integrante e renda em reais (client)"
     );
     await page.getByTestId("member-series-tab-education_conditions").click();
     await expect(educationPanel).toBeVisible();
-    await expect(
-      educationPanel.locator('[data-testid^="member-series-column-"]').first(),
-    ).toHaveText(signatureBefore);
+    // A correção mantém data e unidade; só acrescenta "Corrigido por … em …".
+    const dateBefore = signatureBefore.trim().split(/\n/)[0].trim();
+    const corrected = educationPanel
+      .locator('[data-testid^="member-series-column-"]')
+      .first();
+    await expect(corrected).toContainText(dateBefore);
+    await expect(corrected).toContainText("E2E CRAS Centro");
+    await expect(corrected).toContainText("Corrigido por E2E Condições Uma Unidade");
     await educationPanel.scrollIntoViewIfNeeded();
     await shot(page, "CA01-corrigir-sem-data-unidade");
   });

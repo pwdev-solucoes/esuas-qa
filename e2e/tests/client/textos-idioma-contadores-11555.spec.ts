@@ -70,10 +70,11 @@ function credential(name: string): string {
 }
 
 /** Print por CA no dossiê (só com CAPTURE_EVIDENCE=1). */
-async function shot(page: Page, name: string): Promise<void> {
+async function shot(page: Page, name: string, settle = 700): Promise<void> {
   if (process.env.CAPTURE_EVIDENCE !== "1") return;
   await fs.promises.mkdir(SHOTS, { recursive: true });
-  await page.waitForTimeout(700);
+  // Espera as animações terminarem; nos instantes de carregamento o print é imediato (settle 0).
+  if (settle > 0) await page.waitForTimeout(settle);
   await page.screenshot({
     path: path.join(SHOTS, `${name}.png`),
     fullPage: true,
@@ -305,7 +306,7 @@ test.describe("US-AJ-20 — textos, idioma e contadores (client, navegador em in
         timeout: 20_000,
       });
       await expect(operator.locator('[data-testid="list-count"]:visible')).toHaveCount(0);
-      await shot(operator, "ca07-filtro-carregando");
+      await shot(operator, "ca07-filtro-carregando", 0);
     } finally {
       release();
       await operator.unroute(pattern);
