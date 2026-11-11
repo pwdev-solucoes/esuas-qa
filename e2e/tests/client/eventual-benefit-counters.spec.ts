@@ -128,6 +128,12 @@ function waitForAttendanceReport(p: Page) {
  * da PRIMEIRA leitura, para as asserções que precisam do dado bruto (CA09).
  */
 async function openApuracao(p: Page): Promise<AttendanceReportBody> {
+  // harness: o GET volta 304 pelo cache ETag do navegador (sem corpo); força resposta 200
+  // sem validadores condicionais. `page.route` também desliga o cache HTTP da página.
+  await p.route('**/attendance-reports**', async (route) => {
+    const { 'if-none-match': _etag, 'if-modified-since': _since, ...headers } = route.request().headers();
+    await route.continue({ headers: { ...headers, 'cache-control': 'no-cache', pragma: 'no-cache' } });
+  });
   const responsePromise = waitForAttendanceReport(p);
   await p.goto('/app/prestacao-contas/apuracao-atendimentos');
   await dismissPlatformUpdates(p);
