@@ -336,6 +336,11 @@ test.describe("US-AJ-16 #11551 — evolução obrigatória e desligamento pela u
     ).toBeVisible({ timeout: 10_000 });
     await captureEvidence(page, testInfo, EVIDENCE_SLUG, "ca02");
 
+    // Formulário LIMPO (sem o erro residual do CA02): recarrega a aba e reabre o registro.
+    await openAttendanceSheet(page, FAMILY_PAEFI, CREAS_UNIT);
+    await expect(
+      page.locator('[data-testid="attendance-form-evolution-block"] [role="alert"]'),
+    ).toHaveCount(0);
     await page
       .getByTestId("attendance-form-evolution")
       .fill("Evolução fictícia: a família retomou o contato com a escola.");
