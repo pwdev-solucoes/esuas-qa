@@ -1,0 +1,455 @@
+{
+  "schema_version": 1,
+  "id": "E2E-057",
+  "title": "Evolução obrigatória no atendimento de família acompanhada e desligamento do PAEFI pela unidade que acompanha",
+  "description": "HU #11551 (US-AJ-16), plano 02: o técnico do CREAS registra atendimento com evolução obrigatória na família acompanhada pelo PAEFI e desliga o PAEFI; sem evolução o formulário recusa no campo. Massa fictícia (E2EEvolutionDischargeSeeder, plano 03); nenhum dado pessoal.",
+  "feature_slug": "11551-evolucao-deslig-02-client",
+  "ac_refs": [
+    "AC-001",
+    "AC-003",
+    "AC-004"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "prontuario",
+    "atendimento",
+    "acompanhamento",
+    "evolucao",
+    "desligamento",
+    "lgpd"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/login",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "users": [
+      {
+        "role": "operador_creas",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_CREAS_OPERADOR_CPF",
+          "password": "E2E_CLIENT_CREAS_OPERADOR_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Técnico do CREAS lotado no E2E CREAS (E2EProntuarioSeeder)",
+      "Família 00000000-0000-4000-8000-000011551001 (E2E Evolução PAEFI): PAEFI vigente no E2E CREAS e PAIF vigente no CRAS Centro, sem atendimento de hoje (E2EEvolutionDischargeSeeder, plano 03)",
+      "Catálogo global de tipos de atendimento com ao menos um tipo ativo",
+      "Re-executável: a massa é reposta a cada rodada do seeder"
+    ]
+  },
+  "data": {
+    "unit": "E2E CREAS",
+    "description_text": "Atendimento E2E-057 com evolução.",
+    "evolution_text": "Evolução E2E-057: a família retomou o contato com a escola.",
+    "achieved_results": "Resultados E2E-057: a família alcançou os objetivos do acompanhamento."
+  },
+  "variants": [
+    {
+      "name": "validation",
+      "title": "Sem evolução o formulário recusa no campo e não envia (CA02)",
+      "as_user": "operador_creas",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/00000000-0000-4000-8000-000011551001?tab=atendimentos"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "attendance-register-action"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1000,
+          "note": "aguarda o Sheet abrir e carregar as opções"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-unit"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "${data.unit}"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "aguarda a reconsulta de opções da unidade (evolução obrigatória)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-type"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[role=\"option\"] >> nth=0"
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-description"
+          },
+          "value": "${data.description_text}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"attendance-person-\"] >> nth=0"
+          },
+          "note": "HU #11403: pessoa atendida obrigatória no CREAS"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-submit"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 800,
+          "note": "validação local do formulário"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-evolution-required"
+          },
+          "note": "o campo aparece marcado como obrigatório"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"attendance-form-evolution-block\"] [role=\"alert\"]"
+          },
+          "note": "o erro aparece no campo da evolução"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-submit"
+          },
+          "note": "o Sheet segue aberto: nada foi salvo"
+        }
+      ]
+    },
+    {
+      "name": "happy_path",
+      "title": "Atendimento com evolução obrigatória e desligamento do PAEFI pelo CREAS (CA01, CA06)",
+      "as_user": "operador_creas",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/00000000-0000-4000-8000-000011551001?tab=atendimentos"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "attendance-register-action"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1000,
+          "note": "aguarda o Sheet abrir e carregar as opções"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-unit"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "${data.unit}"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "aguarda a reconsulta de opções da unidade (evolução obrigatória)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-type"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[role=\"option\"] >> nth=0"
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-description"
+          },
+          "value": "${data.description_text}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"attendance-person-\"] >> nth=0"
+          },
+          "note": "HU #11403: pessoa atendida obrigatória no CREAS"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-evolution"
+          },
+          "value": "${data.evolution_text}",
+          "note": "campo obrigatório: família acompanhada nesta unidade"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "attendance-form-submit"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2000,
+          "note": "aguarda o POST e o recarregamento do histórico"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/00000000-0000-4000-8000-000011551001?tab=acompanhamento"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto (abre com atraso depois de cada navegação)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"follow-up-discharge-\"] >> nth=0"
+          },
+          "note": "só o PAEFI do CREAS oferece Desligar"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "discharge-form-exit-reason"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[role=\"option\"] >> nth=0"
+          }
+        },
+        {
+          "action": "check",
+          "target": {
+            "by": "testid",
+            "value": "discharge-form-answer-offers_provided-yes"
+          }
+        },
+        {
+          "action": "check",
+          "target": {
+            "by": "testid",
+            "value": "discharge-form-answer-referrals_effective-not_applicable"
+          }
+        },
+        {
+          "action": "check",
+          "target": {
+            "by": "testid",
+            "value": "discharge-form-answer-family_recognizes_service-yes"
+          }
+        },
+        {
+          "action": "check",
+          "target": {
+            "by": "testid",
+            "value": "discharge-form-answer-outcome_classification-progress"
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "testid",
+            "value": "discharge-form-achieved-results"
+          },
+          "value": "${data.achieved_results}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "discharge-form-submit"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2000,
+          "note": "aguarda o POST do desligamento e o recarregamento do bloco"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"follow-up-correct-discharge-\"] >> nth=0"
+          },
+          "note": "o PAEFI ficou desligado e oferece Corrigir desligamento (CA06)"
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "css",
+            "value": "[data-testid^=\"follow-up-discharge-\"]:not([data-testid^=\"follow-up-discharge-info-\"])"
+          },
+          "value": 0,
+          "note": "o PAIF do CRAS nunca oferece Desligar ao CREAS (CA07)"
+        }
+      ]
+    }
+  ]
+}
