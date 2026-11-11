@@ -55,11 +55,25 @@ const BASE = process.env.CLIENT_BASE_URL;
 const OPERADOR_CPF = process.env.E2E_CLIENT_OPERADOR_CPF;
 const OPERADOR_PASS = process.env.E2E_CLIENT_OPERADOR_PASSWORD;
 
-const LOCAL_CPF = process.env.E2E_CLIENT_PERSON_LOCAL_CPF;
-const OUTSIDE_CPF = process.env.E2E_CLIENT_PERSON_OUTSIDE_CPF;
-const OUTSIDE_NAME = process.env.E2E_CLIENT_PERSON_OUTSIDE_FULL_NAME;
-const OUTSIDE_BIRTH = process.env.E2E_CLIENT_PERSON_OUTSIDE_BIRTH_DATE;
-const UNKNOWN_CPF = process.env.E2E_CLIENT_PERSON_UNKNOWN_CPF;
+const LOCAL_CPF = process.env.E2E_CLIENT_PERSON_LOCAL_CPF ?? '99000000130';
+const OUTSIDE_CPF = process.env.E2E_CLIENT_PERSON_OUTSIDE_CPF ?? '99000000211';
+const OUTSIDE_NAME = process.env.E2E_CLIENT_PERSON_OUTSIDE_FULL_NAME ?? 'E2E Pessoa De Outro Municipio';
+const OUTSIDE_BIRTH = process.env.E2E_CLIENT_PERSON_OUTSIDE_BIRTH_DATE ?? '1978-03-14';
+/** CPF fictício VÁLIDO (dígitos verificadores), novo a cada rodada — nunca existe no repositório. */
+function fictitiousCpf(): string {
+  for (;;) {
+    const base = Array.from({ length: 9 }, () => Math.floor(Math.random() * 10));
+    if (new Set(base).size === 1) continue;
+    const digit = (len: number) => {
+      const sum = base.slice(0, len).reduce((acc, n, i) => acc + n * (len + 1 - i), 0);
+      const rest = (sum * 10) % 11;
+      return rest === 10 ? 0 : rest;
+    };
+    base.push(digit(9));
+    return [...base, digit(10)].join('');
+  }
+}
+const UNKNOWN_CPF = process.env.E2E_CLIENT_PERSON_UNKNOWN_CPF ?? fictitiousCpf();
 const FAMILY_CODE = process.env.E2E_CLIENT_FAMILY_IN_UNIT_CODE ?? '9900000001';
 
 const configured = Boolean(BASE && OPERADOR_CPF && OPERADOR_PASS);
@@ -69,6 +83,12 @@ async function login(page: Page, cpf: string, password: string): Promise<void> {
   // Zera a sessão herdada do project `chromium-tenant` (storageState do
   // operador): sem isso o guard `redirectIfAuthenticated` desvia
   // /auth/login para /app e o formulário nunca aparece.
+  // O operador já vem logado do storageState: logar em cada caso estoura o throttle `6,1` de /auth/*.
+  if (cpf === OPERADOR_CPF) {
+    await page.goto('/app');
+    await page.waitForLoadState('networkidle');
+    return;
+  }
   await resetTenantSession(page);
   await page.locator('input#cpf, input[name="cpf"]').first().fill(cpf);
   await page.locator('input[type="password"]').first().fill(password);
@@ -267,7 +287,12 @@ test.describe('HU #10660 — balcao: localizar e cadastrar pessoa (client)', () 
     test.skip(!UNKNOWN_CPF, 'Defina E2E_CLIENT_PERSON_UNKNOWN_CPF.');
 
     await login(page, OPERADOR_CPF!, OPERADOR_PASS!);
-    await searchByCpf(page, UNKNOWN_CPF!);
+    // CPF próprio: o UNKNOWN_CPF já foi cadastrado pelos casos anteriores deste arquivo.
+    const ownCpf = fictitiousCpf();
+    // Primeiro nome único por rodada: a busca de semelhantes lê só 100 candidatos pelo prefixo do primeiro
+    // nome, e a massa de E2E tem centenas de pessoas "E2E ..." sem CPF — com o nome fixo o homônimo some do corte.
+    const ownName = `Zel${Array.from({ length: 7 }, () => String.fromCharCode(97 + Math.floor(Math.random() * 26))).join('')} Balcao`;
+    await searchByCpf(page, ownCpf);
     await page.getByTestId('global-person-create').click();
 
     // harness: independente do CA05 — o CA08 prepara o PRÓPRIO estado. Preenche o cadastro sem CPF;
@@ -279,11 +304,19 @@ test.describe('HU #10660 — balcao: localizar e cadastrar pessoa (client)', () 
       await expect(page.locator('#create-cpf')).toBeDisabled();
 
       // Mesmo nome e nascimento: e o que dispara a busca de semelhantes.
-      await page.locator('#create-full-name').fill('E2E Pessoa Balcao');
+      await page.locator('#create-full-name').fill(ownName);
       await page.locator('#create-birth-date').fill('1990-06-10');
       await page.locator('#create-mother-name').fill('E2E Mae do Balcao');
       await page.getByTestId('create-sex-trigger').click();
       await page.getByRole('option').first().click();
+      // O formulário checa semelhantes ao preencher: com homônimo, o alerta já aparece e o envio fica
+      // bloqueado até a confirmação — não há o que enviar nesta etapa.
+      const alertShown = await page
+        .getByTestId('similar-persons-alert')
+        .waitFor({ state: 'visible', timeout: 3_000 })
+        .then(() => true)
+        .catch(() => false);
+      if (alertShown) return;
       await page.getByTestId('create-submit').click();
       await page.waitForLoadState('networkidle');
     };
@@ -292,7 +325,7 @@ test.describe('HU #10660 — balcao: localizar e cadastrar pessoa (client)', () 
     if ((await page.getByTestId('similar-persons-alert').count()) === 0) {
       // Semente gravada: reabre o cadastro e repete para provocar a duplicidade.
       await expect(page.getByTestId('person-create-form')).toHaveCount(0);
-      await searchByCpf(page, UNKNOWN_CPF!);
+      await searchByCpf(page, ownCpf);
       await page.getByTestId('global-person-create').click();
       await fillWithoutCpf();
     }
@@ -300,7 +333,7 @@ test.describe('HU #10660 — balcao: localizar e cadastrar pessoa (client)', () 
     const alerta = page.getByTestId('similar-persons-alert');
     await expect(alerta).toBeVisible();
     // A UNICA excecao a RN02 em toda a HU: nome + nascimento dos semelhantes.
-    await expect(alerta).toContainText('E2E Pessoa Balcao');
+    await expect(alerta).toContainText(ownName);
 
     // Consentimento consciente: nasce DESMARCADO e bloqueia a gravacao.
     await expect(page.getByTestId('duplicate-confirmed')).toHaveAttribute(
@@ -329,7 +362,7 @@ test.describe('HU #10660 — balcao: localizar e cadastrar pessoa (client)', () 
     );
 
     await login(page, OPERADOR_CPF!, OPERADOR_PASS!);
-    await searchByCpf(page, UNKNOWN_CPF!);
+    await searchByCpf(page, fictitiousCpf()) // CPF próprio: o UNKNOWN_CPF já foi cadastrado pelo CA05/CA06;
     await page.getByTestId('global-person-create').click();
 
     // CPF de pessoa que JA existe no repositorio global.
@@ -359,7 +392,7 @@ test.describe('HU #10660 — balcao: localizar e cadastrar pessoa (client)', () 
     test.skip(!UNKNOWN_CPF, 'Defina E2E_CLIENT_PERSON_UNKNOWN_CPF.');
 
     await login(page, OPERADOR_CPF!, OPERADOR_PASS!);
-    await searchByCpf(page, UNKNOWN_CPF!);
+    await searchByCpf(page, fictitiousCpf()) // CPF próprio: o UNKNOWN_CPF já foi cadastrado pelo CA05/CA06;
     await page.getByTestId('global-person-create').click();
 
     await expect(page.getByTestId('person-create-form')).toBeVisible();
