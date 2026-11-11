@@ -127,6 +127,19 @@ async function openDrawer(page: Page, name: string): Promise<void> {
   await expect(page.getByTestId('member-school-grade')).toBeVisible({ timeout: 15_000 });
 }
 
+/**
+ * US-AJ-18 RN05: gravar fecha o painel. Para conferir o que foi gravado, reabre o drawer do integrante.
+ */
+async function reopenDrawer(page: Page, name: string): Promise<void> {
+  await expect(page.getByTestId('member-conditions-drawer')).toBeHidden({ timeout: 15_000 });
+  const button = page.locator(
+    `tr[data-testid^="member-row-"]:has-text("${name}") [data-testid^="member-conditions-"]`,
+  );
+  await button.click();
+  await expect(page.getByTestId('member-conditions-drawer')).toBeVisible({ timeout: 15_000 });
+  await expect(page.getByTestId('member-school-grade')).toBeVisible({ timeout: 15_000 });
+}
+
 async function pickGrade(page: Page, name: RegExp): Promise<void> {
   await page.getByTestId('member-school-grade').click();
   await page.getByRole('option', { name }).first().click();
@@ -185,6 +198,8 @@ test.describe('US-DIAG2-06 — escolaridade pela série (client)', () => {
     await page.getByTestId('member-conditions-confirm-update').click();
     expect((await saved).status(), 'PUT das condições do Pedro').toBe(200);
 
+    // US-AJ-18 RN05: o painel fecha ao gravar; reabre para conferir a escolaridade derivada.
+    await reopenDrawer(page, 'Lima Pedro');
     await expect(page.getByTestId('member-schooling-source')).toContainText(
       'Derivada da série informada',
     );

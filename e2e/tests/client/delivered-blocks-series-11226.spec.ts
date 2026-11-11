@@ -139,18 +139,17 @@ test.describe("US-SERIE-02 — blocos entregues em série (client)", () => {
     await page.locator('button[data-testid^="member-conditions-"]').first().click();
     await expect(page.getByTestId("member-conditions-drawer")).toBeVisible();
 
-    // Máscara em centavos: "180000" vira R$ 1.800,00.
-    await page.getByTestId("member-own-income").fill("180000");
+    // US-AJ-18 RN07: valor em reais como se fala — "1800" vira R$ 1.800,00.
+    await page.getByTestId("member-own-income").fill("1800");
     await page.getByTestId("member-conditions-save").click();
     await page.getByTestId("snapshot-kind-update").click();
     await page.getByTestId("member-conditions-unit").click();
     await page.getByRole("option", { name: UNIT_NAME }).click();
     await page.getByTestId("member-conditions-confirm-update").click();
-    // O drawer fica aberto após salvar: espera a gravação e fecha para ver a série.
+    // US-AJ-18 RN05: o drawer fecha sozinho após salvar.
     await expect
       .poll(() => total(FAMILY_SILVA, "work_income_conditions"))
       .toBe(before.work + 1);
-    await page.keyboard.press("Escape");
     await expect(page.getByTestId("member-conditions-drawer")).toBeHidden();
 
     await expect
