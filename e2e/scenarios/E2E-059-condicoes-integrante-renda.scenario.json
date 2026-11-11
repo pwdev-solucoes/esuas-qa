@@ -1,0 +1,426 @@
+{
+  "schema_version": 1,
+  "id": "E2E-059",
+  "title": "Condições do integrante: correção direta, unidade escolhida, aviso sem unidade, painel que fecha e série atualizada",
+  "description": "HU #11553 (US-AJ-18), plano 02: com o técnico de uma lotação, renda 1500 no integrante A gera atualização com a unidade já escolhida, o drawer fecha e a série de trabalho mostra R$ 1.500,00; reaberto, corrigir a série escolar grava direto sem painel de atualização. Com o técnico de duas lotações, atualizar sem unidade mostra o aviso no rodapé e o painel segue aberto (a ausência de PUT é conferida na spec manual do plano 03). Massa fictícia da E2EMemberConditionsFixesSeeder.",
+  "feature_slug": "11553-condicoes-02-client-painel",
+  "ac_refs": [
+    "AC-002",
+    "AC-004",
+    "AC-005"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "prontuario",
+    "condicoes",
+    "lgpd"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/login",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "users": [
+      {
+        "role": "tecnico_uma_unidade",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_CONDITIONS_ONE_UNIT_CPF",
+          "password": "E2E_CLIENT_CONDITIONS_ONE_UNIT_PASSWORD"
+        }
+      },
+      {
+        "role": "tecnico_duas_unidades",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_CONDITIONS_TWO_UNITS_CPF",
+          "password": "E2E_CLIENT_CONDITIONS_TWO_UNITS_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Massa do E2EMemberConditionsFixesSeeder (plano 03): família E2E Condições Ajuste no E2E CRAS Centro; integrante A com educação (série errada) e trabalho (800.00)",
+      "Técnico de uma lotação só no E2E CRAS Centro; técnico de duas lotações (E2E CRAS Centro e E2E CRAS Rural)",
+      "A variante happy_path GRAVA retratos: o seeder repõe o estado a cada rodada"
+    ]
+  },
+  "data": {
+    "family_uuid": "00000000-0000-4000-8000-000011553001",
+    "unit_name": "E2E CRAS Centro",
+    "school_grade_label": "9º ano"
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "Uma lotação: atualização com unidade já escolhida, painel fecha, série atualiza e correção grava direto",
+      "as_user": "tecnico_uma_unidade",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_CONDITIONS_ONE_UNIT_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_CONDITIONS_ONE_UNIT_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades, se aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=composicao"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-series-table\"]"
+          },
+          "timeout_ms": 15000
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[data-testid^=\"member-conditions-\"] >> nth=0"
+          },
+          "note": "drawer do integrante A"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-own-income\"]"
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-own-income\"]"
+          },
+          "value": "1500",
+          "note": "MoneyInput em reais (plano 01)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-conditions-save\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"snapshot-change-kind-dialog\"]"
+          },
+          "note": "A situação da família mudou / houve erro"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"snapshot-kind-update\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-conditions-update-panel\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-conditions-confirm-update\"]"
+          },
+          "note": "CA03: a unidade única já vem escolhida; nada a selecionar"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "CA02/CA05: deixa gravar e o drawer fechar"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-series-tab-work_income_conditions\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-series-panel-work_income_conditions\"] [data-testid^=\"member-series-column-\"] >> nth=1"
+          },
+          "timeout_ms": 15000,
+          "note": "CA06: o novo retrato aparece na série sem recarregar"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[data-testid^=\"member-conditions-\"] >> nth=0"
+          },
+          "note": "reabre o drawer do integrante A"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-school-grade\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-school-grade\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "${data.school_grade_label}"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-conditions-save\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"snapshot-change-kind-dialog\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"snapshot-kind-correct\"]"
+          },
+          "note": "CA01: corrigir grava direto"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "hidden",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-conditions-update-panel\"]"
+          },
+          "note": "CA01/CA02: nenhum painel de atualização depois da correção"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-series-panel-work_income_conditions\"]"
+          },
+          "value": "R$ 1.500,00",
+          "note": "CA06: série com a renda nova"
+        }
+      ]
+    },
+    {
+      "name": "validation",
+      "title": "Duas lotações: atualizar sem unidade avisa no rodapé e mantém o painel aberto",
+      "as_user": "tecnico_duas_unidades",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_CONDITIONS_TWO_UNITS_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_CONDITIONS_TWO_UNITS_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades, se aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=composicao"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-series-table\"]"
+          },
+          "timeout_ms": 15000
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[data-testid^=\"member-conditions-\"] >> nth=0"
+          },
+          "note": "drawer do integrante A"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-own-income\"]"
+          }
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-own-income\"]"
+          },
+          "value": "1500,50"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-conditions-save\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"snapshot-change-kind-dialog\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"snapshot-kind-update\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-conditions-update-panel\"]"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-conditions-confirm-update\"]"
+          },
+          "note": "CA04: sem escolher a unidade"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-conditions-footer-error\"]"
+          }
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-conditions-footer-error\"]"
+          },
+          "note": "CA04: aviso à vista no rodapé"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"member-conditions-update-panel\"]"
+          },
+          "note": "CA04: o painel segue aberto"
+        }
+      ]
+    }
+  ]
+}
