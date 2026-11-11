@@ -179,6 +179,8 @@ test.describe('HU #10619 — ingresso e programas sociais no prontuário (client
     await page.screenshot({ path: 'test-results/10619-ca01-ingresso-registrado.png', fullPage: true });
   });
 
+  // HU #11554: a correção do ingresso passou a constar na auditoria como "Correção" (evento `corrected`,
+  // antes "Registro atualizado"). Este teste não lê a trilha — o evento é provado em auditoria-identidade-11554.spec.ts.
   test('CA07 — bloco já preenchido só oferece CORRIGIR, nunca um segundo ingresso', async ({
     page,
   }) => {
