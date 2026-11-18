@@ -230,7 +230,9 @@ test.describe("US-RAT-01 #11545 — modelo do Relatório de Atividades", () => {
     const used = page.getByTestId("art-line").filter({ hasText: "B.15.1 Internas" });
     await expect(used).toBeVisible();
     await used.getByTestId("art-line-delete").click();
-    await page.getByTestId("art-delete-confirm").click();
+    // HU #11650 (CA18, mudança de propósito): linha já usada abre direto o aviso de inativar,
+    // sem passar pela confirmação de exclusão (`art-delete-confirm`).
+    await expect(page.getByTestId("art-delete-dialog")).toHaveCount(0);
     const dialog = page.getByTestId("art-in-use-dialog");
     await expect(dialog).toBeVisible();
     await expect(dialog).toContainText(/já foi usada/i);
