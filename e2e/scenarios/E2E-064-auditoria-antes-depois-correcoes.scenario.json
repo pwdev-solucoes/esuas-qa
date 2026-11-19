@@ -1,0 +1,330 @@
+{
+  "schema_version": 1,
+  "id": "E2E-064",
+  "title": "Auditoria com antes e depois nas correções e unidade do registro",
+  "description": "HU #11652, plano 03: o Master abre /app/auditoria, filtra por Correção e vê no detalhe 'Data do atendimento: 11/10/2026 → 10/10/2026' (CA01) e a unidade 'CRAS Centro' (CA10), com a massa do E2EAuditCorrectionsSeeder. Tipo por nome, descrição sem conteúdo e ingresso dependem das ações do técnico e ficam na spec manual auditoria-correcoes-11652 (plano 04). Nenhum dado pessoal real.",
+  "feature_slug": "11652-auditoria-03-client",
+  "ac_refs": [
+    "AC-001",
+    "AC-003",
+    "AC-004"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "auditoria",
+    "correcao",
+    "antes-depois"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/login",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "users": [
+      {
+        "role": "master",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_MASTER_CPF",
+          "password": "E2E_CLIENT_MASTER_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Massa do plano 04 aplicada e ações do técnico feitas (corrigir data e tipo do atendimento, a descrição e o ingresso)",
+      "Master com profissional ativo no tenant"
+    ]
+  },
+  "data": {
+    "date_change": "Data do atendimento: 11/10/2026 → 10/10/2026"
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "Correção do atendimento: data antes e depois (CA01)",
+      "as_user": "master",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades, se aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/auditoria"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "combobox",
+            "name": "Tipo de ação"
+          },
+          "note": "filtra por Correção"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Correção"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Filtrar"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "combobox",
+            "name": "Tipo de ação"
+          },
+          "note": "filtra por Correção"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Correção"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Filtrar"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"tenant-audit-row\"]:has-text(\"Correção\"):has-text(\"Data do atendimento\") [data-testid=\"tenant-audit-view-detail\"]"
+          },
+          "note": "abre o detalhe da última correção do atendimento (data, tipo e descrição)"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"tenant-audit-detail-event\"]"
+          },
+          "value": "Correção",
+          "note": "evento Correção"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"audit-value-changes\"]"
+          },
+          "value": "${data.date_change}",
+          "note": "antes e depois da data"
+        }
+      ]
+    },
+    {
+      "name": "edge_case",
+      "title": "unidade do registro (CA10)",
+      "as_user": "master",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades, se aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/auditoria"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "combobox",
+            "name": "Tipo de ação"
+          },
+          "note": "filtra por Correção"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Correção"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Filtrar"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "combobox",
+            "name": "Tipo de ação"
+          },
+          "note": "filtra por Correção"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Correção"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Filtrar"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"tenant-audit-row\"]:has-text(\"Correção\"):has-text(\"Data do atendimento\") [data-testid=\"tenant-audit-view-detail\"]"
+          },
+          "note": "abre o detalhe da última correção do atendimento (data, tipo e descrição)"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"tenant-audit-detail-unit\"]"
+          },
+          "value": "CRAS Centro",
+          "note": "unidade do registro (CA10)"
+        }
+      ]
+    }
+  ]
+}

@@ -275,9 +275,12 @@ test.describe("US-AJ-19 — auditoria com identidade, português e correção (c
   });
 
   test("CA03 — a correção do ingresso mostra Correção e antes → depois", async () => {
+    // HU #11652: a descrição do atendimento também passou a ser "Correção"; a linha do
+    // ingresso é a que traz o campo "Forma de ingresso" (a primeira "Correção" deixou de ser ela).
     const row = master
       .getByTestId("tenant-audit-row")
       .filter({ hasText: "Correção" })
+      .filter({ hasText: "Forma de ingresso" })
       .first();
     await expect(row).toBeVisible({ timeout: 15_000 });
     await row.getByTestId("tenant-audit-view-detail").click();

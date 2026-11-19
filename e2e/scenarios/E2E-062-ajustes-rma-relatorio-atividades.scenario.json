@@ -1,0 +1,593 @@
+{
+  "schema_version": 1,
+  "id": "E2E-062",
+  "title": "Ajustes do RMA e do Relatório de Atividades: troca de modelo com confirmação, o que a linha conta e exclusão de linha usada",
+  "description": "HU #11650 (US-RMA-RAT), plano 05: o Master ativa um modelo novo quando já há um ativo do tipo e vê a confirmação nomeando o ativo; ao confirmar, o novo fica Ativo e o antigo Inativo; ao cancelar nada muda; no editor, excluir linha já usada abre direto o aviso de inativar (sem a confirmação de exclusão); o técnico do CREAS acha o RMA em Prestação de Contas e vê o que a linha calculada conta no Relatório de Atividades. Cenário apenas GERADO no plano 05; roda no plano 06 com a massa. Nenhum dado pessoal real.",
+  "feature_slug": "11650-rma-rat-05-client-relatorio-atividades",
+  "ac_refs": [
+    "AC-001",
+    "AC-002",
+    "AC-005",
+    "AC-006"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "relatorio-atividades",
+    "rma-creas",
+    "prestacao-contas",
+    "configuracoes"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/login",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "users": [
+      {
+        "role": "master",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_MASTER_CPF",
+          "password": "E2E_CLIENT_MASTER_PASSWORD"
+        }
+      },
+      {
+        "role": "tecnico",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_CREAS_RMA_TECNICO_CPF",
+          "password": "E2E_CLIENT_CREAS_RMA_TECNICO_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Massa do plano 06: dois modelos do mesmo tipo de unidade (CREAS) no tenant E2E — um ATIVO (título em data.template_active_title, com a linha usada em data.used_line_text já usada em relatório preenchido) e um RASCUNHO com ao menos uma linha útil (data.template_new_title)",
+      "Cada variante que ativa o modelo novo deve reiniciar a massa (o happy_path deixa o novo Ativo e o antigo Inativo); o edge_case de cancelar roda com a massa original",
+      "Master com activity-report-templates.index; técnico E2E_CLIENT_CREAS_RMA_TECNICO_* com permissão do RMA do CREAS e feature_access.activity_report; unidade 'E2E CREAS RMA', mês 2026-10"
+    ]
+  },
+  "data": {
+    "template_active_title": "Relatório 2026",
+    "template_new_title": "Relatório 2027",
+    "used_line_text": "Encaminhamentos realizados",
+    "reference_month": "2026-10",
+    "rma_path": "/app/prestacao-contas/rma-creas"
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "Master ativa o modelo novo, vê a confirmação com o título do ativo e confirma: novo Ativo, antigo Inativo (CA10, CA11)",
+      "as_user": "master",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/configuracoes/modelos-relatorio-atividades"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "art-page"
+          },
+          "note": "lista de modelos carregada"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"art-row\"]:has-text(\"${data.template_new_title}\") [data-testid=\"art-activate\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "art-replace-dialog"
+          },
+          "note": "confirmação da troca aberta"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "art-replace-dialog"
+          },
+          "value": "${data.template_active_title}",
+          "note": "o diálogo nomeia o modelo ativo (CA10)"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "art-replace-dialog"
+          },
+          "value": "será inativado",
+          "note": "texto da confirmação (CA10)"
+        }
+      ]
+    },
+    {
+      "name": "happy_path_confirmar_troca",
+      "title": "Confirmar a troca: o novo fica Ativo e o antigo Inativo (CA11)",
+      "as_user": "master",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/configuracoes/modelos-relatorio-atividades"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "art-page"
+          },
+          "note": "lista de modelos carregada"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"art-row\"]:has-text(\"${data.template_new_title}\") [data-testid=\"art-activate\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "art-replace-dialog"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "art-replace-confirm"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"art-row\"]:has-text(\"${data.template_new_title}\") [data-testid=\"art-deactivate\"]"
+          },
+          "note": "o novo passou a ter 'Inativar' (está ativo)"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"art-row\"]:has-text(\"${data.template_new_title}\") [data-testid=\"art-status\"]"
+          },
+          "value": "Ativo",
+          "note": "novo Ativo (CA11)"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"art-row\"]:has-text(\"${data.template_active_title}\") [data-testid=\"art-status\"]"
+          },
+          "value": "Inativo",
+          "note": "antigo Inativo (CA11)"
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "testid",
+            "value": "art-replace-dialog"
+          },
+          "value": 0,
+          "note": "diálogo fechado"
+        }
+      ]
+    },
+    {
+      "name": "happy_path_tecnico_rma",
+      "title": "O técnico do CREAS acha o RMA em Prestação de Contas (CA01)",
+      "as_user": "tecnico",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_RMA_TECNICO_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_RMA_TECNICO_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "${data.rma_path}"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "url",
+          "value": "/app/prestacao-contas/rma-creas",
+          "note": "RMA vive em Prestação de Contas"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "css",
+            "value": "aside button:has-text(\"RMA do CREAS\")"
+          },
+          "note": "item do RMA no menu Prestação de Contas"
+        }
+      ]
+    },
+    {
+      "name": "edge_case",
+      "title": "Cancelar a troca: o diálogo fecha e nada muda (CA10)",
+      "as_user": "master",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/configuracoes/modelos-relatorio-atividades"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "art-page"
+          },
+          "note": "lista de modelos carregada"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"art-row\"]:has-text(\"${data.template_new_title}\") [data-testid=\"art-activate\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "art-replace-dialog"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "art-replace-cancel"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 500,
+          "note": "deixa o diálogo fechar"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "count",
+          "target": {
+            "by": "testid",
+            "value": "art-replace-dialog"
+          },
+          "value": 0,
+          "note": "diálogo fechado"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"art-row\"]:has-text(\"${data.template_new_title}\") [data-testid=\"art-status\"]"
+          },
+          "value": "Rascunho",
+          "note": "novo segue Rascunho"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"art-row\"]:has-text(\"${data.template_active_title}\") [data-testid=\"art-status\"]"
+          },
+          "value": "Ativo",
+          "note": "antigo segue Ativo"
+        }
+      ]
+    },
+    {
+      "name": "edge_case_linha_usada",
+      "title": "Excluir linha já usada abre direto o aviso de inativar, sem a confirmação de exclusão (CA18)",
+      "as_user": "master",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/configuracoes/modelos-relatorio-atividades"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "art-page"
+          },
+          "note": "lista de modelos carregada"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"art-row\"]:has-text(\"${data.template_active_title}\") button:has-text(\"Editar\")"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"art-line\"]:has-text(\"${data.used_line_text}\")"
+          },
+          "note": "editor com a linha usada"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "[data-testid=\"art-line\"]:has-text(\"${data.used_line_text}\") [data-testid=\"art-line-delete\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "art-in-use-dialog"
+          },
+          "note": "aviso aberto direto"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "art-in-use-deactivate"
+          },
+          "note": "oferece inativar (CA18)"
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "testid",
+            "value": "art-delete-dialog"
+          },
+          "value": 0,
+          "note": "sem a confirmação de exclusão (CA18)"
+        }
+      ]
+    }
+  ]
+}

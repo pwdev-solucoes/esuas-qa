@@ -1,0 +1,360 @@
+{
+  "schema_version": 1,
+  "id": "E2E-063",
+  "title": "Anotação segue o bloco: técnico do CREAS anota na Violência com o aviso da equipe técnica; o Master não registra a saúde do integrante nem as medidas socioeducativas e lê o motivo",
+  "description": "HU #11651 (US-ANOT-REGRA), plano 03: a anotação segue a regra do bloco. O técnico do CREAS que conduz o caso abre 'Registrar observação' no Quadro 3 da Violência e vê o aviso do servidor 'Esta anotação será lida apenas pela equipe técnica e pelo gestor Master.'; o Master, no drawer de condições do integrante, encontra a saúde desabilitada com 'O registro da saúde cabe à equipe técnica.' e 'Salvar condições' desabilitado; na aba Medidas socioeducativas o Master não vê o atalho de anotação e lê que o registro cabe a técnico do CREAS. Cenário apenas GERADO no plano 03; roda no plano 04 com a massa E2ENoteFollowsBlockSeeder. Nenhum dado pessoal real.",
+  "feature_slug": "11651-anotacao-03-client",
+  "ac_refs": [
+    "AC-001",
+    "AC-002",
+    "AC-003"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "anotacao",
+    "prontuario",
+    "violencia",
+    "medidas-socioeducativas",
+    "condicoes-integrante"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/login",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "users": [
+      {
+        "role": "master",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_MASTER_CPF",
+          "password": "E2E_CLIENT_MASTER_PASSWORD"
+        }
+      },
+      {
+        "role": "tecnico_creas",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_CREAS_OPERADOR_CPF",
+          "password": "E2E_CLIENT_CREAS_OPERADOR_PASSWORD"
+        }
+      },
+      {
+        "role": "tecnico_cras",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_OPERADOR_CPF",
+          "password": "E2E_CLIENT_OPERADOR_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Massa do E2ENoteFollowsBlockSeeder (plano 04): família fictícia 'E2E Anotação Bloco' acompanhada pelo CREAS (o técnico do CREAS conduz o caso), com ao menos um integrante; técnico do CRAS (E2E_CLIENT_OPERADOR_*) só com lotação no CRAS de referência; Master sem lotação técnica",
+      "Nenhuma variante grava dado: o happy_path só abre o formulário de anotação (não envia); o seeder não precisa repor o estado a cada rodada"
+    ]
+  },
+  "data": {
+    "family_uuid": "00000000-0000-4000-8000-000011651001",
+    "sigilo_notice": "Esta anotação será lida apenas pela equipe técnica e pelo gestor Master.",
+    "health_reason": "O registro da saúde cabe à equipe técnica.",
+    "measure_reason": "cabe a técnico do CREAS"
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "Técnico do CREAS abre 'Registrar observação' na Violência e vê o aviso do servidor (CA01, CA11)",
+      "as_user": "tecnico_creas",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=violencia"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "violence-records-note-shortcut"
+          },
+          "timeout_ms": 15000,
+          "note": "o técnico que conduz o caso vê o atalho (CA01)"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "testid",
+            "value": "violence-records-note-shortcut"
+          }
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "family-note-form-sheet"
+          },
+          "note": "formulário de anotação aberto com o bloco pré-escolhido"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "family-note-block-notice"
+          },
+          "value": "${data.sigilo_notice}",
+          "note": "aviso do servidor na anotação sigilosa (CA11)"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "family-note-submit"
+          },
+          "note": "o técnico pode registrar"
+        }
+      ]
+    },
+    {
+      "name": "validation",
+      "title": "Master no drawer de condições: saúde desabilitada, motivo único e 'Salvar condições' desabilitado (CA12)",
+      "as_user": "master",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=composicao"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "css",
+            "value": "tr[data-testid^=\"member-row-\"] [data-testid^=\"member-conditions-\"] >> nth=0"
+          },
+          "timeout_ms": 15000
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[data-testid^=\"member-conditions-\"] >> nth=0"
+          },
+          "note": "drawer do primeiro integrante"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "member-conditions-health_conditions-restricted"
+          },
+          "timeout_ms": 15000,
+          "note": "alerta da saúde bloqueada"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "member-conditions-health_conditions-restricted"
+          },
+          "value": "${data.health_reason}",
+          "note": "motivo único (CA12)"
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "testid",
+            "value": "member-conditions-health_conditions-restricted"
+          },
+          "value": 1,
+          "note": "um único alerta"
+        },
+        {
+          "expect": "disabled",
+          "target": {
+            "by": "testid",
+            "value": "member-conditions-save"
+          },
+          "note": "Salvar condições desabilitado (CA12)"
+        }
+      ]
+    },
+    {
+      "name": "edge_case",
+      "title": "Master na aba Medidas socioeducativas: sem atalho de anotação e com o motivo da seção (CA13)",
+      "as_user": "master",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_MASTER_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_uuid}?tab=medidas-socioeducativas"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape"
+        },
+        {
+          "action": "wait",
+          "target": {
+            "by": "testid",
+            "value": "measure-register-reason"
+          },
+          "timeout_ms": 15000,
+          "note": "motivo da seção carregado"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "measure-register-reason"
+          },
+          "value": "${data.measure_reason}",
+          "note": "o registro cabe a técnico do CREAS (RN11b)"
+        },
+        {
+          "expect": "count",
+          "target": {
+            "by": "testid",
+            "value": "socio-educational-measure-note-shortcut"
+          },
+          "value": 0,
+          "note": "sem atalho de anotação (CA13)"
+        }
+      ]
+    }
+  ]
+}

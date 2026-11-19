@@ -159,7 +159,9 @@ test.beforeAll(async ({ browser }) => {
   const work = await masterOptions(FAMILY_WORK!);
   expect(work.units.length, 'o Master precisa de ao menos uma unidade para assinar').toBeGreaterThan(0);
   const workUnit = work.units[0].uuid;
-  const health = await masterRegister(FAMILY_WORK!, workUnit, 'health_conditions', TEXT.health);
+  // HU #11651 (RN01): a anotação do Master segue a regra do bloco — saúde é do Quadro 1 e o Master não anota nela;
+  // o bloco "Condições educacionais" (sem regra própria) faz o papel de "bloco de saúde" desta massa.
+  const health = await masterRegister(FAMILY_WORK!, workUnit, 'education_conditions', TEXT.health);
   // Gestão municipal (CA02b): Master sem lotação assina com o rótulo, não com função.
   expect(health.signature.role_label, 'assinatura do Master sem lotação').toBe('Gestão municipal');
   await masterRegister(FAMILY_WORK!, workUnit, 'housing_conditions', TEXT.housing);
@@ -200,7 +202,7 @@ test.beforeAll(async ({ browser }) => {
     // harness: `properties`/`attribute_changes` não saem na API (LGPD); o bloco aparece em `changed_fields`/`value_changes`.
     JSON.stringify([created[0].changed_fields, created[0].changed_field_labels, created[0].value_changes]),
     'bloco na trilha',
-  ).toMatch(/block|bloco|health_conditions|housing_conditions|general/i);
+  ).toMatch(/block|bloco|education_conditions|health_conditions|housing_conditions|general/i);
 
   // SÓ AGORA o operador entra: o login do Master derrubaria a sessão dele.
   operatorPage = await browser.newPage({ baseURL: BASE, locale: 'pt-BR' });
@@ -254,10 +256,10 @@ test.describe('US-ANOT-01 — anotações qualitativas do prontuário (client)',
     expect(tagged.indexOf(TEXT.general)).toBeLessThan(tagged.indexOf(TEXT.health));
 
     const filtered = operatorPage.waitForResponse(
-      (res) => res.url().includes('/notes') && res.url().includes('block=health_conditions'),
+      (res) => res.url().includes('/notes') && res.url().includes('block=education_conditions'),
     );
     await operatorPage.getByTestId('family-note-filter-block').click();
-    await operatorPage.getByRole('option', { name: 'Condições de saúde', exact: true }).click();
+    await operatorPage.getByRole('option', { name: 'Condições educacionais', exact: true }).click();
     expect((await filtered).status(), 'GET filtrado').toBe(200);
 
     await expect(
@@ -267,7 +269,7 @@ test.describe('US-ANOT-01 — anotações qualitativas do prontuário (client)',
       operatorPage.getByTestId('family-note-item').filter({ hasText: TEXT.housing }),
     ).toHaveCount(0);
     for (const badge of await operatorPage.getByTestId('family-note-block-badge').all()) {
-      await expect(badge).toHaveText('Condições de saúde');
+      await expect(badge).toHaveText('Condições educacionais');
     }
 
     // Bloco sem nenhuma anotação na massa: vazio do filtro, não o vazio geral.

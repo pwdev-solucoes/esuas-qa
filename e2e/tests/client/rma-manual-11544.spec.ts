@@ -64,6 +64,8 @@ async function openRma(page: Page, month: string): Promise<void> {
 }
 
 async function save(page: Page): Promise<void> {
+  // HU #11650 (RN13): a frase do alerta de L.1 ficou mais longa e o toast passou a cobrir o botão
+  await expect(page.locator("[data-sonner-toast]")).toHaveCount(0, { timeout: 10_000 });
   const saved = page.waitForResponse((r) => r.url().includes("/creas-rmas/manual-values") && r.request().method() === "PUT");
   await page.getByTestId("rma-save-manual").click();
   expect((await saved).ok()).toBe(true);

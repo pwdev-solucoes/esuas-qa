@@ -1,0 +1,312 @@
+{
+  "schema_version": 1,
+  "id": "E2E-065",
+  "title": "Encaminhamentos recebidos na relação de pendentes e perguntas sem resposta em bloco nunca gravado",
+  "description": "HU #11653 (Partes C e D), plano 03: o técnico do CREAS (com o add-on LGPD) abre a relação de encaminhamentos pendentes na aba Recebidos e vê a fila de resposta do mais antigo para o mais novo, com 'Encaminhado por' e 'Registrar retorno' na linha (CA05, CA06); encaminhamento com destino em texto livre não aparece em Recebidos (CA07); a convivência nunca gravada mostra a faixa 'Perguntas ainda sem resposta' (CA10). Massa fictícia escrita no plano 05; nenhum dado pessoal. A faixa do CA10 é aberta pelo técnico do CRAS de referência da família (o do CREAS não a enxerga).",
+  "feature_slug": "11653-pontuais-03-client-recebidos-diagnostico",
+  "ac_refs": [
+    "AC-001",
+    "AC-004"
+  ],
+  "priority": "P1",
+  "tags": [
+    "client",
+    "encaminhamento",
+    "recebidos",
+    "diagnostico",
+    "convivencia",
+    "lgpd"
+  ],
+  "preconditions": {
+    "base_url_env": "CLIENT_BASE_URL",
+    "start_path": "/login",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "users": [
+      {
+        "role": "operador_creas",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_CREAS_OPERADOR_CPF",
+          "password": "E2E_CLIENT_CREAS_OPERADOR_PASSWORD"
+        }
+      },
+      {
+        "role": "operador_cras",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_OPERADOR_CPF",
+          "password": "E2E_CLIENT_OPERADOR_PASSWORD"
+        }
+      }
+    ],
+    "state": [
+      "Técnico do CREAS da massa com add-on LGPD e lotação vigente no E2E CREAS (massa do plano 05)",
+      "Famílias 00000000-0000-4000-8000-000011653101..103 (encaminhamentos ...11653111..113) com encaminhamentos do CRAS ao E2E CREAS aguardando retorno, em datas distintas (mais antigo primeiro)",
+      "Encaminhamento 00000000-0000-4000-8000-000011653114 com destino em texto livre (sem unidade de destino)",
+      "Família 00000000-0000-4000-8000-000011653201 sem convivência familiar e comunitária gravada",
+      "Re-executável: a massa é reposta a cada rodada do seeder"
+    ]
+  },
+  "data": {
+    "first_referral": "00000000-0000-4000-8000-000011653111",
+    "external_referral": "00000000-0000-4000-8000-000011653114",
+    "family_without_living": "00000000-0000-4000-8000-000011653201",
+    "pending_path": "/app/cadastros/encaminhamentos-pendentes"
+  },
+  "variants": [
+    {
+      "name": "happy_path",
+      "title": "O técnico do CREAS vê na aba Recebidos a fila de resposta, com 'Encaminhado por' e 'Registrar retorno' na linha",
+      "as_user": "operador_creas",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "${data.pending_path}?view=received"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "aguarda a relação carregar"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "pending-referrals-tab-received"
+          },
+          "note": "aba Recebidos presente"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "css",
+            "value": "main"
+          },
+          "value": "Encaminhado por",
+          "note": "coluna de origem da aba Recebidos"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "pending-referral-row-${data.first_referral}"
+          },
+          "note": "o encaminhamento da massa chegou à fila"
+        },
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "pending-referral-return-${data.first_referral}"
+          },
+          "note": "Registrar retorno na linha"
+        }
+      ]
+    },
+    {
+      "name": "edge_case_destino_texto_livre",
+      "title": "Encaminhamento com destino em texto livre não aparece na aba Recebidos",
+      "as_user": "operador_creas",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "${data.pending_path}?view=received"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "aguarda a relação carregar"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "hidden",
+          "target": {
+            "by": "testid",
+            "value": "pending-referral-row-${data.external_referral}"
+          },
+          "note": "sem unidade de destino do tenant, não é recebido por ninguém"
+        }
+      ]
+    },
+    {
+      "name": "edge_case_bloco_nunca_gravado",
+      "title": "Convivência nunca gravada mostra a faixa de perguntas sem resposta (técnico do CRAS de referência)",
+      "as_user": "operador_cras",
+      "steps": [
+        {
+          "action": "goto",
+          "value": "/auth/login"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#cpf"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
+        },
+        {
+          "action": "fill",
+          "target": {
+            "by": "css",
+            "value": "input#password"
+          },
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "css",
+            "value": "button[type=\"submit\"]"
+          }
+        },
+        {
+          "action": "wait",
+          "value": "/app",
+          "note": "login concluído: espera a URL autenticada em vez de tempo fixo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "goto",
+          "value": "/app/cadastros/familias/${data.family_without_living}?tab=convivencia"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 2500,
+          "note": "deixa o modal de novidades abrir antes de fechá-lo"
+        },
+        {
+          "action": "press",
+          "key": "Escape",
+          "note": "fecha o modal de novidades da plataforma, se estiver aberto"
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500,
+          "note": "aguarda o bloco carregar"
+        }
+      ],
+      "assertions": [
+        {
+          "expect": "visible",
+          "target": {
+            "by": "testid",
+            "value": "community-living-pending"
+          },
+          "note": "faixa com as perguntas sem resposta"
+        },
+        {
+          "expect": "text",
+          "target": {
+            "by": "testid",
+            "value": "community-living-pending"
+          },
+          "value": "Perguntas ainda sem resposta",
+          "note": "título da faixa"
+        }
+      ]
+    }
+  ]
+}

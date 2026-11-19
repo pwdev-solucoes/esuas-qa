@@ -1,0 +1,112 @@
+// Source: qa/e2e/scenarios/E2E-063-anotacao-regra-bloco.scenario.json
+// Source: E2E-063-anotacao-regra-bloco.scenario.json
+// Scenario: E2E-063 — ACs: AC-001, AC-002, AC-003 — requires @playwright/test >= 1.42
+import { test, expect } from '@playwright/test';
+
+function env(name: string): string {
+  const value = process.env[name];
+  if (!value) throw new Error(`Missing environment variable ${name}`);
+  return value;
+}
+
+function escapeRegExp(text: string): string {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+const data = {
+  "family_uuid": "00000000-0000-4000-8000-000011651001",
+  "health_reason": "O registro da saúde cabe à equipe técnica.",
+  "measure_reason": "cabe a técnico do CREAS",
+  "sigilo_notice": "Esta anotação será lida apenas pela equipe técnica e pelo gestor Master."
+};
+void data;
+
+test.describe('E2E-063 Anotação segue o bloco: técnico do CREAS anota na Violência com o aviso da equipe técnica; o Master não registra a saúde do integrante nem as medidas socioeducativas e lê o motivo', () => {
+  test.use({ baseURL: process.env['CLIENT_BASE_URL'], viewport: { width: 1440, height: 900 } });
+  // Preconditions (arrange before running):
+  //   - Massa do E2ENoteFollowsBlockSeeder (plano 04): família fictícia 'E2E Anotação Bloco' acompanhada pelo CREAS (o técnico do CREAS conduz o caso), com ao menos um integrante; técnico do CRAS (E2E_CLIENT_OPERADOR_*) só com lotação no CRAS de referência; Master sem lotação técnica
+  //   - Nenhuma variante grava dado: o happy_path só abre o formulário de anotação (não envia); o seeder não precisa repor o estado a cada rodada
+
+  test('happy_path — Técnico do CREAS abre \'Registrar observação\' na Violência e vê o aviso do servidor (CA01, CA11)', {
+    tag: ['@P1', '@client', '@anotacao', '@prontuario', '@violencia', '@medidas-socioeducativas', '@condicoes-integrante'],
+    annotation: [{ type: 'E2E', description: 'E2E-063' }, { type: 'AC', description: 'AC-001' }, { type: 'AC', description: 'AC-002' }, { type: 'AC', description: 'AC-003' }, { type: 'user', description: 'tecnico_creas' }],
+  }, async ({ page }) => {
+    await page.goto('/login');
+    await page.goto('/auth/login');
+    await page.locator('input#cpf').fill(env('E2E_CLIENT_CREAS_OPERADOR_CPF'));
+    await page.locator('input#password').fill(env('E2E_CLIENT_CREAS_OPERADOR_PASSWORD'));
+    await page.locator('button[type="submit"]').click();
+    // login concluído: espera a URL autenticada em vez de tempo fixo
+    await page.waitForURL(new RegExp(escapeRegExp('/app')));
+    // fecha o modal de novidades da plataforma, se estiver aberto
+    await page.keyboard.press('Escape');
+    await page.goto(`/app/cadastros/familias/${data.family_uuid}?tab=violencia`);
+    // deixa o modal de novidades abrir antes de fechá-lo
+    await page.waitForTimeout(2500);
+    await page.keyboard.press('Escape');
+    // o técnico que conduz o caso vê o atalho (CA01)
+    await expect(page.getByTestId('violence-records-note-shortcut')).toBeVisible({ timeout: 15000 });
+    await page.getByTestId('violence-records-note-shortcut').click();
+    // formulário de anotação aberto com o bloco pré-escolhido
+    await expect(page.getByTestId('family-note-form-sheet')).toBeVisible();
+    // aviso do servidor na anotação sigilosa (CA11)
+    await expect(page.getByTestId('family-note-block-notice')).toContainText(String(data.sigilo_notice));
+    // o técnico pode registrar
+    await expect(page.getByTestId('family-note-submit')).toBeVisible();
+  });
+
+  test('validation — Master no drawer de condições: saúde desabilitada, motivo único e \'Salvar condições\' desabilitado (CA12)', {
+    tag: ['@P1', '@client', '@anotacao', '@prontuario', '@violencia', '@medidas-socioeducativas', '@condicoes-integrante'],
+    annotation: [{ type: 'E2E', description: 'E2E-063' }, { type: 'AC', description: 'AC-001' }, { type: 'AC', description: 'AC-002' }, { type: 'AC', description: 'AC-003' }, { type: 'user', description: 'master' }],
+  }, async ({ page }) => {
+    await page.goto('/login');
+    await page.goto('/auth/login');
+    await page.locator('input#cpf').fill(env('E2E_CLIENT_MASTER_CPF'));
+    await page.locator('input#password').fill(env('E2E_CLIENT_MASTER_PASSWORD'));
+    await page.locator('button[type="submit"]').click();
+    // login concluído: espera a URL autenticada em vez de tempo fixo
+    await page.waitForURL(new RegExp(escapeRegExp('/app')));
+    // fecha o modal de novidades da plataforma, se estiver aberto
+    await page.keyboard.press('Escape');
+    await page.goto(`/app/cadastros/familias/${data.family_uuid}?tab=composicao`);
+    // deixa o modal de novidades abrir antes de fechá-lo
+    await page.waitForTimeout(2500);
+    await page.keyboard.press('Escape');
+    await expect(page.locator('tr[data-testid^="member-row-"] [data-testid^="member-conditions-"] >> nth=0')).toBeVisible({ timeout: 15000 });
+    // drawer do primeiro integrante
+    await page.locator('button[data-testid^="member-conditions-"] >> nth=0').click();
+    // alerta da saúde bloqueada
+    await expect(page.getByTestId('member-conditions-health_conditions-restricted')).toBeVisible({ timeout: 15000 });
+    // motivo único (CA12)
+    await expect(page.getByTestId('member-conditions-health_conditions-restricted')).toContainText(String(data.health_reason));
+    // um único alerta
+    await expect(page.getByTestId('member-conditions-health_conditions-restricted')).toHaveCount(1);
+    // Salvar condições desabilitado (CA12)
+    await expect(page.getByTestId('member-conditions-save')).toBeDisabled();
+  });
+
+  test('edge_case — Master na aba Medidas socioeducativas: sem atalho de anotação e com o motivo da seção (CA13)', {
+    tag: ['@P1', '@client', '@anotacao', '@prontuario', '@violencia', '@medidas-socioeducativas', '@condicoes-integrante'],
+    annotation: [{ type: 'E2E', description: 'E2E-063' }, { type: 'AC', description: 'AC-001' }, { type: 'AC', description: 'AC-002' }, { type: 'AC', description: 'AC-003' }, { type: 'user', description: 'master' }],
+  }, async ({ page }) => {
+    await page.goto('/login');
+    await page.goto('/auth/login');
+    await page.locator('input#cpf').fill(env('E2E_CLIENT_MASTER_CPF'));
+    await page.locator('input#password').fill(env('E2E_CLIENT_MASTER_PASSWORD'));
+    await page.locator('button[type="submit"]').click();
+    // login concluído: espera a URL autenticada em vez de tempo fixo
+    await page.waitForURL(new RegExp(escapeRegExp('/app')));
+    // fecha o modal de novidades da plataforma, se estiver aberto
+    await page.keyboard.press('Escape');
+    await page.goto(`/app/cadastros/familias/${data.family_uuid}?tab=medidas-socioeducativas`);
+    // deixa o modal de novidades abrir antes de fechá-lo
+    await page.waitForTimeout(2500);
+    await page.keyboard.press('Escape');
+    // motivo da seção carregado
+    await expect(page.getByTestId('measure-register-reason')).toBeVisible({ timeout: 15000 });
+    // o registro cabe a técnico do CREAS (RN11b)
+    await expect(page.getByTestId('measure-register-reason')).toContainText(String(data.measure_reason));
+    // sem atalho de anotação (CA13)
+    await expect(page.getByTestId('socio-educational-measure-note-shortcut')).toHaveCount(0);
+  });
+});
