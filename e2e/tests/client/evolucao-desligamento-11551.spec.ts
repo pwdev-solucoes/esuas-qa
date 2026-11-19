@@ -371,7 +371,7 @@ test.describe("US-AJ-16 #11551 — evolução obrigatória e desligamento pela u
   });
 
   // ── 3º login: Master sem lotação técnica ───────────────────────────────────
-  test("D12 — o Master sem lotação técnica não vê Desligar em nenhuma linha (herdado da US-AJ-13 RN01)", async ({}, testInfo) => {
+  test("D12 — o Master sem lotação técnica vê Desligar nas linhas (HU #11651 substitui a regra herdada da US-AJ-13 RN01)", async ({}, testInfo) => {
     await login(page, MASTER);
     await openTab(page, FAMILY_PAEFI, "acompanhamento");
     await expect(
@@ -381,7 +381,7 @@ test.describe("US-AJ-16 #11551 — evolução obrigatória e desligamento pela u
       page.locator(
         '[data-testid^="follow-up-discharge-"]:not([data-testid^="follow-up-discharge-info-"])',
       ),
-    ).toHaveCount(0);
+    ).not.toHaveCount(0); // HU #11651 (RN04): o Master volta a desligar acompanhamento (antes: 0).
 
     // Registro do comportamento herdado — sem regra nova (pendência P1 do PO).
     await captureEvidence(page, testInfo, EVIDENCE_SLUG, "master");
