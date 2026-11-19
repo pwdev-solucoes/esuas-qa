@@ -2,7 +2,7 @@
   "schema_version": 1,
   "id": "E2E-065",
   "title": "Encaminhamentos recebidos na relação de pendentes e perguntas sem resposta em bloco nunca gravado",
-  "description": "HU #11653 (Partes C e D), plano 03: o técnico do CREAS (com o add-on LGPD) abre a relação de encaminhamentos pendentes na aba Recebidos e vê a fila de resposta do mais antigo para o mais novo, com 'Encaminhado por' e 'Registrar retorno' na linha (CA05, CA06); encaminhamento com destino em texto livre não aparece em Recebidos (CA07); a convivência nunca gravada mostra a faixa 'Perguntas ainda sem resposta' (CA10). Massa fictícia escrita no plano 05; nenhum dado pessoal.",
+  "description": "HU #11653 (Partes C e D), plano 03: o técnico do CREAS (com o add-on LGPD) abre a relação de encaminhamentos pendentes na aba Recebidos e vê a fila de resposta do mais antigo para o mais novo, com 'Encaminhado por' e 'Registrar retorno' na linha (CA05, CA06); encaminhamento com destino em texto livre não aparece em Recebidos (CA07); a convivência nunca gravada mostra a faixa 'Perguntas ainda sem resposta' (CA10). Massa fictícia escrita no plano 05; nenhum dado pessoal. A faixa do CA10 é aberta pelo técnico do CRAS de referência da família (o do CREAS não a enxerga).",
   "feature_slug": "11653-pontuais-03-client-recebidos-diagnostico",
   "ac_refs": [
     "AC-001",
@@ -31,19 +31,26 @@
           "cpf": "E2E_CLIENT_CREAS_OPERADOR_CPF",
           "password": "E2E_CLIENT_CREAS_OPERADOR_PASSWORD"
         }
+      },
+      {
+        "role": "operador_cras",
+        "credentials_env": {
+          "cpf": "E2E_CLIENT_OPERADOR_CPF",
+          "password": "E2E_CLIENT_OPERADOR_PASSWORD"
+        }
       }
     ],
     "state": [
       "Técnico do CREAS da massa com add-on LGPD e lotação vigente no E2E CREAS (massa do plano 05)",
-      "Famílias 00000000-0000-4000-8000-000011653101..103 com encaminhamentos do CRAS ao E2E CREAS aguardando retorno, em datas distintas (mais antigo primeiro)",
-      "Encaminhamento 00000000-0000-4000-8000-000011653104 com destino em texto livre (sem unidade de destino)",
+      "Famílias 00000000-0000-4000-8000-000011653101..103 (encaminhamentos ...11653111..113) com encaminhamentos do CRAS ao E2E CREAS aguardando retorno, em datas distintas (mais antigo primeiro)",
+      "Encaminhamento 00000000-0000-4000-8000-000011653114 com destino em texto livre (sem unidade de destino)",
       "Família 00000000-0000-4000-8000-000011653201 sem convivência familiar e comunitária gravada",
       "Re-executável: a massa é reposta a cada rodada do seeder"
     ]
   },
   "data": {
-    "first_referral": "00000000-0000-4000-8000-000011653101",
-    "external_referral": "00000000-0000-4000-8000-000011653104",
+    "first_referral": "00000000-0000-4000-8000-000011653111",
+    "external_referral": "00000000-0000-4000-8000-000011653114",
     "family_without_living": "00000000-0000-4000-8000-000011653201",
     "pending_path": "/app/cadastros/encaminhamentos-pendentes"
   },
@@ -221,8 +228,8 @@
     },
     {
       "name": "edge_case_bloco_nunca_gravado",
-      "title": "Convivência nunca gravada mostra a faixa de perguntas sem resposta",
-      "as_user": "operador_creas",
+      "title": "Convivência nunca gravada mostra a faixa de perguntas sem resposta (técnico do CRAS de referência)",
+      "as_user": "operador_cras",
       "steps": [
         {
           "action": "goto",
@@ -234,7 +241,7 @@
             "by": "css",
             "value": "input#cpf"
           },
-          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_CPF}"
+          "value": "${env:E2E_CLIENT_OPERADOR_CPF}"
         },
         {
           "action": "fill",
@@ -242,7 +249,7 @@
             "by": "css",
             "value": "input#password"
           },
-          "value": "${env:E2E_CLIENT_CREAS_OPERADOR_PASSWORD}"
+          "value": "${env:E2E_CLIENT_OPERADOR_PASSWORD}"
         },
         {
           "action": "click",

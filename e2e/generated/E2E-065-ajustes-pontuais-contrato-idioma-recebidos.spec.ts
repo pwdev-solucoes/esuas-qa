@@ -14,9 +14,9 @@ function escapeRegExp(text: string): string {
 }
 
 const data = {
-  "external_referral": "00000000-0000-4000-8000-000011653104",
+  "external_referral": "00000000-0000-4000-8000-000011653114",
   "family_without_living": "00000000-0000-4000-8000-000011653201",
-  "first_referral": "00000000-0000-4000-8000-000011653101",
+  "first_referral": "00000000-0000-4000-8000-000011653111",
   "pending_path": "/app/cadastros/encaminhamentos-pendentes"
 };
 void data;
@@ -25,8 +25,8 @@ test.describe('E2E-065 Encaminhamentos recebidos na relação de pendentes e per
   test.use({ baseURL: process.env['CLIENT_BASE_URL'], viewport: { width: 1440, height: 900 } });
   // Preconditions (arrange before running):
   //   - Técnico do CREAS da massa com add-on LGPD e lotação vigente no E2E CREAS (massa do plano 05)
-  //   - Famílias 00000000-0000-4000-8000-000011653101..103 com encaminhamentos do CRAS ao E2E CREAS aguardando retorno, em datas distintas (mais antigo primeiro)
-  //   - Encaminhamento 00000000-0000-4000-8000-000011653104 com destino em texto livre (sem unidade de destino)
+  //   - Famílias 00000000-0000-4000-8000-000011653101..103 (encaminhamentos ...11653111..113) com encaminhamentos do CRAS ao E2E CREAS aguardando retorno, em datas distintas (mais antigo primeiro)
+  //   - Encaminhamento 00000000-0000-4000-8000-000011653114 com destino em texto livre (sem unidade de destino)
   //   - Família 00000000-0000-4000-8000-000011653201 sem convivência familiar e comunitária gravada
   //   - Re-executável: a massa é reposta a cada rodada do seeder
 
@@ -84,14 +84,14 @@ test.describe('E2E-065 Encaminhamentos recebidos na relação de pendentes e per
     await expect(page.getByTestId(`pending-referral-row-${data.external_referral}`)).toBeHidden();
   });
 
-  test('edge_case_bloco_nunca_gravado — Convivência nunca gravada mostra a faixa de perguntas sem resposta', {
+  test('edge_case_bloco_nunca_gravado — Convivência nunca gravada mostra a faixa de perguntas sem resposta (técnico do CRAS de referência)', {
     tag: ['@P1', '@client', '@encaminhamento', '@recebidos', '@diagnostico', '@convivencia', '@lgpd'],
-    annotation: [{ type: 'E2E', description: 'E2E-065' }, { type: 'AC', description: 'AC-001' }, { type: 'AC', description: 'AC-004' }, { type: 'user', description: 'operador_creas' }],
+    annotation: [{ type: 'E2E', description: 'E2E-065' }, { type: 'AC', description: 'AC-001' }, { type: 'AC', description: 'AC-004' }, { type: 'user', description: 'operador_cras' }],
   }, async ({ page }) => {
     await page.goto('/login');
     await page.goto('/auth/login');
-    await page.locator('input#cpf').fill(env('E2E_CLIENT_CREAS_OPERADOR_CPF'));
-    await page.locator('input#password').fill(env('E2E_CLIENT_CREAS_OPERADOR_PASSWORD'));
+    await page.locator('input#cpf').fill(env('E2E_CLIENT_OPERADOR_CPF'));
+    await page.locator('input#password').fill(env('E2E_CLIENT_OPERADOR_PASSWORD'));
     await page.locator('button[type="submit"]').click();
     // login concluído: espera a URL autenticada em vez de tempo fixo
     await page.waitForURL(new RegExp(escapeRegExp('/app')));
