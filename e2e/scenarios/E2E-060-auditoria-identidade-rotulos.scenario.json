@@ -99,7 +99,7 @@
           "action": "click",
           "target": {
             "by": "css",
-            "value": ":nth-match([data-testid=\"tenant-audit-row\"]:has-text(\"Correção\") [data-testid=\"tenant-audit-view-detail\"], 1)"
+            "value": "[data-testid=\"tenant-audit-row\"]:has-text(\"Correção\"):has-text(\"Forma de ingresso\") [data-testid=\"tenant-audit-view-detail\"]"
           },
           "note": "abre o detalhe da correção do ingresso"
         },
