@@ -219,7 +219,7 @@
           "action": "wait",
           "target": {
             "by": "css",
-            "value": "[data-testid=\"member-series-table\"]"
+            "value": "tr[data-testid^=\"member-row-\"] [data-testid^=\"member-conditions-\"] >> nth=0"
           },
           "timeout_ms": 15000
         },
