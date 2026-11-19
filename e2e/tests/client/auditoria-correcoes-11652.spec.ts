@@ -20,7 +20,7 @@ import { dismissPlatformUpdates } from "../../helpers/platform-updates";
  *     atualiza a renda (CA09, `mode=update`) e, por último, a data e o tipo do atendimento (CA01, CA02);
  *  2. Master: abre `/app/auditoria`, filtra "Correção" e prova os CAs no detalhe (antes → depois, unidade,
  *     ausência de texto livre e de CPF, linha antiga, nome da época);
- *  3. Operador (sem função): recebe a negativa (CA11).
+ *  3. Operador (sem função): recebe a negativa (CA11) com o motivo "Somente o Master da organização consulta a auditoria.".
  *
  * ## Massa (E2EAuditCorrectionsSeeder, api)
  * Reaplique o seeder ANTES de cada rodada (a spec GRAVA correções) e NÃO o reaplique antes do E2E-064, que lê a
@@ -465,7 +465,9 @@ test.describe("HU #11652 — auditoria com antes e depois nas correções (clien
     await operador.goto("/app/auditoria");
     await dismissPlatformUpdates(operador);
     await expect(operador).toHaveURL(/\/403/, { timeout: 15_000 });
-    await expect(operador.getByText("Acesso Negado")).toBeVisible();
+    await expect(operador.getByTestId("access-denied-reason")).toHaveText(
+      "Somente o Master da organização consulta a auditoria.",
+    );
     await expect(operador.getByTestId("tenant-audit-table")).toHaveCount(0);
 
     // A API recusa também (403): a auditoria é exclusiva do Master.
