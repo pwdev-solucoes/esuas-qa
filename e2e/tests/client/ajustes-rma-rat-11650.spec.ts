@@ -266,6 +266,8 @@ test.describe("HU #11650 — ajustes do RMA do CREAS e do Relatório de Atividad
     await expect(page.getByTestId("art-line-form")).toBeVisible();
     await expect(page.getByTestId("art-line-counting-unit")).toContainText("encaminhamentos registrados no mês");
     await expect(page.getByTestId("art-line-code-14")).toBeChecked();
+    // o print precisa mostrar o código 14 marcado: rola a lista de códigos até ele
+    await page.getByTestId("art-line-code-14").scrollIntoViewIfNeeded();
     await shot(page, "CA13-CA17-editor-conta-e-codigo-14");
     await page.getByTestId("art-line-save").click();
     await expect(page.getByTestId("art-line-form")).toBeHidden();
