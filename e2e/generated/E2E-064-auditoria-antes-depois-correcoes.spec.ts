@@ -14,7 +14,7 @@ function escapeRegExp(text: string): string {
 }
 
 const data = {
-  "date_change": "Data do atendimento: 10/10/2026 → 08/10/2026"
+  "date_change": "Data do atendimento: 11/10/2026 → 10/10/2026"
 };
 void data;
 
@@ -24,7 +24,7 @@ test.describe('E2E-064 Auditoria com antes e depois nas correções e unidade do
   //   - Massa do plano 04 aplicada e ações do técnico feitas (corrigir data e tipo do atendimento, a descrição e o ingresso)
   //   - Master com profissional ativo no tenant
 
-  test('happy_path — Correção do atendimento: data e tipo por nome (CA01, CA02)', {
+  test('happy_path — Correção do atendimento: data antes e depois (CA01)', {
     tag: ['@P1', '@client', '@auditoria', '@correcao', '@antes-depois'],
     annotation: [{ type: 'E2E', description: 'E2E-064' }, { type: 'AC', description: 'AC-001' }, { type: 'AC', description: 'AC-003' }, { type: 'AC', description: 'AC-004' }, { type: 'user', description: 'master' }],
   }, async ({ page }) => {
@@ -41,20 +41,26 @@ test.describe('E2E-064 Auditoria com antes e depois nas correções e unidade do
     // deixa o modal de novidades abrir antes de fechá-lo
     await page.waitForTimeout(2500);
     await page.keyboard.press('Escape');
-    // abre o detalhe da correção do ingresso
-    await page.locator(':nth-match([data-testid="tenant-audit-row"]:has-text("Correção") [data-testid="tenant-audit-view-detail"], 1)').click();
-    // abre o detalhe
-    await page.locator(':nth-match([data-testid="tenant-audit-row"]:has-text("Correção") [data-testid="tenant-audit-view-detail"], 1)').click();
+    // filtra por Correção
+    await page.getByRole('combobox', { name: 'Tipo de ação' }).click();
+    await page.getByRole('option', { name: 'Correção' }).click();
+    await page.getByRole('button', { name: 'Filtrar' }).click();
+    await page.waitForTimeout(1500);
+    // filtra por Correção
+    await page.getByRole('combobox', { name: 'Tipo de ação' }).click();
+    await page.getByRole('option', { name: 'Correção' }).click();
+    await page.getByRole('button', { name: 'Filtrar' }).click();
+    await page.waitForTimeout(1500);
+    // abre o detalhe da última correção do atendimento (data, tipo e descrição)
+    await page.locator('[data-testid="tenant-audit-row"]:has-text("Correção"):has-text("Data do atendimento") [data-testid="tenant-audit-view-detail"]').click();
     await page.waitForTimeout(1500);
     // evento Correção
     await expect(page.locator('[data-testid="tenant-audit-detail-event"]')).toContainText('Correção');
     // antes e depois da data
     await expect(page.locator('[data-testid="audit-value-changes"]')).toContainText(String(data.date_change));
-    // tipo por nome, sem chave técnica
-    await expect(page.locator('[data-testid="audit-value-changes"]')).toContainText('Tipo de atendimento');
   });
 
-  test('edge_case — Descrição corrigida sem conteúdo e unidade do ingresso (CA04, CA10)', {
+  test('edge_case — unidade do registro (CA10)', {
     tag: ['@P1', '@client', '@auditoria', '@correcao', '@antes-depois'],
     annotation: [{ type: 'E2E', description: 'E2E-064' }, { type: 'AC', description: 'AC-001' }, { type: 'AC', description: 'AC-003' }, { type: 'AC', description: 'AC-004' }, { type: 'user', description: 'master' }],
   }, async ({ page }) => {
@@ -71,13 +77,19 @@ test.describe('E2E-064 Auditoria com antes e depois nas correções e unidade do
     // deixa o modal de novidades abrir antes de fechá-lo
     await page.waitForTimeout(2500);
     await page.keyboard.press('Escape');
-    // abre o detalhe da correção do ingresso
-    await page.locator(':nth-match([data-testid="tenant-audit-row"]:has-text("Correção") [data-testid="tenant-audit-view-detail"], 1)').click();
-    // abre o detalhe
-    await page.locator(':nth-match([data-testid="tenant-audit-row"]:has-text("Correção") [data-testid="tenant-audit-view-detail"], 1)').click();
+    // filtra por Correção
+    await page.getByRole('combobox', { name: 'Tipo de ação' }).click();
+    await page.getByRole('option', { name: 'Correção' }).click();
+    await page.getByRole('button', { name: 'Filtrar' }).click();
     await page.waitForTimeout(1500);
-    // marcador sem texto (CA04)
-    await expect(page.locator(':nth-match([data-testid="tenant-audit-fields"]:has-text("(conteúdo não exibido)"), 1)')).toContainText('(conteúdo não exibido)');
+    // filtra por Correção
+    await page.getByRole('combobox', { name: 'Tipo de ação' }).click();
+    await page.getByRole('option', { name: 'Correção' }).click();
+    await page.getByRole('button', { name: 'Filtrar' }).click();
+    await page.waitForTimeout(1500);
+    // abre o detalhe da última correção do atendimento (data, tipo e descrição)
+    await page.locator('[data-testid="tenant-audit-row"]:has-text("Correção"):has-text("Data do atendimento") [data-testid="tenant-audit-view-detail"]').click();
+    await page.waitForTimeout(1500);
     // unidade do registro (CA10)
     await expect(page.locator('[data-testid="tenant-audit-detail-unit"]')).toContainText('CRAS Centro');
   });

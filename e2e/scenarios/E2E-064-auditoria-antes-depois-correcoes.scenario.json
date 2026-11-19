@@ -2,7 +2,7 @@
   "schema_version": 1,
   "id": "E2E-064",
   "title": "Auditoria com antes e depois nas correções e unidade do registro",
-  "description": "HU #11652, plano 03: o Master abre /app/auditoria, filtra por Correção e vê no detalhe 'Data do atendimento: 10/10/2026 → 08/10/2026' e o tipo por nome (CA01, CA02), a descrição corrigida como '(conteúdo não exibido)' sem texto (CA04) e a unidade 'CRAS Centro' no ingresso corrigido (CA10). As ações do técnico ficam na spec manual (plano 04). Nenhum dado pessoal real.",
+  "description": "HU #11652, plano 03: o Master abre /app/auditoria, filtra por Correção e vê no detalhe 'Data do atendimento: 11/10/2026 → 10/10/2026' (CA01) e a unidade 'CRAS Centro' (CA10), com a massa do E2EAuditCorrectionsSeeder. Tipo por nome, descrição sem conteúdo e ingresso dependem das ações do técnico e ficam na spec manual auditoria-correcoes-11652 (plano 04). Nenhum dado pessoal real.",
   "feature_slug": "11652-auditoria-03-client",
   "ac_refs": [
     "AC-001",
@@ -38,12 +38,12 @@
     ]
   },
   "data": {
-    "date_change": "Data do atendimento: 10/10/2026 → 08/10/2026"
+    "date_change": "Data do atendimento: 11/10/2026 → 10/10/2026"
   },
   "variants": [
     {
       "name": "happy_path",
-      "title": "Correção do atendimento: data e tipo por nome (CA01, CA02)",
+      "title": "Correção do atendimento: data antes e depois (CA01)",
       "as_user": "master",
       "steps": [
         {
@@ -99,18 +99,68 @@
         {
           "action": "click",
           "target": {
-            "by": "css",
-            "value": ":nth-match([data-testid=\"tenant-audit-row\"]:has-text(\"Correção\") [data-testid=\"tenant-audit-view-detail\"], 1)"
+            "by": "role",
+            "value": "combobox",
+            "name": "Tipo de ação"
           },
-          "note": "abre o detalhe da correção do ingresso"
+          "note": "filtra por Correção"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Correção"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Filtrar"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "combobox",
+            "name": "Tipo de ação"
+          },
+          "note": "filtra por Correção"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Correção"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Filtrar"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500
         },
         {
           "action": "click",
           "target": {
             "by": "css",
-            "value": ":nth-match([data-testid=\"tenant-audit-row\"]:has-text(\"Correção\") [data-testid=\"tenant-audit-view-detail\"], 1)"
+            "value": "[data-testid=\"tenant-audit-row\"]:has-text(\"Correção\"):has-text(\"Data do atendimento\") [data-testid=\"tenant-audit-view-detail\"]"
           },
-          "note": "abre o detalhe"
+          "note": "abre o detalhe da última correção do atendimento (data, tipo e descrição)"
         },
         {
           "action": "wait",
@@ -135,21 +185,12 @@
           },
           "value": "${data.date_change}",
           "note": "antes e depois da data"
-        },
-        {
-          "expect": "text",
-          "target": {
-            "by": "css",
-            "value": "[data-testid=\"audit-value-changes\"]"
-          },
-          "value": "Tipo de atendimento",
-          "note": "tipo por nome, sem chave técnica"
         }
       ]
     },
     {
       "name": "edge_case",
-      "title": "Descrição corrigida sem conteúdo e unidade do ingresso (CA04, CA10)",
+      "title": "unidade do registro (CA10)",
       "as_user": "master",
       "steps": [
         {
@@ -205,18 +246,68 @@
         {
           "action": "click",
           "target": {
-            "by": "css",
-            "value": ":nth-match([data-testid=\"tenant-audit-row\"]:has-text(\"Correção\") [data-testid=\"tenant-audit-view-detail\"], 1)"
+            "by": "role",
+            "value": "combobox",
+            "name": "Tipo de ação"
           },
-          "note": "abre o detalhe da correção do ingresso"
+          "note": "filtra por Correção"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Correção"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Filtrar"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "combobox",
+            "name": "Tipo de ação"
+          },
+          "note": "filtra por Correção"
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "option",
+            "name": "Correção"
+          }
+        },
+        {
+          "action": "click",
+          "target": {
+            "by": "role",
+            "value": "button",
+            "name": "Filtrar"
+          }
+        },
+        {
+          "action": "wait",
+          "timeout_ms": 1500
         },
         {
           "action": "click",
           "target": {
             "by": "css",
-            "value": ":nth-match([data-testid=\"tenant-audit-row\"]:has-text(\"Correção\") [data-testid=\"tenant-audit-view-detail\"], 1)"
+            "value": "[data-testid=\"tenant-audit-row\"]:has-text(\"Correção\"):has-text(\"Data do atendimento\") [data-testid=\"tenant-audit-view-detail\"]"
           },
-          "note": "abre o detalhe"
+          "note": "abre o detalhe da última correção do atendimento (data, tipo e descrição)"
         },
         {
           "action": "wait",
@@ -224,15 +315,6 @@
         }
       ],
       "assertions": [
-        {
-          "expect": "text",
-          "target": {
-            "by": "css",
-            "value": ":nth-match([data-testid=\"tenant-audit-fields\"]:has-text(\"(conteúdo não exibido)\"), 1)"
-          },
-          "value": "(conteúdo não exibido)",
-          "note": "marcador sem texto (CA04)"
-        },
         {
           "expect": "text",
           "target": {
