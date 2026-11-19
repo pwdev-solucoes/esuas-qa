@@ -48,8 +48,8 @@
     ]
   },
   "data": {
-    "template_active_title": "Relatório das Atividades – CREAS (E2E-062 ativo)",
-    "template_new_title": "Relatório das Atividades – CREAS (E2E-062 novo)",
+    "template_active_title": "Relatório 2026",
+    "template_new_title": "Relatório 2027",
     "used_line_text": "Encaminhamentos realizados",
     "reference_month": "2026-10",
     "rma_path": "/app/prestacao-contas/rma-creas"
@@ -347,7 +347,7 @@
           "expect": "visible",
           "target": {
             "by": "css",
-            "value": "a[href=\"/app/prestacao-contas/rma-creas\"]"
+            "value": "aside button:has-text(\"RMA do CREAS\")"
           },
           "note": "item do RMA no menu Prestação de Contas"
         }
